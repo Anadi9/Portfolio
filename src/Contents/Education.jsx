@@ -3,8 +3,9 @@ import React from 'react';
 function Education(props) {
     return (
         <React.Fragment>
-          <h1 className="text-success">Education</h1>
-          <table className="table table-md">
+          <h1 className="text-success">Education</h1><br/><br/>
+          <div>
+          <table className="table table-sm">
             <thead className="thead-light">
                <tr>
                  <th scope="col">Degree</th>
@@ -25,6 +26,7 @@ function Education(props) {
           </tr>
             </tbody>
           </table>
+          </div>
         </React.Fragment>
     );
 }

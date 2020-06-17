@@ -15,7 +15,7 @@ if(currentDate>=4 && currentDate<=11){
 }
 
     return (
-            <h2>{ greeting }</h2>
+            <p>{ greeting }</p>
     );
 }
 

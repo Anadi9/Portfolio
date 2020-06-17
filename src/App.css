@@ -14,6 +14,11 @@ padding: 0;
 body
 {
 font-family: 'Raleway';
+background-image: url("./Images/keyboard-5017973_1280.webp");
+height: 100vh;
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
 }
 .App
 {
@@ -25,8 +30,6 @@ min-height: 100vh;
 .container-fluid
 {
 padding: 10px ;
-background-color: black;
-flex:var(--condiv-flex);
 }
 
 nav
