@@ -7,8 +7,8 @@ function Home(props) {
     return (
         <div >
         
-        <h2 className="text-danger"><Greeting/></h2>
-        <h1 className="text-danger">ANADI THAKUR here <CoolIcon/></h1>
+        <h2 className="text-warning"><Greeting/></h2>
+        <h1 className="text-warning"><strong className="text-danger">ANADI THAKUR</strong> here<CoolIcon/></h1>
         <p className="h4 text-white font-italic">
         I am here to <code>&lt;code&gt;</code> ideas and bring them to life.
         </p>
