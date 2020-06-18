@@ -15,7 +15,6 @@ function Home(props) {
         <p className="h2 text-warning">Web Developer & Web Designer</p>
         <p className="text-white font-italic">I Hate sleeping so I am here to provide my services to my clients.<br/>
             It's boredom to not have tension that's why I keep myself engaged in coding and developing UI/UX. </p>
-       
         </div>
     );
 }

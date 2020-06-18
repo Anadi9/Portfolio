@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 
 function Navbar(props) {
     return (
-        <nav className="navbar navbar-expand bg-black sticky-top">
+        <nav className="navbar navbar-expand sticky-top">
         <Link className="navbar-brand text-white" to="/">
         <h5>Portfolio</h5>
           </Link>

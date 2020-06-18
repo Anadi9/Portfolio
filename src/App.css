@@ -35,5 +35,6 @@ padding: 10px ;
 nav
 {
 padding: 0 ;
+background-color: black;
 flex:var(--sidebar-flex);
 }
