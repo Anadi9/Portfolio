@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "210cd0bbf8b81189bdba",
-    "url": "/Portfolio/static/css/main.a858afd1.chunk.css"
+    "revision": "49233a7040c31b459458",
+    "url": "/Portfolio/static/css/main.7c40f2ea.chunk.css"
   },
   {
-    "revision": "210cd0bbf8b81189bdba",
-    "url": "/Portfolio/static/js/main.13db72c1.chunk.js"
+    "revision": "49233a7040c31b459458",
+    "url": "/Portfolio/static/js/main.019e9a61.chunk.js"
   },
   {
     "revision": "6b64d540f1308ee928ad",
@@ -24,11 +24,11 @@ self.__precacheManifest = [
     "url": "/Portfolio/static/media/Anadi1_dp.a9adf753.jpg"
   },
   {
-    "revision": "7e16cfea32b483bb669231d628998bdd",
-    "url": "/Portfolio/static/media/keyboard-5017973_1280.7e16cfea.webp"
+    "revision": "e306d8a56cf20c2ef2ccf139310fdda9",
+    "url": "/Portfolio/static/media/apple-magic-keyboard-1309766.e306d8a5.jpg"
   },
   {
-    "revision": "59aca3fd4eabb611271704edf96001f8",
+    "revision": "903bc27ab7888a8bc0011ff33c1ba97e",
     "url": "/Portfolio/index.html"
   }
 ];
