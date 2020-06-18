@@ -9,7 +9,7 @@ function More(props) {
             <h1 className="text-success">More</h1><br/>
             <ReviewBox/><br/>
             <div className="">
-            <h5 className="text-info">Contact</h5>
+            <h5 className="text-success">Contact</h5>
             <p className="badge text-white"><span role="img" aria-label="">📞</span>+91 74669 14279</p><br/>
             <p className="badge text-danger"><GmailIcon/>  anadithakur99@gmail.com</p><br/>
             <div>
