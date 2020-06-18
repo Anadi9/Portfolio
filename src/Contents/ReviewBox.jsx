@@ -8,7 +8,7 @@ function ReviewBox(props) {
         <label htmlFor="" className="text-muted">Your Name</label><br/>
         <input type="text" className="w-25"></input><br/>
         <label htmlFor="" className="text-muted">Your Review</label>
-        <textarea className="form-control w-25" rows="3"></textarea><br/>
+        <textarea className="form-control w-50" rows="3"></textarea><br/>
         <button type="button" className="btn btn-primary btn-sm">Submit</button>
         </div>
     );
