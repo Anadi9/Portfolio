@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "28ff7a25acfa2ba64ff0",
-    "url": "/Portfolio/static/css/main.9b4b5f8a.chunk.css"
+    "revision": "d64103298161cf7f19d9",
+    "url": "/Portfolio/static/css/main.3b9d4f47.chunk.css"
   },
   {
-    "revision": "28ff7a25acfa2ba64ff0",
-    "url": "/Portfolio/static/js/main.2181e655.chunk.js"
+    "revision": "d64103298161cf7f19d9",
+    "url": "/Portfolio/static/js/main.6115d6bc.chunk.js"
   },
   {
     "revision": "6b64d540f1308ee928ad",
@@ -24,11 +24,11 @@ self.__precacheManifest = [
     "url": "/Portfolio/static/media/Anadi1_dp.a9adf753.jpg"
   },
   {
-    "revision": "a5e5d98f03ced43cb3ffe6eabfd8574c",
-    "url": "/Portfolio/static/media/aron-visuals-bZZp1PmHI0E-unsplash.a5e5d98f.jpg"
+    "revision": "31e9afb4f70f33908a7d9198191677b5",
+    "url": "/Portfolio/static/media/ales-nesetril-Im7lZjxeLhg-unsplash.31e9afb4.jpg"
   },
   {
-    "revision": "ee1b06b1999a69a069887ab6073975b7",
+    "revision": "7f264dea86f90ad276ebd3f43ffef690",
     "url": "/Portfolio/index.html"
   }
 ];
