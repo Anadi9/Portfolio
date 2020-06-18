@@ -12,7 +12,7 @@ function More(props) {
             <h5 className="text-info">Contact</h5>
             <p className="badge text-white"><span role="img" aria-label="">📞</span>+91 74669 14279</p><br/>
             <p className="badge text-danger"><GmailIcon/>  anadithakur99@gmail.com</p><br/>
-            <div className="badge bg-dark">
+            <div>
             <a href="https://www.facebook.com/anadi.thakur.3"><FacebookIcon/></a>
             <a href="https://www.instagram.com/anadi_thakur_9"><InstagramIcon/></a>
             <a href="https://github.com/Anadi9"><GithubIcon/></a>

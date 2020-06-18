@@ -14,10 +14,10 @@ padding: 0;
 body
 {
 font-family: 'Raleway';
-background-image: url("./Images/keyboard-5017973_1280.webp");
-height: 100vh;
+background-image: url("./Images/apple-magic-keyboard-1309766.jpg");
+height: 110vh;
 background-position: center;
-background-repeat: no-repeat;
+background-repeat: none;
 background-size: cover;
 }
 .App
