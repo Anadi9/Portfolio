@@ -3,20 +3,20 @@ import { ReactIcon, HtmlIcon, BootstrapIcon, JsIcon, CssIcon, HerokuIcon, Nodejs
 
 function Skills(props) {
     return (
-        <div>
+        <div className="col s12 m8 l9">
          <h1 className="text-success">Skills</h1><br/>
          <div className="container text-white">
   <div className="row">
-    <div className="col-sm">
-    <ul>
+    <div className="col-5">
+    <ul className="no-bullets">
     <li><ReactIcon/>React Js</li>
     <li><BootstrapIcon/>Bootstrap</li>
     <li><HtmlIcon/>HTML</li>
     <li><JsIcon/>JavaScript</li>
   </ul>
     </div>
-    <div className="col-sm">
-    <ul>
+    <div className="col-5">
+    <ul className="no-bullets">
     <li><CssIcon/>CSS</li>
     <li><HerokuIcon/>Heroku</li>
     <li><NodejsIcon/> Node.js</li>

@@ -2,7 +2,7 @@ import React from 'react';
 
 function Education(props) {
     return (
-        <React.Fragment>
+        <div className="col s12 m8 l9">
           <h1 className="text-success">Education</h1><br/><br/>
           <div>
           <table className="table table-sm">
@@ -27,7 +27,7 @@ function Education(props) {
             </tbody>
           </table>
           </div>
-        </React.Fragment>
+        </div>
     );
 }
 

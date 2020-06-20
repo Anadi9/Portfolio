@@ -2,7 +2,7 @@ import React from 'react';
 
 function About(props) {
     return (
-        <div>
+        <div className="col s12 m8 l9">
         <h1 className="text-success">About</h1><br/>
         <p className="text-white">I am a BCA (Bachelor of Computer Application) student by profession. 
           <br/>Pursuing the degree from Graphic Era Deemed To Be University, Dehradun, Uttrakhand, India. 

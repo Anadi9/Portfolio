@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import HomeTable from './Components/HomeTable';
+import HomeTable from './Components/HomeGrid';
 import Navbar from './Components/Navbar';
 import Education from './Contents/Education';
 import More from './Contents/More';
@@ -13,8 +13,8 @@ import About from './Contents/About';
 function App() {
   return (
     <React.Fragment>
-    <main className="container-fluid">
-    <Navbar/>
+    <main className="container">
+    <Navbar/><br/>
       <Switch>
         <Route path="/More" component={More}/>
         <Route path="/Skills" component={Skills}/>

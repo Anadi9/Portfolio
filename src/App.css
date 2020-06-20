@@ -11,15 +11,19 @@
 margin:0;
 padding: 0;
 }
+
+
+
 body
 {
 font-family: 'Raleway';
-background-image: url("./Images/ales-nesetril-Im7lZjxeLhg-unsplash.jpg");
-height: 110vh;
+background-image: url("./Images/clint-patterson-dYEuFB8KQJk-unsplash.jpg");
+background-attachment: fixed;
 background-position: center;
 background-repeat: none;
 background-size: cover;
 }
+
 .App
 {
 display: flex;
@@ -27,14 +31,20 @@ width: 100vw;
 min-height: 100vh;
 }
 
-.container-fluid
+.container
 {
 padding: 10px ;
 }
 
+ul.no-bullets {
+    list-style-type: none; /* Remove bullets */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margins */
+  }
+
 nav
 {
 padding: 0 ;
-background-color: black;
 flex:var(--sidebar-flex);
 }
+
