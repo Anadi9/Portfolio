@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "d64103298161cf7f19d9",
-    "url": "/Portfolio/static/css/main.3b9d4f47.chunk.css"
+    "revision": "2e4745edbe9588048a49",
+    "url": "/Portfolio/static/css/main.e70d1ff6.chunk.css"
   },
   {
-    "revision": "d64103298161cf7f19d9",
-    "url": "/Portfolio/static/js/main.6115d6bc.chunk.js"
+    "revision": "2e4745edbe9588048a49",
+    "url": "/Portfolio/static/js/main.a336ced5.chunk.js"
   },
   {
     "revision": "6b64d540f1308ee928ad",
@@ -24,11 +24,11 @@ self.__precacheManifest = [
     "url": "/Portfolio/static/media/Anadi1_dp.a9adf753.jpg"
   },
   {
-    "revision": "31e9afb4f70f33908a7d9198191677b5",
-    "url": "/Portfolio/static/media/ales-nesetril-Im7lZjxeLhg-unsplash.31e9afb4.jpg"
+    "revision": "c0ceea1d1cf5e24f79046664efaf7323",
+    "url": "/Portfolio/static/media/clint-patterson-dYEuFB8KQJk-unsplash.c0ceea1d.jpg"
   },
   {
-    "revision": "7f264dea86f90ad276ebd3f43ffef690",
+    "revision": "d26a4d3aef79b3b193006b0efa50085f",
     "url": "/Portfolio/index.html"
   }
 ];
