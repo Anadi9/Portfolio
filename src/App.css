@@ -30,7 +30,7 @@ background-color: black;
 }
 
 .parallax2 {
-  background-image: url("./Images/webdev.svg");
+  background-image: url("./Images/webdev.png");
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
@@ -39,7 +39,7 @@ background-color: black;
 }
 
 .parallax3 {
-  background-image: url("./Images/scholar.svg");
+  background-image: url("./Images/scholar.png");
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
@@ -48,7 +48,7 @@ background-color: black;
 }
 
 .parallax4 {
-  background-image: url("./Images/skills.svg");
+  background-image: url("./Images/skills.png");
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
@@ -57,7 +57,7 @@ background-color: black;
 }
 
 .parallax5 {
-  background-image: url("./Images/contactus.svg");
+  background-image: url("./Images/contactus.png");
   min-height: 510px;
   background-attachment: fixed;
   background-position: center;
@@ -93,6 +93,6 @@ flex:var(--sidebar-flex);
 }
 
 .contact {
-  background-image: url("./Images/contactus.svg");
-  min-height: 500px;
+  background-image: url("./Images/contactus.png");
+  min-height: 510px;
 }
