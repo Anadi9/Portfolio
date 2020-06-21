@@ -17,12 +17,54 @@ padding: 0;
 body
 {
 font-family: 'Raleway';
-background-image: url("./Images/felix-besombes-EzrHLVd83h0-unsplash.jpg");
-background-attachment: fixed;
-background-position: center;
-background-repeat: none;
-background-size: cover;
+background-color: black;
 }
+
+.parallax1 {
+  background-image: url("./Images/felix-besombes-EzrHLVd83h0-unsplash.jpg");
+  min-height: 510px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.parallax2 {
+  background-image: url("./Images/webdev.svg");
+  min-height: 500px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.parallax3 {
+  background-image: url("./Images/scholar.svg");
+  min-height: 500px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.parallax4 {
+  background-image: url("./Images/skills.svg");
+  min-height: 500px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.parallax5 {
+  background-image: url("./Images/contactus.svg");
+  min-height: 510px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 
 .App
 {
@@ -31,9 +73,10 @@ width: 100vw;
 min-height: 100vh;
 }
 
-.container
+.container-fluid
 {
 padding: 10px ;
+background-color: black;
 }
 
 ul.no-bullets {
@@ -45,6 +88,11 @@ ul.no-bullets {
 nav
 {
 padding: 0 ;
+background-color: black;
 flex:var(--sidebar-flex);
 }
 
+.contact {
+  background-image: url("./Images/contactus.svg");
+  min-height: 500px;
+}

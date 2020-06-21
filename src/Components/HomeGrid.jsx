@@ -2,7 +2,7 @@ import React from 'react';
 import Profilepic from '../Images/Profilepic';
 import Home from '../Contents/Home';
 
-function HomeTable(props) {
+function HomeGrid(props) {
     return (
         <div className="col s12 m8 l9">
            <div className="row">
@@ -13,4 +13,4 @@ function HomeTable(props) {
     );
 }
 
-export default HomeTable;
+export default HomeGrid;

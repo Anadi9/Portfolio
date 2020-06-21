@@ -16,7 +16,7 @@ import Coolicon from '../icons/icons8_cool_64px.png';
 
 export function CoolIcon (props) {
     return (
-            <img src={Coolicon} height="40px" alt="cool icon"/>
+            <img src={Coolicon}  height="40px" alt="cool icon"/>
     );
 }
 
