@@ -6,7 +6,7 @@ function Skills(props) {
         <div className="col s12 m8 l9 ">
          <h1 className="text-success">Skills</h1><br/>
          <div className="container">
-  <table className="table text-white">
+  <table className="table text-muted">
   <tbody>
     <tr>
     <td>

@@ -13,16 +13,16 @@ function Education(props) {
                  <th scope="col">Session</th>
                </tr>
             </thead>
-            <tbody>
+            <tbody className="text-muted">
             <tr>
-            <td className="text-white">Bachelor in Computer Application</td>
-            <td className="text-white">Graphic Era University</td>
-            <td className="text-white">2019-22</td>
+            <td>Bachelor in Computer Application</td>
+            <td>Graphic Era University</td>
+            <td>2019-22</td>
           </tr>
           <tr>
-            <td className="text-white">XII Standard</td>
-            <td className="text-white">M.M. Public School</td>
-            <td className="text-white">2017-18</td>
+            <td>XII Standard</td>
+            <td>M.M. Public School</td>
+            <td>2017-18</td>
           </tr>
             </tbody>
           </table>

@@ -4,9 +4,9 @@ import { FacebookIcon, InstagramIcon, GmailIcon, GithubIcon, LinkedinIcon } from
 function Contact(props) {
     return (
         <div className="contact">
-        <div className="container text-center">
+        <div className="container text-center"><br/>
         <h1 className="text-success">Contact</h1>
-        <p className="badge"><span role="img" aria-label="">📞</span>+91 74669 14279</p><br/>
+        <p className="badge text-white"><span role="img" aria-label="">📞</span>+91 74669 14279</p><br/>
         <p className="badge text-danger"><GmailIcon/>  anadithakur99@gmail.com</p><br/>
         <div>
         <a href="https://www.facebook.com/anadi.thakur.3"><FacebookIcon/></a>

@@ -14,9 +14,9 @@ function HomePage(props) {
         <div>
           <div className="parallax1"><br/><br/>
           <div className="container text-center">
-          <h2 className="text-warning"><Greeting/></h2>
-          <h1 className="text-warning"><strong className="text-danger">ANADI THAKUR</strong> here <CoolIcon/></h1>
+          <h2 className="text-muted"><Greeting/></h2>
           <img src={Dp} className="rounded" height="300" alt="Profile_pic"></img>
+          <h1 className="text-muted"><strong className="text-light">ANADI THAKUR</strong>  <CoolIcon/></h1>
           </div></div>
         <div className="container-fluid text-center">
           <div className="col"><Home/></div>
