@@ -1,10 +1,10 @@
 self.__precacheManifest = [
   {
-    "revision": "1d19c930146d95fd71bd",
-    "url": "/Portfolio/static/css/main.5630dfc3.chunk.css"
+    "revision": "ac67c0bd6fae5ab64368",
+    "url": "/Portfolio/static/css/main.135b1a98.chunk.css"
   },
   {
-    "revision": "1d19c930146d95fd71bd",
+    "revision": "ac67c0bd6fae5ab64368",
     "url": "/Portfolio/static/js/main.a26b03e2.chunk.js"
   },
   {
@@ -28,27 +28,27 @@ self.__precacheManifest = [
     "url": "/Portfolio/static/media/webpage.7ce62d93.svg"
   },
   {
-    "revision": "e9f8d3cbd45cb50abcbe45b03b03bfde",
-    "url": "/Portfolio/static/media/webdev.e9f8d3cb.svg"
+    "revision": "4bc0574778fc35d23f250b9742309abe",
+    "url": "/Portfolio/static/media/webdev.4bc05747.png"
   },
   {
-    "revision": "d51454e5b47b37efa732e3f5745adf21",
-    "url": "/Portfolio/static/media/scholar.d51454e5.svg"
+    "revision": "c6eea1bad4789b2fdb2ba5bc1efe37da",
+    "url": "/Portfolio/static/media/scholar.c6eea1ba.png"
   },
   {
-    "revision": "4a9655de8db16c3a70c2f85f6f837644",
-    "url": "/Portfolio/static/media/skills.4a9655de.svg"
+    "revision": "f8e95687b1d09a7b0a06445517d73377",
+    "url": "/Portfolio/static/media/skills.f8e95687.png"
   },
   {
-    "revision": "7e4b141bad724370da2895b0f7a5a2b0",
-    "url": "/Portfolio/static/media/contactus.7e4b141b.svg"
+    "revision": "f4161e494496fad31f85105814608114",
+    "url": "/Portfolio/static/media/contactus.f4161e49.png"
   },
   {
     "revision": "601eda42dcef6d2b5b5dfb6843e059f6",
     "url": "/Portfolio/static/media/felix-besombes-EzrHLVd83h0-unsplash.601eda42.jpg"
   },
   {
-    "revision": "b019abc241b3e81f8b6f92999a410465",
+    "revision": "22ccec800f82d8af1398e828cab67fca",
     "url": "/Portfolio/index.html"
   }
 ];
