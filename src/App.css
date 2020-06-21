@@ -95,4 +95,9 @@ flex:var(--sidebar-flex);
 .contact {
   background-image: url("./Images/contactus.png");
   min-height: 510px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
+
