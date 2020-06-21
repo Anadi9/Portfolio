@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "ac67c0bd6fae5ab64368",
-    "url": "/Portfolio/static/css/main.135b1a98.chunk.css"
+    "revision": "85443fcc13073a57d9e2",
+    "url": "/Portfolio/static/css/main.25ad3ead.chunk.css"
   },
   {
-    "revision": "ac67c0bd6fae5ab64368",
-    "url": "/Portfolio/static/js/main.a26b03e2.chunk.js"
+    "revision": "85443fcc13073a57d9e2",
+    "url": "/Portfolio/static/js/main.9dd32287.chunk.js"
   },
   {
     "revision": "6b64d540f1308ee928ad",
@@ -36,19 +36,19 @@ self.__precacheManifest = [
     "url": "/Portfolio/static/media/scholar.c6eea1ba.png"
   },
   {
-    "revision": "f8e95687b1d09a7b0a06445517d73377",
-    "url": "/Portfolio/static/media/skills.f8e95687.png"
+    "revision": "0fe2e0706eb7d7d1a9ad89b2bfbd6d33",
+    "url": "/Portfolio/static/media/contactus.0fe2e070.png"
   },
   {
-    "revision": "f4161e494496fad31f85105814608114",
-    "url": "/Portfolio/static/media/contactus.f4161e49.png"
+    "revision": "f8e95687b1d09a7b0a06445517d73377",
+    "url": "/Portfolio/static/media/skills.f8e95687.png"
   },
   {
     "revision": "601eda42dcef6d2b5b5dfb6843e059f6",
     "url": "/Portfolio/static/media/felix-besombes-EzrHLVd83h0-unsplash.601eda42.jpg"
   },
   {
-    "revision": "22ccec800f82d8af1398e828cab67fca",
+    "revision": "88a245578df841253515d605c40f70f6",
     "url": "/Portfolio/index.html"
   }
 ];
