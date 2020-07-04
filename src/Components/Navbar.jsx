@@ -1,15 +1,13 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Navbar, } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 
-function Navbar(props) {
+function NavBar(props) {
     return (
-        <nav className="flex text-center navbar-expand sticky-top">
-        <Link className="navbar-brand text-white" to="/">
-        <h5>Portfolio</h5>
-          </Link>
-          <NavLink className="text-white" to="/Contact">Contact</NavLink>
-        </nav>
+      <Navbar bg="black" variant="dark" expand="lg">
+      <Navbar.Brand className="mx-auto" onClick={() => props.history.push('/')}>Portfolio</Navbar.Brand>
+    </Navbar>
     );
 }
 
-export default Navbar;
+export default withRouter(NavBar);
