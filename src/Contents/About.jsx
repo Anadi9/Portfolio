@@ -1,17 +1,39 @@
 import React from 'react';
+import Dp from '../Images/Anadi1_dp.png';
 
 function About(props) {
     return (
-        <div >
-        <h1 className="text-success">About</h1>
-        <p className="text-muted">
-          I am a BCA (Bachelor of Computer Application) student by profession. 
+        <div className="container-fluid my-5 py-5">
+        <div className="row">
+        <div className="col-12 mx-auto">
+        <div className="row">
+         <div className="col-md-5 pl-4 pt-5 order-1 order-lg-1">
+            <div>
+               <img 
+               src={Dp} 
+               className="ml-2 pl-5"
+               height="450px" 
+               style={{"boxShadow":"-5px 5px 5px #06D85F"}}
+               alt="Profile_pic">
+               </img>
+            </div>
+         </div>
+        <div className="col-md-6 pt-5 pl-5 order-2 order-lg-2">
+        <h1 style={{ "color": "#E91E63" }}>About</h1>
+        <p className="text-muted pr-5">
+            I am here to <code>&lt;code&gt;</code> ideas and bring them to life.
+          <br/>I Hate sleeping so I am here to provide my services to my clients.
+          <br/>It's boredom to not have tension that's why I keep myself engaged in coding and developing UI/UX.
+          <br/>I am a BCA (Bachelor of Computer Application) student by profession. 
           <br/>Pursuing the degree from Graphic Era Deemed To Be University, Dehradun, Uttrakhand, India. 
-          <br/>Currently learning and sharpening my skills in web development and web designing.
-          <br/>Beside this I am a huge fan of Football and a passionate football player, 
-          <br/>I represented my school team in many competition and played 3 times at state level and once at national level.
-          <br/>I was also a part of 2 football clubs at Gurugram. My all time favourite player is Cristiano Ronaldo. 
+          <br/>By interest I am a web developer and designer now. It's fun to program some real world apps, and 
+          <br/>I am an intermediate react.js developer. Exploring opportunities to grab some great projects and 
+          <br/>have some great learning experience.   
           </p>
+          </div>
+        </div>
+        </div>
+        </div>
         </div>
     );
 }

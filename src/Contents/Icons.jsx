@@ -7,18 +7,7 @@ import Cssicon from '../icons/icons8_css3_48px.png';
 import Herokuicon from '../icons/icons8_heroku_48px.png';
 import Nodejsicon from '../icons/icons8_nodejs_48px.png';
 import Mongodbicon from '../icons/icons8_mongodb_48px.png';
-import Fbicon from '../icons/icons8-facebook-48.png';
-import Instaicon from '../icons/icons8-instagram-48.png';
-import Gmailicon from '../icons/icons8_gmail_48px_1.png'
-import Githubicon from '../icons/icons8-github-64.png';
-import Linkedinicon from '../icons/icons8_linkedin_48px.png';
-import Coolicon from '../icons/icons8_cool_64px.png';
 
-export function CoolIcon (props) {
-    return (
-            <img src={Coolicon}  height="40px" alt="cool icon"/>
-    );
-}
 
 export function ReactIcon (props) {
     return (
@@ -68,33 +57,4 @@ export function MongodbIcon (props) {
     );
 }
 
-export function FacebookIcon (props) {
-    return (
-            <img src={Fbicon} height="30px" alt="fb icon"/>
-    );
-}
-
-export function InstagramIcon(props) {
-    return (
-           <img src={Instaicon} height="30px" alt="insta icon"/>
-    );
-}
-
-export function GmailIcon(props) {
-    return (
-           <img src={Gmailicon} height="30px" alt="gmail icon"/>
-    );
-}
-
-export function GithubIcon(props) {
-    return (
-           <img src={Githubicon} height="30px" alt="github icon"/>
-    );
-}
-
-export function LinkedinIcon(props) {
-    return (
-           <img src={Linkedinicon} height="30px" alt="linkedin icon"/>
-    );
-}
 

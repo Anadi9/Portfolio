@@ -2,13 +2,12 @@ import React from 'react';
 //import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import NavBar from './Components/NavBar';
-//import Education from './Contents/Education';
-//import Skills from './Contents/Skills';
-//import About from './Contents/About';
+import Skills from './Contents/Skills';
+import About from './Contents/About';
 import LandingPage from './Contents/LandingPage';
-//import Home from './Contents/Home';
-//import Contact from './Contents/Contact';
+import Contact from './Contents/Contact';
 import Background from './Components/Background';
+import Services from './Contents/Services';
 
 
 
@@ -19,6 +18,10 @@ function App() {
     <Background/>
     <NavBar/>
     <LandingPage/>
+    <About/>
+    <Services/>
+    <Skills/>
+    <Contact/>
     </main>    
     </React.Fragment>
   );
