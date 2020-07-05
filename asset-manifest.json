@@ -1,18 +1,16 @@
 {
-  "main.css": "/Portfolio/static/css/main.db03bc70.chunk.css",
-  "main.js": "/Portfolio/static/js/main.f8a43382.chunk.js",
-  "main.js.map": "/Portfolio/static/js/main.f8a43382.chunk.js.map",
+  "main.css": "/Portfolio/static/css/main.7bc5e2b1.chunk.css",
+  "main.js": "/Portfolio/static/js/main.8ad4742a.chunk.js",
+  "main.js.map": "/Portfolio/static/js/main.8ad4742a.chunk.js.map",
   "runtime~main.js": "/Portfolio/static/js/runtime~main.132fbc8c.js",
   "runtime~main.js.map": "/Portfolio/static/js/runtime~main.132fbc8c.js.map",
-  "static/css/2.56a4d00f.chunk.css": "/Portfolio/static/css/2.56a4d00f.chunk.css",
-  "static/js/2.e33c1cc9.chunk.js": "/Portfolio/static/js/2.e33c1cc9.chunk.js",
-  "static/js/2.e33c1cc9.chunk.js.map": "/Portfolio/static/js/2.e33c1cc9.chunk.js.map",
+  "static/css/2.4ff080c6.chunk.css": "/Portfolio/static/css/2.4ff080c6.chunk.css",
+  "static/js/2.eabc2757.chunk.js": "/Portfolio/static/js/2.eabc2757.chunk.js",
+  "static/js/2.eabc2757.chunk.js.map": "/Portfolio/static/js/2.eabc2757.chunk.js.map",
   "index.html": "/Portfolio/index.html",
-  "precache-manifest.0324785c90e514da3cfea8bbc3022cc1.js": "/Portfolio/precache-manifest.0324785c90e514da3cfea8bbc3022cc1.js",
+  "precache-manifest.ff3bae6629a0c9f02cbe5c930503adf6.js": "/Portfolio/precache-manifest.ff3bae6629a0c9f02cbe5c930503adf6.js",
   "service-worker.js": "/Portfolio/service-worker.js",
-  "static/css/2.56a4d00f.chunk.css.map": "/Portfolio/static/css/2.56a4d00f.chunk.css.map",
-  "static/css/main.db03bc70.chunk.css.map": "/Portfolio/static/css/main.db03bc70.chunk.css.map",
-  "static/media/Anadi1_dp.jpg": "/Portfolio/static/media/Anadi1_dp.cd4e8b18.jpg",
-  "static/media/App.css": "/Portfolio/static/media/webdev.6c7b3324.png",
-  "static/media/webpage.svg": "/Portfolio/static/media/webpage.7ce62d93.svg"
+  "static/css/2.4ff080c6.chunk.css.map": "/Portfolio/static/css/2.4ff080c6.chunk.css.map",
+  "static/css/main.7bc5e2b1.chunk.css.map": "/Portfolio/static/css/main.7bc5e2b1.chunk.css.map",
+  "static/media/Anadi1_dp.png": "/Portfolio/static/media/Anadi1_dp.30f06125.png"
 }
