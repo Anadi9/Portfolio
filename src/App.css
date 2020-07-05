@@ -23,16 +23,11 @@ font-family: 'Raleway';
 background-color: black;
 }
 
-ul.no-bullets {
-    list-style-type: none; /* Remove bullets */
-    padding: 0; /* Remove padding */
-    margin: 0; /* Remove margins */
-  }
-
-nav
-{
-padding: 0 ;
+.navbar {
+  background-color: black;
+  box-shadow: 0px 0px 5px #E91E63;
 }
+
 
 .starsec{
   content: " ";

@@ -1,13 +1,18 @@
 import React from 'react';
 import { Navbar, } from 'react-bootstrap';
-import { withRouter } from 'react-router-dom';
+import { animateScroll as scroll } from "react-scroll";
+
 
 function NavBar(props) {
+const scrollToTop = () => {
+  scroll.scrollToTop();
+};
+
     return (
-      <Navbar bg="black" variant="dark" expand="lg">
-      <Navbar.Brand className="mx-auto" onClick={() => props.history.push('/')}>Portfolio</Navbar.Brand>
+      <Navbar className="navbar" variant="dark" expand="lg" fixed="top">
+      <Navbar.Brand className="mx-auto" onClick={scrollToTop}>Portfolio</Navbar.Brand>
     </Navbar>
     );
 }
 
-export default withRouter(NavBar);
+export default NavBar;

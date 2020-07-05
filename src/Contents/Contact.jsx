@@ -1,10 +1,12 @@
 import React from 'react';
 import Background from '../Components/Background';
+import Slide from 'react-reveal/Slide';
 
 function Contact(props) {
     return (
         <div>
         <Background/>
+        <Slide top>
         <div className="container-fluid py-4">
              <h1 className="text-center mt-5" style={{ "color": "#E91E63" }}>Get in touch <i className="fa fa-hand-pointer-o"></i></h1>
              <div className="row">
@@ -25,6 +27,7 @@ function Contact(props) {
              <a className="mx-2" href="https://github.com/Anadi9"><i className="fa fa-github"></i></a>
              <a className="mx-2" href="https://www.linkedin.com/in/anadi-thakur-92163316b"><i className="fa fa-linkedin"></i></a>
           </div>
+          </Slide>
         </div>
     );
 }

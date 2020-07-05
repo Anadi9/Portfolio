@@ -1,8 +1,10 @@
 import React from 'react';
+import Flip from 'react-reveal/Flip';
 
 function Services(props) {
     return (
-        <div className="container-fluid" style={{"backgroundColor": "#06D85F"}}>
+         <Flip bottom>
+        <div className="container-fluid my-5 py-5" style={{"backgroundColor": "#06D85F"}}>
         <h1  className="text-center" style={{ "color": "white" }}>Services</h1>
            <div className="row">
            <div className="col-10 mx-auto">
@@ -32,7 +34,7 @@ function Services(props) {
            </div>
            </div>
            </div>
-           </div>
+           </div></Flip>
     );
 }
 
