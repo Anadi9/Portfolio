@@ -1,0 +1,97 @@
+import type { ReactNode } from 'react';
+import { Link } from 'vite-react-ssg';
+import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { MEASURE } from './prose';
+import { BYLINE } from '@/components/Seo';
+
+/**
+ * The chrome every notes route sits in.
+ *
+ * Deliberately not the portfolio `Rail`. Someone arriving here from a search
+ * result wants the page they clicked, and a 264px column of stats, a client
+ * ticker and a HIRE ME button is an interruption before the first sentence.
+ * One bar, one way back, then the document.
+ */
+const NotesShell = ({ children }: { children: ReactNode }) => (
+  <div style={{ background: c.paper, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <header
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: s[4],
+        padding: px(s[4], 0),
+        paddingLeft: 'clamp(20px, 5vw, 40px)',
+        paddingRight: 'clamp(20px, 5vw, 40px)',
+        borderBottom: `${rule.edge}px solid ${c.ink}`,
+        position: 'sticky',
+        top: 0,
+        background: c.paper,
+        zIndex: 10,
+      }}
+    >
+      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
+        <span
+          style={{ width: 22, height: 22, background: c.accent, border: `${rule.hair}px solid ${c.ink}`, display: 'block' }}
+        />
+        <span style={{ ...label(11, 700, 0.12), color: c.ink }}>ANADI THAKUR</span>
+      </Link>
+      <nav style={{ display: 'flex', alignItems: 'center', gap: s[5] }}>
+        <Link to="/notes" style={{ ...label(11, 700, 0.14), color: c.ink, textDecoration: 'none' }}>
+          NOTES
+        </Link>
+        <Link to="/#work" style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
+          WORK
+        </Link>
+      </nav>
+    </header>
+
+    <main style={{ flex: 1 }}>{children}</main>
+
+    <footer
+      style={{
+        borderTop: `${rule.edge}px solid ${c.ink}`,
+        padding: px(s[9], 0),
+        paddingLeft: 'clamp(20px, 5vw, 40px)',
+        paddingRight: 'clamp(20px, 5vw, 40px)',
+        background: c.ink,
+      }}
+    >
+      <div style={{ maxWidth: MEASURE, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: s[4], justifyContent: 'space-between' }}>
+        <span style={{ ...label(10, 500, 0.14), color: c.dimOnInk }}>NOTES — {BYLINE}</span>
+        <Link to="/" style={{ ...label(10, 700, 0.14), color: c.mark, textDecoration: 'none' }}>
+          BACK TO THE PORTFOLIO →
+        </Link>
+      </div>
+    </footer>
+  </div>
+);
+
+/** The reading column used by all three stream layouts. */
+export const Column = ({ children }: { children: ReactNode }) => (
+  <div
+    style={{
+      maxWidth: MEASURE,
+      margin: '0 auto',
+      padding: px(s[11], 0, s[12]),
+      paddingLeft: 'clamp(20px, 5vw, 40px)',
+      paddingRight: 'clamp(20px, 5vw, 40px)',
+    }}
+  >
+    {children}
+  </div>
+);
+
+/** Mono meta line — `USE WHEN`, datelines, verification stamps. */
+export const MetaLine = ({ tag, children }: { tag: string; children: ReactNode }) => (
+  <p style={{ margin: px(0, 0, s[3]), font: `500 12px/1.5 ${mono}`, letterSpacing: '0.04em', color: c.dim }}>
+    <span style={{ ...label(10, 700, 0.14), color: c.markOnPaper, marginRight: s[3] }}>{tag}</span>
+    {children}
+  </p>
+);
+
+export const Standfirst = ({ children }: { children: ReactNode }) => (
+  <p style={{ margin: px(s[6], 0, 0), font: `400 20px/1.5 ${display}`, color: '#3a3a3a' }}>{children}</p>
+);
+
+export default NotesShell;

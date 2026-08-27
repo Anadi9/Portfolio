@@ -29,13 +29,25 @@ export const site = {
   clients: ['ZEISS', 'ZENQUA', 'PRECIOUS', 'YUGAM', 'SHETHINK', 'ORIONS'],
 };
 
-export const nav = [
+/**
+ * Rail nav.
+ *
+ * `href` opts an item out of the in-page scrollspy: everything without one is a
+ * section on the front page and is tracked by `usePortfolioMotion`, while an
+ * item carrying an `href` is a real route and simply never lights up. NOTES
+ * sits directly after SELECTED WORK — the writing is the second thing worth
+ * reading, not an afterthought pinned below CONTACT.
+ */
+export type NavItem = { id: string; label: string; href?: string };
+
+export const nav: NavItem[] = [
   { id: 'home', label: 'HOME' },
   { id: 'work', label: 'SELECTED WORK' },
+  { id: 'notes', label: 'NOTES', href: '/notes' },
   { id: 'journey', label: 'THE ROUTE HERE' },
   { id: 'stack', label: 'STACK' },
   { id: 'contact', label: 'CONTACT' },
-] as const;
+];
 
 export const marqueeItems = [
   'REACT', 'TYPESCRIPT', 'NEXT.JS', 'NODE.JS', 'FASTAPI', 'CLAUDE API',

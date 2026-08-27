@@ -1,0 +1,13 @@
+/*
+  Notes-route styling that can't be expressed as an inline style.
+
+  The prose map in `components/notes/prose.tsx` styles inline code with a cream
+  chip; inside a <pre> that chip fights the dark plate, and the nested <code>
+  is rendered by MDX, not by us, so it can't be styled at the call site.
+*/
+.pf-pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+  font: inherit !important;
+}

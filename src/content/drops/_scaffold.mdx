@@ -1,0 +1,36 @@
+---
+stream: drop
+title: "Scaffold drop — delete when Phase 2 lands"
+useWhen: "You are checking that the drop layout renders every block it promises."
+summary: "A pipeline test, not a resource. Exercises the frontmatter contract, the inline artifact rule, tables, code blocks and the download variant."
+date: "2026-08-28"
+lastVerified: "2026-08-28"
+draft: true
+artifact: "Nothing — this is a fixture"
+format: "inline"
+keyword: "SCAFFOLD"
+---
+
+## The artifact goes here, as text
+
+The rule this layout exists to enforce: whatever the reader is meant to walk
+away with is **on the page**, as indexable text. A download is a convenience
+on top of that, never the thing itself.
+
+```json
+{
+  "name": "scaffold",
+  "nodes": [{ "type": "webhook" }, { "type": "slack" }]
+}
+```
+
+| Field | Purpose | Required |
+| --- | --- | --- |
+| `artifact` | What the reader leaves with | yes |
+| `format` | `inline`, `download`, or `both` | yes |
+| `keyword` | The DM keyword this slug answers | yes |
+
+### Failure modes
+
+- Frontmatter in the wrong directory fails the build rather than the page view.
+- A `format` of `download` without a `downloadHref` renders no button.

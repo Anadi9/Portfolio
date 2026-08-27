@@ -130,7 +130,7 @@ const Rail = () => (
       {nav.map((n) => (
         <a
           key={n.id}
-          href={`#${n.id}`}
+          href={n.href ?? `#${n.id}`}
           data-nav={n.id}
           style={{
             display: 'flex',

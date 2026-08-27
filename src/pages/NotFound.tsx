@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Head } from 'vite-react-ssg';
 import { c, display, heading, label, px, s, stretch } from '@/components/portfolio/tokens';
 
 const NotFound = () => {
@@ -21,6 +22,13 @@ const NotFound = () => {
         padding: 'clamp(24px,6vw,80px)',
       }}
     >
+      {/* Prerendered as `dist/404.html` by some hosts; noindex keeps a
+          soft-404 out of the index either way. */}
+      <Head>
+        <title>Not found — Anadi Thakur</title>
+        <meta name="robots" content="noindex" />
+      </Head>
+
       <span style={{ ...label(11, 700, 0.16), color: c.mark }}>ERROR — 404</span>
       <h1
         style={{
