@@ -91,6 +91,17 @@ export type DropPost = Post<DropFrontmatter>;
 export type WisdomPost = Post<WisdomFrontmatter>;
 export type DispatchPost = Post<DispatchFrontmatter>;
 
+/**
+ * The per-post OG card, rendered at build time by `scripts/generate-og.mjs`
+ * into `dist/og/<stream>/<slug>.png`. The path mirrors the post's own URL, so
+ * neither side has to carry a mapping — `/drops/system` → `/og/drops/system.png`.
+ *
+ * The cards only exist in a built `dist/`, so this 404s under `vite dev`. That
+ * is deliberate: they're build artefacts, not source, and nothing but a crawler
+ * ever asks for one.
+ */
+export const ogImageFor = (path: string) => `/og${path}.png`;
+
 /** Inverse of `streamPath`, for resolving a URL back to its stream. */
 export const pathToStream: Record<string, Stream> = {
   drops: 'drop',

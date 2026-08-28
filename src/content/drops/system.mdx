@@ -1,0 +1,270 @@
+---
+stream: drop
+title: "System design document template — 9 sections, with a worked example"
+useWhen: "You are about to start a build and haven't decided anything on purpose yet."
+summary: "A 20-minute template you fill out before writing code. Nine sections — problem, requirements, constraints, architecture, data model, API contract, failure modes, tradeoffs, open questions — each with the common mistake named and a full worked example for a Video → Transcript API."
+date: "2026-08-12"
+lastVerified: "2026-08-28"
+artifact: "A 9-section design template plus a fully worked example"
+format: "inline"
+keyword: "SYSTEM"
+---
+
+Most bad architecture calls don't come from a wrong technical choice. They come
+from never actually deciding — you started building, and the first thing that
+worked became the design.
+
+This template exists to make you decide on purpose, in about 15–20 minutes,
+instead of three weeks in when it's expensive to change. It isn't a spec
+document and it isn't a form to check boxes on. It's a decision log.
+
+## How to use it
+
+1. Copy the nine sections below into a new doc for every build. One doc per build.
+2. Fill every section. If you don't know the answer, write **unknown** — don't
+   skip it. An honest "unknown" in Section 9 is worth more than a guess dressed
+   up as a fact everywhere else.
+3. Time-box it to 20 minutes. If a section is taking longer, you're designing
+   prematurely — note the open question and move on.
+
+> **The worked example running through this page:** a *Video → Transcript* API.
+> A user uploads a video, gets back an auto-generated text transcript. Every
+> section shows how it would actually get filled out for that project, so you're
+> never staring at a blank field.
+
+---
+
+## 1. Problem statement
+
+**Why this matters:** if you can't state the problem in one sentence, you don't
+understand it well enough to design for it yet — and every section after this
+one inherits that fuzziness.
+
+- What are we building, in one sentence?
+- Who is it for?
+- What does success look like? One measurable outcome, not a vibe.
+
+**Filled example**
+
+- *Building:* an API that accepts a video file and returns a text transcript within minutes.
+- *For:* indie developers and small teams who want transcription without building Whisper infra themselves.
+- *Success:* 95% of 10-minute videos return a transcript in under 3 minutes, for under $0.05 in compute per video.
+
+**Common mistake:** writing the problem statement as a feature list ("it has
+upload, processing, and download") instead of an outcome. A feature list
+describes what you're building; it doesn't tell you *why* — which is exactly
+what you need in Section 8 when you're deciding what to cut.
+
+---
+
+## 2. Requirements
+
+**Why this matters:** this is where scope creep actually gets killed. Not in a
+later "let's cut scope" meeting — here, before scope exists.
+
+| | |
+| --- | --- |
+| **Must have** | v1 cannot ship without these |
+| **Nice to have** | explicitly deferred, not forgotten |
+
+**Filled example**
+
+- *Must have:* accept common video formats (mp4, mov); return a plain-text transcript; handle files up to 30 min / 500 MB; a basic error state when audio is unintelligible.
+- *Nice to have:* speaker diarization ("who said what"), timestamped transcript, multi-language support.
+
+**Common mistake:** putting something in *must have* because it'd be easy to add
+later, not because v1 actually needs it. Ease of implementation and necessity
+are different questions. This section only answers the second one.
+
+---
+
+## 3. Constraints and scale
+
+**Why this matters:** this number decides your entire architecture. A tool for
+50 users and a tool for 50,000 users are different systems, not the same system
+with more servers.
+
+- Expected users / requests at launch
+- Expected users / requests in 12 months
+- Data volume — rows, files, GB, whatever's relevant
+- Latency requirement — what response time is "fast enough"?
+- Budget / infra constraints — serverless only? self-hosted? cost ceiling?
+- Team constraint — solo build? what can you actually maintain?
+
+**Filled example**
+
+- *Launch:* ~20 videos/day.
+- *12 months:* ~2,000 videos/day, if it takes off.
+- *Data volume:* avg 150 MB per video, so ~300 GB/month at the 12-month number.
+- *Latency:* transcription can be async (the user gets notified), but upload confirmation needs to respond in under 2 seconds.
+- *Budget:* serverless-first, under $200/month in infra until there's paying revenue.
+- *Team:* solo — anything needing 24/7 manual babysitting is a no.
+
+**Common mistake:** designing for the 12-month number on day one.
+Over-engineering for scale you don't have is exactly as costly as
+under-engineering — it just fails later and more quietly, as wasted time and
+unnecessary complexity instead of an outage.
+
+---
+
+## 4. High-level architecture
+
+**Why this matters:** if you can't draw it in boxes and arrows, you don't have
+an architecture — you have an intention.
+
+- Draw it: a box per component (client, API, database, third-party services,
+  queues and workers if any), arrows for how data flows.
+- One sentence per box: what does this component actually do?
+- What's the single simplest version of this that could work? Start there. Add
+  complexity only when a constraint from Section 3 forces it.
+
+**Filled example**
+
+```text
+Client (upload UI)
+  → API            accepts the upload, returns a job ID
+  → Queue          holds transcription jobs
+  → Worker         calls the transcription model, writes the result
+  → Database       stores transcript + job status
+  → Client         polls, or gets a webhook when the job is done
+```
+
+Simplest version that could work: skip the queue entirely for launch — a single
+worker process pulling from a database table used as a poor man's queue. Add a
+real queue (SQS, Redis-backed) only once daily volume makes that polling
+noticeably slow, or job loss becomes a real risk.
+
+**Common mistake:** designing for the tools you want to use, not the constraints
+in Section 3. Kubernetes and a message broker look impressive in a diagram and
+are mostly wasted on 20 videos a day.
+
+---
+
+## 5. Data model
+
+**Why this matters:** every bug and every awkward feature-add downstream traces
+back to a data model that didn't reflect reality. This is the section worth
+spending the most silent, careful thinking on.
+
+- What are the core entities, tables, or objects?
+- What's the relationship between them — one-to-many, many-to-many?
+- Which one field or relationship, if you get it wrong, breaks everything
+  downstream? Flag it.
+
+**Filled example**
+
+- *Entities:* `User`, `Job` (one video upload = one job), `Transcript` (one per completed job).
+- *Relationships:* User → many Jobs (one-to-many). Job → one Transcript once complete (one-to-one).
+- *The risky field:* `Job.status`. If this isn't a strict, small enum — `queued`, `processing`, `complete`, `failed` — decided up front, you'll have inconsistent string values scattered across the codebase within a month, and every downstream feature (retries, notifications, billing) has to guess what a state actually means.
+
+**Common mistake:** modeling the data around today's UI instead of the actual
+relationships. UIs change constantly; the relationship between a user and their
+jobs doesn't.
+
+---
+
+## 6. API / interface contract
+
+*Skip if not applicable.*
+
+**Why this matters:** deciding the shape of your core actions now — even loosely
+— saves you from an API that grew organically around whatever the frontend
+needed that week.
+
+- What are the 3–5 core actions a user or client can take?
+- For each: input → output, in plain language. The full spec comes later; this
+  is just the shape.
+
+**Filled example**
+
+| Action | Input | Output |
+| --- | --- | --- |
+| `POST /jobs` | video file | `job_id`, `status: queued` |
+| `GET /jobs/:id` | job_id | `status`, plus `transcript_url` once complete |
+| `DELETE /jobs/:id` | job_id | confirmation — also removes the stored video and transcript |
+
+**Common mistake:** designing the API to mirror your database tables
+one-to-one. Your data model and your API contract are allowed to disagree. The
+API should reflect what a client needs to *do*, not how you happened to store it.
+
+---
+
+## 7. Failure modes
+
+**Why this matters:** this is the section almost everyone skips, and skipping it
+is exactly why "it worked in testing" turns into a 2am page.
+
+- What's the most likely way this breaks?
+- What happens to the user when it breaks — do they see an error, lose data, or
+  is it silent?
+- What's your minimum viable fallback for the top one or two failure modes?
+
+**Filled example**
+
+- *Most likely break:* the transcription model times out or errors on a corrupted or unsupported file.
+- *What the user sees:* right now, nothing — the job sits in `processing` forever. That's the bug to fix before launch, not after.
+- *Minimum fix:* a timeout on the worker job (say 10 minutes) that flips status to `failed` with a user-facing reason, plus one automatic retry before failing permanently.
+
+**Common mistake:** treating "add error handling" as a general to-do instead of
+naming the *specific* failure. "Handle errors" doesn't ship. "If the model times
+out after 10 minutes, mark the job failed and notify the user" does.
+
+---
+
+## 8. Tradeoffs
+
+**Why this matters:** every real design is a set of tradeoffs, not a set of best
+practices. Writing them down means you chose them on purpose — and know when to
+revisit.
+
+- What are you explicitly *not* optimizing for in v1, and why is that okay?
+- What's the "cheap now, expensive later" decision you're knowingly making — and
+  what would trigger you to revisit it?
+
+**Filled example**
+
+- *Not optimizing for:* multi-language transcription accuracy. English-only for v1. Okay because the target users skew English-content-first.
+- *Cheap now, expensive later:* one shared transcription API key with no per-user rate limiting. Fine at 20 videos/day; needs per-user quotas the moment there's more than one paying customer who could accidentally — or deliberately — run up the bill. *Trigger to revisit:* the first paying customer. Full stop. Not "when it becomes a problem."
+
+**Common mistake:** leaving the trigger to revisit vague ("when we scale")
+instead of a specific, checkable condition. Vague triggers never get revisited.
+Specific ones do.
+
+---
+
+## 9. Open questions
+
+**Why this matters:** the goal of this template isn't to eliminate uncertainty.
+It's to make the uncertainty visible instead of buried.
+
+- What don't you know yet that could change this design?
+- Who or what do you need to validate this with before building?
+
+**Filled example**
+
+- *Don't know yet:* whether the transcription model's cost holds up at 500 MB files, or whether we need chunked processing sooner than expected.
+- *Need to validate:* run a real cost test with a handful of large files before committing to the "$0.05/video" number in Section 1. That number is currently a guess, not a measurement.
+
+**Common mistake:** treating this section as optional because the design "feels
+done." It's most useful exactly when you're confident — that's when unexamined
+assumptions do the most damage.
+
+---
+
+## Quick reference
+
+Once you know the template by heart, this is the whole thing:
+
+| # | Section | The one thing it forces |
+| --- | --- | --- |
+| 1 | Problem | One sentence, one measurable outcome |
+| 2 | Requirements | Must-have vs nice-to-have, split honestly |
+| 3 | Constraints | Real numbers: users, data, latency, budget, team |
+| 4 | Architecture | Boxes and arrows, simplest version first |
+| 5 | Data model | Entities, relationships, the one risky field |
+| 6 | API contract | 3–5 core actions, input → output |
+| 7 | Failure modes | Name the specific break, not "add error handling" |
+| 8 | Tradeoffs | What you're skipping, and the exact trigger to revisit |
+| 9 | Open questions | What you don't know, and who validates it |
+
+Duplicate it for every new build. Don't edit your master copy.

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite-react-ssg dev",
-    "build": "vite-react-ssg build",
-    "build:dev": "vite-react-ssg build --mode development",
+    "build": "vite-react-ssg build && node scripts/generate-og.mjs",
+    "build:dev": "vite-react-ssg build --mode development && node scripts/generate-og.mjs",
     "lint": "eslint .",
     "preview": "vite preview --outDir dist"
   },
@@ -72,6 +72,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/mdx": "^2.0.14",
     "@types/node": "^22.5.5",
@@ -84,6 +85,7 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "postcss": "^8.4.47",
+    "satori": "^0.33.4",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",

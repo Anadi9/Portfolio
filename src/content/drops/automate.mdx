@@ -1,0 +1,398 @@
+---
+stream: drop
+title: "5 n8n automation workflows that save 10+ hours a week (with the JSON)"
+useWhen: "You've picked an automation to build and want the actual node chain, not another list of ideas."
+summary: "Five automations running behind my content and my studio, each with the trigger → action chain, a ready-to-rebuild n8n workflow skeleton in copyable JSON, the Zapier equivalent, and the setup gotcha that breaks it. No code required — about an hour of setup for all five."
+date: "2026-08-12"
+lastVerified: "2026-08-28"
+artifact: "5 n8n workflow skeletons in JSON, plus Zapier equivalents"
+format: "inline"
+keyword: "AUTOMATE"
+---
+
+These are the five automations running in the background of my content and my
+studio right now. This is the **build guide** — each one gets the trigger, the
+node chain, the JSON skeleton, the Zapier equivalent, and the thing that
+actually goes wrong during setup.
+
+If you're still deciding *which* automation to build, start with the wider list
+instead: [20 automation ideas worth stealing](/drops/swipe), then come back here
+for the build.
+
+None of this requires code — an n8n or Zapier account and about an hour of setup
+covers all five.
+
+> **On the JSON below:** node IDs and credentials are unique to every n8n
+> account, so these aren't byte-identical import files. Every trigger, node and
+> connection is real. Rebuilding a workflow from its skeleton takes about as
+> long as the setup time listed on it.
+
+---
+
+## 1. Comment-to-DM lead capture
+
+**What it does:** someone comments your keyword on a post, they're automatically
+DM'd your free resource, and their details land in a spreadsheet — so you have a
+running list of everyone who asked instead of scrolling comments to find them.
+
+**Setup time:** ~10 minutes · **Idea index entry:** [#1 on the swipe file](/drops/swipe)
+
+#### Trigger
+
+Instagram Professional Dashboard → Automations → Keyword replies. The DM itself
+is **100% native to Instagram** — no n8n or Zapier needed for that part.
+
+#### Steps
+
+Zapier or n8n watches for new IG DM automation events → creates a row in a
+Google Sheet or Airtable base with the commenter's username, the keyword used,
+and a timestamp. That logging layer is the only thing you're building.
+
+#### n8n workflow skeleton
+
+```json
+{
+  "name": "IG Comment-to-DM Lead Log",
+  "nodes": [
+    {
+      "name": "Webhook - IG Comment Event",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "ig-comment-automate"
+      }
+    },
+    {
+      "name": "Filter - Keyword Match",
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.comment_text}}",
+              "operation": "contains",
+              "value2": "AUTOMATE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Airtable - Log Lead",
+      "type": "n8n-nodes-base.airtable",
+      "parameters": {
+        "operation": "append",
+        "table": "IG Leads"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - IG Comment Event": {
+      "main": [[{ "node": "Filter - Keyword Match", "type": "main", "index": 0 }]]
+    },
+    "Filter - Keyword Match": {
+      "main": [[{ "node": "Airtable - Log Lead", "type": "main", "index": 0 }]]
+    }
+  }
+}
+```
+
+#### Zapier equivalent
+
+Trigger = *New Mention/Comment* (Instagram) → Filter = comment text contains
+keyword → Action = *Create Row* (Google Sheets or Airtable).
+
+#### Setup notes
+
+Don't rebuild the DM in n8n. Instagram's native keyword replies are free,
+instant, and don't break when a token expires. This automation is only the
+lead-logging layer on top.
+
+---
+
+## 2. Auto-repurpose new content
+
+**What it does:** the moment a new video or post lands in a watched folder, it
+generates draft captions and hashtags with AI, so you never start from a blank
+page.
+
+**Setup time:** ~15 minutes · **Idea index entry:** [#3 on the swipe file](/drops/swipe)
+
+#### Trigger
+
+New file added to a watched Google Drive or Dropbox folder.
+
+#### Steps
+
+Extract the file → send the transcript or description to an AI model with a
+fixed prompt ("write 3 caption options and 12 hashtags for this Instagram Reel
+about X") → post the result to a Notion database row or a Slack channel for
+review.
+
+#### n8n workflow skeleton
+
+```json
+{
+  "name": "Auto-Repurpose New Content",
+  "nodes": [
+    {
+      "name": "Google Drive Trigger - New File",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "parameters": {
+        "event": "fileCreated",
+        "folderToWatch": "Content Uploads"
+      }
+    },
+    {
+      "name": "HTTP Request - Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "method": "POST"
+      }
+    },
+    {
+      "name": "Notion - Create Draft Row",
+      "type": "n8n-nodes-base.notion",
+      "parameters": {
+        "operation": "create",
+        "databaseId": "Content Drafts"
+      }
+    }
+  ],
+  "connections": {
+    "Google Drive Trigger - New File": {
+      "main": [[{ "node": "HTTP Request - Claude API", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request - Claude API": {
+      "main": [[{ "node": "Notion - Create Draft Row", "type": "main", "index": 0 }]]
+    }
+  }
+}
+```
+
+#### Zapier equivalent
+
+Trigger = *New File in Folder* (Google Drive or Dropbox) → Action = *Send
+Message* (Claude or OpenAI) → Action = *Create Database Item* (Notion).
+
+#### Setup notes
+
+Keep the prompt template fixed so output quality is consistent, and feed it your
+last 5–10 best-performing captions once as style examples. Without that, the
+output reads like generic AI copy and you rewrite everything anyway — which
+defeats the automation.
+
+---
+
+## 3. Lead intake and CRM enrichment
+
+**What it does:** anyone who fills out your intake form gets automatically
+enriched — company, role — added to your CRM, with a Slack ping so you never
+miss a new lead.
+
+**Setup time:** ~15 minutes · **Idea index entry:** [#8 on the swipe file](/drops/swipe)
+
+#### Trigger
+
+New submission on a Tally or Typeform intake form.
+
+#### Steps
+
+Pull the submitted email and company → enrich via a data provider (Clearbit,
+Apollo, or similar) → create or update the CRM record (Notion, Airtable, or your
+CRM) → post a Slack notification.
+
+#### n8n workflow skeleton
+
+```json
+{
+  "name": "Lead Intake + Enrichment",
+  "nodes": [
+    { "name": "Typeform Trigger - New Submission", "type": "n8n-nodes-base.typeformTrigger" },
+    { "name": "HTTP Request - Enrichment API", "type": "n8n-nodes-base.httpRequest" },
+    {
+      "name": "Airtable - Upsert Lead",
+      "type": "n8n-nodes-base.airtable",
+      "parameters": { "operation": "upsert", "table": "CRM" }
+    },
+    {
+      "name": "Slack - Notify",
+      "type": "n8n-nodes-base.slack",
+      "parameters": { "channel": "#leads" }
+    }
+  ],
+  "connections": {
+    "Typeform Trigger - New Submission": {
+      "main": [[{ "node": "HTTP Request - Enrichment API", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request - Enrichment API": {
+      "main": [[{ "node": "Airtable - Upsert Lead", "type": "main", "index": 0 }]]
+    },
+    "Airtable - Upsert Lead": {
+      "main": [[{ "node": "Slack - Notify", "type": "main", "index": 0 }]]
+    }
+  }
+}
+```
+
+#### Zapier equivalent
+
+Trigger = *New Entry* (Typeform) → Action = enrichment app of choice → Action =
+*Create/Update Record* (Airtable) → Action = *Send Channel Message* (Slack).
+
+#### Setup notes
+
+Not paying for an enrichment API yet? Delete that node. Form → CRM → Slack still
+removes the manual data-entry step, which is where the time actually goes.
+
+---
+
+## 4. Sunday auto-digest
+
+**What it does:** every Sunday night, one message rolls up your week — GitHub or
+Linear activity, post performance, and the week ahead — so Monday starts with
+full context and zero app-hopping.
+
+**Setup time:** ~15–20 minutes
+
+#### Trigger
+
+Scheduled — every Sunday at a fixed time, say 8pm.
+
+#### Steps
+
+Pull recent activity from GitHub, Linear, or your task tool via their API → pull
+Instagram insights if available → combine into a single prompt for an AI model
+to summarize → send via email or Slack DM to yourself.
+
+#### n8n workflow skeleton
+
+```json
+{
+  "name": "Sunday Auto-Digest",
+  "nodes": [
+    {
+      "name": "Schedule Trigger - Sunday 8pm",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "parameters": {
+        "rule": { "interval": [{ "field": "weeks", "weeksInterval": 1 }] }
+      }
+    },
+    { "name": "GitHub - Get Recent Activity", "type": "n8n-nodes-base.github" },
+    { "name": "HTTP Request - Summarize with Claude", "type": "n8n-nodes-base.httpRequest" },
+    {
+      "name": "Gmail - Send Digest",
+      "type": "n8n-nodes-base.gmail",
+      "parameters": { "operation": "send" }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger - Sunday 8pm": {
+      "main": [[{ "node": "GitHub - Get Recent Activity", "type": "main", "index": 0 }]]
+    },
+    "GitHub - Get Recent Activity": {
+      "main": [[{ "node": "HTTP Request - Summarize with Claude", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request - Summarize with Claude": {
+      "main": [[{ "node": "Gmail - Send Digest", "type": "main", "index": 0 }]]
+    }
+  }
+}
+```
+
+#### Zapier equivalent
+
+Trigger = *Schedule by Zapier* (weekly, Sunday) → Actions = pull from GitHub or
+Linear → Action = *Send Message* (Claude or OpenAI) → Action = *Send Email*
+(Gmail).
+
+#### Setup notes
+
+Start with one or two data sources — GitHub plus your calendar — rather than all
+of them at once. A digest that pulls from six APIs breaks weekly and you stop
+trusting it. Add sources incrementally once the core is reliable.
+
+---
+
+## 5. Auto-invoice and follow-up
+
+**What it does:** when a deal is marked *won* in your CRM, an invoice generates
+and sends automatically, with follow-up reminders if it isn't paid within a set
+number of days.
+
+**Setup time:** ~15 minutes · **Idea index entry:** [#7 on the swipe file](/drops/swipe)
+
+#### Trigger
+
+A CRM record's status field (Notion or Airtable) changes to *Won*.
+
+#### Steps
+
+Generate an invoice via Stripe or QuickBooks → email it to the client → wait X
+days → check payment status → send a reminder if unpaid.
+
+#### n8n workflow skeleton
+
+```json
+{
+  "name": "Auto-Invoice + Follow-Up",
+  "nodes": [
+    { "name": "Airtable Trigger - Status = Won", "type": "n8n-nodes-base.airtableTrigger" },
+    {
+      "name": "Stripe - Create Invoice",
+      "type": "n8n-nodes-base.stripe",
+      "parameters": { "operation": "create", "resource": "invoice" }
+    },
+    {
+      "name": "Wait - X Days",
+      "type": "n8n-nodes-base.wait",
+      "parameters": { "amount": 5, "unit": "days" }
+    },
+    {
+      "name": "Stripe - Check Payment Status",
+      "type": "n8n-nodes-base.stripe",
+      "parameters": { "operation": "get", "resource": "invoice" }
+    },
+    {
+      "name": "Gmail - Send Reminder If Unpaid",
+      "type": "n8n-nodes-base.gmail",
+      "parameters": { "operation": "send" }
+    }
+  ],
+  "connections": {
+    "Airtable Trigger - Status = Won": {
+      "main": [[{ "node": "Stripe - Create Invoice", "type": "main", "index": 0 }]]
+    },
+    "Stripe - Create Invoice": {
+      "main": [[{ "node": "Wait - X Days", "type": "main", "index": 0 }]]
+    },
+    "Wait - X Days": {
+      "main": [[{ "node": "Stripe - Check Payment Status", "type": "main", "index": 0 }]]
+    },
+    "Stripe - Check Payment Status": {
+      "main": [[{ "node": "Gmail - Send Reminder If Unpaid", "type": "main", "index": 0 }]]
+    }
+  }
+}
+```
+
+#### Zapier equivalent
+
+Trigger = *Updated Record* (Airtable, status = Won) → Action = *Create Invoice*
+(Stripe or QuickBooks) → Delay → Action = check status → Action = *Send Email*
+(Gmail) if unpaid.
+
+#### Setup notes
+
+Not on Stripe or QuickBooks? The same trigger → delay → reminder pattern works
+with any invoicing tool that has a Zapier or n8n integration. The pattern is the
+part worth stealing, not the vendor.
+
+---
+
+## Where to go next
+
+- Want the wider menu before you build? [20 automation ideas worth stealing](/drops/swipe) — trigger, tool, and time saved for each.
+- Building something bigger than a workflow? [The system design template](/drops/system) — the 20 minutes before you write any code.
+
+Questions setting any of these up? Send me a DM — happy to help.

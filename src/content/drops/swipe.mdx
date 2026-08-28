@@ -1,0 +1,362 @@
+---
+stream: drop
+title: "20 automation ideas worth stealing — trigger, tool, and time saved"
+useWhen: "You know automation would help but you don't know which one to build first."
+summary: "Twenty real automations grouped by what they fix — content, money, your inbox, or your own head. Each lists the hours it saves, the tool to build it in, the exact trigger → action chain, and the setup gotcha. Pick one, build it, come back for the next."
+date: "2026-08-27"
+lastVerified: "2026-08-28"
+artifact: "A 20-entry index with trigger → action for each"
+format: "inline"
+keyword: "SWIPE"
+---
+
+Twenty automations, grouped by what they actually fix. Each one lists the time
+it saves, the tool to build it in, and the exact trigger → action chain, so
+you're not guessing what to connect to what.
+
+None of these need code — a Zapier or n8n account and 10–20 minutes of setup
+each. Five of them have a full build guide with copyable n8n JSON:
+[the deep-dive drop](/drops/automate).
+
+> **How to use this:** pick **one** automation that fixes your biggest weekly
+> annoyance. Set it up. Let it run for a week. Then come back for the next one.
+> Trying to build all twenty at once is how people quit. One at a time is how
+> people finish.
+
+---
+
+## Quick-scan index
+
+| # | Automation | Time saved | Tool | Difficulty |
+| --- | --- | --- | --- | --- |
+| 1 | Comment-to-DM lead funnel + auto-log | ~3 hrs/wk | IG Automations + Zapier/n8n | Easy |
+| 2 | One-post-everywhere repost | ~3 hrs/wk | Repurpose.io / Buffer + Zapier | Easy |
+| 3 | Transcript → captions + hashtags | ~2 hrs/wk | n8n + Claude/GPT API | Medium |
+| 4 | Auto-surface your best comment weekly | ~1 hr/wk | n8n + IG API | Medium |
+| 5 | Competitor swipe-file auto-capture | ~1.5 hrs/wk | Shortcuts/Zapier + Notion | Easy |
+| 6 | Signed contract → onboarding packet | ~45 min/client | Zapier + PandaDoc + Notion | Medium |
+| 7 | Escalating unpaid-invoice reminders | ~1 hr/wk | Stripe/QuickBooks + Zapier | Easy |
+| 8 | Every inbound lead auto-logged + tagged | ~2 hrs/wk | Zapier/n8n + Airtable/Notion | Easy |
+| 9 | "Gone quiet" lead nudge | Saves deals | CRM + scheduled reminder | Easy |
+| 10 | Spreadsheet row → draft proposal/invoice | ~30 min/proposal | Zapier + Docs/PandaDoc | Medium |
+| 11 | 6pm AI-summarized inbox digest | ~5 hrs/wk | n8n + Gmail + Claude/GPT | Medium |
+| 12 | Complaint/bug email → auto task | ~1 hr/wk | Zapier + Gmail + Linear/Notion | Easy |
+| 13 | Booking form → calendar + reminder | ~1.5 hrs/wk | Calendly, or Zapier + G Cal | Easy |
+| 14 | Voice memo → transcribed, organized note | ~2 hrs/wk | n8n + transcription API + Notion | Medium |
+| 15 | Nightly automatic project backup | Saves your worst day | n8n/Zapier + Drive/Dropbox | Easy |
+| 16 | One morning brief: calendar + weather + tasks | ~2 hrs/wk | n8n + calendar/weather API | Medium |
+| 17 | Screenshots auto-sorted into dated folders | ~30 min/wk | Shortcuts / Power Automate | Easy |
+| 18 | Weekly contact/spreadsheet dedupe | ~1 hr/wk | n8n scheduled dedupe | Medium |
+| 19 | Website uptime check + instant alert | Protects revenue | UptimeRobot (free) + Slack/SMS | Easy |
+| 20 | Negative comment/review → flagged for reply | ~1 hr/wk | n8n + AI sentiment + Slack | Medium |
+
+---
+
+## Content and growth engine
+
+*Automations that keep the content flywheel turning without you babysitting it.*
+
+### 1. Comment-to-DM lead funnel + auto-log
+
+**Saves ~3 hrs/week · Easy · Instagram Automations (native) + Zapier or n8n**
+
+Someone comments your keyword, they're auto-DM'd your resource, and their
+username, keyword and timestamp get logged — so you have a running list of
+everyone who asked without scrolling your comments to find them.
+
+**Trigger → action:** new comment matches keyword → Instagram auto-DM (native,
+free) → Zapier *New IG mention* trigger → add row to Google Sheets or Airtable.
+
+**Setup:** the DM part needs no extra tool at all — turn on Professional
+Dashboard → Automations → Keyword replies. Layer Zapier on only for the logging.
+→ [Full build guide with the n8n JSON](/drops/automate)
+
+### 2. One-post-everywhere repost
+
+**Saves ~3 hrs/week · Easy · Repurpose.io or Buffer, triggered by Zapier**
+
+Post a Reel once and it automatically reposts to TikTok, YouTube Shorts and X
+the same day — no manually re-uploading the same file four times.
+
+**Trigger → action:** new IG post published → Repurpose.io or Buffer pulls the
+file → auto-publishes or queues it across your other platforms.
+
+**Setup:** connect all four accounts once, set your default caption and hashtag
+pattern per platform, turn on auto-publish. ~15 minutes, one time.
+
+### 3. Transcript → captions + hashtags
+
+**Saves ~2 hrs/week · Medium · n8n + Claude or GPT API**
+
+Drop a new video into a watched folder and it generates 3 caption options and 12
+hashtags before you've opened your notes app.
+
+**Trigger → action:** new file in a watched Drive/Dropbox folder → extract
+transcript → send to Claude/GPT with a fixed prompt → post results to a Notion
+row to pick from.
+
+**Setup:** keep the prompt template fixed and feed it 5–10 of your best past
+captions once as style examples, so the output already sounds like you.
+→ [Full build guide with the n8n JSON](/drops/automate)
+
+### 4. Auto-surface your best comment weekly
+
+**Saves ~1 hr/week · Medium · n8n + Instagram API**
+
+Every Sunday it scans the week's comments across your posts and surfaces the
+single most-liked or most-thoughtful one — ready to reply to and reshare as a
+story, instead of scrolling threads hunting for it.
+
+**Trigger → action:** scheduled weekly → pull comments via IG API → sort by like
+count → send the top one to a Slack or email alert.
+
+**Setup:** start with "sort by likes" as the filter. Add an AI sentiment step
+later if you want *most thoughtful* rather than just *most liked*.
+
+### 5. Competitor swipe-file auto-capture
+
+**Saves ~1.5 hrs/week · Easy · iOS Shortcuts or Zapier + Notion**
+
+See a post worth stealing the idea from? Share it to a Shortcut, or to a
+specific email or Slack channel, and it's logged into a Notion swipe-file
+database with the link, a screenshot and a blank note field — instead of living
+forever in your camera roll.
+
+**Trigger → action:** share-sheet action or forwarded link → Zapier parses the
+URL → creates a Notion row with link and thumbnail.
+
+**Setup:** build one Notion database with columns for Link, Platform, Why It
+Worked, and Status, then point the Shortcut at it. ~15 minutes.
+
+---
+
+## Leads, clients and money
+
+*Automations that stop revenue leaking out through manual follow-up.*
+
+### 6. Signed contract → onboarding packet
+
+**Saves ~45 min per client · Medium · Zapier + PandaDoc/DocuSign + Notion**
+
+The moment a contract is signed, the client gets a welcome email, a shared
+onboarding doc, and a kickoff-call booking link — no manual assembly per client.
+
+**Trigger → action:** contract marked *signed* → Zapier duplicates your
+onboarding Notion template → sends the welcome email with that link and a
+Calendly link.
+
+**Setup:** build the onboarding template once as a duplicable Notion page, then
+point Zapier's *duplicate page* action at it per new signature.
+
+### 7. Escalating unpaid-invoice reminders
+
+**Saves ~1 hr/week, and gets you paid faster · Easy · Stripe or QuickBooks + Zapier**
+
+An invoice sends the moment a deal closes, then reminders fire automatically on
+a schedule if it isn't paid — no awkward manual "just checking in" emails.
+
+**Trigger → action:** CRM status → *Won* → create and send invoice → wait 5 days
+→ check payment status → auto-send reminder if unpaid.
+
+**Setup:** the trigger → delay → reminder pattern works with any invoicing tool
+that has a Zapier or n8n integration, not just Stripe.
+→ [Full build guide with the n8n JSON](/drops/automate)
+
+### 8. Every inbound lead auto-logged + tagged
+
+**Saves ~2 hrs/week · Easy · Zapier or n8n + Airtable/Notion**
+
+Whenever someone fills a form, DMs you, or emails in interested, it lands in one
+CRM row automatically — name, contact, source, date — so you know which channel
+is actually working without checking four inboxes.
+
+**Trigger → action:** new form, email or DM → Zapier parses the source → adds a
+tagged row to your Airtable/Notion CRM.
+
+**Setup:** add a *source* field to your CRM first, then point every intake
+channel at the same automation so nothing lands untracked.
+→ [Full build guide with the n8n JSON](/drops/automate)
+
+### 9. "Gone quiet" lead nudge
+
+**Saves deals that would've quietly died · Easy · Notion/Airtable CRM + scheduled reminder**
+
+If a lead or client hasn't replied in 5 days you get a nudge to follow up, so
+nobody falls through the cracks just because your week got busy.
+
+**Trigger → action:** scheduled daily check → filter CRM rows where *last
+contacted* is older than 5 days and status isn't closed → send yourself a
+reminder.
+
+**Setup:** this needs a *last contacted* date field you actually keep current.
+The automation is only as good as that one field — update it right after each
+touchpoint.
+
+### 10. Spreadsheet row → draft proposal/invoice
+
+**Saves ~30 min per proposal · Medium · Zapier + Google Docs or PandaDoc**
+
+Fill in one row with a client's info and scope, and it generates a formatted
+proposal or invoice from your template — no retyping the same document structure
+every time.
+
+**Trigger → action:** new or updated Google Sheets row → Zapier maps fields into
+a Docs/PandaDoc template → generates the finished document.
+
+**Setup:** build the template with merge fields matching your column names
+*exactly*. Mismatched field names are the single most common reason this breaks.
+
+---
+
+## Admin and inbox
+
+*Automations that get the boring, repeated tasks off your plate entirely.*
+
+### 11. 6pm AI-summarized inbox digest
+
+**Saves ~5 hrs/week · Medium · n8n + Gmail + Claude/GPT**
+
+At a fixed time every evening, an automation reads everything that landed in
+your inbox that day and sends a short summary — so you check it in 30 seconds
+instead of scrolling.
+
+**Trigger → action:** scheduled daily at 6pm → pull that day's Gmail threads →
+summarize via Claude/GPT → send to Slack or email.
+
+**Setup:** exclude newsletters and promotions from the pull first, or the
+summary gets diluted with noise you didn't need summarized.
+
+### 12. Complaint/bug email → auto task
+
+**Saves ~1 hr/week, and nothing gets buried · Easy · Zapier + Gmail + Linear/Trello/Notion**
+
+When someone emails a complaint or a bug report it automatically becomes a task
+on your board, so it can't get lost in your inbox.
+
+**Trigger → action:** new Gmail matching a label or filter → Zapier creates a
+task in Linear/Trello/Notion with the email body attached.
+
+**Setup:** set up a Gmail filter that auto-labels support-type email first. That
+label is the trigger — otherwise it fires on every email you get.
+
+### 13. Booking form → calendar + reminder
+
+**Saves ~1.5 hrs/week · Easy · Calendly (free tier), or Zapier + Google Calendar**
+
+Someone books a call and it automatically creates the calendar event and sends
+both of you the invite — no back-and-forth finding a time.
+
+**Trigger → action:** new Calendly booking (native), or with a plain form: new
+submission → Zapier → create Google Calendar event → send invite.
+
+**Setup:** if you're not tied to a custom form, Calendly does this end-to-end
+with zero extra tools. Easiest one on this whole list to turn on.
+
+### 14. Voice memo → transcribed, organized note
+
+**Saves ~2 hrs/week · Medium · n8n or Zapier + transcription API + Notion/Docs**
+
+Record a voice memo while walking and it's automatically transcribed into your
+notes app — good for catching ideas before they disappear.
+
+**Trigger → action:** new voice memo file → transcription API → create a page in
+Notion or Google Docs with the transcript.
+
+**Setup:** point your phone's voice-memo app at a synced folder (iCloud, Drive)
+so new recordings trigger it automatically, with no manual export step.
+
+### 15. Nightly automatic project backup
+
+**Saves your worst possible day · Easy · n8n or Zapier + Google Drive/Dropbox**
+
+Every night your project files, code or documents get copied to a backup folder
+automatically, so a crash or a bad overwrite never costs more than a day.
+
+**Trigger → action:** scheduled nightly → sync or copy the watched folder → a
+timestamped backup folder.
+
+**Setup:** keep backups timestamped by date rather than overwriting one folder,
+so you can roll back further than just "last night" when you catch a mistake
+late.
+
+---
+
+## Personal ops and knowledge
+
+*Automations for keeping your own head clear, not just your business.*
+
+### 16. One morning brief: calendar + weather + tasks
+
+**Saves ~2 hrs/week · Medium · n8n + calendar/weather API + task tool**
+
+Every morning one message lands with your calendar, the weather and your top 3
+tasks — so the day starts in one place instead of five app-switches before
+coffee.
+
+**Trigger → action:** scheduled daily at 7am → pull calendar + weather + top
+tasks → combine into one digest → send to your phone.
+
+**Setup:** cap it at 3 tasks even if your list is longer. The point is a fast
+glance, not a full to-do dump.
+
+### 17. Screenshots auto-sorted into dated folders
+
+**Saves ~30 min/week · Easy · Apple Shortcuts (Mac) or Power Automate (Windows)**
+
+Instead of screenshots piling up on your desktop, they sort into dated folders
+the moment you take them.
+
+**Trigger → action:** new file in the Screenshots folder → move to a folder
+named by today's date, creating it if it doesn't exist.
+
+**Setup:** free and native on both Mac and Windows — no third-party account,
+just a Shortcut or Flow watching one folder.
+
+### 18. Weekly contact/spreadsheet dedupe
+
+**Saves ~1 hr/week, and keeps your data usable · Medium · n8n scheduled dedupe**
+
+Once a week an automation scans your contact list or spreadsheet and flags — or
+removes — duplicate entries, so your data doesn't quietly turn into a mess over
+months.
+
+**Trigger → action:** scheduled weekly → scan rows for matching email or name →
+flag duplicates in a review column, or auto-merge if you trust it.
+
+**Setup:** start with *flag, don't delete* for the first few runs until you
+trust the matching logic. Switch to auto-remove once it's proven accurate.
+
+### 19. Website uptime check + instant alert
+
+**Protects revenue, not just time · Easy · UptimeRobot (free tier) + Slack/SMS**
+
+Every few minutes something pings your website. If it's down you get a text or
+Slack message immediately, instead of finding out from an angry customer.
+
+**Trigger → action:** scheduled ping every 5–10 min → site fails to respond →
+instant Slack or SMS alert.
+
+**Setup:** UptimeRobot's free tier covers this natively — no Zapier or n8n
+required, just connect Slack or your phone number and pick a check interval.
+
+### 20. Negative comment/review → flagged for reply
+
+**Saves ~1 hr/week, and protects your reputation · Medium · n8n + AI sentiment + Slack**
+
+Instead of scrolling for bad feedback, an automation reads new comments and
+reviews and flags the negative ones, so you can reply fast before it snowballs.
+
+**Trigger → action:** new comment or review → AI sentiment check → if negative,
+send a Slack alert with the comment text and link.
+
+**Setup:** tune the sentiment threshold conservatively at first. Better a few
+false positives than a missed real complaint.
+
+---
+
+## Where to go next
+
+- Picked one? Five of these have full build guides with copyable n8n JSON: [5 n8n automation workflows](/drops/automate).
+- Automating something bigger than a workflow? [The system design template](/drops/system).
+
+Questions setting any of these up? Send me a DM — happy to help.

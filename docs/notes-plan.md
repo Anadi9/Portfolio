@@ -27,6 +27,7 @@ Two topics exist as reel hooks only:
 Six AI-news reels ran in August, but every calendar row is a placeholder (`[This week's biggest AI headline]`). No text exists.
 
 **Launch reality: 4 complete drops port directly, `workflow` gets written, `prompts` ships as a stub. Six drops at launch.**
+*Update (Aug 28, 2026): the four are ported and live. `workflow` and `prompts` remain — see Phase 3.*
 
 ---
 
@@ -64,17 +65,47 @@ Six AI-news reels ran in August, but every calendar row is a placeholder (`[This
 - Per-page OG image generation and `sitemap.xml` are still Phase 2 / Phase 4. `og.png` is the shared fallback for now.
 - Unknown URLs currently 200 with the SPA shell. Emitting a real 404 is host config — folded into Phase 4.
 
-### Phase 2 — Port the four complete drops
-Port order, best-SEO-first: `system` → `automate` → `swipe` → `cheatsheet`.
+### Phase 2 — Port the four complete drops — **DONE (Aug 28, 2026)**
+Ported best-SEO-first: `system` → `automate` → `swipe` → `cheatsheet`. All four live at
+`/drops/:slug`, prerendered, and `src/content/drops/_scaffold.mdx` is deleted.
 
-Per page, non-negotiable:
-- Title/H1 carries the **real search query**, not the reel hook. `workflow` is not "Free workflow: auto-draft your standup" — it's "Auto-draft your standup from Slack + Linear (free n8n template)".
-- The artifact is **inline indexable text**. JSON in copyable `<pre>`, comparison tables as real `<table>`. A page whose content is a download is a page with no content.
-- `USE WHEN` line in mono under the title.
-- Failure modes / gotchas kept — they're the bookmark trigger.
-- `Article` JSON-LD, canonical, per-page OG image generated at build from title + `DROP 0N` numeral.
+Per page, all met:
+- ~~Title/H1 carries the real search query.~~ Done. `system` is "System design document template
+  — 9 sections, with a worked example"; `cheatsheet` leads on "Claude vs GPT vs Gemini".
+- ~~Artifact is inline indexable text.~~ Done and checked against the built HTML: 8 real
+  `<table>`s on `cheatsheet`, 5 copyable JSON `<pre>` blocks on `automate`, 3 tables + the
+  architecture block on `system`, the 20-row index table on `swipe`.
+- ~~`USE WHEN` line in mono under the title.~~ Done — frontmatter `useWhen`, rendered by `DropLayout`.
+- ~~Failure modes / gotchas kept.~~ Done. Every "common mistake" on `system` and every
+  "setup notes" paragraph survived the port, and several got sharpened into the specific
+  thing that breaks rather than a general caution.
+- ~~`Article` JSON-LD, canonical, per-page OG image.~~ Done. OG cards are generated at build
+  by `scripts/generate-og.mjs` (satori → resvg) into `dist/og/drops/<slug>.png`, carrying the
+  title and the `DROP 0N` numeral on the site's own ink/cream/gold.
 
-**Resolve the automate/swipe overlap.** Both currently open with the same comment-to-DM automation, and near-duplicate pages compete with each other in search. Split them: `swipe` becomes the 20-idea **index** that links into deep build guides; `automate` becomes the deep guide with the JSON. Cross-link both ways.
+**~~Resolve the automate/swipe overlap.~~** Done. `swipe` is now the 20-idea index and
+`automate` the deep build guide with the JSON. Entries 1, 3, 7 and 8 on `swipe` link into
+`automate`; `automate` links back per section and from a closing block. Neither page
+repeats the other's depth, so they stop competing for the same query.
+
+**Also decided, while porting:**
+- **The cheat sheet's byline** was `@soulisanadiii`; it's `@the.anadi` now, and the page
+  opens with an explicit "this is dated on purpose" block naming August 2026, above the
+  `lastVerified` stamp the layout already renders. That's the §4 maintenance risk handled
+  as far as content can handle it — the calendar reminder is still a human job.
+- **`DROP 0N` numbering** runs oldest-first by `(date, slug)`, so a card's numeral never
+  changes once it ships: automate 01, system 02, cheatsheet 03, swipe 04.
+- **Fonts for the OG cards** are vendored as static TTFs in `scripts/og-fonts/` rather than
+  fetched at build time. Same two faces `index.html` loads from Google Fonts, so the card
+  matches the page, and a build never depends on a network call.
+
+**Carried forward:**
+- `og:image` on `/` and `/notes` is still the shared `public/og.png`. Only posts get a card.
+- Draft scaffolds (`wisdom/`, `dispatch/`) are correctly stripped from the index and from
+  prerender, but `import.meta.glob({ eager: true })` still compiles them into the client
+  bundle. Nothing routes to them and no HTML contains them, so this is a bundle-size and
+  tidiness issue, not an exposure one. Worth a `import.meta.env.PROD` guard on the glob
+  when the drafts stop being fixtures.
 
 ### Phase 3 — Write what's missing
 1. `workflow` — the Slack + Linear standup drop. Highest search value of the six (`n8n standup automation` is genuinely winnable) and it doesn't exist yet.
