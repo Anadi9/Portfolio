@@ -178,3 +178,105 @@
     --bleed: 0px;
   }
 }
+
+/* --- the rail -----------------------------------------------------------
+   Below 1200px the grid gives it no track, so it presents as a CONTENTS
+   disclosure above the article. Same DOM either way — duplicating it would put
+   every heading anchor in the page twice. */
+.pf-rail {
+  grid-column: content;
+  justify-self: stretch;
+  max-width: var(--measure);
+  margin: 0 var(--gutter) 36px;
+  border: 2px solid #0a0a0a;
+}
+.pf-rail-summary {
+  cursor: pointer;
+  padding: 12px 16px;
+  background: #e4ded0;
+  font: 700 10px/1 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.14em;
+  list-style: none;
+}
+.pf-rail-summary::-webkit-details-marker {
+  display: none;
+}
+.pf-rail-body {
+  padding: 16px;
+}
+/* The stamp is the summary's job at narrow widths; repeating it inside the open
+   disclosure says the same word twice. */
+.pf-rail-stamp {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .pf-rail {
+    grid-column: rail;
+    justify-self: stretch;
+    align-self: start;
+    max-width: none;
+    position: sticky;
+    top: calc(var(--pf-header-h, 60px) + 24px);
+    margin: 0;
+    padding-right: 32px;
+    border: 0;
+    border-right: 1.5px solid rgba(10, 10, 10, 0.14);
+    max-height: calc(100vh - var(--pf-header-h, 60px) - 48px);
+    overflow-y: auto;
+  }
+  .pf-rail-summary {
+    display: none;
+  }
+  .pf-rail-body {
+    padding: 0;
+  }
+  .pf-rail-stamp {
+    display: block;
+  }
+}
+
+.pf-rail-progress {
+  height: 2px;
+  background: rgba(10, 10, 10, 0.14);
+}
+.pf-rail-progress span {
+  display: block;
+  height: 100%;
+  background: #8a6a2a;
+  transform-origin: left center;
+  transition: transform 0.12s linear;
+}
+
+.pf-rail-link {
+  color: #6b6b6b;
+  border-left: 1.5px solid transparent;
+  margin-left: -9px;
+  padding-left: 9px !important;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.pf-rail-link[aria-current='true'] {
+  color: #0a0a0a;
+  border-left-color: #8a6a2a;
+}
+.pf-rail-link:focus-visible {
+  color: #0a0a0a;
+  border-left-color: #0a0a0a;
+}
+@media (hover: hover) {
+  .pf-rail-link:hover {
+    color: #0a0a0a;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-rail-progress span,
+  .pf-rail-link {
+    transition: none;
+  }
+}
+
+/* An anchored heading has to clear the sticky header when jumped to. */
+.pf-content :is(h2, h3)[id] {
+  scroll-margin-top: calc(var(--pf-header-h, 60px) + 24px);
+}

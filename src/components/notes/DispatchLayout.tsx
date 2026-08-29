@@ -3,6 +3,8 @@ import { ogImageFor, type DispatchPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
 import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
 import PostHeader from './PostHeader';
+import Rail from './Rail';
+import { payloadOf } from './streamPayload';
 import { prose } from './prose';
 
 /**
@@ -33,7 +35,7 @@ const DispatchLayout = ({ post }: { post: DispatchPost }) => {
           mainEntityOfPage: `${ORIGIN}${post.path}`,
         }}
       />
-      <Column>
+      <Column rail={<Rail stamp={payloadOf(post).stamp} headings={post.headings} />}>
         <PostHeader post={post}>
           <MetaLine tag="DATELINE">{post.dateline}</MetaLine>
           <Standfirst>{post.summary}</Standfirst>
