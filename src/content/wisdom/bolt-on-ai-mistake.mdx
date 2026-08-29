@@ -1,0 +1,131 @@
+---
+stream: wisdom
+title: "Adding AI to an existing product — the architecture mistake that costs you twice"
+useWhen: "Someone has asked for an \"Ask AI\" button on a product that already exists, and you're about to start at the button."
+summary: "The most common mistake when bolting AI onto a working product isn't the model choice or the prompt — it's designing from the button inward instead of from the data outward. Why the demo works and the release doesn't, the three things to build first, and what doing it properly costs you in visible progress."
+date: "2026-08-30"
+lastVerified: "2026-08-30"
+moves:
+  - "Start from what the model has to read, not from what the user clicks."
+  - "Make retrieval a real component with its own contract and its own tests — not four lines inside a request handler."
+  - "Design the wrong-answer path before the right-answer path, because you will ship the wrong answer to somebody."
+tradeoff: "Doing this properly means two or three weeks where there is nothing to demo. You build a boring retrieval layer while a competitor ships an Ask AI button, and no stakeholder can see your progress. The bill arrives later either way — this just decides who pays it."
+---
+
+The request is always some version of the same sentence: *can we add AI to it?*
+
+And the work almost always starts in the same place: a button in the corner of
+an existing screen, a modal with a text input, and a call to a model API behind
+it. Two days later there's a demo. It's genuinely impressive. Everyone is
+pleased.
+
+Then it goes in front of real users and the model confidently invents an invoice
+number, or answers a question about last quarter using this quarter's data, or
+explains a feature that was removed in 2024. And the diagnosis in the room is
+always about the model — *maybe we need a bigger one, maybe the prompt needs
+work* — when the actual mistake happened before anyone wrote a prompt.
+
+## The mistake is the direction you designed in
+
+Bolting AI on means starting at the interface and working inward. Button, modal,
+API call, and then — only when it's obviously broken — some scrambling about
+what context to pass.
+
+That order guarantees the same failure every time, because it makes context an
+afterthought in a system whose entire output quality is a function of its
+context. The model isn't hallucinating because it's a bad model. It's answering
+a question about data it was never given, which is the only thing it can do.
+
+The demo works because you tested it on the three examples you had in your head
+while building, all of which happened to need no context you hadn't already
+pasted in. Production doesn't work because real users ask about their own data.
+
+## Start from what it has to read
+
+Invert the direction. Before the button exists, answer one question in writing:
+**for this feature to be right, what does the model need to be looking at?**
+
+Not "the user's data" — that's not an answer, it's the shape of one. Which
+records. From which tables. Filtered how. Scoped to which permissions. How
+fresh. In what form — raw rows, or a rendered summary, or quoted excerpts with
+their source ids attached?
+
+Answering that concretely tends to produce one of three outcomes, and all three
+are worth more than a demo:
+
+1. **The data exists and is reachable.** Good — you now have a retrieval spec
+   before you have a feature, and the rest is ordinary engineering.
+2. **The data exists but not in a form anything can query.** This is the common
+   one, and it's the real project. The AI feature is a two-week job sitting
+   behind a two-month data job, and knowing that in week one is the difference
+   between a re-planned roadmap and a missed quarter.
+3. **The data doesn't exist.** Then the feature can't work, and no model
+   improves that. Better to find out now than after three sprints of prompt
+   engineering against an empty context window.
+
+Notice that none of these are about the model, and the choice of model barely
+changes any of them.
+
+## Retrieval is a component, not four lines in a handler
+
+The second move is structural. In most bolted-on implementations, the code that
+decides what the model sees lives inline in the request handler — a query, a
+`.slice(0, 20)`, a template string, and off it goes.
+
+That code is the most important code in the feature and it's the least visible,
+the least tested, and the first thing to rot. Every quality problem you'll have
+for the next year is a bug in those four lines, and you won't be able to find
+them because they're not a thing that can be looked at on its own.
+
+Pull it out. Give it a name and a contract: it takes a question and a user, and
+it returns a set of passages with their sources. Test it *without a model in the
+loop* — for a known question, does it return the right records? That test is
+cheap, deterministic, fast, and it catches the overwhelming majority of "the AI
+gave a wrong answer" reports, because most of them aren't about the AI.
+
+It also makes the model swappable, which is the difference between a product and
+[a wrapper](/wisdom/ai-wrapper-tell).
+
+## Design the wrong answer first
+
+The third move is the one that gets cut for time and shouldn't.
+
+Every one of these features will produce a confident wrong answer in front of a
+real user. That isn't a risk to mitigate, it's a certainty to design for, and
+the design has three parts:
+
+- **Attribution.** Every claim traces back to the record it came from, visibly,
+  so a user can check it in one click instead of trusting it or discarding it.
+  A user who can check is a user who can safely be wrong with you.
+- **A refusal path.** The retrieval layer found nothing relevant — what happens?
+  If the answer is "we send the empty context to the model anyway", you've built
+  a hallucination generator with a schedule. Not finding anything must be a
+  distinct, designed outcome, and it should say so plainly.
+- **A stopping point.** If the feature can take an action rather than just
+  answer, it stops before the irreversible one. Draft, don't send. Propose,
+  don't apply. Flag, don't delete.
+
+Three things you build before the button, none of which demo well.
+
+## What this costs
+
+Here's the honest part, and it's why the mistake is so common: doing it this way
+means two or three weeks with nothing to show.
+
+You're building a retrieval layer and a test suite while somebody else ships an
+Ask AI button and gets a round of applause in the all-hands. There's no
+screenshot of a retrieval contract. Every incentive in a company points at the
+button, and pointing at the button is a genuinely rational response to those
+incentives if what you need is a demo rather than a feature.
+
+The bill still arrives. It arrives as a feature quietly turned off six weeks
+after launch, or as a support queue full of "it made this up", or as a rebuild
+that costs more than the original because now there are users depending on the
+shape of the thing you have to replace. That's what costs you twice: once to
+build it inward-out, and once to build it again in the right direction.
+
+If you're at the start of one of these, the cheapest possible version of this
+advice is to spend twenty minutes filling in
+[a design document before you write code](/drops/system). Section 4 asks for the
+architecture and section 7 asks for the failure modes, and a feature like this
+one either survives those two sections or it doesn't.

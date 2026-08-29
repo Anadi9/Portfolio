@@ -5,9 +5,9 @@ Source of truth for content: the `the.anadi Resources` Notion page + the Aug 202
 
 ---
 
-## 0. Content inventory (as of Aug 28, 2026)
+## 0. Content inventory (as of Aug 29, 2026)
 
-### Resource Drop — 4 ready, 1 partial, 1 missing
+### Resource Drop — 6 live
 
 | Slug | Keyword | Notion source | State |
 |---|---|---|---|
@@ -15,19 +15,20 @@ Source of truth for content: the `the.anadi Resources` Notion page + the Aug 202
 | `system` | SYSTEM | The Free Resource — System Design Template | **Complete.** 9 sections, worked "Video → Transcript" example, common-mistake callouts. Strongest page on the site. |
 | `swipe` | SWIPE | 20 Automations Worth Stealing | **Complete.** Index table + 20 entries with trigger→action + setup. |
 | `cheatsheet` | CHEATSHEET | The AI Builder's Cheat Sheet | **Complete.** 8 comparison tables. Dated content — see §4. |
-| `prompts` | PROMPTS | The AI prompt PLAYBOOK | **Download stub** (decided). PDF stays a download; page carries a real intro, the four-part prompt anatomy, and 3-4 example prompts inline so it isn't an empty shell. Accepts that it won't rank. |
-| `workflow` | WORKFLOW | — | **To be written** (decided). Slack + Linear standup drop, written from scratch. |
+| `prompts` | PROMPTS | The AI prompt PLAYBOOK | **Live.** All 100 prompts extracted to on-page text, PDF kept as a download alongside. Stub decision reversed — see Phase 3. |
+| `workflow` | WORKFLOW | — | **Live.** Written from scratch: Linear → Slack standup, with the n8n JSON. |
 
-### Builder Wisdom — 0 written
-Two topics exist as reel hooks only:
-- `ai-wrapper-tell` — "Most 'AI-powered' products are just a wrapper. Here's how to tell in 10 seconds."
-- `bolt-on-ai-mistake` — "The #1 architecture mistake founders make bolting on AI features."
+### Builder Wisdom — 2 written (Aug 29, 2026)
+Both reel hooks are now full posts:
+- `ai-wrapper-tell` — "Most 'AI-powered' products are just a wrapper. Here's how to tell in 10 seconds." **Live.**
+- `bolt-on-ai-mistake` — "The #1 architecture mistake founders make bolting on AI features." **Live.**
 
-### Dispatch — 0 written
-Six AI-news reels ran in August, but every calendar row is a placeholder (`[This week's biggest AI headline]`). No text exists.
+### Dispatch — 4 written (Aug 29, 2026)
+The August calendar rows were all placeholders (`[This week's biggest AI headline]`) and no text existed. Four dispatches were written from the week of 24 Aug 2026 instead — one story each, sourced: `claudeforce`, `o3-retired-from-chatgpt`, `glm-5-3-flash`, `openai-agent-containment-report`.
 
 **Launch reality: 4 complete drops port directly, `workflow` gets written, `prompts` ships as a stub. Six drops at launch.**
 *Update (Aug 28, 2026): the four are ported and live. `workflow` and `prompts` remain — see Phase 3.*
+*Update (Aug 29, 2026): all six drops are live, plus two Wisdom posts and four Dispatches. `prompts` shipped as a full page rather than a stub. Twelve posts, all three streams populated.*
 
 ---
 
@@ -107,11 +108,64 @@ repeats the other's depth, so they stop competing for the same query.
   tidiness issue, not an exposure one. Worth a `import.meta.env.PROD` guard on the glob
   when the drafts stop being fixtures.
 
-### Phase 3 — Write what's missing
-1. `workflow` — the Slack + Linear standup drop. Highest search value of the six (`n8n standup automation` is genuinely winnable) and it doesn't exist yet.
-2. `prompts` — either extract the PDF to on-page text (preferred; 100 prompts is a large indexable page) or ship as a download and accept it won't rank.
-3. Two Wisdom posts. `ai-wrapper-tell` links to the Signal case study, which is a live counter-example on the same domain — that pairing is the strongest argument on the site.
-4. First Dispatch, only once the format is proven worth the upkeep.
+### Phase 3 — Write what's missing — **DONE (Aug 29, 2026)**
+1. ~~`workflow` — the Slack + Linear standup drop.~~ Written. `/drops/workflow`, DROP 06.
+   Full node chain, the Linear GraphQL query filtered on `updatedAt`, the grouping Code
+   node, the Slack Block Kit payload, a copyable workflow skeleton, a tracker-swap table
+   (Jira / GitHub Issues / Notion / Asana) and four named failure modes. Titled for
+   `n8n standup automation` directly.
+2. ~~`prompts`~~ Written — and the earlier "download stub" decision is **reversed**: all
+   100 prompts are on the page as indexable text, extracted from the PDF rather than
+   retyped. `format: both` — the PDF is committed at
+   `public/uploads/the-ai-prompt-playbook.pdf` and linked, but the page no longer depends
+   on it. At 127 KB of HTML it is the largest page on the site by a wide margin.
+   *Why the reversal:* §3.1 accepted a stub only because extraction looked like the
+   expensive option. It wasn't — the PDF is a text PDF and parsed cleanly into
+   category → entry → audience tag → prompt → "why it works", so the argument for the
+   stub disappeared.
+3. ~~Two Wisdom posts.~~ Written. `/wisdom/ai-wrapper-tell` runs its three questions
+   against Signal as the live counter-example and links to `/#work`;
+   `/wisdom/bolt-on-ai-mistake` covers designing from the data outward rather than from
+   the button inward. They link to each other, and the second one closes into
+   `/drops/system`. `src/content/wisdom/_scaffold.mdx` is deleted.
+4. ~~First Dispatch~~ Written — as **four standalone posts, not a weekly roundup**:
+   `/dispatch/claudeforce`, `/dispatch/o3-retired-from-chatgpt`,
+   `/dispatch/glm-5-3-flash`, `/dispatch/openai-agent-containment-report`. Each is
+   800–900 words with one argument, three `items` breaking the story into its constituent
+   claims, the honest caveats, a "what to actually do", and every factual claim linked in
+   a sources line. `src/content/dispatch/_scaffold.mdx` is deleted.
+   *The roundup was written first and then deleted.* A four-item weekly digest is thin per
+   story, and news outlets outrank a personal site on the raw story within hours; one page
+   per story with an argument the coverage doesn't have is the only version that's still
+   worth reading a week later.
+   *On the gate:* these shipped because there were four real stories, not because the
+   upkeep question from §4 is settled. See the recurring-cost note below.
+
+**Also done, while writing:**
+- **`rehype-slug` added** to the MDX pipeline in `vite.config.ts`. Every heading now
+  carries an id — needed for the prompts page's own five-section table of contents, and
+  free for every other post. `prose.tsx` already spreads props onto its elements, so no
+  layout change was required.
+- **Drop numbering held.** New posts are dated `2026-08-29`, after all four ported drops,
+  so the oldest-first `(date, slug)` numbering left automate 01 → swipe 04 untouched and
+  appended prompts 05, workflow 06.
+
+**Carried forward:** `og:image` on `/` and `/notes` is still the shared `public/og.png`.
+The Phase 2 note about `import.meta.glob({ eager: true })` compiling draft scaffolds into
+the client bundle is now moot — every scaffold is deleted and the bundle is clean. If a
+draft is ever reintroduced, that `import.meta.env.PROD` guard becomes worth having again.
+
+**Dispatch conventions, set by these four:** one story per post, not a digest. Topical
+slugs (`claudeforce`), not date slugs — the date lives in `date` and the `dateline`, and a
+topical slug is what search actually matches. `items` holds the story's constituent claims
+rather than separate stories, which keeps the layout's numbered spine honest at one story
+per page. Every post carries a caveats section and a sources line.
+
+**Recurring cost this creates:** Dispatch is the second thing on the site that ages by
+design (see §4). Unlike `cheatsheet` it ages *correctly* — a dated dispatch is supposed to
+stay dated — but the stream is only worth having if more appear. Four posts dated one day
+and then silence reads worse than no dispatch at all. This is the §4 "needs an owner"
+problem, now with four pages attached to it.
 
 ### Phase 4 — Distribution
 - `sitemap.xml` + `rss.xml` generated at build.
@@ -123,7 +177,7 @@ repeats the other's depth, so they stop competing for the same query.
 
 ## 3. Resolved (Aug 28, 2026)
 
-1. **Prompt Playbook** — ships as a download stub. Page still needs enough real prose to not be a doorway page: why vague prompts fail, the context/task/constraints/format anatomy, and 3-4 full example prompts inline.
+1. **Prompt Playbook** — ~~ships as a download stub~~ **superseded Aug 29, 2026.** The full 100 prompts are on the page; the PDF is an extra way to take it away, not the content. See Phase 3 item 2 for why this reversed.
 2. **`workflow`** — write it from scratch. Target query: `n8n standup automation`, `auto standup from linear`.
 3. **Byline** — `@the.anadi` everywhere.
 4. **No subdomain.** `/notes` only.

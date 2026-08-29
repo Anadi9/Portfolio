@@ -11,3 +11,99 @@
   color: inherit !important;
   font: inherit !important;
 }
+
+/* --- feed card ----------------------------------------------------------
+   Every colour inside a card is a custom property so that one hover rule can
+   flip the whole row to ink at once. Inline styles can't reach a descendant on
+   hover, and threading `hovered` state through eleven nested spans to do it in
+   React would put a re-render behind a mouse move on a twelve-row list.
+
+   Same two triggers as the portfolio's hover states: `:hover` gated behind
+   `@media (hover: hover)` so a tap can't leave a row stuck inverted, and
+   `:focus-visible`, so the keyboard gets the same feedback. No transform here —
+   the portfolio's `pf-nudge` translate reads as a nudge on a button and as a
+   layout bug on a full-width row. */
+.pf-feed-card {
+  --fc-bg: transparent;
+  --fc-ink: #0a0a0a;
+  --fc-body: #3a3a3a;
+  --fc-dim: #6b6b6b;
+  --fc-mark: #8a6a2a;
+  --fc-edge: rgba(10, 10, 10, 0.2);
+  --fc-plate: #f4f1ea;
+  --fc-plate-ink: #2a2a2a;
+  --fc-chip-edge: rgba(10, 10, 10, 0.45);
+
+  background: var(--fc-bg);
+  transition: background 0.22s ease, color 0.22s ease;
+}
+
+/* Tile variant — START HERE and READ NEXT, which sit on the cream band and so
+   need a filled ground of their own to read as cards. Declared above the invert
+   rules on purpose: same specificity, so source order is what decides, and the
+   hover has to win. */
+.pf-feed-card--tile {
+  --fc-bg: #ffffff;
+}
+
+.pf-feed-card:focus-visible,
+.pf-feed-card.is-inverted {
+  --fc-bg: #0a0a0a;
+  --fc-ink: #f2f2f2;
+  --fc-body: #c4c4c4;
+  --fc-dim: #9a9a9a;
+  --fc-mark: #c9a24b;
+  --fc-edge: rgba(255, 255, 255, 0.22);
+  --fc-plate: rgba(255, 255, 255, 0.07);
+  --fc-plate-ink: #e4e4e4;
+  --fc-chip-edge: rgba(228, 222, 208, 0.5);
+}
+
+@media (hover: hover) {
+  .pf-feed-card:hover {
+    --fc-bg: #0a0a0a;
+    --fc-ink: #f2f2f2;
+    --fc-body: #c4c4c4;
+    --fc-dim: #9a9a9a;
+    --fc-mark: #c9a24b;
+    --fc-edge: rgba(255, 255, 255, 0.22);
+    --fc-plate: rgba(255, 255, 255, 0.07);
+    --fc-plate-ink: #e4e4e4;
+    --fc-chip-edge: rgba(228, 222, 208, 0.5);
+  }
+}
+
+/* Long tradeoffs and long headlines both wrap to four lines on a phone, which
+   turns the feed back into twelve paragraphs. Two lines, then trust the click. */
+.pf-clamp-2,
+.pf-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pf-clamp-2 {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+/* Tile headlines get a third line. In a 340px column two lines cut most of
+   these titles mid-word, and a truncated headline is a worse hook than a long
+   one. */
+.pf-clamp-3 {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* START HERE, and the READ NEXT pair at the foot of every post. */
+.pf-onramp {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+}
+@media (min-width: 720px) {
+  .pf-onramp--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .pf-onramp--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

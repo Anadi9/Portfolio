@@ -18,7 +18,7 @@ const WisdomLayout = ({ post }: { post: WisdomPost }) => {
   const { Body } = post;
 
   return (
-    <NotesShell>
+    <NotesShell post={post}>
       <Seo
         title={`${post.title} — ${BYLINE}`}
         description={post.summary}

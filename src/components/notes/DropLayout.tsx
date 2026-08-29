@@ -17,7 +17,7 @@ const DropLayout = ({ post }: { post: DropPost }) => {
   const { Body } = post;
 
   return (
-    <NotesShell>
+    <NotesShell post={post}>
       <Seo
         title={`${post.title} — ${BYLINE}`}
         description={post.summary}
@@ -38,9 +38,6 @@ const DropLayout = ({ post }: { post: DropPost }) => {
         <PostHeader post={post}>
           <MetaLine tag="USE WHEN">{post.useWhen}</MetaLine>
           <MetaLine tag="YOU GET">{post.artifact}</MetaLine>
-          <MetaLine tag="KEYWORD">
-            DM <strong style={{ color: c.ink }}>{post.keyword}</strong> on Instagram for this link
-          </MetaLine>
           <Standfirst>{post.summary}</Standfirst>
 
           {post.format !== 'inline' && post.downloadHref && (
@@ -74,11 +71,8 @@ const DropLayout = ({ post }: { post: DropPost }) => {
         >
           <p style={{ ...label(10, 700, 0.14), color: c.markOnPaper, margin: px(0, 0, s[3]) }}>NOTHING IS GATED</p>
           <p style={{ margin: 0, font: `400 16px/1.6 ${display}`, color: c.ink }}>
-            The whole thing is on this page. If it saved you an afternoon, the drops go out on Instagram first —{' '}
-            <a href="https://instagram.com/the.anadi" target="_blank" rel="noreferrer" style={{ color: c.ink }}>
-              {BYLINE}
-            </a>
-            .
+            The whole thing is on this page — no signup, no email wall, no follow-up sequence. If it saved you an
+            afternoon, that was the job. More of these land here as I build them.
           </p>
         </aside>
       </Column>

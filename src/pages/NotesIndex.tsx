@@ -1,17 +1,13 @@
 import { useState } from 'react';
-import { Link } from 'vite-react-ssg';
 import { c, display, heading, label, px, rule, s, stretch } from '@/components/portfolio/tokens';
 import NotesShell, { Column } from '@/components/notes/NotesShell';
+import FeedCard from '@/components/notes/FeedCard';
+import { StartHere } from '@/components/notes/OnRamp';
 import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
-import { posts } from '@/content';
+import { pinnedPosts, posts } from '@/content';
 import { STREAMS, streamLabel, type Stream } from '@/data/notes';
 
 type Filter = 'all' | Stream;
-
-const fmtDate = (iso: string) =>
-  new Date(`${iso}T00:00:00Z`)
-    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' })
-    .toUpperCase();
 
 const DESCRIPTION =
   'Free, ungated resources, build notes and AI dispatches from Anadi Thakur — automation templates, system-design worksheets and the reasoning behind them.';
@@ -53,7 +49,7 @@ const NotesIndex = () => {
           author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
         }}
       />
-      <Column>
+      <Column wide>
         <h1
           style={{
             margin: 0,
@@ -65,9 +61,14 @@ const NotesIndex = () => {
           Notes
         </h1>
         <p style={{ margin: px(s[6], 0, s[9]), maxWidth: 620, font: `400 19px/1.55 ${display}`, color: '#3a3a3a' }}>
-          Templates, build notes and AI dispatches. Everything is on the page — nothing behind an email form, nothing
-          behind a DM.
+          Templates, build notes and AI dispatches. Whatever the piece promises is on the page in full — no signup, no
+          gate, nothing held back for later.
         </p>
+
+        {/* Only on the unfiltered feed. Someone who has narrowed to Dispatch has
+            told us what they want, and three pinned drops is then an argument
+            with the chip they just pressed. */}
+        {filter === 'all' && <StartHere posts={pinnedPosts()} />}
 
         <div
           style={{
@@ -108,25 +109,7 @@ const NotesIndex = () => {
         ) : (
           <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
             {shown.map((post) => (
-              <li key={post.path} style={{ borderBottom: `${rule.hair}px solid rgba(10,10,10,.2)` }}>
-                <Link
-                  to={post.path}
-                  className="pf-nudge"
-                  style={{ display: 'block', padding: px(s[8], 0), textDecoration: 'none' }}
-                >
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[4], marginBottom: s[4] }}>
-                    <span style={{ ...label(10, 700, 0.12), color: c.markOnPaper }}>{streamLabel[post.stream]}</span>
-                    <time dateTime={post.date} style={{ ...label(10, 500, 0.14), color: c.dim }}>
-                      {fmtDate(post.date)}
-                    </time>
-                    {post.draft && <span style={{ ...label(10, 700, 0.12), color: c.signal }}>DRAFT</span>}
-                  </div>
-                  <h2 style={{ margin: 0, ...heading('d5', { vw: true }), color: c.ink }}>{post.title}</h2>
-                  <p style={{ margin: px(s[3], 0, 0), maxWidth: 620, font: `400 16px/1.6 ${display}`, color: '#3a3a3a' }}>
-                    {post.summary}
-                  </p>
-                </Link>
-              </li>
+              <FeedCard key={post.path} post={post} />
             ))}
           </ol>
         )}

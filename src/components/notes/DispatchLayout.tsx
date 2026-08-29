@@ -17,7 +17,7 @@ const DispatchLayout = ({ post }: { post: DispatchPost }) => {
   const { Body } = post;
 
   return (
-    <NotesShell>
+    <NotesShell post={post}>
       <Seo
         title={`${post.title} — ${BYLINE}`}
         description={post.summary}

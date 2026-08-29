@@ -3,6 +3,9 @@ import { Link } from 'vite-react-ssg';
 import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { MEASURE } from './prose';
 import { BYLINE } from '@/components/Seo';
+import { NextUp } from './OnRamp';
+import { relatedTo } from '@/content';
+import type { Post } from '@/data/notes';
 
 /**
  * The chrome every notes route sits in.
@@ -11,8 +14,13 @@ import { BYLINE } from '@/components/Seo';
  * result wants the page they clicked, and a 264px column of stats, a client
  * ticker and a HIRE ME button is an interruption before the first sentence.
  * One bar, one way back, then the document.
+ *
+ * `post` is the article this chrome is wrapping, and its only job is READ NEXT.
+ * Putting it here rather than in the three stream layouts means every post gets
+ * a way onward by construction — a layout added later can't quietly ship
+ * without one — and the index, which passes no post, simply doesn't render it.
  */
-const NotesShell = ({ children }: { children: ReactNode }) => (
+const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) => (
   <div style={{ background: c.paper, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
     <header
       style={{
@@ -48,6 +56,8 @@ const NotesShell = ({ children }: { children: ReactNode }) => (
 
     <main style={{ flex: 1 }}>{children}</main>
 
+    {post && <NextUp posts={relatedTo(post)} />}
+
     <footer
       style={{
         borderTop: `${rule.edge}px solid ${c.ink}`,
@@ -67,11 +77,19 @@ const NotesShell = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-/** The reading column used by all three stream layouts. */
-export const Column = ({ children }: { children: ReactNode }) => (
+/**
+ * The reading column used by all three stream layouts.
+ *
+ * `wide` is for the index, and only for the index. A post is prose and wants
+ * the 760px measure; the feed is a two-column card with an OG thumbnail beside
+ * it, and at 760 the headline gets about 320px to itself, which turns every
+ * title into five lines of display type. Same gutters, same centring — one
+ * number changes.
+ */
+export const Column = ({ children, wide }: { children: ReactNode; wide?: boolean }) => (
   <div
     style={{
-      maxWidth: MEASURE,
+      maxWidth: wide ? 1060 : MEASURE,
       margin: '0 auto',
       padding: px(s[11], 0, s[12]),
       paddingLeft: 'clamp(20px, 5vw, 40px)',

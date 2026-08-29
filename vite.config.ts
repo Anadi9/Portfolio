@@ -4,6 +4,7 @@ import mdx from "@mdx-js/rollup";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 import path from "path";
 
 // https://vitejs.dev/config/
@@ -16,9 +17,12 @@ export default defineConfig(({ mode }) => ({
     // `enforce: 'pre'` puts MDX ahead of the React plugin, which otherwise
     // never sees the JSX the compiler emits. GFM is what makes pipe tables and
     // strikethrough work — a comparison table is the whole payload of a page
-    // like the cheat sheet, so it is not optional.
-    { enforce: "pre", ...mdx({
+    // like the cheat sheet, so it is not optional. `rehype-slug` gives every
+    // heading an id, which is what lets a long page — the 100-prompt playbook
+    // above all — link to its own sections.
+    { enforce: "pre" as const, ...mdx({
       remarkPlugins: [remarkFrontmatter, [remarkMdxFrontmatter, { name: "frontmatter" }], remarkGfm],
+      rehypePlugins: [rehypeSlug],
     }) },
     react(),
   ].filter(Boolean),

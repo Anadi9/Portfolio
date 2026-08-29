@@ -41,6 +41,15 @@ type BaseFrontmatter = {
   draft?: boolean;
   /** The reel this came from, for two-way traffic (Phase 4). */
   sourcePost?: string;
+  /**
+   * Hand-picked follow-on reads, as paths (`/wisdom/ai-wrapper-tell`).
+   *
+   * Optional: `relatedTo` in `src/content/index.ts` falls back to picking two
+   * automatically. Set it where the chain is a real argument — a drop that only
+   * makes sense once you've read the wisdom post behind it — and leave it off
+   * where any recent post would do.
+   */
+  related?: string[];
 };
 
 /**
@@ -101,6 +110,16 @@ export type DispatchPost = Post<DispatchFrontmatter>;
  * ever asks for one.
  */
 export const ogImageFor = (path: string) => `/og${path}.png`;
+
+/**
+ * The three posts the START HERE strip pins above the feed.
+ *
+ * Twelve equally-weighted rows is a choice-paralysis problem for someone who
+ * arrived from a reel with no idea which one they want. These are ordered as an
+ * on-ramp — decide, then prompt, then automate — not by date or by traffic.
+ * Paths, not slugs, so a pin can cross streams later without changing shape.
+ */
+export const PINNED: readonly string[] = ['/drops/system', '/drops/prompts', '/drops/swipe'];
 
 /** Inverse of `streamPath`, for resolving a URL back to its stream. */
 export const pathToStream: Record<string, Stream> = {
