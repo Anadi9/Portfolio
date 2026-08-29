@@ -3,6 +3,15 @@ import Figure from './Figure';
 
 export type FlowNode = { name: string; kind: 'trigger' | 'step' | 'action'; config?: string };
 
+/**
+ * `wrong` marks a chain the post is arguing against.
+ *
+ * Grey, dashed connectors rather than the gold ones — the palette has no red
+ * and does not want one. A reader scanning two diagrams should be able to tell
+ * which is the cautionary tale before reading a word of either.
+ */
+export type FlowTone = 'default' | 'wrong';
+
 const KIND_LABEL: Record<FlowNode['kind'], string> = {
   trigger: 'TRIGGER',
   step: 'STEP',
@@ -24,9 +33,17 @@ const KIND_LABEL: Record<FlowNode['kind'], string> = {
  * on a phone, with no viewBox to keep in sync with a layout that changes
  * direction at a breakpoint.
  */
-const Flow = ({ caption, nodes }: { caption?: string; nodes: FlowNode[] }) => (
+const Flow = ({
+  caption,
+  nodes,
+  tone = 'default',
+}: {
+  caption?: string;
+  nodes: FlowNode[];
+  tone?: FlowTone;
+}) => (
   <Figure caption={caption} bleed>
-    <ol className="pf-flow">
+    <ol className={tone === 'wrong' ? 'pf-flow pf-flow--wrong' : 'pf-flow'}>
       {nodes.map((node) => (
         <li key={node.name} className="pf-flow-node">
           <p style={{ ...label(9, 700, 0.14), color: c.markOnPaper, margin: px(0, 0, s[2]) }}>

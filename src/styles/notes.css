@@ -513,3 +513,15 @@ details[open] > .pf-copy-more {
     transition: none;
   }
 }
+
+/* A chain the post is arguing against. No red — the palette does not have one
+   and does not need one; grey and dashed is enough to read as "not this" at a
+   glance, which is the only job. */
+.pf-flow--wrong .pf-flow-node {
+  border-style: dashed;
+  border-color: rgba(10, 10, 10, 0.45);
+  background: #faf9f7;
+}
+.pf-flow--wrong .pf-flow-node:not(:last-child)::after {
+  background: rgba(10, 10, 10, 0.3);
+}
