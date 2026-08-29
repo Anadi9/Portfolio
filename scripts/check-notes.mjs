@@ -33,6 +33,21 @@ for (const page of pages) {
   for (const href of hrefs) {
     check(`${page}: anchor #${href} has no matching id`, ids.has(href));
   }
+
+  // The plate is in the prerendered HTML and inlined, not fetched. An image
+  // above the fold that arrives over the network arrives late.
+  check(`${page}: no banner in the prerendered HTML`, html.includes('class="pf-banner'));
+  const banner = /<img[^>]+src="(data:image\/png;base64,[^"]+)"/.exec(html);
+  check(`${page}: banner is not an inlined PNG data URI`, banner !== null);
+  if (banner) {
+    const kb = banner[1].length / 1024;
+    check(`${page}: banner is ${kb.toFixed(1)}KB, over the 8KB budget`, kb < 8);
+  }
+
+  // Nothing new is fetched. `og:image` is a meta tag, not a request the page
+  // makes, so any `<img src>` that is not a data URI would be a regression.
+  const fetched = [...html.matchAll(/<img[^>]+src="(?!data:)([^"]+)"/g)];
+  check(`${page}: banner work added ${fetched.length} fetched image(s)`, fetched.length === 0);
 }
 
 // The cheat sheet's eight tables survived the ProseTable swap, and gained the
