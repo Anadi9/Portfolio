@@ -82,9 +82,10 @@ embedded artefact and starts reading as a theme.
 
 ## 4. The artwork
 
-A pixel grid roughly 300 × 50 cells, displayed at the banner's rendered size
-with `image-rendering: pixelated`, so the cells are genuinely square and hard
-edged rather than a smoothed simulation of pixels.
+A pixel grid of exactly **360 × 60 cells** — 6:1, matching the plate's rendered
+proportion so cells stay square — displayed with `image-rendering: pixelated`,
+so they are genuinely hard-edged rather than a smoothed simulation of pixels.
+At a 1180px plate each cell renders about 3.3px.
 
 ### 4.1 Palette
 
@@ -102,9 +103,16 @@ neon.
 
 Cream and gold are carried over so the plate is still recognisably this site's.
 
-**Per post the hash picks two of the three neon hues, never all three.** Two is
-what makes a set of twelve banners read as one system; three per banner is a
-rainbow.
+**Per post the hash picks two of the three neon hues for the field, never all
+three.** Two is what makes a set of twelve banners read as one system; three
+per banner is a rainbow.
+
+The rule governs the *field* — the dither ground and the wireframe. The word's
+chromatic fringe (§4.2, layer 4) is always cyan and magenta, because it is
+imitating a specific artefact — a misconverged RGB screen — and that artefact
+has fixed colours. It is part of the type treatment, not part of the field
+palette, and a fringe that changed hue per post would read as a third and
+fourth accent rather than as a defect in a screen.
 
 **Constraint on the lime.** `tokens.ts` reserves `signal` (`#0E7A45` /
 `#35D48A`) exclusively for status, and its own comment explains why: "a status
@@ -126,10 +134,23 @@ Five, back to front, all resolved at pixel resolution before rasterising.
    neon hue at low density (reference: the CRT room).
 3. **The word.** Bitmap glyphs drawn into the grid — not vector type scaled
    down, which would produce anti-aliased edges the pixelated upscale then
-   magnifies into mush. Sized so the string measures ~115% of the plate width
-   and is clipped by the right edge, so a short word like `SWIPE` is set large
-   and `AUTOMATE` smaller, but both overflow by the same fraction. The gesture
-   is identical across all twelve posts, which is what makes it a system.
+   magnifies into mush.
+
+   Cap height is **constant** across all twelve posts at ~90% of the plate
+   height. What varies per post is **tracking**: the per-character advance is
+   set so the string always spans ~115% of the plate width and is always
+   clipped by the right edge. `SWIPE` is therefore widely tracked and
+   `CHEATSHEET` nearly tight, but both overflow by the same fraction and both
+   sit on the same baseline at the same size.
+
+   This is the inverse of the obvious approach — varying the type size to hit a
+   target width — which does not work at this aspect ratio. A 6:1 plate sized
+   to fit `SWIPE` across its width would need glyphs several times taller than
+   the plate. Tracking is the only free variable, and the corpus fits it: words
+   run 5 to 10 characters (`SWIPE` … `CHEATSHEET`), and at 10 characters the
+   advance is still wider than a glyph, so letters never collide. The generator
+   asserts that gap rather than assuming it, and drops one step of cap height
+   if a longer word is ever added.
 4. **Chromatic offset.** The word repeated one cell left in cyan and one cell
    right in magenta, beneath the cream original.
 5. **Glitch and scanlines.** Two or three horizontal bands displaced by a
@@ -187,7 +208,7 @@ The correct shape is the opposite. Pixel art wants to be a small raster.
    feeding a mulberry32 PRNG — both inlined, a few lines each, no dependency.
 3. Emits the cell array as an SVG of flat rects **at build time only** — this
    SVG is never shipped.
-4. Rasterises it with `@resvg/resvg-js` at exactly 300 × 50, to a PNG.
+4. Rasterises it with `@resvg/resvg-js` at exactly 360 × 60, to a PNG.
    Already a devDependency for the OG cards. **No new packages.**
 5. Writes `src/generated/banners.json` — `slug → data:image/png;base64,…`,
    roughly 1.5–2KB per entry.
@@ -288,22 +309,31 @@ Unit, against the generator:
 
 1. **Determinism** — two runs for the same slug produce a byte-identical PNG;
    two different slugs produce different PNGs.
-2. **Palette** — every colour in the emitted PNG's palette is in the §4.1 table,
-   and neither `#0E7A45` nor `#35D48A` appears.
-3. **Two hues** — no banner uses more than two of the three neon colours.
-4. **The word** — the drop path uses `keyword`, not the stream name; an unknown
+2. **Palette** — asserted on the cell array rather than on decoded PNG bytes,
+   because that is where the rule lives and the array is what the rule
+   produces: every cell value indexes the §4.1 table, and the table contains
+   neither `#0E7A45` nor `#35D48A`.
+3. **Two hues** — the field's `primary` and `secondary` are distinct and both
+   drawn from the three neon indices, and the gold index is present in the
+   cells (the horizon line). The word's fixed cyan/magenta fringe is outside
+   this rule, per §4.1.
+4. **Tracking** — for every word in the corpus the per-character advance
+   exceeds the glyph width, so no two letters overlap.
+5. **The word** — the drop path uses `keyword`, not the stream name; an unknown
    stream throws; every character of every word has a glyph in the bitmap font.
 
 Against the built `dist/`, as new assertions in `scripts/check-notes.mjs`:
 
-5. Every published post's HTML contains exactly one `.pf-banner`, whose `img`
+6. Every published post's HTML contains exactly one `.pf-banner`, whose `img`
    `src` is a `data:image/png;base64,` URI.
-6. No new network request — the count of non-data `<img src=` in any post page
+7. No new network request — the count of non-data `<img src=` in any post page
    is unchanged from before this pass.
-7. Each inlined banner is under 4KB, so the page-weight cost stays bounded.
-8. All twelve OG PNGs regenerate, each 1200 × 630.
-9. Notes route chunk size delta reported; still no GSAP, no Lenis.
-10. Rendered at 1600 / 1280 / 1024 / 375 — the word is clipped by the right
+8. Each inlined banner is under 8KB of base64, so the page-weight cost stays
+   bounded. The budget is deliberately loose: dithered noise compresses badly,
+   and the actual figure is measured and reported rather than guessed.
+9. All twelve OG PNGs regenerate, each 1200 × 630.
+10. Notes route chunk size delta reported; still no GSAP, no Lenis.
+11. Rendered at 1600 / 1280 / 1024 / 375 — the word is clipped by the right
     edge at every width, the pixels stay square, and no page scrolls
     horizontally at 375.
 
