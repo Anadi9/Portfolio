@@ -6,6 +6,7 @@ import { StartHere } from '@/components/notes/OnRamp';
 import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
 import { pinnedPosts, posts } from '@/content';
 import { STREAMS, streamLabel, type Stream } from '@/data/notes';
+import { useDisclosureOpen } from '@/components/notes/useRail';
 
 type Filter = 'all' | Stream;
 
@@ -22,6 +23,7 @@ const DESCRIPTION =
  */
 const NotesIndex = () => {
   const [filter, setFilter] = useState<Filter>('all');
+  const railOpen = useDisclosureOpen();
   const shown = filter === 'all' ? posts : posts.filter((p) => p.stream === filter);
 
   const chips: { key: Filter; label: string; count: number }[] = [
@@ -49,7 +51,48 @@ const NotesIndex = () => {
           author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
         }}
       />
-      <Column wide>
+      <Column
+        wide
+        rail={
+          <details className="pf-rail" open={railOpen}>
+            <summary className="pf-rail-summary">FILTER — {chips.find((chip) => chip.key === filter)?.label}</summary>
+            <div className="pf-rail-body">
+              <p
+                className="pf-rail-stamp"
+                style={{ ...label(10, 700, 0.14), color: c.markOnPaper, margin: px(0, 0, s[5]) }}
+              >
+                FILTER
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: s[2], alignItems: 'stretch' }}>
+                {chips.map((chip) => {
+                  const on = chip.key === filter;
+                  return (
+                    <button
+                      key={chip.key}
+                      type="button"
+                      onClick={() => setFilter(chip.key)}
+                      aria-pressed={on}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: s[3],
+                        padding: px(s[2], s[4]),
+                        background: on ? c.ink : 'transparent',
+                        color: on ? c.accent : c.ink,
+                        border: `${rule.hair}px solid ${c.ink}`,
+                        ...label(10, 700, 0.12),
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {chip.label} <span style={{ color: on ? c.mark : c.dim }}>{chip.count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </details>
+        }
+      >
         <h1
           style={{
             margin: 0,
@@ -70,44 +113,12 @@ const NotesIndex = () => {
             with the chip they just pressed. */}
         {filter === 'all' && <StartHere posts={pinnedPosts()} />}
 
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: s[2],
-            paddingBottom: s[6],
-            borderBottom: `${rule.edge}px solid ${c.ink}`,
-          }}
-        >
-          {chips.map((chip) => {
-            const on = chip.key === filter;
-            return (
-              <button
-                key={chip.key}
-                type="button"
-                onClick={() => setFilter(chip.key)}
-                aria-pressed={on}
-                style={{
-                  padding: px(s[2], s[4]),
-                  background: on ? c.ink : 'transparent',
-                  color: on ? c.accent : c.ink,
-                  border: `${rule.hair}px solid ${c.ink}`,
-                  ...label(10, 700, 0.12),
-                  cursor: 'pointer',
-                }}
-              >
-                {chip.label} <span style={{ color: on ? c.mark : c.dim }}>{chip.count}</span>
-              </button>
-            );
-          })}
-        </div>
-
         {shown.length === 0 ? (
           <p style={{ margin: px(s[10], 0), font: `400 17px/1.6 ${display}`, color: c.dim }}>
             Nothing in this stream yet. The other chips have the rest.
           </p>
         ) : (
-          <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          <ol style={{ listStyle: 'none', margin: 0, padding: 0, borderTop: `${rule.edge}px solid ${c.ink}` }}>
             {shown.map((post) => (
               <FeedCard key={post.path} post={post} />
             ))}
