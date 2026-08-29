@@ -4,8 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/generate-banners.mjs",
     "dev": "vite-react-ssg dev",
+    "prebuild": "node scripts/generate-banners.mjs",
     "build": "vite-react-ssg build && node scripts/generate-og.mjs && node scripts/generate-feeds.mjs",
+    "prebuild:dev": "node scripts/generate-banners.mjs",
     "build:dev": "vite-react-ssg build --mode development && node scripts/generate-og.mjs && node scripts/generate-feeds.mjs",
     "lint": "eslint .",
     "preview": "vite preview --outDir dist",
