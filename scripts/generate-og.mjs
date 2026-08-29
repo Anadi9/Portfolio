@@ -16,6 +16,7 @@ import { join } from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { collect, root, streamPath } from './lib/content.mjs';
+import banners from '../src/generated/banners.json' with { type: 'json' };
 
 const OUT = join(root, 'dist', 'og');
 const FONTS = join(root, 'scripts', 'og-fonts');
@@ -53,84 +54,105 @@ const card = (post) => ({
       height: 630,
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'space-between',
       background: c.ink,
-      padding: '72px 80px',
       // The cream edge is the site's own signature; without it the card is just
       // white text on black and reads as anyone's.
       borderLeft: `24px solid ${c.accent}`,
     },
     children: [
       {
+        type: 'img',
+        props: {
+          src: banners[`/${post.dir}/${post.slug}`],
+          width: 1176,
+          height: 196,
+          style: { display: 'flex' },
+        },
+      },
+      {
         type: 'div',
         props: {
-          style: { display: 'flex', alignItems: 'center', gap: 20 },
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            flexGrow: 1,
+            padding: '56px 80px 72px',
+          },
           children: [
+            {
+              type: 'div',
+              props: {
+                style: { display: 'flex', alignItems: 'center', gap: 20 },
+                children: [
+                  {
+                    type: 'div',
+                    props: {
+                      style: {
+                        fontFamily: 'JetBrains Mono',
+                        fontSize: 22,
+                        letterSpacing: 3,
+                        color: c.ink,
+                        background: c.mark,
+                        padding: '8px 16px',
+                      },
+                      children: post.eyebrow,
+                    },
+                  },
+                  {
+                    type: 'div',
+                    props: {
+                      style: { fontFamily: 'JetBrains Mono', fontSize: 22, letterSpacing: 3, color: c.dimOnInk },
+                      children: 'ANADITHAKUR.IN/NOTES',
+                    },
+                  },
+                ],
+              },
+            },
             {
               type: 'div',
               props: {
                 style: {
-                  fontFamily: 'JetBrains Mono',
-                  fontSize: 22,
-                  letterSpacing: 3,
-                  color: c.ink,
-                  background: c.mark,
-                  padding: '8px 16px',
+                  fontFamily: 'Archivo',
+                  fontWeight: 900,
+                  fontSize: titleSize(post.title),
+                  lineHeight: 1.08,
+                  letterSpacing: -1.5,
+                  color: c.bright,
+                  // Satori has no text-wrap heuristics beyond the box, so the cap is
+                  // what keeps a long title off the footer rule.
+                  maxWidth: 980,
+                  display: 'flex',
                 },
-                children: post.eyebrow,
+                children: post.title,
               },
             },
             {
               type: 'div',
               props: {
-                style: { fontFamily: 'JetBrains Mono', fontSize: 22, letterSpacing: 3, color: c.dimOnInk },
-                children: 'ANADITHAKUR.IN/NOTES',
-              },
-            },
-          ],
-        },
-      },
-      {
-        type: 'div',
-        props: {
-          style: {
-            fontFamily: 'Archivo',
-            fontWeight: 900,
-            fontSize: titleSize(post.title),
-            lineHeight: 1.08,
-            letterSpacing: -1.5,
-            color: c.bright,
-            // Satori has no text-wrap heuristics beyond the box, so the cap is
-            // what keeps a long title off the footer rule.
-            maxWidth: 980,
-            display: 'flex',
-          },
-          children: post.title,
-        },
-      },
-      {
-        type: 'div',
-        props: {
-          style: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderTop: `2px solid ${c.plate}`,
-            paddingTop: 28,
-          },
-          children: [
-            {
-              type: 'div',
-              props: {
-                style: { fontFamily: 'Archivo', fontWeight: 700, fontSize: 26, color: c.accent },
-                children: 'Anadi Thakur',
-              },
-            },
-            {
-              type: 'div',
-              props: {
-                style: { fontFamily: 'JetBrains Mono', fontSize: 20, letterSpacing: 2, color: c.dimOnInk },
-                children: '@the.anadi',
+                style: {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  borderTop: `2px solid ${c.plate}`,
+                  paddingTop: 28,
+                },
+                children: [
+                  {
+                    type: 'div',
+                    props: {
+                      style: { fontFamily: 'Archivo', fontWeight: 700, fontSize: 26, color: c.accent },
+                      children: 'Anadi Thakur',
+                    },
+                  },
+                  {
+                    type: 'div',
+                    props: {
+                      style: { fontFamily: 'JetBrains Mono', fontSize: 20, letterSpacing: 2, color: c.dimOnInk },
+                      children: '@the.anadi',
+                    },
+                  },
+                ],
               },
             },
           ],
