@@ -13,16 +13,17 @@
 }
 
 /* --- feed card ----------------------------------------------------------
-   Every colour inside a card is a custom property so that one hover rule can
-   flip the whole row to ink at once. Inline styles can't reach a descendant on
-   hover, and threading `hovered` state through eleven nested spans to do it in
-   React would put a re-render behind a mouse move on a twelve-row list.
+   Every colour inside a card is a custom property so that one rule can flip the
+   whole row to ink at once. Inline styles can't reach a descendant on hover, and
+   threading `hovered` state through eleven nested spans to do it in React would
+   put a re-render behind a mouse move on a twelve-row list.
 
-   Same two triggers as the portfolio's hover states: `:hover` gated behind
-   `@media (hover: hover)` so a tap can't leave a row stuck inverted, and
-   `:focus-visible`, so the keyboard gets the same feedback. No transform here —
-   the portfolio's `pf-nudge` translate reads as a nudge on a button and as a
-   layout bug on a full-width row. */
+   Hover is a quiet warm tint, not an invert: flipping a full-width row to ink
+   under the cursor reads as the page changing state rather than as a row
+   answering the mouse. The ink palette is kept for `:focus-visible` only, where
+   the keyboard needs feedback loud enough to find from across the page. No
+   transform here — the portfolio's `pf-nudge` translate reads as a nudge on a
+   button and as a layout bug on a full-width row. */
 .pf-feed-card {
   --fc-bg: transparent;
   --fc-ink: #0a0a0a;
@@ -39,15 +40,14 @@
 }
 
 /* Tile variant — START HERE and READ NEXT, which sit on the cream band and so
-   need a filled ground of their own to read as cards. Declared above the invert
-   rules on purpose: same specificity, so source order is what decides, and the
-   hover has to win. */
+   need a filled ground of their own to read as cards. Declared above the
+   focus rule on purpose: same specificity, so source order is what decides, and
+   the ink state has to win. */
 .pf-feed-card--tile {
   --fc-bg: #ffffff;
 }
 
-.pf-feed-card:focus-visible,
-.pf-feed-card.is-inverted {
+.pf-feed-card:focus-visible {
   --fc-bg: #0a0a0a;
   --fc-ink: #f2f2f2;
   --fc-body: #c4c4c4;
@@ -60,16 +60,12 @@
 }
 
 @media (hover: hover) {
+  /* Tinted as a layer rather than by overriding `--fc-bg`, so the same rule
+     darkens a transparent feed row and a white tile without either losing its
+     own ground. */
   .pf-feed-card:hover {
-    --fc-bg: #0a0a0a;
-    --fc-ink: #f2f2f2;
-    --fc-body: #c4c4c4;
-    --fc-dim: #9a9a9a;
-    --fc-mark: #c9a24b;
-    --fc-edge: rgba(255, 255, 255, 0.22);
-    --fc-plate: rgba(255, 255, 255, 0.07);
-    --fc-plate-ink: #e4e4e4;
-    --fc-chip-edge: rgba(228, 222, 208, 0.5);
+    background-image: linear-gradient(rgba(10, 10, 10, 0.04), rgba(10, 10, 10, 0.04));
+    --fc-chip-edge: rgba(10, 10, 10, 0.6);
   }
 }
 
@@ -435,6 +431,85 @@ details[open] > .pf-copy-more {
   .pf-copy,
   .pf-copy-more,
   .pf-flow-node {
+    transition: none;
+  }
+}
+
+/* --- prompt library ------------------------------------------------------ */
+.pf-prompt-search {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
+  font: 500 15px/1.4 'JetBrains Mono', ui-monospace, monospace;
+  color: #0a0a0a;
+}
+.pf-prompt-search:focus-visible {
+  outline: 2px solid #0a0a0a;
+  outline-offset: -2px;
+}
+
+.pf-prompt-chip {
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.pf-prompt-chip:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.pf-prompt-chip:focus-visible {
+  outline: 2px solid #8a6a2a;
+  outline-offset: 2px;
+}
+
+.pf-prompt-reset {
+  margin-left: 12px;
+  padding: 2px 8px;
+  background: transparent;
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
+  color: #0a0a0a;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .pf-prompt-reset:hover {
+    background: #0a0a0a;
+    color: #e4ded0;
+  }
+}
+
+/* Two columns where there is room. A hundred records in one column is the wall
+   this component exists to remove, and the cards are short enough to pair. */
+.pf-prompt-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+}
+@media (min-width: 900px) {
+  .pf-prompt-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.pf-prompt-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #0a0a0a;
+}
+.pf-prompt-card > div:last-child {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-prompt-chip {
     transition: none;
   }
 }

@@ -3,6 +3,7 @@ import { c, display, heading, label, mono, px, rule, s } from '@/components/port
 import CopyBlock from './CopyBlock';
 import Figure from './Figure';
 import Flow from './Flow';
+import PromptLibrary from './PromptLibrary';
 import ProseTable from './ProseTable';
 
 /**
@@ -107,4 +108,5 @@ export const prose = {
   // than lists.
   Figure,
   Flow,
+  PromptLibrary,
 };

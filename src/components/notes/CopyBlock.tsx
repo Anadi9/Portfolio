@@ -1,4 +1,5 @@
-import { isValidElement, useRef, useState, type ReactNode } from 'react';
+import { isValidElement, useRef, type ReactNode } from 'react';
+import { useCopy } from './useRail';
 import { c, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 
 const LANGUAGE = /language-(\w+)/;
@@ -38,18 +39,9 @@ const lineCount = (children: ReactNode): number => {
  */
 const CopyBlock = ({ children }: { children?: ReactNode }) => {
   const ref = useRef<HTMLPreElement>(null);
-  const [copied, setCopied] = useState(false);
+  const { copy, copiedKey } = useCopy();
   const language = languageOf(children);
   const long = lineCount(children) > COLLAPSE_ABOVE;
-
-  const copy = () => {
-    const text = ref.current?.textContent ?? '';
-    if (!text || !navigator.clipboard) return;
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
-    });
-  };
 
   const block = (
     <pre
@@ -82,8 +74,13 @@ const CopyBlock = ({ children }: { children?: ReactNode }) => {
         }}
       >
         <span style={{ ...label(10, 700, 0.14), color: c.markOnPaper }}>{language ?? 'CODE'}</span>
-        <button type="button" onClick={copy} className="pf-copy" style={{ ...label(10, 700, 0.12) }}>
-          {copied ? 'COPIED' : 'COPY'}
+        <button
+          type="button"
+          onClick={() => copy(ref.current?.textContent ?? '')}
+          className="pf-copy"
+          style={{ ...label(10, 700, 0.12) }}
+        >
+          {copiedKey ? 'COPIED' : 'COPY'}
         </button>
       </div>
 

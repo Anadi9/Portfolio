@@ -47,21 +47,35 @@ check('automate still ships its n8n JSON', count(automate, 'n8n-nodes-base') ===
 check('automate has five Flow diagrams', count(automate, 'class="pf-flow"') === 5);
 check('automate keeps all five setup-notes sections', count(automate, 'Setup notes') === 5);
 
+// All 100 prompts are still on the page. This one matters more than the rest:
+// that page's whole SEO argument is that the artifact is on it, and a filter UI
+// is exactly the kind of change that could quietly render 12 of them.
+const prompts = readFileSync('dist/drops/prompts/index.html', 'utf8');
+check(`prompts page renders 100 cards (found ${count(prompts, 'pf-prompt-card')})`, count(prompts, 'pf-prompt-card') === 100);
+check('prompts page keeps its five category anchors', count(prompts, 'id="[0-9]-[a-z0-9-]*"') === 5);
+check('prompts page keeps its PDF link', prompts.includes('the-ai-prompt-playbook.pdf'));
+
 // The index still prerenders every card and every chip.
 const index = readFileSync('dist/notes/index.html', 'utf8');
 check('index prerenders 12 feed cards', count(index, 'pf-feed-card"') === 12);
 check('index prerenders 4 filter chips', count(index, 'aria-pressed') === 4);
 
-// No scroll engine reached the notes chunks. `/` is allowed both; anything a
-// notes route pulls in is not. That means the two route chunks — found by the
-// rail class they emit — plus the shared chunk Vite names after `useRail`,
-// which carries the rail itself and would otherwise go unchecked.
-const notesChunks = [
-  ...globSync('dist/assets/*.js').filter((a) => readFileSync(a, 'utf8').includes('pf-rail')),
-  ...globSync('dist/assets/useRail-*.js'),
-];
-check('found the notes chunks to scan', notesChunks.length >= 3);
-for (const asset of new Set(notesChunks)) {
+// No scroll engine reached any notes chunk. `/` is allowed both; anything a
+// notes route pulls in is not.
+//
+// Chunks are found by the markers they emit rather than by filename. Vite names
+// a shared chunk after whichever module it happened to hoist, and that name
+// moves whenever the import graph shifts — this check previously looked for
+// `useRail-*.js` and started finding nothing the moment a hook was added
+// elsewhere. A check that silently scans nothing is worse than no check, which
+// is why the count is asserted too.
+const NOTES_MARKERS = ['pf-rail', 'pf-prompt-card', 'pf-flow', 'pf-feed-card'];
+const notesChunks = globSync('dist/assets/*.js').filter((asset) => {
+  const code = readFileSync(asset, 'utf8');
+  return NOTES_MARKERS.some((marker) => code.includes(marker));
+});
+check(`found notes chunks to scan (found ${notesChunks.length})`, notesChunks.length >= 3);
+for (const asset of notesChunks) {
   const code = readFileSync(asset, 'utf8');
   check(`${asset}: notes chunk contains GSAP`, !/\bgsap\b/i.test(code));
   check(`${asset}: notes chunk contains Lenis`, !/\blenis\b/i.test(code));

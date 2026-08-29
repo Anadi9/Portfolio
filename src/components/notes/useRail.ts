@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Which heading the reader is currently under.
@@ -98,4 +98,36 @@ export const useDisclosureOpen = (query = '(min-width: 1200px)'): boolean => {
   }, [query]);
 
   return open;
+};
+
+/**
+ * Copy to clipboard, with the label flip that tells you it worked.
+ *
+ * Shared by the code blocks and the prompt library, which want the same
+ * behaviour for the same reason: both hold text whose entire purpose is to end
+ * up somewhere else.
+ *
+ * `navigator.clipboard` is absent on insecure origins and in some embedded
+ * browsers. The button still renders — it is in the server HTML either way —
+ * and simply does nothing rather than throwing, which is the quieter failure.
+ */
+export const useCopy = (resetAfter = 1600) => {
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  const copy = useCallback(
+    (text: string, key = 'default') => {
+      if (!text || typeof navigator === 'undefined' || !navigator.clipboard) return;
+      navigator.clipboard.writeText(text).then(() => {
+        setCopiedKey(key);
+        clearTimeout(timer.current);
+        timer.current = setTimeout(() => setCopiedKey(null), resetAfter);
+      });
+    },
+    [resetAfter],
+  );
+
+  return { copy, copiedKey };
 };
