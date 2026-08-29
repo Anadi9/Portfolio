@@ -525,3 +525,23 @@ details[open] > .pf-copy-more {
 .pf-flow--wrong .pf-flow-node:not(:last-child)::after {
   background: rgba(10, 10, 10, 0.3);
 }
+
+/* Back to top. Fixed rather than sticky so it does not need a container tall
+   enough to travel in, and clear of the safe area on a phone. */
+.pf-to-top {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 20;
+  cursor: pointer;
+}
+.pf-to-top:focus-visible {
+  outline: 2px solid #c9a24b;
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  .pf-to-top:hover {
+    background: #8a6a2a;
+    border-color: #8a6a2a;
+  }
+}

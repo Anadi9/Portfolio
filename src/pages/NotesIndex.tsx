@@ -5,7 +5,7 @@ import FeedCard from '@/components/notes/FeedCard';
 import { StartHere } from '@/components/notes/OnRamp';
 import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
 import { pinnedPosts, posts } from '@/content';
-import { STREAMS, streamLabel, type Stream } from '@/data/notes';
+import { STREAMS, streamLabel, type Post, type Stream } from '@/data/notes';
 import { useDisclosureOpen } from '@/components/notes/useRail';
 
 type Filter = 'all' | Stream;
@@ -24,14 +24,22 @@ const DESCRIPTION =
 const NotesIndex = () => {
   const [filter, setFilter] = useState<Filter>('all');
   const railOpen = useDisclosureOpen();
-  const shown = filter === 'all' ? posts : posts.filter((p) => p.stream === filter);
+  const [q, setQ] = useState('');
+  // Title, the "reach for this when" line and the summary. Not the body: the
+  // corpus is prerendered, so a full-text index would mean shipping every post's
+  // text to the client to search it, and twelve rows do not need that.
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const matches = (p: Post) =>
+    terms.every((t) => `${p.title} ${p.useWhen} ${p.summary}`.toLowerCase().includes(t));
+
+  const shown = posts.filter((p) => (filter === 'all' || p.stream === filter) && matches(p));
 
   const chips: { key: Filter; label: string; count: number }[] = [
-    { key: 'all', label: 'ALL', count: posts.length },
+    { key: 'all', label: 'ALL', count: posts.filter(matches).length },
     ...STREAMS.map((stream) => ({
       key: stream as Filter,
       label: streamLabel[stream],
-      count: posts.filter((p) => p.stream === stream).length,
+      count: posts.filter((p) => p.stream === stream && matches(p)).length,
     })),
   ];
 
@@ -63,6 +71,19 @@ const NotesIndex = () => {
               >
                 FILTER
               </p>
+              <label htmlFor="notes-search" style={{ ...label(9, 700, 0.14), color: c.markOnPaper }}>
+                SEARCH
+              </label>
+              <input
+                id="notes-search"
+                type="search"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="n8n, prompts, architecture…"
+                className="pf-prompt-search"
+                style={{ marginBottom: s[5] }}
+              />
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: s[2], alignItems: 'stretch' }}>
                 {chips.map((chip) => {
                   const on = chip.key === filter;
@@ -115,7 +136,9 @@ const NotesIndex = () => {
 
         {shown.length === 0 ? (
           <p style={{ margin: px(s[10], 0), font: `400 17px/1.6 ${display}`, color: c.dim }}>
-            Nothing in this stream yet. The other chips have the rest.
+            {q.trim()
+              ? `Nothing matches “${q.trim()}”. Try a tool or a topic — n8n, Slack, prompts, architecture.`
+              : 'Nothing in this stream yet. The other chips have the rest.'}
           </p>
         ) : (
           <ol style={{ listStyle: 'none', margin: 0, padding: 0, borderTop: `${rule.edge}px solid ${c.ink}` }}>

@@ -4,6 +4,7 @@ import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tok
 import { MEASURE } from './prose';
 import { BYLINE } from '@/components/Seo';
 import { NextUp } from './OnRamp';
+import BackToTop from './BackToTop';
 import { relatedTo } from '@/content';
 import type { Post } from '@/data/notes';
 
@@ -65,6 +66,8 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
     </header>
 
     <main style={{ flex: 1 }}>{children}</main>
+
+    <BackToTop />
 
     {post && <NextUp posts={relatedTo(post)} />}
 
