@@ -21,7 +21,17 @@ import type { Post } from '@/data/notes';
  * without one — and the index, which passes no post, simply doesn't render it.
  */
 const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) => (
-  <div style={{ background: c.paper, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+  <div
+    style={{
+      background: c.paper,
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      // The rail's sticky offset and every anchored heading's scroll-margin
+      // measure against this, so the one number lives in one place.
+      ['--pf-header-h' as string]: '60px',
+    }}
+  >
     <header
       style={{
         display: 'flex',
@@ -86,17 +96,22 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
  * title into five lines of display type. Same gutters, same centring — one
  * number changes.
  */
-export const Column = ({ children, wide }: { children: ReactNode; wide?: boolean }) => (
+export const Column = ({
+  children,
+  rail,
+  wide,
+}: {
+  children: ReactNode;
+  rail?: ReactNode;
+  wide?: boolean;
+}) => (
   <div
-    style={{
-      maxWidth: wide ? 1060 : MEASURE,
-      margin: '0 auto',
-      padding: px(s[11], 0, s[12]),
-      paddingLeft: 'clamp(20px, 5vw, 40px)',
-      paddingRight: 'clamp(20px, 5vw, 40px)',
-    }}
+    className={['pf-frame', wide && 'pf-frame--wide', rail && 'pf-frame--railed']
+      .filter(Boolean)
+      .join(' ')}
   >
-    {children}
+    {rail}
+    <div className="pf-content">{children}</div>
   </div>
 );
 

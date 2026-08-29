@@ -107,3 +107,74 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* --- the notes frame ----------------------------------------------------
+   A one-row grid: gutter, rail, content, gutter. The rail's cell is therefore
+   the full height of the page, which is what gives `position: sticky` anything
+   to travel against.
+
+   Not a nested grid for the content column, and not `grid-row: 1 / -1` on the
+   rail. `-1` resolves to the last EXPLICIT row line, which on a grid with no
+   declared rows is line 1 — a rail placed that way is one row tall and sticky
+   does nothing. And making the content column a grid would put every block in
+   its own row, where margins no longer collapse: `prose.h2` carries 72px of
+   margin-top against the 20px margin-bottom of the paragraph above it, and
+   those collapse to 72 in flow and add to 92 in a grid. The whole vertical
+   rhythm of every post depends on that collapse.
+
+   So the content column stays normal flow, capped at the measure, and a figure
+   escapes it by pulling its right margin into the bleed. */
+.pf-frame {
+  --rail: 0px;
+  --measure: 760px;
+  --bleed: 0px;
+  --gutter: clamp(20px, 5vw, 40px);
+
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(0, 1fr)
+    [rail-start] var(--rail)
+    [rail-end content-start] minmax(0, calc(var(--measure) + var(--bleed)))
+    [content-end] minmax(0, 1fr) [full-end];
+  padding-block: 72px 112px;
+}
+
+/* The gutter stays INSIDE the content box rather than becoming a track of its
+   own. Tailwind's preflight sets `box-sizing: border-box`, so the old
+   `maxWidth: 760` with 40px of padding rendered a 680px column — about 75
+   characters at 17px, which is the measure the prose was actually tuned
+   against. Moving the gutter out to a track would have quietly widened every
+   post to ~85 characters. */
+.pf-content {
+  grid-column: content;
+  min-width: 0;
+  max-width: var(--measure);
+  padding-inline: var(--gutter);
+}
+
+/* The one declaration the right gutter exists for. Cancels the content box's
+   own right padding as well as spanning the bleed track, so a figure reaches
+   the outer edge of the field rather than stopping a gutter short. */
+.pf-bleed {
+  margin-right: calc(-1 * (var(--bleed) + var(--gutter)));
+}
+
+/* The index's feed is wider than a reading column — at 760 a feed headline gets
+   about 320px beside its payload plate and every title becomes five lines. Same
+   tracks, one number, and no bleed: the feed has no figures to widen. */
+.pf-frame--wide {
+  --measure: 1060px;
+}
+
+/* The rail track only opens where something is mounted into it. Reserving it
+   unconditionally would shift every page right by 252px to hold an empty
+   column. */
+@media (min-width: 1200px) {
+  .pf-frame--railed {
+    --rail: 252px;
+    --bleed: 188px;
+  }
+  .pf-frame--railed.pf-frame--wide {
+    --bleed: 0px;
+  }
+}
