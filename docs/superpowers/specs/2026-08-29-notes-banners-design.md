@@ -136,10 +136,19 @@ Five, back to front, all resolved at pixel resolution before rasterising.
    down, which would produce anti-aliased edges the pixelated upscale then
    magnifies into mush.
 
-   Cap height is **constant** across all twelve posts at ~90% of the plate
+   Cap height is **constant** across all twelve posts at ~62% of the plate
    height. What varies per post is **tracking**: the per-character advance is
    set so the string always spans ~115% of the plate width and is always
-   clipped by the right edge. `SWIPE` is therefore widely tracked and
+   clipped by the right edge.
+
+   Cap height and tracking are independent knobs, and it is worth being
+   explicit about why: the advance is derived from the plate width and the
+   character count alone, so shrinking the cap height does not shorten the
+   string. It only makes the letters lighter and the gaps wider — and lets the
+   field show through. An earlier draft set the cap at 90% on the assumption
+   that it was doing work for the overspan; it was not. At 90% the word band
+   covered 49 of the 60 rows, the four field layers survived only as a margin,
+   and the longest word came within two points of the coverage ceiling. `SWIPE` is therefore widely tracked and
    `CHEATSHEET` nearly tight, but both overflow by the same fraction and both
    sit on the same baseline at the same size.
 
@@ -313,27 +322,31 @@ Unit, against the generator:
    because that is where the rule lives and the array is what the rule
    produces: every cell value indexes the §4.1 table, and the table contains
    neither `#0E7A45` nor `#35D48A`.
-3. **Two hues** — the field's `primary` and `secondary` are distinct and both
+3. **The word does not swallow the plate** — word-owned cells stay under 45% of
+   the plate, and at least 15% of the non-word cells are lit. Together these
+   say the thing the eye actually checks: that this is a field with a word on
+   it, rather than a word with a field around its edges.
+4. **Two hues** — the field's `primary` and `secondary` are distinct and both
    drawn from the three neon indices, and the gold index is present in the
    cells (the horizon line). The word's fixed cyan/magenta fringe is outside
    this rule, per §4.1.
-4. **Tracking** — for every word in the corpus the per-character advance
+5. **Tracking** — for every word in the corpus the per-character advance
    exceeds the glyph width, so no two letters overlap.
-5. **The word** — the drop path uses `keyword`, not the stream name; an unknown
+6. **The word** — the drop path uses `keyword`, not the stream name; an unknown
    stream throws; every character of every word has a glyph in the bitmap font.
 
 Against the built `dist/`, as new assertions in `scripts/check-notes.mjs`:
 
-6. Every published post's HTML contains exactly one `.pf-banner`, whose `img`
+7. Every published post's HTML contains exactly one `.pf-banner`, whose `img`
    `src` is a `data:image/png;base64,` URI.
-7. No new network request — the count of non-data `<img src=` in any post page
+8. No new network request — the count of non-data `<img src=` in any post page
    is unchanged from before this pass.
-8. Each inlined banner is under 8KB of base64, so the page-weight cost stays
+9. Each inlined banner is under 8KB of base64, so the page-weight cost stays
    bounded. The budget is deliberately loose: dithered noise compresses badly,
    and the actual figure is measured and reported rather than guessed.
-9. All twelve OG PNGs regenerate, each 1200 × 630.
-10. Notes route chunk size delta reported; still no GSAP, no Lenis.
-11. Rendered at 1600 / 1280 / 1024 / 375 — the word is clipped by the right
+10. All twelve OG PNGs regenerate, each 1200 × 630.
+11. Notes route chunk size delta reported; still no GSAP, no Lenis.
+12. Rendered at 1600 / 1280 / 1024 / 375 — the word is clipped by the right
     edge at every width, the pixels stay square, and no page scrolls
     horizontally at 375.
 
