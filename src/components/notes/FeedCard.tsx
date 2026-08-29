@@ -1,6 +1,6 @@
 import { Link } from 'vite-react-ssg';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
-import { streamLabel, type Post } from '@/data/notes';
+import { readingMinutes, streamLabel, type Post } from '@/data/notes';
 import { formatChip, payloadOf } from './streamPayload';
 
 const fmtDate = (iso: string) =>
@@ -40,6 +40,7 @@ const Chip = ({ children }: { children: React.ReactNode }) => (
  */
 const FeedCard = ({ post }: { post: Post }) => {
   const payload = payloadOf(post);
+  const minutes = readingMinutes(post);
   const chip = formatChip(post);
 
   return (
@@ -61,6 +62,9 @@ const FeedCard = ({ post }: { post: Post }) => {
             <time dateTime={post.date} style={{ ...label(10, 500, 0.14), color: 'var(--fc-dim)' }}>
               {fmtDate(post.date)}
             </time>
+            {minutes !== null && (
+              <span style={{ ...label(10, 500, 0.14), color: 'var(--fc-dim)' }}>{minutes} MIN READ</span>
+            )}
             {post.draft && <span style={{ ...label(10, 700, 0.12), color: c.signal }}>DRAFT</span>}
           </div>
 

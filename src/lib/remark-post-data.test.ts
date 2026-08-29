@@ -2,11 +2,11 @@ import { compile } from '@mdx-js/mdx';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import { describe, expect, it } from 'vitest';
-import remarkHeadings from './remark-headings.mjs';
+import remarkPostData from './remark-post-data.mjs';
 
 const build = (mdx: string) =>
   compile(mdx, {
-    remarkPlugins: [remarkGfm, remarkHeadings],
+    remarkPlugins: [remarkGfm, remarkPostData],
     rehypePlugins: [rehypeSlug],
   }).then((f) => String(f));
 
@@ -17,7 +17,7 @@ const exported = (code: string) => {
   return JSON.parse(match[1]) as { depth: number; id: string; text: string }[];
 };
 
-describe('remarkHeadings', () => {
+describe('remarkPostData — headings', () => {
   it('exports h2 and h3 in document order, ignoring h1 and h4', async () => {
     const code = await build(
       ['# Title', '## First section', '### A detail', '#### Ignored', '## Second section'].join('\n\n'),
@@ -63,5 +63,30 @@ describe('remarkHeadings', () => {
     expect(exported(code)).toEqual([
       { depth: 2, id: 'the-usewhen-line', text: 'The useWhen line' },
     ]);
+  });
+});
+
+const wordsOf = (code: string) => {
+  const match = /export const words = (\d+);/.exec(code);
+  if (!match) throw new Error('no `words` export in compiled output');
+  return Number(match[1]);
+};
+
+describe('remarkPostData — words', () => {
+  it('counts prose words', async () => {
+    expect(wordsOf(await build('One two three four five.'))).toBe(5);
+  });
+
+  it('counts heading text too — a reader reads those', async () => {
+    expect(wordsOf(await build(['## Two words', 'Three more words here.'].join('\n\n')))).toBe(6);
+  });
+
+  it('excludes fenced code, which nobody reads linearly', async () => {
+    const withCode = await build(['One two three.', '```json', '{ "a": 1, "b": 2, "c": 3 }', '```'].join('\n\n'));
+    expect(wordsOf(withCode)).toBe(3);
+  });
+
+  it('is zero for a body with no prose', async () => {
+    expect(wordsOf(await build('```js\nconst a = 1;\n```'))).toBe(0);
   });
 });

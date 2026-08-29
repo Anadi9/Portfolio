@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { c, label, mono, px, rule, s } from '@/components/portfolio/tokens';
-import type { Heading } from '@/data/notes';
+import { readingMinutes, type Heading, type Post } from '@/data/notes';
 import { useActiveHeading, useDisclosureOpen, useReadProgress } from './useRail';
 
 /**
@@ -24,23 +24,30 @@ import { useActiveHeading, useDisclosureOpen, useReadProgress } from './useRail'
 const Rail = ({
   stamp,
   headings,
+  post,
   children,
 }: {
   stamp: string;
   headings: Heading[];
+  post?: Post;
   children?: ReactNode;
 }) => {
+  const minutes = post ? readingMinutes(post) : null;
   const active = useActiveHeading(headings.map((h) => h.id));
   const progress = useReadProgress();
   const open = useDisclosureOpen();
 
   return (
     <details className="pf-rail" open={open}>
-      <summary className="pf-rail-summary">CONTENTS — {stamp}</summary>
+      <summary className="pf-rail-summary">
+        CONTENTS — {stamp}
+        {minutes !== null && ` · ${minutes} MIN`}
+      </summary>
 
       <div className="pf-rail-body">
         <p className="pf-rail-stamp" style={{ ...label(10, 700, 0.14), color: c.markOnPaper, margin: px(0, 0, s[5]) }}>
           {stamp}
+          {minutes !== null && <span style={{ color: c.dim }}> · {minutes} MIN READ</span>}
         </p>
 
         {headings.length > 0 && (

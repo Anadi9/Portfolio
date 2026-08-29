@@ -5,6 +5,7 @@ type MdxModule = {
   default: Post['Body'];
   frontmatter?: Partial<Frontmatter>;
   headings?: Heading[];
+  words?: number;
 };
 
 /**
@@ -45,6 +46,7 @@ const build = (): Post[] =>
         // Not validated like `title`/`summary`/`date`: a post is allowed to
         // have no h2 at all, and the rail simply doesn't render a TOC.
         headings: mod.headings ?? [],
+        words: mod.words ?? 0,
         Body: mod.default,
       } as Post;
     })

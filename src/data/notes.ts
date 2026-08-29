@@ -39,6 +39,15 @@ type BaseFrontmatter = {
   lastVerified?: string;
   /** Excluded from the index and from prerender in a production build. */
   draft?: boolean;
+  /**
+   * Overrides the automatic reading estimate. `0` hides it entirely.
+   *
+   * Set it where the body is mostly component-rendered and the word count would
+   * lie — `/drops/prompts` is 3KB of markdown around a hundred-record library,
+   * and it is a reference you search rather than a page you read end to end, so
+   * it carries `0`.
+   */
+  readingMinutes?: number;
   /** The reel this came from, for two-way traffic (Phase 4). */
   sourcePost?: string;
   /**
@@ -104,6 +113,8 @@ export type Post<F extends Frontmatter = Frontmatter> = F & {
   path: string;
   /** The h2/h3 spine, in document order. Empty for a post with no headings. */
   headings: Heading[];
+  /** Prose word count, code blocks excluded. Drives the reading estimate. */
+  words: number;
   Body: ComponentType<Record<string, unknown>>;
 };
 
@@ -137,4 +148,17 @@ export const pathToStream: Record<string, Stream> = {
   drops: 'drop',
   wisdom: 'wisdom',
   dispatch: 'dispatch',
+};
+
+/**
+ * Minutes to read, or `null` where the estimate would be a lie.
+ *
+ * 230 words a minute is the middle of the range research puts silent reading
+ * at for this kind of material. The number is deliberately coarse — it exists
+ * to answer "is this a coffee or a commute", and a false precision like
+ * "7.4 minutes" answers a question nobody asked.
+ */
+export const readingMinutes = (post: Post): number | null => {
+  if (post.readingMinutes !== undefined) return post.readingMinutes || null;
+  return Math.max(1, Math.round(post.words / 230));
 };

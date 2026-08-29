@@ -38,7 +38,7 @@ const DispatchLayout = ({ post }: { post: DispatchPost }) => {
       />
       <Column
         rail={
-          <Rail stamp={payloadOf(post).stamp} headings={post.headings}>
+          <Rail stamp={payloadOf(post).stamp} headings={post.headings} post={post}>
             {metaRowsOf(post).map((row) => (
               <div key={row.tag} style={{ marginBottom: s[4] }}>
                 <p style={{ ...label(9, 700, 0.14), color: c.markOnPaper, margin: px(0, 0, s[1]) }}>{row.tag}</p>

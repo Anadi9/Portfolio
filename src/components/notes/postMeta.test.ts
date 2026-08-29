@@ -6,6 +6,7 @@ const base = {
   slug: 's',
   path: '/p/s',
   headings: [],
+  words: 0,
   Body: () => null,
   title: 't',
   summary: 'x',
