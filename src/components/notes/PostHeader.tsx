@@ -12,6 +12,11 @@ const fmtDate = (iso: string) =>
  * The H1 carries the search query, not the reel hook — that rule lives in the
  * content, but the layout has to give it the room to be long, which is why the
  * heading step here is `d4` and not the hero-sized `d1`.
+ *
+ * Eyebrow, date, headline and whatever lede the layout passes as children.
+ * Nothing else: YOU GET, LAST VERIFIED, the DM keyword and the download link
+ * are reference rather than lede, and they live in the rail now. Six lines of
+ * apparatus before the first sentence was five too many.
  */
 const PostHeader = ({ post, children }: { post: Post; children?: React.ReactNode }) => (
   <header style={{ marginBottom: s[9] }}>
@@ -30,13 +35,6 @@ const PostHeader = ({ post, children }: { post: Post; children?: React.ReactNode
       <time dateTime={post.date} style={{ ...label(10, 500, 0.14), color: c.dim }}>
         {fmtDate(post.date)}
       </time>
-      {post.lastVerified && (
-        // The cheat sheet ages by design. A visible stamp is the difference
-        // between "dated on purpose" and "abandoned".
-        <span style={{ ...label(10, 500, 0.14), color: c.markOnPaper }}>
-          LAST VERIFIED {fmtDate(post.lastVerified)}
-        </span>
-      )}
     </div>
 
     <h1 style={{ margin: 0, ...heading('d4', { vw: true }), color: c.ink }}>{post.title}</h1>

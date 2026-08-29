@@ -1,9 +1,10 @@
-import { c, display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { ogImageFor, type WisdomPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
 import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
 import PostHeader from './PostHeader';
 import Rail from './Rail';
+import { metaRowsOf } from './postMeta';
 import { payloadOf } from './streamPayload';
 import { prose } from './prose';
 
@@ -37,7 +38,18 @@ const WisdomLayout = ({ post }: { post: WisdomPost }) => {
           mainEntityOfPage: `${ORIGIN}${post.path}`,
         }}
       />
-      <Column rail={<Rail stamp={payloadOf(post).stamp} headings={post.headings} />}>
+      <Column
+        rail={
+          <Rail stamp={payloadOf(post).stamp} headings={post.headings}>
+            {metaRowsOf(post).map((row) => (
+              <div key={row.tag} style={{ marginBottom: s[4] }}>
+                <p style={{ ...label(9, 700, 0.14), color: c.markOnPaper, margin: px(0, 0, s[1]) }}>{row.tag}</p>
+                <p style={{ margin: 0, font: `500 12px/1.5 ${mono}`, color: c.ink }}>{row.value}</p>
+              </div>
+            ))}
+          </Rail>
+        }
+      >
         <PostHeader post={post}>
           <MetaLine tag="USE WHEN">{post.useWhen}</MetaLine>
           <Standfirst>{post.summary}</Standfirst>
