@@ -127,8 +127,18 @@ export const FONT = {
 
 const GLYPH_COLS = 5;
 const GLYPH_ROWS = 7;
-/** Cap height as a fraction of the plate. */
-const CAP = 0.9;
+/**
+ * Cap height as a fraction of the plate.
+ *
+ * Cap height and tracking are independent knobs — `advance` (the letter
+ * spacing) is derived from plate width and character count alone, so a
+ * taller cap buys the word nothing toward filling the overspan. This number
+ * is instead set by how much of the field should stay visible above and
+ * below the word band: 0.62 leaves a real margin for the dither, wireframe,
+ * glitch and scanline layers rather than letting the word read as giant type
+ * on black.
+ */
+const CAP = 0.62;
 /** How far past the right edge the string runs. */
 const OVERSPAN = 1.15;
 const INSET = 3;

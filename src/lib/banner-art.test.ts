@@ -250,4 +250,25 @@ describe('banner-art — field layers', () => {
     const b = bannerArt({ slug: 'a-different-slug', stream: 'drop', keyword: 'AUTOMATE' });
     expect(Array.from(a.cells)).not.toEqual(Array.from(b.cells));
   });
+
+  it('does not let the word swallow the plate', () => {
+    for (const post of ALL) {
+      const { cells, wordMask } = bannerArt(post);
+      const word = wordMask.reduce((n, v) => n + v, 0) / cells.length;
+      expect(word, post.slug).toBeLessThan(0.45);
+    }
+  });
+
+  it('leaves the field visible around the word', () => {
+    for (const post of ALL) {
+      const { cells, wordMask } = bannerArt(post);
+      let lit = 0, total = 0;
+      for (let i = 0; i < cells.length; i++) {
+        if (wordMask[i]) continue;
+        total++;
+        if (cells[i] !== GROUND) lit++;
+      }
+      expect(lit / total, post.slug).toBeGreaterThan(0.15);
+    }
+  });
 });
