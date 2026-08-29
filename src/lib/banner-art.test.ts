@@ -176,3 +176,78 @@ describe('banner-art — bannerArt word layer', () => {
     for (const v of a.cells) expect(v).toBeLessThan(a.palette.length);
   });
 });
+
+import { GOLD, LIME } from './banner-art.mjs';
+
+const ALL = [
+  { slug: 'automate', stream: 'drop', keyword: 'AUTOMATE' },
+  { slug: 'cheatsheet', stream: 'drop', keyword: 'CHEATSHEET' },
+  { slug: 'swipe', stream: 'drop', keyword: 'SWIPE' },
+  { slug: 'system', stream: 'drop', keyword: 'SYSTEM' },
+  { slug: 'workflow', stream: 'drop', keyword: 'WORKFLOW' },
+  { slug: 'prompts', stream: 'drop', keyword: 'PROMPTS' },
+  { slug: 'ai-wrapper-tell', stream: 'wisdom' },
+  { slug: 'bolt-on-ai-mistake', stream: 'wisdom' },
+];
+
+describe('banner-art — field layers', () => {
+  it('gives the field two distinct neon hues, never three', () => {
+    for (const post of ALL) {
+      const { primary, secondary } = bannerArt(post);
+      expect([MAGENTA, CYAN, LIME], post.slug).toContain(primary);
+      expect([MAGENTA, CYAN, LIME], post.slug).toContain(secondary);
+      expect(primary, post.slug).not.toBe(secondary);
+    }
+  });
+
+  it('lets the field use only its own two hues', () => {
+    for (const post of ALL) {
+      // Erase the word, fringe included, and whatever neon is left is the
+      // field's. The third hue must not appear there.
+      const { cells, wordMask, primary, secondary } = bannerArt(post);
+      const field = new Set();
+      for (let i = 0; i < cells.length; i++) if (!wordMask[i]) field.add(cells[i]);
+      const stray = [MAGENTA, CYAN, LIME].filter((v) => field.has(v) && v !== primary && v !== secondary);
+      expect(stray, post.slug).toEqual([]);
+    }
+  });
+
+  it('draws the gold horizon on every plate', () => {
+    for (const post of ALL) {
+      expect(bannerArt(post).cells.includes(GOLD), post.slug).toBe(true);
+    }
+  });
+
+  it('fills the plate rather than leaving it mostly bare', () => {
+    for (const post of ALL) {
+      const cells = bannerArt(post).cells;
+      const lit = cells.reduce((n, v) => n + (v === GROUND ? 0 : 1), 0);
+      expect(lit / cells.length, post.slug).toBeGreaterThan(0.15);
+      expect(lit / cells.length, post.slug).toBeLessThan(0.75);
+    }
+  });
+
+  it('leaves the word unscanned', () => {
+    const { cells, wordMask } = bannerArt(ALL[0]);
+    let masked = 0;
+    for (let i = 0; i < cells.length; i++) {
+      if (wordMask[i]) {
+        masked++;
+        expect(cells[i]).not.toBe(GROUND);
+      }
+    }
+    expect(masked).toBeGreaterThan(200);
+  });
+
+  it('stays deterministic with every layer applied', () => {
+    for (const post of ALL) {
+      expect(Array.from(bannerArt(post).cells)).toEqual(Array.from(bannerArt(post).cells));
+    }
+  });
+
+  it('varies by slug even when the word is identical', () => {
+    const a = bannerArt({ slug: 'automate', stream: 'drop', keyword: 'AUTOMATE' });
+    const b = bannerArt({ slug: 'a-different-slug', stream: 'drop', keyword: 'AUTOMATE' });
+    expect(Array.from(a.cells)).not.toEqual(Array.from(b.cells));
+  });
+});

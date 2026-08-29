@@ -186,6 +186,110 @@ const stamp = (cells, mask, ch, ox, oy, scale, value, marks) => {
   }
 };
 
+/** Ordered 4 × 4 Bayer threshold matrix, values 0–15. */
+const BAYER = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
+
+/**
+ * Layer 1 — the ground.
+ *
+ * An ordered dither ramp, densest at the left and thinning to the right. The
+ * direction is not decorative: the word runs off the right edge, and the tail
+ * of it is where it is largest and most easily lost, so the field gets out of
+ * its way exactly there.
+ */
+const dither = (cells, primary) => {
+  for (let y = 0; y < BANNER_H; y++) {
+    for (let x = 0; x < BANNER_W; x++) {
+      const t = 1 - x / (BANNER_W - 1);
+      if (t * 0.62 * 16 > BAYER[y % 4][x % 4]) cells[y * BANNER_W + x] = primary;
+    }
+  }
+};
+
+/**
+ * Layer 2 — the wireframe.
+ *
+ * A horizon with a hash-placed vanishing point, floor lines converging on it,
+ * and receding horizontals spaced quadratically so they crowd toward the
+ * horizon the way perspective actually behaves. The horizon itself is gold:
+ * the one place the site's own accent appears inside the plate.
+ */
+const wireframe = (cells, rng, secondary) => {
+  const vx = Math.floor(BANNER_W * (0.3 + rng() * 0.4));
+  const vy = Math.floor(BANNER_H * 0.42);
+
+  for (let x = 0; x < BANNER_W; x++) cells[vy * BANNER_W + x] = GOLD;
+
+  for (let k = 0; k <= 12; k++) {
+    const x1 = Math.round((k / 12) * (BANNER_W - 1));
+    const y1 = BANNER_H - 1;
+    const steps = y1 - vy;
+    for (let s = 1; s <= steps; s++) {
+      const y = vy + s;
+      const x = Math.round(vx + ((x1 - vx) * s) / steps);
+      if (x >= 0 && x < BANNER_W) cells[y * BANNER_W + x] = secondary;
+    }
+  }
+
+  for (let i = 1; i <= 6; i++) {
+    const y = vy + Math.round((BANNER_H - 1 - vy) * (i / 6) ** 2);
+    if (y <= vy || y >= BANNER_H) continue;
+    for (let x = 0; x < BANNER_W; x++) cells[y * BANNER_W + x] = secondary;
+  }
+};
+
+/**
+ * Layer 5a — glitch.
+ *
+ * Two or three horizontal bands shifted sideways. Cells shifted in from beyond
+ * the edge become ground rather than wrapping: a wrap reads as a deliberate
+ * tile, and the point is a torn signal.
+ */
+const glitch = (cells, mask, rng) => {
+  const bands = 2 + Math.floor(rng() * 2);
+  for (let b = 0; b < bands; b++) {
+    const by = Math.floor(rng() * BANNER_H);
+    const bh = 2 + Math.floor(rng() * 4);
+    const dx = Math.round((rng() * 2 - 1) * 18);
+    if (dx === 0) continue;
+    for (let y = by; y < Math.min(by + bh, BANNER_H); y++) {
+      const row = cells.slice(y * BANNER_W, (y + 1) * BANNER_W);
+      const rowMask = mask.slice(y * BANNER_W, (y + 1) * BANNER_W);
+      for (let x = 0; x < BANNER_W; x++) {
+        const src = x - dx;
+        const i = y * BANNER_W + x;
+        cells[i] = src >= 0 && src < BANNER_W ? row[src] : GROUND;
+        mask[i] = src >= 0 && src < BANNER_W ? rowMask[src] : 0;
+      }
+    }
+  }
+};
+
+/**
+ * Layer 5b — scanlines.
+ *
+ * Every second row goes dark, except where the word owns the cell, or where
+ * the cell is the gold horizon. The horizon is a structural line rather than
+ * field texture, so it is exempted by value rather than by nudging `vy` onto
+ * an even row — that way a later tweak to the `0.42` constant in `wireframe`
+ * cannot silently delete it again. Scanning the word would halve its contrast
+ * at exactly the size where it is supposed to be the loudest thing on the
+ * page.
+ */
+const scanlines = (cells, mask) => {
+  for (let y = 1; y < BANNER_H; y += 2) {
+    for (let x = 0; x < BANNER_W; x++) {
+      const i = y * BANNER_W + x;
+      if (!mask[i] && cells[i] !== GOLD) cells[i] = GROUND;
+    }
+  }
+};
+
 /**
  * The plate.
  *
@@ -201,6 +305,9 @@ export const bannerArt = ({ slug, stream, keyword }) => {
   const wordMask = new Uint8Array(BANNER_W * BANNER_H);
   const [primary, secondary] = neonFor(rng);
 
+  dither(cells, primary);
+  wireframe(cells, rng, secondary);
+
   const word = bannerWord({ stream, keyword });
   const { scale, advance, x0, y0 } = layoutWord(word);
   for (let i = 0; i < word.length; i++) {
@@ -210,6 +317,9 @@ export const bannerArt = ({ slug, stream, keyword }) => {
     stamp(cells, wordMask, word[i], x + scale, y0, scale, MAGENTA, true);
     stamp(cells, wordMask, word[i], x, y0, scale, CREAM, true);
   }
+
+  glitch(cells, wordMask, rng);
+  scanlines(cells, wordMask);
 
   return { width: BANNER_W, height: BANNER_H, palette: PALETTE, cells, wordMask, primary, secondary };
 };
