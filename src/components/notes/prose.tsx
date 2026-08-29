@@ -1,5 +1,9 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import CopyBlock from './CopyBlock';
+import Figure from './Figure';
+import Flow from './Flow';
+import ProseTable from './ProseTable';
 
 /**
  * The reading column. Wide enough for a code block, narrow enough for prose.
@@ -24,9 +28,15 @@ const body: CSSProperties = {
  * three stream layouts are the only consumers, and a prop keeps the styling
  * visible at the call site instead of hidden in context two levels up.
  *
- * Tables and `<pre>` scroll inside their own box. A comparison table is the
- * whole point of a page like the cheat sheet, and it must not be the thing that
- * makes the document scroll sideways on a phone.
+ * Lowercase keys override the elements markdown produces; capitalised ones are
+ * components an MDX author calls by name, without an import.
+ *
+ * Tables and `<pre>` are both components now rather than styled elements.
+ * `ProseTable` parses what MDX hands it so a comparison table can be reordered
+ * and can present as labelled cards on a phone — a table that scrolls sideways
+ * hides the payload of a page like the cheat sheet behind a gesture. `CopyBlock`
+ * exists because the workflow skeletons on `/drops/automate` are there to be
+ * pasted somewhere else.
  */
 export const prose = {
   h2: (p: { children?: ReactNode }) => (
@@ -89,60 +99,12 @@ export const prose = {
       {...p}
     />
   ),
-  pre: (p: { children?: ReactNode }) => (
-    <pre
-      style={{
-        margin: px(0, 0, s[6]),
-        padding: s[6],
-        background: c.plate,
-        color: c.bright,
-        border: `${rule.base}px solid ${c.ink}`,
-        font: `500 13px/1.6 ${mono}`,
-        overflowX: 'auto',
-        // Kills the inline-code chrome inherited by the nested <code>.
-        ['--pf-code' as string]: '1',
-      }}
-      className="pf-pre"
-      {...p}
-    />
-  ),
+  pre: CopyBlock,
 
-  table: (p: { children?: ReactNode }) => (
-    <div style={{ overflowX: 'auto', margin: px(0, 0, s[6]) }}>
-      <table
-        style={{
-          width: '100%',
-          minWidth: 480,
-          borderCollapse: 'collapse',
-          border: `${rule.base}px solid ${c.ink}`,
-          ...body,
-          fontSize: 15,
-        }}
-        {...p}
-      />
-    </div>
-  ),
-  th: (p: { children?: ReactNode }) => (
-    <th
-      style={{
-        textAlign: 'left',
-        padding: px(s[3], s[4]),
-        background: c.accent,
-        borderBottom: `${rule.base}px solid ${c.ink}`,
-        ...label(10, 700, 0.1),
-        color: c.ink,
-      }}
-      {...p}
-    />
-  ),
-  td: (p: { children?: ReactNode }) => (
-    <td
-      style={{
-        padding: px(s[3], s[4]),
-        borderTop: `${rule.hair}px solid rgba(10,10,10,.2)`,
-        verticalAlign: 'top',
-      }}
-      {...p}
-    />
-  ),
+  table: ProseTable,
+
+  // Called by name from MDX; see `Flow`'s own note on why it draws rather
+  // than lists.
+  Figure,
+  Flow,
 };

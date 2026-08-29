@@ -280,3 +280,161 @@
 .pf-content :is(h2, h3)[id] {
   scroll-margin-top: calc(var(--pf-header-h, 60px) + 24px);
 }
+
+/* --- code blocks --------------------------------------------------------- */
+.pf-copy,
+.pf-copy-more {
+  background: transparent;
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
+  color: #0a0a0a;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.pf-copy:focus-visible,
+.pf-copy-more:focus-visible {
+  background: #0a0a0a;
+  color: #e4ded0;
+}
+@media (hover: hover) {
+  .pf-copy:hover,
+  .pf-copy-more:hover {
+    background: #0a0a0a;
+    color: #e4ded0;
+  }
+}
+.pf-copy-more {
+  display: block;
+  width: 100%;
+  text-align: center;
+  border: 0;
+  list-style: none;
+}
+.pf-copy-more::-webkit-details-marker {
+  display: none;
+}
+details[open] > .pf-copy-more {
+  border-bottom: 1.5px solid rgba(10, 10, 10, 0.2);
+}
+
+/* --- tables -------------------------------------------------------------- */
+.pf-table-wrap {
+  overflow-x: auto;
+}
+.pf-table-sort {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background: transparent;
+  border: 0;
+  color: #0a0a0a;
+  cursor: pointer;
+}
+.pf-table-sort:focus-visible {
+  outline: 2px solid #0a0a0a;
+  outline-offset: -2px;
+}
+@media (hover: hover) {
+  .pf-table-sort:hover {
+    background: rgba(10, 10, 10, 0.06);
+  }
+}
+
+/* Below 640 a comparison table used to make the reader scroll a sub-region
+   sideways to see the payload of the page. Each row becomes a labelled block
+   instead — same DOM, same real <table>, so the markup a crawler sees is
+   unchanged. */
+@media (max-width: 639px) {
+  .pf-table,
+  .pf-table tbody,
+  .pf-table tr,
+  .pf-table td {
+    display: block;
+    width: 100%;
+  }
+  .pf-table thead {
+    display: none;
+  }
+  .pf-table tr {
+    border-bottom: 2px solid #0a0a0a;
+    padding: 8px 0;
+  }
+  .pf-table tr:last-child {
+    border-bottom: 0;
+  }
+  .pf-table td {
+    border-top: 0 !important;
+    padding: 6px 16px !important;
+  }
+  .pf-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font: 700 10px/1 'JetBrains Mono', ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    color: #8a6a2a;
+  }
+}
+
+/* --- flow diagram -------------------------------------------------------- */
+.pf-flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+@media (min-width: 720px) {
+  .pf-flow {
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    grid-template-columns: none;
+  }
+}
+
+.pf-flow-node {
+  position: relative;
+  padding: 16px;
+  background: #ffffff;
+  border: 2px solid #0a0a0a;
+  transition: background 0.2s ease;
+}
+
+/* Connectors: vertical when the chain stacks, horizontal when it runs across.
+   Pseudo-elements rather than SVG — no viewBox to keep in sync with a layout
+   that changes direction at a breakpoint. */
+.pf-flow-node:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  background: #8a6a2a;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  height: 28px;
+  transform: translateX(-50%);
+}
+@media (min-width: 720px) {
+  .pf-flow-node:not(:last-child)::after {
+    left: 100%;
+    top: 50%;
+    width: 28px;
+    height: 2px;
+    transform: translateY(-50%);
+  }
+}
+
+@media (hover: hover) {
+  .pf-flow-node:hover {
+    background: #e4ded0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-copy,
+  .pf-copy-more,
+  .pf-flow-node {
+    transition: none;
+  }
+}
