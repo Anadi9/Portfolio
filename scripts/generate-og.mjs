@@ -7,25 +7,19 @@
  * build artefacts, `dist/` is gitignored, and generated binaries do not belong
  * in the repo.
  *
- * The frontmatter is parsed here rather than imported from `src/content/index.ts`
- * because that module is a Vite module — `import.meta.glob` does not exist in
- * plain Node. Only flat scalar keys are read (`title`, `stream`, `date`,
- * `draft`), which is all a card needs and all the streams agree on.
+ * The corpus is read through `lib/content.mjs`, which `generate-feeds.mjs`
+ * shares — one frontmatter parser, so the cards and the feeds can never
+ * disagree about which posts are published.
  */
-import { readFileSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
+import { collect, root, streamPath } from './lib/content.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CONTENT = join(root, 'src', 'content');
 const OUT = join(root, 'dist', 'og');
 const FONTS = join(root, 'scripts', 'og-fonts');
 
-// Kept in step with src/data/notes.ts. A stream added there without a line here
-// throws below rather than silently shipping a post with no card.
-const streamPath = { drop: 'drops', wisdom: 'wisdom', dispatch: 'dispatch' };
 const streamLabel = { wisdom: 'BUILDER WISDOM', dispatch: 'DISPATCH' };
 
 const c = {
@@ -37,42 +31,6 @@ const c = {
   dimOnInk: '#9a9a9a',
 };
 
-/** The `---` block at the top of an MDX file, as flat scalars. */
-const frontmatter = (src, file) => {
-  const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(src);
-  if (!m) throw new Error(`${file}: no frontmatter block.`);
-  const fm = {};
-  for (const line of m[1].split('\n')) {
-    const kv = /^([A-Za-z][A-Za-z0-9_]*):\s*(.*)$/.exec(line);
-    if (!kv) continue; // list items and continuation lines — not needed here
-    let v = kv[2].trim();
-    if (/^"(.*)"$/.test(v) || /^'(.*)'$/.test(v)) v = v.slice(1, -1);
-    fm[kv[1]] = v === 'true' ? true : v === 'false' ? false : v;
-  }
-  return fm;
-};
-
-const collect = () => {
-  const posts = [];
-  for (const dir of readdirSync(CONTENT, { withFileTypes: true })) {
-    if (!dir.isDirectory()) continue;
-    for (const name of readdirSync(join(CONTENT, dir.name))) {
-      if (!name.endsWith('.mdx')) continue;
-      const file = join(CONTENT, dir.name, name);
-      const fm = frontmatter(readFileSync(file, 'utf8'), file);
-      if (fm.draft === true) continue;
-      if (!streamPath[fm.stream]) throw new Error(`${file}: unknown stream \`${fm.stream}\`.`);
-      posts.push({ ...fm, slug: name.replace(/\.mdx$/, ''), dir: dir.name });
-    }
-  }
-  return posts;
-};
-
-/**
- * `DROP 01` counts up in publication order, so the numeral on a card never
- * changes once it ships. Same (date, slug) comparator the feed uses, reversed —
- * the feed shows newest first, the numbering runs oldest first.
- */
 const numbered = (posts) => {
   const drops = posts
     .filter((p) => p.stream === 'drop')

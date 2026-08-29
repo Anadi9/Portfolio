@@ -82,9 +82,14 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
     >
       <div style={{ maxWidth: MEASURE, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: s[4], justifyContent: 'space-between' }}>
         <span style={{ ...label(10, 500, 0.14), color: c.dimOnInk }}>NOTES — {BYLINE}</span>
-        <Link to="/" style={{ ...label(10, 700, 0.14), color: c.mark, textDecoration: 'none' }}>
-          BACK TO THE PORTFOLIO →
-        </Link>
+        <span style={{ display: 'flex', gap: s[5] }}>
+          <a href="/rss.xml" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
+            RSS
+          </a>
+          <Link to="/" style={{ ...label(10, 700, 0.14), color: c.mark, textDecoration: 'none' }}>
+            BACK TO THE PORTFOLIO →
+          </Link>
+        </span>
       </div>
     </footer>
   </div>

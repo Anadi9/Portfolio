@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite-react-ssg dev",
-    "build": "vite-react-ssg build && node scripts/generate-og.mjs",
-    "build:dev": "vite-react-ssg build --mode development && node scripts/generate-og.mjs",
+    "build": "vite-react-ssg build && node scripts/generate-og.mjs && node scripts/generate-feeds.mjs",
+    "build:dev": "vite-react-ssg build --mode development && node scripts/generate-og.mjs && node scripts/generate-feeds.mjs",
     "lint": "eslint .",
     "preview": "vite preview --outDir dist",
     "test": "vitest run",

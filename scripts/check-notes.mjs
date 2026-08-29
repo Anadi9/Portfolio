@@ -60,6 +60,18 @@ const index = readFileSync('dist/notes/index.html', 'utf8');
 check('index prerenders 12 feed cards', count(index, 'pf-feed-card"') === 12);
 check('index prerenders 4 filter chips', count(index, 'aria-pressed') === 4);
 
+// The feeds list every published post and nothing else.
+const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
+const rss = readFileSync('dist/rss.xml', 'utf8');
+check(`sitemap lists 14 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 14);
+check(`rss lists 12 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 12);
+check('robots.txt declares the sitemap', readFileSync('dist/robots.txt', 'utf8').includes('Sitemap:'));
+for (const page of pages) {
+  const url = 'https://anadithakur.in/' + page.replace('dist/', '').replace('/index.html', '');
+  check(`${url} is missing from the sitemap`, sitemap.includes(`<loc>${url}</loc>`));
+  check(`${url} is missing from the rss feed`, rss.includes(`<link>${url}</link>`));
+}
+
 // No scroll engine reached any notes chunk. `/` is allowed both; anything a
 // notes route pulls in is not.
 //
