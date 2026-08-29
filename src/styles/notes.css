@@ -545,3 +545,36 @@ details[open] > .pf-copy-more {
     border-color: #8a6a2a;
   }
 }
+
+/* The banner plate.
+   `image-rendering: pixelated` is the whole technique: the source is a 360x60
+   PNG and the browser must replicate its pixels rather than smooth them, or the
+   art becomes a blurry gradient at the size it actually renders.
+   `object-position: left` so that what gets cropped is the tail of the word,
+   which is the part designed to be cropped, at every viewport width.
+   This is the ONLY place neon appears on this site — see the banners spec. */
+.pf-banner {
+  height: clamp(96px, 14vw, 200px);
+  margin-bottom: 40px;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid #e4ded0;
+  border-left-width: 24px;
+}
+
+.pf-banner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  image-rendering: pixelated;
+}
+
+/* A neon plate on paper is a solid block of toner and tells the reader
+   nothing. */
+@media print {
+  .pf-banner {
+    display: none;
+  }
+}
