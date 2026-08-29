@@ -37,6 +37,15 @@ running list of everyone who asked instead of scrolling comments to find them.
 
 **Setup time:** ~10 minutes · **Idea index entry:** [#1 on the swipe file](/drops/swipe)
 
+<Flow
+  caption="The DM is native to Instagram. Everything after it is the part you build."
+  nodes={[
+    { kind: 'trigger', name: 'Keyword comment', config: "Instagram's own keyword reply sends the DM — no n8n in this hop." },
+    { kind: 'step', name: 'Webhook', config: 'n8n or Zapier watches for the DM automation event.' },
+    { kind: 'action', name: 'Append row', config: 'Username, keyword, timestamp into Sheets or Airtable.' },
+  ]}
+/>
+
 #### Trigger
 
 Instagram Professional Dashboard → Automations → Keyword replies. The DM itself
@@ -117,6 +126,16 @@ page.
 
 **Setup time:** ~15 minutes · **Idea index entry:** [#3 on the swipe file](/drops/swipe)
 
+<Flow
+  caption="A blank page replaced by three drafts, before you open the app."
+  nodes={[
+    { kind: 'trigger', name: 'New file', config: 'Watched Google Drive or Dropbox folder.' },
+    { kind: 'step', name: 'Extract', config: 'Transcript or description off the file.' },
+    { kind: 'step', name: 'AI draft', config: 'Fixed prompt — 3 captions and 12 hashtags.' },
+    { kind: 'action', name: 'Post for review', config: 'Notion row or a Slack channel.' },
+  ]}
+/>
+
 #### Trigger
 
 New file added to a watched Google Drive or Dropbox folder.
@@ -192,6 +211,16 @@ miss a new lead.
 
 **Setup time:** ~15 minutes · **Idea index entry:** [#8 on the swipe file](/drops/swipe)
 
+<Flow
+  caption="Two writes at the end, because a CRM record nobody is told about is a record nobody reads."
+  nodes={[
+    { kind: 'trigger', name: 'Form submission', config: 'Tally or Typeform intake.' },
+    { kind: 'step', name: 'Enrich', config: 'Email and company through Clearbit, Apollo or similar.' },
+    { kind: 'step', name: 'Upsert CRM', config: 'Create or update in Notion, Airtable or your CRM.' },
+    { kind: 'action', name: 'Slack ping', config: 'So the lead is seen the same day.' },
+  ]}
+/>
+
 #### Trigger
 
 New submission on a Tally or Typeform intake form.
@@ -254,6 +283,16 @@ Linear activity, post performance, and the week ahead — so Monday starts with
 full context and zero app-hopping.
 
 **Setup time:** ~15–20 minutes
+
+<Flow
+  caption="Fan-in: several sources, one summary, one message."
+  nodes={[
+    { kind: 'trigger', name: 'Sunday 8pm', config: 'Schedule node. No polling.' },
+    { kind: 'step', name: 'Pull activity', config: 'GitHub or Linear via API, plus Instagram insights if available.' },
+    { kind: 'step', name: 'Summarize', config: 'Everything combined into one prompt.' },
+    { kind: 'action', name: 'Send digest', config: 'Email or a Slack DM to yourself.' },
+  ]}
+/>
 
 #### Trigger
 
@@ -321,6 +360,17 @@ and sends automatically, with follow-up reminders if it isn't paid within a set
 number of days.
 
 **Setup time:** ~15 minutes · **Idea index entry:** [#7 on the swipe file](/drops/swipe)
+
+<Flow
+  caption="The only chain here that waits. The wait is the whole feature."
+  nodes={[
+    { kind: 'trigger', name: 'Status → Won', config: 'A CRM record changes in Notion or Airtable.' },
+    { kind: 'step', name: 'Generate invoice', config: 'Stripe or QuickBooks.' },
+    { kind: 'step', name: 'Email client', config: 'Invoice attached.' },
+    { kind: 'step', name: 'Wait X days', config: 'Then re-check payment status.' },
+    { kind: 'action', name: 'Reminder if unpaid', config: 'Skipped entirely when it has already cleared.' },
+  ]}
+/>
 
 #### Trigger
 
