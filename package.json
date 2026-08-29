@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview --outDir dist",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check": "node scripts/check-notes.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
