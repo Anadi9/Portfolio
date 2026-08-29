@@ -71,3 +71,108 @@ describe('banner-art — neonFor', () => {
     }
   });
 });
+
+import { BANNER_H as H, BANNER_W as W, CREAM, CYAN, FONT, GROUND, MAGENTA, bannerArt, layoutWord } from './banner-art.mjs';
+
+/** Every word this corpus can ever ask the font for. */
+const CORPUS_WORDS = ['SWIPE', 'SYSTEM', 'PROMPTS', 'AUTOMATE', 'WORKFLOW', 'CHEATSHEET', 'WISDOM', 'DISPATCH'];
+
+describe('banner-art — FONT', () => {
+  it('covers A-Z and nothing else', () => {
+    const keys = Object.keys(FONT).sort();
+    expect(keys).toHaveLength(26);
+    expect(keys[0]).toBe('A');
+    expect(keys[25]).toBe('Z');
+  });
+
+  it('is uniformly 7 rows of 5 cells', () => {
+    for (const [ch, rows] of Object.entries(FONT)) {
+      expect(rows, ch).toHaveLength(7);
+      for (const row of rows) {
+        expect(row, ch).toHaveLength(5);
+        expect(row, ch).toMatch(/^[#.]{5}$/);
+      }
+    }
+  });
+
+  it('has a glyph for every character the corpus uses', () => {
+    for (const word of CORPUS_WORDS) {
+      for (const ch of word) expect(FONT[ch], `${word}: ${ch}`).toBeDefined();
+    }
+  });
+
+  it('draws something for every glyph', () => {
+    for (const [ch, rows] of Object.entries(FONT)) {
+      expect(rows.join('').includes('#'), ch).toBe(true);
+    }
+  });
+});
+
+describe('banner-art — layoutWord', () => {
+  it('always overspans the plate so the word is clipped', () => {
+    for (const word of CORPUS_WORDS) {
+      const { advance, x0 } = layoutWord(word);
+      expect(x0 + advance * word.length, word).toBeGreaterThan(W);
+    }
+  });
+
+  it('never lets two letters collide', () => {
+    for (const word of CORPUS_WORDS) {
+      const { advance, glyphW } = layoutWord(word);
+      expect(advance, word).toBeGreaterThan(glyphW);
+    }
+  });
+
+  it('sets every word at the same cap height', () => {
+    const heights = new Set(CORPUS_WORDS.map((w) => layoutWord(w).glyphH));
+    expect(heights.size).toBe(1);
+  });
+
+  it('keeps the word inside the plate vertically', () => {
+    const { y0, glyphH } = layoutWord('AUTOMATE');
+    expect(y0).toBeGreaterThanOrEqual(0);
+    expect(y0 + glyphH).toBeLessThanOrEqual(H);
+  });
+});
+
+describe('banner-art — bannerArt word layer', () => {
+  const art = () => bannerArt({ slug: 'automate', stream: 'drop', keyword: 'AUTOMATE' });
+
+  it('returns a full grid', () => {
+    const a = art();
+    expect(a.width).toBe(W);
+    expect(a.height).toBe(H);
+    expect(a.cells).toHaveLength(W * H);
+    expect(a.wordMask).toHaveLength(W * H);
+  });
+
+  it('is byte-identical between runs', () => {
+    expect(Array.from(art().cells)).toEqual(Array.from(art().cells));
+  });
+
+  it('differs between slugs', () => {
+    const other = bannerArt({ slug: 'workflow', stream: 'drop', keyword: 'WORKFLOW' });
+    expect(Array.from(art().cells)).not.toEqual(Array.from(other.cells));
+  });
+
+  it('draws the word in cream with a chromatic fringe', () => {
+    const a = art();
+    const has = (v) => a.cells.includes(v);
+    expect(has(CREAM)).toBe(true);
+    expect(has(CYAN)).toBe(true);
+    expect(has(MAGENTA)).toBe(true);
+  });
+
+  it('marks only word cells in the mask', () => {
+    const a = art();
+    for (let i = 0; i < a.cells.length; i++) {
+      if (a.wordMask[i]) expect(a.cells[i]).not.toBe(GROUND);
+    }
+    expect(a.wordMask.some((v) => v === 1)).toBe(true);
+  });
+
+  it('uses every cell value from the palette only', () => {
+    const a = art();
+    for (const v of a.cells) expect(v).toBeLessThan(a.palette.length);
+  });
+});

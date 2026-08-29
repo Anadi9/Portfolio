@@ -84,3 +84,132 @@ export const neonFor = (rng) => {
   const secondary = pool[Math.floor(rng() * pool.length)];
   return [primary, secondary];
 };
+
+/**
+ * A 5 × 7 uppercase bitmap font, A–Z.
+ *
+ * Hand-authored rather than rasterised from a font file, and that is the point:
+ * scaling vector type down to a 60-cell plate produces anti-aliased edges that
+ * the `image-rendering: pixelated` upscale then magnifies into mush. Bitmap
+ * glyphs scale by integer replication and stay hard.
+ *
+ * It also means advance width is exact rather than measured, which is what lets
+ * this run in a build script with no text-measurement API anywhere in reach.
+ */
+export const FONT = {
+  A: ['.###.', '#...#', '#...#', '#####', '#...#', '#...#', '#...#'],
+  B: ['####.', '#...#', '#...#', '####.', '#...#', '#...#', '####.'],
+  C: ['.###.', '#...#', '#....', '#....', '#....', '#...#', '.###.'],
+  D: ['####.', '#...#', '#...#', '#...#', '#...#', '#...#', '####.'],
+  E: ['#####', '#....', '#....', '####.', '#....', '#....', '#####'],
+  F: ['#####', '#....', '#....', '####.', '#....', '#....', '#....'],
+  G: ['.###.', '#...#', '#....', '#.###', '#...#', '#...#', '.###.'],
+  H: ['#...#', '#...#', '#...#', '#####', '#...#', '#...#', '#...#'],
+  I: ['#####', '..#..', '..#..', '..#..', '..#..', '..#..', '#####'],
+  J: ['....#', '....#', '....#', '....#', '#...#', '#...#', '.###.'],
+  K: ['#...#', '#..#.', '#.#..', '##...', '#.#..', '#..#.', '#...#'],
+  L: ['#....', '#....', '#....', '#....', '#....', '#....', '#####'],
+  M: ['#...#', '##.##', '#.#.#', '#...#', '#...#', '#...#', '#...#'],
+  N: ['#...#', '##..#', '#.#.#', '#..##', '#...#', '#...#', '#...#'],
+  O: ['.###.', '#...#', '#...#', '#...#', '#...#', '#...#', '.###.'],
+  P: ['####.', '#...#', '#...#', '####.', '#....', '#....', '#....'],
+  Q: ['.###.', '#...#', '#...#', '#...#', '#.#.#', '#..#.', '.##.#'],
+  R: ['####.', '#...#', '#...#', '####.', '#.#..', '#..#.', '#...#'],
+  S: ['.###.', '#...#', '#....', '.###.', '....#', '#...#', '.###.'],
+  T: ['#####', '..#..', '..#..', '..#..', '..#..', '..#..', '..#..'],
+  U: ['#...#', '#...#', '#...#', '#...#', '#...#', '#...#', '.###.'],
+  V: ['#...#', '#...#', '#...#', '#...#', '#...#', '.#.#.', '..#..'],
+  W: ['#...#', '#...#', '#...#', '#...#', '#.#.#', '##.##', '#...#'],
+  X: ['#...#', '#...#', '.#.#.', '..#..', '.#.#.', '#...#', '#...#'],
+  Y: ['#...#', '#...#', '.#.#.', '..#..', '..#..', '..#..', '..#..'],
+  Z: ['#####', '....#', '...#.', '..#..', '.#...', '#....', '#####'],
+};
+
+const GLYPH_COLS = 5;
+const GLYPH_ROWS = 7;
+/** Cap height as a fraction of the plate. */
+const CAP = 0.9;
+/** How far past the right edge the string runs. */
+const OVERSPAN = 1.15;
+const INSET = 3;
+
+/**
+ * Constant cap height, variable tracking.
+ *
+ * The obvious approach — vary the type size until the string hits a target
+ * width — does not work on a 6:1 plate: sizing `SWIPE` to span 360 cells needs
+ * glyphs several times taller than the 60 available. Tracking is the only free
+ * variable, so every word is set at the same size and the *gaps* do the work.
+ * The result is that all twelve plates share a baseline, a cap height, and an
+ * overspan, and differ only in how airy the letters are.
+ *
+ * The scale steps down if a word is ever long enough that its advance would be
+ * narrower than a glyph — which the corpus (5 to 10 characters) never triggers,
+ * but a future `CHEATSHEETS` would.
+ */
+export const layoutWord = (word) => {
+  const span = Math.round(BANNER_W * OVERSPAN);
+  let scale = Math.floor((BANNER_H * CAP) / GLYPH_ROWS);
+  let advance = Math.floor(span / word.length);
+  while (scale > 1 && advance <= GLYPH_COLS * scale) scale -= 1;
+  const glyphW = GLYPH_COLS * scale;
+  const glyphH = GLYPH_ROWS * scale;
+  return {
+    scale,
+    advance,
+    glyphW,
+    glyphH,
+    x0: INSET,
+    y0: Math.floor((BANNER_H - glyphH) / 2),
+  };
+};
+
+/** Paint one glyph as `scale × scale` blocks. Out-of-plate cells are dropped. */
+const stamp = (cells, mask, ch, ox, oy, scale, value, marks) => {
+  const rows = FONT[ch];
+  if (!rows) throw new Error(`banner: no glyph for \`${ch}\`.`);
+  for (let r = 0; r < GLYPH_ROWS; r++) {
+    for (let c = 0; c < GLYPH_COLS; c++) {
+      if (rows[r][c] !== '#') continue;
+      for (let dy = 0; dy < scale; dy++) {
+        const y = oy + r * scale + dy;
+        if (y < 0 || y >= BANNER_H) continue;
+        for (let dx = 0; dx < scale; dx++) {
+          const x = ox + c * scale + dx;
+          if (x < 0 || x >= BANNER_W) continue;
+          const i = y * BANNER_W + x;
+          cells[i] = value;
+          if (marks) mask[i] = 1;
+        }
+      }
+    }
+  }
+};
+
+/**
+ * The plate.
+ *
+ * Layers land back to front; later layers overwrite earlier ones. The word is
+ * drawn last of the coloured layers so the field can never eat it, and its
+ * cells are recorded in `wordMask` so the scanline pass can leave them alone —
+ * scanning the word would halve its contrast at exactly the size where it is
+ * meant to be the loudest thing on the page.
+ */
+export const bannerArt = ({ slug, stream, keyword }) => {
+  const rng = rngFor(slug);
+  const cells = new Uint8Array(BANNER_W * BANNER_H).fill(GROUND);
+  const wordMask = new Uint8Array(BANNER_W * BANNER_H);
+  const [primary, secondary] = neonFor(rng);
+
+  const word = bannerWord({ stream, keyword });
+  const { scale, advance, x0, y0 } = layoutWord(word);
+  for (let i = 0; i < word.length; i++) {
+    const x = x0 + i * advance;
+    // The fringe first, so the cream face sits on top of both offsets.
+    stamp(cells, wordMask, word[i], x - scale, y0, scale, CYAN, true);
+    stamp(cells, wordMask, word[i], x + scale, y0, scale, MAGENTA, true);
+    stamp(cells, wordMask, word[i], x, y0, scale, CREAM, true);
+  }
+
+  return { width: BANNER_W, height: BANNER_H, palette: PALETTE, cells, wordMask, primary, secondary };
+};
