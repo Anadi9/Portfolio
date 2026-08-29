@@ -15,7 +15,7 @@ import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
-import { collect, root, streamPath } from './lib/content.mjs';
+import { collect, pathOf, root } from './lib/content.mjs';
 import banners from '../src/generated/banners.json' with { type: 'json' };
 
 const OUT = join(root, 'dist', 'og');
@@ -46,6 +46,20 @@ const numbered = (posts) => {
 /** Long titles get smaller type rather than a clipped card. */
 const titleSize = (t) => (t.length <= 44 ? 70 : t.length <= 68 ? 58 : 48);
 
+/**
+ * The banner lookup, or a loud failure.
+ *
+ * A key mismatch (a stale `banners.json`, a post added after the last
+ * `prebuild`) would otherwise render a blank top band with nothing in the
+ * output to say why. Throwing here — naming the post — turns that into a
+ * failure `node scripts/generate-og.mjs` cannot miss.
+ */
+const cardBanner = (post) => {
+  const entry = banners[pathOf(post)];
+  if (!entry) throw new Error(`og: no banner for ${pathOf(post)} — run \`node scripts/generate-banners.mjs\` first.`);
+  return entry.card;
+};
+
 const card = (post) => ({
   type: 'div',
   props: {
@@ -63,7 +77,7 @@ const card = (post) => ({
       {
         type: 'img',
         props: {
-          src: banners[`/${post.dir}/${post.slug}`],
+          src: cardBanner(post),
           width: 1176,
           height: 196,
           style: { display: 'flex' },

@@ -35,8 +35,10 @@ for (const page of pages) {
   }
 
   // The plate is in the prerendered HTML and inlined, not fetched. An image
-  // above the fold that arrives over the network arrives late.
-  check(`${page}: no banner in the prerendered HTML`, html.includes('class="pf-banner'));
+  // above the fold that arrives over the network arrives late. Exactly one:
+  // spec §8.7 promises one banner per page, and `.includes` would have passed
+  // on two.
+  check(`${page}: expected exactly one banner (found ${count(html, 'class="pf-banner')})`, count(html, 'class="pf-banner') === 1);
   const banner = /<img[^>]+src="(data:image\/png;base64,[^"]+)"/.exec(html);
   check(`${page}: banner is not an inlined PNG data URI`, banner !== null);
   if (banner) {
@@ -48,6 +50,21 @@ for (const page of pages) {
   // makes, so any `<img src>` that is not a data URI would be a regression.
   const fetched = [...html.matchAll(/<img[^>]+src="(?!data:)([^"]+)"/g)];
   check(`${page}: banner work added ${fetched.length} fetched image(s)`, fetched.length === 0);
+}
+
+// Spec §8.10: all twelve OG PNGs regenerate, each 1200 x 630. This is the only
+// automated coverage of the OG side at all — a key mismatch or a stale
+// `banners.json` produces a card with a blank top band, and nothing else here
+// would catch it.
+const ogCards = globSync('dist/og/**/*.png');
+check(`found 12 OG cards (found ${ogCards.length})`, ogCards.length === 12);
+for (const card of ogCards) {
+  const buf = readFileSync(card);
+  const width = buf.readUInt32BE(16);
+  const height = buf.readUInt32BE(20);
+  check(`${card}: is ${width}x${height}, not 1200x630`, width === 1200 && height === 630);
+  const kb = buf.length / 1024;
+  check(`${card}: is ${kb.toFixed(1)}KB, over the 150KB budget`, kb < 150);
 }
 
 // The cheat sheet's eight tables survived the ProseTable swap, and gained the

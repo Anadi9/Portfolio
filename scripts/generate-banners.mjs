@@ -16,10 +16,13 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Resvg } from '@resvg/resvg-js';
-import { bannerArt } from '../src/lib/banner-art.mjs';
+import { bannerArt, GROUND } from '../src/lib/banner-art.mjs';
 import { collect, pathOf, root } from './lib/content.mjs';
 
 const OUT = join(root, 'src', 'generated');
+
+/** Width of the banner band across the top of an OG card. See generate-og.mjs. */
+const CARD_BAND_W = 1176;
 
 /**
  * Cells to SVG, run-length encoded per row.
@@ -37,7 +40,7 @@ const toSvg = ({ width, height, palette, cells }) => {
       const v = cells[y * width + x];
       let run = 1;
       while (x + run < width && cells[y * width + x + run] === v) run++;
-      if (v !== 0) {
+      if (v !== GROUND) {
         rects.push(`<rect x="${x}" y="${y}" width="${run}" height="1" fill="${palette[v]}"/>`);
       }
       x += run;
@@ -46,7 +49,7 @@ const toSvg = ({ width, height, palette, cells }) => {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" ` +
     `viewBox="0 0 ${width} ${height}" shape-rendering="crispEdges">` +
-    `<rect width="${width}" height="${height}" fill="${palette[0]}"/>` +
+    `<rect width="${width}" height="${height}" fill="${palette[GROUND]}"/>` +
     rects.join('') +
     `</svg>`
   );
@@ -61,13 +64,27 @@ if (!posts.length) {
 const banners = {};
 let total = 0;
 for (const post of posts) {
-  const art = bannerArt(post);
+  const path = pathOf(post);
+  let art;
+  try {
+    art = bannerArt({ ...post, path });
+  } catch (err) {
+    throw new Error(`banner: ${path} — ${err.message}`);
+  }
   const svg = toSvg(art);
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: art.width } }).render().asPng();
-  const uri = `data:image/png;base64,${png.toString('base64')}`;
-  banners[pathOf(post)] = uri;
-  total += uri.length;
-  console.log(`[banners] ${pathOf(post).padEnd(28)} ${(uri.length / 1024).toFixed(1)}KB`);
+
+  // Two rasterisations of the same vector SVG, not one bitmap scaled twice:
+  // resvg drawing flat rects directly at each target width keeps hard pixel
+  // edges and the six-colour palette at both sizes. Upscaling the 360-wide
+  // page PNG for the card would resample it into ~5,000 interpolated colours,
+  // which is what made the OG cards hundreds of KB apiece.
+  const pagePng = new Resvg(svg, { fitTo: { mode: 'width', value: art.width } }).render().asPng();
+  const cardPng = new Resvg(svg, { fitTo: { mode: 'width', value: CARD_BAND_W } }).render().asPng();
+  const page = `data:image/png;base64,${pagePng.toString('base64')}`;
+  const card = `data:image/png;base64,${cardPng.toString('base64')}`;
+  banners[path] = { page, card };
+  total += page.length + card.length;
+  console.log(`[banners] ${path.padEnd(28)} page ${(page.length / 1024).toFixed(1)}KB, card ${(card.length / 1024).toFixed(1)}KB`);
 }
 
 mkdirSync(OUT, { recursive: true });

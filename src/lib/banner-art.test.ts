@@ -1,5 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { BANNER_H, BANNER_W, PALETTE, bannerWord, neonFor, rngFor } from './banner-art.mjs';
+import {
+  BANNER_H,
+  BANNER_H as H,
+  BANNER_W,
+  BANNER_W as W,
+  CREAM,
+  CYAN,
+  FONT,
+  GOLD,
+  GROUND,
+  LIME,
+  MAGENTA,
+  PALETTE,
+  bannerArt,
+  bannerWord,
+  layoutWord,
+  neonFor,
+  rngFor,
+} from './banner-art.mjs';
 
 describe('banner-art — constants', () => {
   it('is a 6:1 grid', () => {
@@ -72,8 +90,6 @@ describe('banner-art — neonFor', () => {
   });
 });
 
-import { BANNER_H as H, BANNER_W as W, CREAM, CYAN, FONT, GROUND, MAGENTA, bannerArt, layoutWord } from './banner-art.mjs';
-
 /** Every word this corpus can ever ask the font for. */
 const CORPUS_WORDS = ['SWIPE', 'SYSTEM', 'PROMPTS', 'AUTOMATE', 'WORKFLOW', 'CHEATSHEET', 'WISDOM', 'DISPATCH'];
 
@@ -86,7 +102,7 @@ describe('banner-art — FONT', () => {
   });
 
   it('is uniformly 7 rows of 5 cells', () => {
-    for (const [ch, rows] of Object.entries(FONT)) {
+    for (const [ch, rows] of Object.entries(FONT as Record<string, string[]>)) {
       expect(rows, ch).toHaveLength(7);
       for (const row of rows) {
         expect(row, ch).toHaveLength(5);
@@ -102,7 +118,7 @@ describe('banner-art — FONT', () => {
   });
 
   it('draws something for every glyph', () => {
-    for (const [ch, rows] of Object.entries(FONT)) {
+    for (const [ch, rows] of Object.entries(FONT as Record<string, string[]>)) {
       expect(rows.join('').includes('#'), ch).toBe(true);
     }
   });
@@ -133,10 +149,16 @@ describe('banner-art — layoutWord', () => {
     expect(y0).toBeGreaterThanOrEqual(0);
     expect(y0 + glyphH).toBeLessThanOrEqual(H);
   });
+
+  it('throws rather than let letters overlap once scale bottoms out at 1', () => {
+    // Long enough that even scale 1 cannot keep advance above a glyph width.
+    const tooLong = 'A'.repeat(80);
+    expect(() => layoutWord(tooLong)).toThrow(/too long/);
+  });
 });
 
 describe('banner-art — bannerArt word layer', () => {
-  const art = () => bannerArt({ slug: 'automate', stream: 'drop', keyword: 'AUTOMATE' });
+  const art = () => bannerArt({ path: '/drops/automate', stream: 'drop', keyword: 'AUTOMATE' });
 
   it('returns a full grid', () => {
     const a = art();
@@ -150,8 +172,8 @@ describe('banner-art — bannerArt word layer', () => {
     expect(Array.from(art().cells)).toEqual(Array.from(art().cells));
   });
 
-  it('differs between slugs', () => {
-    const other = bannerArt({ slug: 'workflow', stream: 'drop', keyword: 'WORKFLOW' });
+  it('differs between paths', () => {
+    const other = bannerArt({ path: '/drops/workflow', stream: 'drop', keyword: 'WORKFLOW' });
     expect(Array.from(art().cells)).not.toEqual(Array.from(other.cells));
   });
 
@@ -177,26 +199,25 @@ describe('banner-art — bannerArt word layer', () => {
   });
 });
 
-import { GOLD, LIME } from './banner-art.mjs';
-
 const ALL = [
-  { slug: 'automate', stream: 'drop', keyword: 'AUTOMATE' },
-  { slug: 'cheatsheet', stream: 'drop', keyword: 'CHEATSHEET' },
-  { slug: 'swipe', stream: 'drop', keyword: 'SWIPE' },
-  { slug: 'system', stream: 'drop', keyword: 'SYSTEM' },
-  { slug: 'workflow', stream: 'drop', keyword: 'WORKFLOW' },
-  { slug: 'prompts', stream: 'drop', keyword: 'PROMPTS' },
-  { slug: 'ai-wrapper-tell', stream: 'wisdom' },
-  { slug: 'bolt-on-ai-mistake', stream: 'wisdom' },
+  { path: '/drops/automate', stream: 'drop', keyword: 'AUTOMATE' },
+  { path: '/drops/cheatsheet', stream: 'drop', keyword: 'CHEATSHEET' },
+  { path: '/drops/swipe', stream: 'drop', keyword: 'SWIPE' },
+  { path: '/drops/system', stream: 'drop', keyword: 'SYSTEM' },
+  { path: '/drops/workflow', stream: 'drop', keyword: 'WORKFLOW' },
+  { path: '/drops/prompts', stream: 'drop', keyword: 'PROMPTS' },
+  { path: '/wisdom/ai-wrapper-tell', stream: 'wisdom' },
+  { path: '/wisdom/bolt-on-ai-mistake', stream: 'wisdom' },
+  { path: '/dispatch/glm-5-3-flash', stream: 'dispatch' },
 ];
 
 describe('banner-art — field layers', () => {
   it('gives the field two distinct neon hues, never three', () => {
     for (const post of ALL) {
       const { primary, secondary } = bannerArt(post);
-      expect([MAGENTA, CYAN, LIME], post.slug).toContain(primary);
-      expect([MAGENTA, CYAN, LIME], post.slug).toContain(secondary);
-      expect(primary, post.slug).not.toBe(secondary);
+      expect([MAGENTA, CYAN, LIME], post.path).toContain(primary);
+      expect([MAGENTA, CYAN, LIME], post.path).toContain(secondary);
+      expect(primary, post.path).not.toBe(secondary);
     }
   });
 
@@ -208,13 +229,13 @@ describe('banner-art — field layers', () => {
       const field = new Set();
       for (let i = 0; i < cells.length; i++) if (!wordMask[i]) field.add(cells[i]);
       const stray = [MAGENTA, CYAN, LIME].filter((v) => field.has(v) && v !== primary && v !== secondary);
-      expect(stray, post.slug).toEqual([]);
+      expect(stray, post.path).toEqual([]);
     }
   });
 
   it('draws the gold horizon on every plate', () => {
     for (const post of ALL) {
-      expect(bannerArt(post).cells.includes(GOLD), post.slug).toBe(true);
+      expect(bannerArt(post).cells.includes(GOLD), post.path).toBe(true);
     }
   });
 
@@ -222,8 +243,8 @@ describe('banner-art — field layers', () => {
     for (const post of ALL) {
       const cells = bannerArt(post).cells;
       const lit = cells.reduce((n, v) => n + (v === GROUND ? 0 : 1), 0);
-      expect(lit / cells.length, post.slug).toBeGreaterThan(0.15);
-      expect(lit / cells.length, post.slug).toBeLessThan(0.75);
+      expect(lit / cells.length, post.path).toBeGreaterThan(0.15);
+      expect(lit / cells.length, post.path).toBeLessThan(0.75);
     }
   });
 
@@ -245,9 +266,9 @@ describe('banner-art — field layers', () => {
     }
   });
 
-  it('varies by slug even when the word is identical', () => {
-    const a = bannerArt({ slug: 'automate', stream: 'drop', keyword: 'AUTOMATE' });
-    const b = bannerArt({ slug: 'a-different-slug', stream: 'drop', keyword: 'AUTOMATE' });
+  it('varies by path even when the word is identical', () => {
+    const a = bannerArt({ path: '/drops/automate', stream: 'drop', keyword: 'AUTOMATE' });
+    const b = bannerArt({ path: '/drops/a-different-slug', stream: 'drop', keyword: 'AUTOMATE' });
     expect(Array.from(a.cells)).not.toEqual(Array.from(b.cells));
   });
 
@@ -255,7 +276,7 @@ describe('banner-art — field layers', () => {
     for (const post of ALL) {
       const { cells, wordMask } = bannerArt(post);
       const word = wordMask.reduce((n, v) => n + v, 0) / cells.length;
-      expect(word, post.slug).toBeLessThan(0.45);
+      expect(word, post.path).toBeLessThan(0.45);
     }
   });
 
@@ -268,7 +289,7 @@ describe('banner-art — field layers', () => {
         total++;
         if (cells[i] !== GROUND) lit++;
       }
-      expect(lit / total, post.slug).toBeGreaterThan(0.15);
+      expect(lit / total, post.path).toBeGreaterThan(0.15);
     }
   });
 });

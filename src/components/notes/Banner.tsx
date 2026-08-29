@@ -19,12 +19,12 @@ import type { Post } from '@/data/notes';
  * right place for it: a silent gap in dev is survivable, a shipped gap is not.
  */
 const Banner = ({ post }: { post: Post }) => {
-  const src = (banners as Record<string, string>)[post.path];
-  if (!src) return null;
+  const entry = (banners as Record<string, { page: string; card: string }>)[post.path];
+  if (!entry) return null;
 
   return (
     <div className="pf-banner pf-bleed">
-      <img src={src} alt="" aria-hidden="true" width={360} height={60} />
+      <img src={entry.page} alt="" aria-hidden="true" width={360} height={60} />
     </div>
   );
 };

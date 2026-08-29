@@ -6,9 +6,11 @@
  * Vite build, and inside the plain-Node generator script without any of them
  * needing the others' environment.
  *
- * Everything is a function of the slug. A post's banner is fixed the moment its
- * file is named and never changes on rebuild, which is the whole reason this is
- * seeded rather than random.
+ * Everything is a function of the post's path (stream + slug), not the bare
+ * slug — two streams can share a filename (`/drops/agents`, `/wisdom/agents`),
+ * and seeding from the slug alone would give them a pixel-identical field. A
+ * post's banner is fixed the moment its file is named and never changes on
+ * rebuild, which is the whole reason this is seeded rather than random.
  */
 
 export const BANNER_W = 360;
@@ -130,13 +132,9 @@ const GLYPH_ROWS = 7;
 /**
  * Cap height as a fraction of the plate.
  *
- * Cap height and tracking are independent knobs — `advance` (the letter
- * spacing) is derived from plate width and character count alone, so a
- * taller cap buys the word nothing toward filling the overspan. This number
- * is instead set by how much of the field should stay visible above and
- * below the word band: 0.62 leaves a real margin for the dither, wireframe,
- * glitch and scanline layers rather than letting the word read as giant type
- * on black.
+ * Set by how much of the field should stay visible above and below the word
+ * band: 0.62 leaves a real margin for the dither, wireframe, glitch and
+ * scanline layers rather than letting the word read as giant type on black.
  */
 const CAP = 0.62;
 /** How far past the right edge the string runs. */
@@ -164,6 +162,12 @@ export const layoutWord = (word) => {
   while (scale > 1 && advance <= GLYPH_COLS * scale) scale -= 1;
   const glyphW = GLYPH_COLS * scale;
   const glyphH = GLYPH_ROWS * scale;
+  // `scale` bottoms out at 1 regardless of `advance`: a word long enough that
+  // even the smallest scale still overlaps has no smaller step to fall back
+  // to. The generator asserts that gap rather than assuming it, so a future
+  // corpus entry that breaks it fails loudly instead of shipping overlapping
+  // letters.
+  if (advance <= glyphW) throw new Error(`banner: "${word}" is too long to letter-space without overlap.`);
   return {
     scale,
     advance,
@@ -305,12 +309,11 @@ const scanlines = (cells, mask) => {
  *
  * Layers land back to front; later layers overwrite earlier ones. The word is
  * drawn last of the coloured layers so the field can never eat it, and its
- * cells are recorded in `wordMask` so the scanline pass can leave them alone —
- * scanning the word would halve its contrast at exactly the size where it is
- * meant to be the loudest thing on the page.
+ * cells are recorded in `wordMask` so the scanline pass can leave them alone
+ * (see `scanlines` for why that matters).
  */
-export const bannerArt = ({ slug, stream, keyword }) => {
-  const rng = rngFor(slug);
+export const bannerArt = ({ path, stream, keyword }) => {
+  const rng = rngFor(path);
   const cells = new Uint8Array(BANNER_W * BANNER_H).fill(GROUND);
   const wordMask = new Uint8Array(BANNER_W * BANNER_H);
   const [primary, secondary] = neonFor(rng);

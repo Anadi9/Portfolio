@@ -7,8 +7,8 @@
  * The frontmatter is parsed here rather than imported from
  * `src/content/index.ts` because that module is a Vite module —
  * `import.meta.glob` does not exist in plain Node. Only flat scalar keys are
- * read (`title`, `summary`, `stream`, `date`, `lastVerified`, `draft`), which
- * is all either consumer needs and all the streams agree on.
+ * read (`title`, `summary`, `stream`, `date`, `lastVerified`, `draft`,
+ * `keyword`), which is all either consumer needs and all the streams agree on.
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
