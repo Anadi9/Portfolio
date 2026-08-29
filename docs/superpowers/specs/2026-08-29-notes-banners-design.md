@@ -2,11 +2,12 @@
 
 Date: 2026-08-29
 Status: approved design, not yet implemented
-Scope: `PostHeader` on the three post routes, plus the OG card generator. No
-index (`/notes`) changes, no feed changes, no MDX changes.
+Scope: `PostHeader` on the three post routes, the OG card generator, and one
+new prebuild step. No index (`/notes`) changes, no feed changes, no MDX
+changes.
 
 Builds on `2026-08-29-notes-frame-and-figures-design.md`, which establishes the
-grid, the rail, and the figure primitives this reuses.
+grid, the rail, and the `.pf-bleed` track this reuses.
 
 ---
 
@@ -23,85 +24,135 @@ Two facts constrain the answer:
   apple-touch icon and one static `og.png`. Nothing else. There is no
   photography, no illustration, and nobody to make either.
 - **There is already a generator.** `scripts/generate-og.mjs` renders one
-  satori → resvg PNG per post in the site's own palette, with a 24px cream left
-  edge it calls "the site's own signature". Adding a second, unrelated visual
-  system beside it would mean a post's social card and a post's page disagree
-  about what the post looks like.
+  satori → resvg PNG per post in the site's palette, with a 24px cream left
+  edge it calls "the site's own signature". A second, unrelated visual system
+  beside it would mean a post's social card and a post's page disagree about
+  what the post looks like.
 
-So the banner has to be generated art, drawn from text already in the
-frontmatter, and it has to be the same artwork the OG card uses.
+So the banner is generated art, driven by text already in the frontmatter, and
+it is the same artwork the OG card uses.
 
 This does not contradict decision 3 of the frame-and-figures spec ("code-drawn
 figures only"). That decision governs figures — content. A banner is
-decoration, and the rule it inherits from that decision is the one that
-matters: no image pipeline, no assets produced by hand.
+decoration, and the rule it inherits is the one that matters: no assets
+produced by hand.
 
 ## 2. Decisions
 
-Settled in brainstorming, recorded here so the plan does not relitigate them.
+Settled across two rounds of brainstorming. Recorded here so the plan does not
+relitigate them.
 
-1. **Type plus lattice**, not texture and not per-stream motif systems. The
-   oversized keyword carries identity; the node lattice carries subject. Three
-   separate per-stream motifs was rejected as three times the work for a
-   distinction the eyebrow chip already draws.
-2. **Post header and OG only.** No thumbnail on `FeedCard`, no index hero. The
-   feed's value is that twelve rows scan as one feed; a mark per row is the
-   most likely thing to break that, and it can be added later against the same
-   spec module if the feed ever needs it.
-3. **One spec module, two renderers.** The geometry is computed once, in plain
-   Node, and rendered both as inline SVG in the page and as artwork in the OG
-   card. A drifting duplicate is the failure mode this exists to prevent.
-4. **Deterministic from the slug.** A post's banner is fixed at the moment its
-   file is named. It never changes on rebuild.
-5. **No new runtime dependency and no new network request.** The page banner is
-   inline SVG markup, not a file.
-6. **Static.** No motion, no hydration, nothing to gate behind
-   `prefers-reduced-motion`.
+1. **Pixel art, neon, on a black plate.** Not the site's restrained
+   ink/cream/gold vector language. Chosen deliberately over a
+   palette-compatible version of the same technique — see §3 for how it is made
+   to coexist.
+2. **Type plus field.** An oversized bitmap word bleeding off the right edge,
+   over a generated pixel field. Not per-stream motif systems: three motifs is
+   three times the work for a distinction the eyebrow chip already draws.
+3. **Post header and OG only.** No thumbnail on `FeedCard`, no index hero. The
+   feed's value is that twelve rows scan as one feed, and a mark per row is the
+   most likely thing to break that. It can be added later against the same
+   generator if the feed ever needs it.
+4. **One generator, two consumers.** Geometry and pixels are produced once, at
+   build time, and consumed by both the page and the OG card. A drifting
+   duplicate is the failure mode this exists to prevent.
+5. **Deterministic from the slug.** A post's banner is fixed the moment its file
+   is named. It never changes on rebuild.
+6. **No new runtime dependency and no new network request.** The banner is an
+   inlined data URI, not a fetched file.
+7. **Static.** No animation, nothing to gate behind `prefers-reduced-motion`.
 
-## 3. The artwork
+## 3. Making neon coexist with paper
 
-A `1200 × 200` viewBox on ink `#0a0a0a`, carrying the 24px cream `#E4DED0` left
-edge from the OG card — so the banner reads as the same object as the social
-card rather than as a second visual language.
+The site is ink on paper, editorial, and deliberately restrained. A saturated
+neon plate cannot act as the *page's* background without the two fighting.
 
-Three layers, back to front.
+It works as **a screen embedded in a paper document**: a hard-bordered object,
+held by the same 24px cream edge the OG card uses, that the eye files as a
+device sitting in the page rather than as the site changing personality. The
+metaphor is also literally true — these posts are about automation software.
 
-### 3.1 Lattice
+The rule that makes it hold:
 
-Four to seven nodes drawn as rounded rects, 24 × 14 in viewBox units, on a
-coarse normalised grid. They are rects and not circles because `<Flow>` draws
-its nodes as boxes, and the banner should look like an abstraction of the
-figures inside the post rather than a different idea about what a node is.
+> **Neon appears nowhere on the site except inside the banner's frame.**
 
-Connectors are orthogonal — horizontal, vertical, or one 90° elbow. Never
-diagonal, never curved. Cream at 14% opacity, 1px hairline, matching the
-`rgba(10,10,10,.2)` hairline weight the notes CSS uses throughout, inverted for
-ink ground.
+Not in links, not in chips, not on the index, not in the rail. The moment a
+neon hue leaks into the document's own chrome, the banner stops reading as an
+embedded artefact and starts reading as a theme.
 
-Exactly one node is filled solid gold `#C9A24B` at full opacity. One, not a
-proportion: the gold is the site's accent and a lattice with three gold nodes
-reads as a colour scheme rather than as an accent.
+## 4. The artwork
 
-### 3.2 The word
+A pixel grid roughly 300 × 50 cells, displayed at the banner's rendered size
+with `image-rendering: pixelated`, so the cells are genuinely square and hard
+edged rather than a smoothed simulation of pixels.
 
-Set in JetBrains Mono 700, cream `#E4DED0`, positioned on the baseline of the
-lower third and clipped by the box.
+### 4.1 Palette
 
-Size is derived, not fixed: the font size is chosen so the rendered string
-measures approximately 115% of the box width. A short word like `SWIPE` is
-therefore set large and a long one like `AUTOMATE` smaller, but both overflow
-the right edge by roughly the same fraction. The gesture — a word too big for
-its box, running off the edge — is identical across all twelve posts, which is
-what makes it a system rather than twelve arbitrary type sizes.
+Six indexed colours. Ground plus two carried over from the site, plus three
+neon.
 
-Advance width is computed from the mono font's fixed advance ratio (0.6 em for
-JetBrains Mono) times the character count. No text measurement API is needed,
-which is what allows the same calculation to run in the browser-free OG script.
+| role | hex | note |
+|---|---|---|
+| ground | `#0a0a0a` | `c.ink` |
+| light | `#E4DED0` | `c.accent`, the cream — also the plate's border |
+| gold | `#C9A24B` | `c.mark` |
+| magenta | `#FF2E88` | neon |
+| cyan | `#2EE6FF` | neon |
+| lime | `#B8FF2E` | neon |
 
-**Which word.** `payloadOf(post).stamp` is the existing "keyword, else stream
-name" fallback, but its non-drop value is `BUILDER WISDOM` — two words, and
-wrong shape for type this large. The banner defines its own one-word rule
-instead, in the spec module so both renderers agree:
+Cream and gold are carried over so the plate is still recognisably this site's.
+
+**Per post the hash picks two of the three neon hues, never all three.** Two is
+what makes a set of twelve banners read as one system; three per banner is a
+rainbow.
+
+**Constraint on the lime.** `tokens.ts` reserves `signal` (`#0E7A45` /
+`#35D48A`) exclusively for status, and its own comment explains why: "a status
+light that reads as ornament isn't a status light." The banner's lime is
+yellow-green at roughly 75° hue, far enough from the signal's emerald that a
+banner pixel cannot be mistaken for a live dot. The palette must never include
+`c.signal` or `c.signalOnInk`, and the implementation should assert this rather
+than rely on the constant being copied correctly.
+
+### 4.2 Layers
+
+Five, back to front, all resolved at pixel resolution before rasterising.
+
+1. **Dither ramp ground.** Bayer 4 × 4 ordered dither, ink to the post's
+   primary neon hue, darkest toward the right so the tail of the word stays
+   readable where it is largest.
+2. **Wireframe perspective grid.** Horizon line with a vanishing point placed
+   off-centre by the hash, receding floor lines and verticals, in the secondary
+   neon hue at low density (reference: the CRT room).
+3. **The word.** Bitmap glyphs drawn into the grid — not vector type scaled
+   down, which would produce anti-aliased edges the pixelated upscale then
+   magnifies into mush. Sized so the string measures ~115% of the plate width
+   and is clipped by the right edge, so a short word like `SWIPE` is set large
+   and `AUTOMATE` smaller, but both overflow by the same fraction. The gesture
+   is identical across all twelve posts, which is what makes it a system.
+4. **Chromatic offset.** The word repeated one cell left in cyan and one cell
+   right in magenta, beneath the cream original.
+5. **Glitch and scanlines.** Two or three horizontal bands displaced by a
+   hash-chosen offset, then a scanline overlay darkening every second pixel
+   row.
+
+### 4.3 Bitmap font
+
+Layer 3 needs glyph bitmaps for `A–Z` only — the word is always uppercase
+mono. A 5 × 7 cell font is enough at this scale and is roughly 26 short
+integer arrays. It is authored once, inline in the generator, with no font file
+and no text-measurement API. This is what allows the same code to run in the
+browser-free build script.
+
+Advance width is therefore exact rather than estimated: character count times
+the fixed cell advance.
+
+### 4.4 The word
+
+`payloadOf(post).stamp` is the existing "keyword, else stream name" fallback,
+but its non-drop value is `BUILDER WISDOM` — two words, wrong shape for type
+this large. The banner defines its own one-word rule, in the generator so both
+consumers agree:
 
 | stream | word |
 |---|---|
@@ -109,147 +160,158 @@ instead, in the spec module so both renderers agree:
 | `wisdom` | `WISDOM` |
 | `dispatch` | `DISPATCH` |
 
-This is a third naming of the streams, after `streamLabel` in `src/data/notes.ts`
-and its copy in `generate-og.mjs`. It is deliberate and narrow: the banner word
-is a display constraint (one word, uppercase, mono), not a label, and coupling
-it to `streamLabel` would mean a future label change silently breaks the
-typography. An unknown stream throws rather than rendering an empty banner,
-matching how `generate-og.mjs` already handles an unknown `stream`.
+This is a third naming of the streams, after `streamLabel` in
+`src/data/notes.ts` and its copy in `generate-og.mjs`. Deliberate and narrow:
+the banner word is a display constraint (one word, uppercase, in a 26-glyph
+bitmap font), not a label, and coupling it to `streamLabel` would let a future
+label change silently break the typography or reference a glyph that does not
+exist. An unknown stream throws, matching how `generate-og.mjs` already handles
+an unknown `stream`.
 
-### 3.3 Baseline
+## 5. Rendering
 
-A gold hairline under the word, full box width, echoing the `rule.base` stroke
-under the H1 immediately below it.
+### 5.1 Why not SVG
 
-### 3.4 Legibility
+The approved earlier revision of this spec shipped inline SVG. Pixel art at
+this density cannot be: a dithered 300 × 50 field is thousands of `<rect>`
+elements, well over 100KB of markup per post — worse than any image.
 
-Nothing sits on the banner but the word. The H1, the eyebrow and the date all
-remain on paper below it, so there is no text-over-image contrast case to
-manage and no need for a scrim.
+The correct shape is the opposite. Pixel art wants to be a small raster.
 
-## 4. The spec module
+### 5.2 The pipeline
 
-`src/lib/banner-spec.mjs`, with a hand-written `src/lib/banner-spec.d.ts`.
+`scripts/generate-banners.mjs`:
 
-Plain `.mjs` with no `@/` alias and no Vite-only syntax. This is forced, not
-stylistic: `generate-og.mjs` runs in plain Node and its own doc comment
-explains why it cannot import from `src/content/index.ts` — `import.meta.glob`
-does not exist there. Authoring the spec as `.mjs` is the one shape both
-consumers can import, and it follows the precedent already set by
-`src/lib/remark-headings.mjs`, which `vite.config.ts` imports the same way.
+1. Reads frontmatter with the same parser `generate-og.mjs` already uses.
+2. Computes the layers into a cell array, seeded by an FNV-1a hash of the slug
+   feeding a mulberry32 PRNG — both inlined, a few lines each, no dependency.
+3. Emits the cell array as an SVG of flat rects **at build time only** — this
+   SVG is never shipped.
+4. Rasterises it with `@resvg/resvg-js` at exactly 300 × 50, to a PNG.
+   Already a devDependency for the OG cards. **No new packages.**
+5. Writes `src/generated/banners.json` — `slug → data:image/png;base64,…`,
+   roughly 1.5–2KB per entry.
 
-```ts
-type BannerNode = { x: number; y: number; on: boolean };   // x, y normalised 0..1
-type BannerSpec = {
-  word: string;
-  nodes: BannerNode[];
-  edges: [number, number][];   // indices into nodes
-};
+`src/generated/` is gitignored. The file is a build artefact, on the same
+reasoning `generate-og.mjs` gives for writing to `dist/` rather than `public/`:
+generated binaries do not belong in the repo.
 
-bannerSpec(input: { slug: string; stream: string; keyword?: string }): BannerSpec
+### 5.3 Why a prebuild step
+
+The data URIs must exist *before* `vite-react-ssg` prerenders, because
+`Banner.tsx` imports them. `generate-og.mjs` runs *after* the build. So the
+generator cannot simply be folded into the existing post-build chain.
+
+`package.json` gains a `prebuild` script, and `build` becomes:
+
+```
+node scripts/generate-banners.mjs
+  && vite-react-ssg build
+  && node scripts/generate-og.mjs
+  && node scripts/generate-feeds.mjs
 ```
 
-It takes a plain object, not a `Post`, so it has no dependency on
-`src/data/notes.ts` and can be called from the OG script's frontmatter parser
-output directly.
+`build:dev` gains the same first step. `dev` also needs it, or the component
+imports a missing file — the plan should make `generate-banners.mjs` idempotent
+and cheap enough to run unconditionally, and document how a fresh clone gets
+the file before `npm run dev`.
 
-Randomness is an FNV-1a hash of the slug seeding a mulberry32 PRNG, both
-inlined — a few lines each, and a dependency for this would be absurd.
-Determinism is the point: the lattice for `automate` is fixed the moment the
-file is named, and never differs between the page render, the OG render, and a
-rebuild six months later.
+This build-step cost is the price of the pixel direction and is named here so
+it is not discovered during implementation.
 
-## 5. Renderers
+### 5.4 `<Banner post>` — `src/components/notes/Banner.tsx`
 
-### 5.1 `<Banner post>` — `src/components/notes/Banner.tsx`
-
-One inline `<svg viewBox="0 0 1200 200" preserveAspectRatio="xMinYMid slice">`
-containing the lattice, the word as `<text>`, and the baseline. Putting the
-word inside the SVG rather than in HTML means it scales with the box: no CSS
-font-size arithmetic per breakpoint, and no layout shift.
-
-Roughly 1KB of prerendered markup per post. No request, no new dependency, no
-change to the notes chunk beyond the component itself.
-
-Marked `aria-hidden="true"` with `role="presentation"`. It is decoration, and
-the word duplicates context the eyebrow and H1 already carry; announcing
-"AUTOMATE" before the title would be noise.
-
-### 5.2 `generate-og.mjs`
-
-The same spec is serialised to an SVG string, encoded as a `data:image/svg+xml`
-URI, and passed to satori as an `<img>` positioned behind the existing title
-layout. The same geometry and the same word as the page banner, by
-construction — composited at reduced opacity, see below.
-
-**Fallback.** If resvg rasterises the data URI incorrectly or satori refuses
-it, the lattice is rebuilt as absolutely-positioned satori divs — one per node,
-one per connector, from the same normalised coordinates — and the word as a
-positioned text div. Same artwork, more code. The implementation plan should
-verify the data-URI path first and only fall back on evidence, not
-speculatively.
-
-The OG card's existing content — eyebrow chip, title, cream left edge — is
-unchanged. The banner artwork sits behind it at reduced opacity so the title
-stays the dominant element on a social card, where the title is what earns the
-click.
-
-## 6. Placement
-
-`<Banner>` renders inside `PostHeader`, above the eyebrow row, as:
+Imports `banners.json`, looks up the slug, renders:
 
 ```jsx
 <div className="pf-banner pf-bleed">
+  <img src={dataUri} alt="" aria-hidden="true" />
+</div>
 ```
 
-`.pf-bleed` already exists in `src/styles/notes.css` and extends a child right
-into the bleed track. The banner needs no grid work at all — it consumes the
-frame the figures spec already built.
+Inlined, so zero network requests and no pop-in above the fold. `alt=""` plus
+`aria-hidden` — it is decoration, and the word duplicates context the eyebrow
+and H1 already carry.
+
+CSS: `image-rendering: pixelated`, `width: 100%`, `height: 100%`,
+`object-fit: cover`, `object-position: left center` — so the word's tail is what
+gets cropped, at every width. A cream border on the plate, and the 24px cream
+left edge.
+
+If a slug is missing from `banners.json`, the component renders nothing rather
+than a broken image. The check in §8 is what catches a genuinely missing
+banner.
+
+### 5.5 OG card
+
+The neon plate becomes a band across the top ~40% of the 1200 × 630 card, with
+the existing eyebrow chip and title on ink below it. Not artwork behind the
+title at reduced opacity: neon in a social feed is an asset, and a title
+fighting it is not.
+
+`generate-og.mjs` reads the same `banners.json` and passes the data URI to
+satori as an `<img>`. The card's existing eyebrow, title and cream left edge
+are otherwise unchanged.
+
+## 6. Placement
+
+`<Banner>` renders inside `PostHeader`, above the eyebrow row, on the existing
+`.pf-bleed` class from the frame spec. **No grid work at all** — it consumes
+the track that already exists.
 
 - Height `clamp(96px, 14vw, 200px)`, `overflow: hidden`.
-- Below 1200px `--bleed` collapses to zero and the banner is simply
-  content-width. Same markup, no media query of its own beyond the clamp.
-- `display: none` in print.
+- Below 1200px `--bleed` collapses to zero and the banner is content-width.
+  Same markup, no media query of its own beyond the clamp.
+- `display: none` in print. A neon plate on paper is a solid block of toner.
 
 ## 7. Files touched
 
 New:
 
-- `src/lib/banner-spec.mjs`
-- `src/lib/banner-spec.d.ts`
-- `src/lib/banner-spec.test.ts`
+- `scripts/generate-banners.mjs`
+- `scripts/generate-banners.test.mjs`
 - `src/components/notes/Banner.tsx`
+- `src/generated/banners.json` (generated, gitignored)
 
 Modified:
 
+- `package.json` — `prebuild` step, and `build` / `build:dev` chains
+- `.gitignore` — `src/generated/`
 - `src/components/notes/PostHeader.tsx` — render `<Banner>`
 - `src/styles/notes.css` — `.pf-banner`
-- `scripts/generate-og.mjs` — artwork behind the title layout
+- `scripts/generate-og.mjs` — neon band across the top of the card
 - `scripts/check-notes.mjs` — the built-output assertions in §8
 
 ## 8. Verification
 
-Against the built `dist/`, not against dev, as new assertions in
-`scripts/check-notes.mjs` alongside the existing ones:
+Unit, against the generator:
 
-1. Every published post's HTML contains exactly one `.pf-banner` svg, and that
-   svg contains a non-empty `<text>` element.
-2. Determinism: two `bannerSpec()` calls for the same slug are deep-equal, and
-   two different slugs produce different node sets. Unit test, in
-   `banner-spec.test.ts`.
-3. Every stream produces a word: `bannerSpec` throws on an unknown stream, and
-   the drop path uses `keyword` rather than the stream name.
-4. No new network request — the count of `<img src=` in any post page is
-   unchanged from before this pass.
-5. All twelve OG PNGs regenerate, each 1200 × 630.
-6. Notes route chunk size delta reported; still contains no GSAP and no Lenis.
-7. Rendered at 1600 / 1280 / 1024 / 375 — the word bleeds off the right edge at
-   every width and no page scrolls horizontally at 375.
+1. **Determinism** — two runs for the same slug produce a byte-identical PNG;
+   two different slugs produce different PNGs.
+2. **Palette** — every colour in the emitted PNG's palette is in the §4.1 table,
+   and neither `#0E7A45` nor `#35D48A` appears.
+3. **Two hues** — no banner uses more than two of the three neon colours.
+4. **The word** — the drop path uses `keyword`, not the stream name; an unknown
+   stream throws; every character of every word has a glyph in the bitmap font.
+
+Against the built `dist/`, as new assertions in `scripts/check-notes.mjs`:
+
+5. Every published post's HTML contains exactly one `.pf-banner`, whose `img`
+   `src` is a `data:image/png;base64,` URI.
+6. No new network request — the count of non-data `<img src=` in any post page
+   is unchanged from before this pass.
+7. Each inlined banner is under 4KB, so the page-weight cost stays bounded.
+8. All twelve OG PNGs regenerate, each 1200 × 630.
+9. Notes route chunk size delta reported; still no GSAP, no Lenis.
+10. Rendered at 1600 / 1280 / 1024 / 375 — the word is clipped by the right
+    edge at every width, the pixels stay square, and no page scrolls
+    horizontally at 375.
 
 ## 9. Explicitly out of scope
 
-- Thumbnails on `FeedCard` and a hero on `/notes`. Deferred by decision 2; the
-  spec module is the piece that makes them cheap later.
-- Any change to the OG card's title, eyebrow or layout beyond placing artwork
-  behind it.
+- Thumbnails on `FeedCard` and a hero on `/notes`. Deferred by decision 3; the
+  generator is what makes them cheap later.
+- Any neon anywhere outside the banner frame. See §3.
+- Hand-drawn pixel illustration — figurative scenes, characters, mascots. Those
+  are art, not generated output, and no amount of seeded code produces them.
 - Banners on the portfolio route (`/`). This is a notes system.
