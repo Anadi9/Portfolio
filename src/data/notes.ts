@@ -89,10 +89,21 @@ export type DispatchFrontmatter = BaseFrontmatter & {
 
 export type Frontmatter = DropFrontmatter | WisdomFrontmatter | DispatchFrontmatter;
 
-/** A post: its frontmatter, its slug, and the compiled MDX body. */
+/**
+ * One entry in a post's rail TOC.
+ *
+ * Not frontmatter — nobody writes this by hand. `remark-headings` extracts it
+ * from the body at build time, and `id` is guaranteed to match the id
+ * `rehype-slug` put on the heading itself.
+ */
+export type Heading = { depth: 2 | 3; id: string; text: string };
+
+/** A post: its frontmatter, its slug, its spine, and the compiled MDX body. */
 export type Post<F extends Frontmatter = Frontmatter> = F & {
   slug: string;
   path: string;
+  /** The h2/h3 spine, in document order. Empty for a post with no headings. */
+  headings: Heading[];
   Body: ComponentType<Record<string, unknown>>;
 };
 

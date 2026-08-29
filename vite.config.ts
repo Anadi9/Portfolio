@@ -5,6 +5,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
+import remarkHeadings from "./src/lib/remark-headings.mjs";
 import path from "path";
 
 // https://vitejs.dev/config/
@@ -19,9 +20,12 @@ export default defineConfig(({ mode }) => ({
     // strikethrough work — a comparison table is the whole payload of a page
     // like the cheat sheet, so it is not optional. `rehype-slug` gives every
     // heading an id, which is what lets a long page — the 100-prompt playbook
-    // above all — link to its own sections.
+    // above all — link to its own sections. `remarkHeadings` runs last, after
+    // the frontmatter plugins have consumed their node, and exports the same
+    // ids as a list so the notes rail can render its table of contents on the
+    // server rather than discovering it from the DOM after mount.
     { enforce: "pre" as const, ...mdx({
-      remarkPlugins: [remarkFrontmatter, [remarkMdxFrontmatter, { name: "frontmatter" }], remarkGfm],
+      remarkPlugins: [remarkFrontmatter, [remarkMdxFrontmatter, { name: "frontmatter" }], remarkGfm, remarkHeadings],
       rehypePlugins: [rehypeSlug],
     }) },
     react(),

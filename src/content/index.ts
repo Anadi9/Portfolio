@@ -1,9 +1,10 @@
-import type { Frontmatter, Post, Stream } from '@/data/notes';
+import type { Frontmatter, Heading, Post, Stream } from '@/data/notes';
 import { PINNED, streamPath } from '@/data/notes';
 
 type MdxModule = {
   default: Post['Body'];
   frontmatter?: Partial<Frontmatter>;
+  headings?: Heading[];
 };
 
 /**
@@ -41,6 +42,9 @@ const build = (): Post[] =>
         ...(fm as Frontmatter),
         slug,
         path: `/${dir}/${slug}`,
+        // Not validated like `title`/`summary`/`date`: a post is allowed to
+        // have no h2 at all, and the rail simply doesn't render a TOC.
+        headings: mod.headings ?? [],
         Body: mod.default,
       } as Post;
     })
