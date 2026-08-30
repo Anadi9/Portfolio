@@ -553,6 +553,72 @@ details[open] > .pf-copy-more {
    `object-position: left` so that what gets cropped is the tail of the word,
    which is the part designed to be cropped, at every viewport width.
    This is the ONLY place neon appears on this site — see the banners spec. */
+/* The cover band above the title.
+
+   `aspect-ratio` rather than a fixed height: the masters are captures and each
+   one is its own shape to within a percent of 2:1, and reserving the box by
+   ratio means the page never reflows when the image lands. The cap keeps it
+   from eating a short viewport whole. */
+.pf-cover {
+  aspect-ratio: 1.9;
+  max-height: 46vh;
+  margin-bottom: 40px;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid #e4ded0;
+  border-left-width: 24px;
+}
+
+.pf-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Toner. Same argument as the plate below. */
+@media print {
+  .pf-cover {
+    display: none;
+  }
+}
+
+/* The feed thumbnail. Same artwork, sitting beside the row on a wide viewport
+   and above it on a narrow one — a card whose picture arrives after its own
+   headline is a card that reads as a footnote to itself. */
+.pf-feed-row {
+  display: grid;
+  gap: 24px;
+}
+
+.pf-feed-media {
+  order: -1;
+  aspect-ratio: 1.9;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid rgba(10, 10, 10, 0.2);
+}
+
+.pf-feed-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 880px) {
+  .pf-feed-row {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .pf-feed-media {
+    order: 0;
+  }
+}
+
 .pf-banner {
   height: clamp(96px, 14vw, 200px);
   margin-bottom: 40px;

@@ -1,6 +1,6 @@
 import { Link } from 'vite-react-ssg';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
-import { readingMinutes, streamLabel, type Post } from '@/data/notes';
+import { coverFor, readingMinutes, streamLabel, type Post } from '@/data/notes';
 import { formatChip, payloadOf } from './streamPayload';
 
 const fmtDate = (iso: string) =>
@@ -56,70 +56,88 @@ const FeedCard = ({ post }: { post: Post }) => {
           color: 'var(--fc-ink)',
         }}
       >
-        <div style={{ maxWidth: 820 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[4], marginBottom: s[4] }}>
-            <span style={{ ...label(10, 700, 0.12), color: 'var(--fc-mark)' }}>{streamLabel[post.stream]}</span>
-            <time dateTime={post.date} style={{ ...label(10, 500, 0.14), color: 'var(--fc-dim)' }}>
-              {fmtDate(post.date)}
-            </time>
-            {minutes !== null && (
-              <span style={{ ...label(10, 500, 0.14), color: 'var(--fc-dim)' }}>{minutes} MIN READ</span>
-            )}
-            {post.draft && <span style={{ ...label(10, 700, 0.12), color: c.signal }}>DRAFT</span>}
-          </div>
+        <div className="pf-feed-row">
+          <div style={{ maxWidth: 820 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[4], marginBottom: s[4] }}>
+              <span style={{ ...label(10, 700, 0.12), color: 'var(--fc-mark)' }}>{streamLabel[post.stream]}</span>
+              <time dateTime={post.date} style={{ ...label(10, 500, 0.14), color: 'var(--fc-dim)' }}>
+                {fmtDate(post.date)}
+              </time>
+              {minutes !== null && (
+                <span style={{ ...label(10, 500, 0.14), color: 'var(--fc-dim)' }}>{minutes} MIN READ</span>
+              )}
+              {post.draft && <span style={{ ...label(10, 700, 0.12), color: c.signal }}>DRAFT</span>}
+            </div>
 
-          <h2 style={{ margin: 0, ...heading('d5', { vw: true }), color: 'var(--fc-ink)' }}>{post.title}</h2>
+            <h2 style={{ margin: 0, ...heading('d5', { vw: true }), color: 'var(--fc-ink)' }}>{post.title}</h2>
 
-          <p
-            style={{
-              margin: px(s[4], 0, 0),
-              maxWidth: 560,
-              font: `500 12px/1.6 ${mono}`,
-              letterSpacing: '0.04em',
-              color: 'var(--fc-dim)',
-            }}
-          >
-            <span style={{ ...label(10, 700, 0.14), color: 'var(--fc-mark)', marginRight: s[3] }}>USE WHEN</span>
-            {post.useWhen}
-          </p>
-
-          {/* The payload block. A drop puts the artifact on a plate; a wisdom
-              post leads with the cost of taking its advice; a dispatch shows the
-              story and says how many more are behind it. */}
-          <div
-            style={{
-              marginTop: s[5],
-              padding: px(s[4], s[5]),
-              background: 'var(--fc-plate)',
-              borderLeft: `${rule.base}px solid var(--fc-mark)`,
-              transition: 'background 0.22s ease',
-            }}
-          >
-            <p style={{ ...label(10, 700, 0.14), color: 'var(--fc-mark)', margin: px(0, 0, s[2]) }}>{payload.tag}</p>
             <p
-              className="pf-clamp-2"
-              style={{ margin: 0, font: `500 16px/1.45 ${display}`, color: 'var(--fc-plate-ink)' }}
+              style={{
+                margin: px(s[4], 0, 0),
+                maxWidth: 560,
+                font: `500 12px/1.6 ${mono}`,
+                letterSpacing: '0.04em',
+                color: 'var(--fc-dim)',
+              }}
             >
-              {payload.line}
+              <span style={{ ...label(10, 700, 0.14), color: 'var(--fc-mark)', marginRight: s[3] }}>USE WHEN</span>
+              {post.useWhen}
             </p>
+
+            {/* The payload block. A drop puts the artifact on a plate; a wisdom
+                post leads with the cost of taking its advice; a dispatch shows the
+                story and says how many more are behind it. */}
+            <div
+              style={{
+                marginTop: s[5],
+                padding: px(s[4], s[5]),
+                background: 'var(--fc-plate)',
+                borderLeft: `${rule.base}px solid var(--fc-mark)`,
+                transition: 'background 0.22s ease',
+              }}
+            >
+              <p style={{ ...label(10, 700, 0.14), color: 'var(--fc-mark)', margin: px(0, 0, s[2]) }}>{payload.tag}</p>
+              <p
+                className="pf-clamp-2"
+                style={{ margin: 0, font: `500 16px/1.45 ${display}`, color: 'var(--fc-plate-ink)' }}
+              >
+                {payload.line}
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[2], marginTop: s[5] }}>
+              {chip && <Chip>{chip}</Chip>}
+              {payload.more && <Chip>{payload.more}</Chip>}
+              {post.lastVerified && (
+                <span
+                  style={{
+                    padding: px(s[1], 0),
+                    ...label(10, 500, 0.14),
+                    color: 'var(--fc-dim)',
+                    alignSelf: 'center',
+                  }}
+                >
+                  VERIFIED {fmtDate(post.lastVerified)}
+                </span>
+              )}
+            </div>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[2], marginTop: s[5] }}>
-            {chip && <Chip>{chip}</Chip>}
-            {payload.more && <Chip>{payload.more}</Chip>}
-            {post.lastVerified && (
-              <span
-                style={{
-                  padding: px(s[1], 0),
-                  ...label(10, 500, 0.14),
-                  color: 'var(--fc-dim)',
-                  alignSelf: 'center',
-                }}
-              >
-                VERIFIED {fmtDate(post.lastVerified)}
-              </span>
-            )}
-          </div>
+        {/* The cover, cropped by the same scrim the post page uses. Lazy and
+            low priority: twelve of these sit below one another on the index and
+            none of them is what the reader came for. */}
+        <div className="pf-feed-media">
+          <img
+            {...coverFor(post.path)}
+            sizes="(min-width: 880px) 300px, 100vw"
+            alt=""
+            aria-hidden="true"
+            width={480}
+            height={253}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
         </div>
       </Link>
     </li>

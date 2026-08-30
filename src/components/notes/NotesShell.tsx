@@ -4,6 +4,7 @@ import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tok
 import { MEASURE } from './prose';
 import { BYLINE } from '@/components/Seo';
 import { NextUp } from './OnRamp';
+import Banner from './Banner';
 import BackToTop from './BackToTop';
 import { relatedTo } from '@/content';
 import type { Post } from '@/data/notes';
@@ -66,6 +67,20 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
     </header>
 
     <main style={{ flex: 1 }}>{children}</main>
+
+    {/* The plate closes the article rather than opening it. The cover does the
+        opening now, and two decorative bands stacked above one headline is one
+        band too many — but the plate is the only thing on the page that is
+        drawn from the post's own slug, and a sign-off is a better job for it
+        than competing with the artwork. Rendered here for the same reason
+        READ NEXT is: every post gets one by construction. */}
+    {post && (
+      <div className="pf-frame">
+        <div className="pf-content">
+          <Banner post={post} />
+        </div>
+      </div>
+    )}
 
     <BackToTop />
 

@@ -58,9 +58,3 @@ export const collect = () => {
 
 /** The post's URL path, and the key the generated banners are indexed by. */
 export const pathOf = (post) => `/${post.dir}/${post.slug}`;
-
-/**
- * `DROP 01` counts up in publication order, so the numeral on a card never
- * changes once it ships. Same (date, slug) comparator the feed uses, reversed —
- * the feed shows newest first, the numbering runs oldest first.
- */

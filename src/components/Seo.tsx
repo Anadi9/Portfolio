@@ -42,6 +42,10 @@ export const Seo = ({
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
       <meta property="og:image" content={img} />
+      {/* `index.html` declares `image/png` for the site-wide card. The per-post
+          cards are JPEGs, and a route that overrides the image has to override
+          the type with it or the two tags disagree. */}
+      <meta property="og:image:type" content={img.endsWith('.jpg') ? 'image/jpeg' : 'image/png'} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />

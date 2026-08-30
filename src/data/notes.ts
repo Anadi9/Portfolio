@@ -123,15 +123,35 @@ export type WisdomPost = Post<WisdomFrontmatter>;
 export type DispatchPost = Post<DispatchFrontmatter>;
 
 /**
- * The per-post OG card, rendered at build time by `scripts/generate-og.mjs`
- * into `dist/og/<stream>/<slug>.png`. The path mirrors the post's own URL, so
- * neither side has to carry a mapping — `/drops/system` → `/og/drops/system.png`.
+ * The per-post cover, in the three widths `scripts/generate-covers.mjs` writes.
  *
- * The cards only exist in a built `dist/`, so this 404s under `vite dev`. That
- * is deliberate: they're build artefacts, not source, and nothing but a crawler
- * ever asks for one.
+ * The path mirrors the post's own URL, so neither side carries a mapping —
+ * `/drops/system` → `/covers/drops/system-800.webp`. Unlike the OG cards these
+ * live in `public/`, which means they are real files under `vite dev` too: the
+ * hero is the first thing on the page and debugging it against a 404 is not a
+ * thing anyone should have to do.
+ *
+ * 800 is the `src` rather than 1600 — it is what a phone at 2x picks, which is
+ * most of the traffic, and it is the width a browser too old for `srcset`
+ * should get stuck with.
  */
-export const ogImageFor = (path: string) => `/og${path}.png`;
+export const COVER_WIDTHS = [480, 800, 1600] as const;
+
+export const coverFor = (path: string) => ({
+  src: `/covers${path}-800.webp`,
+  srcSet: COVER_WIDTHS.map((w) => `/covers${path}-${w}.webp ${w}w`).join(', '),
+});
+
+/**
+ * The per-post OG card — the same artwork as the cover, cropped to 1200 x 630
+ * with the title still burnt into it, written to `public/og/<stream>/<slug>.jpg`
+ * by `scripts/generate-covers.mjs`.
+ *
+ * JPEG, not PNG: these are photographs now rather than the flat six-colour card
+ * satori used to compose, and a PNG of one is ten times the size for no visible
+ * gain.
+ */
+export const ogImageFor = (path: string) => `/og${path}.jpg`;
 
 /**
  * The three posts the START HERE strip pins above the feed.

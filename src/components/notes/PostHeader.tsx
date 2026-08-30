@@ -1,4 +1,4 @@
-import Banner from './Banner';
+import Cover from './Cover';
 import { c, heading, label, px, rule, s } from '@/components/portfolio/tokens';
 import { streamLabel, type Post } from '@/data/notes';
 
@@ -21,7 +21,7 @@ const fmtDate = (iso: string) =>
  */
 const PostHeader = ({ post, children }: { post: Post; children?: React.ReactNode }) => (
   <header style={{ marginBottom: s[9] }}>
-    <Banner post={post} />
+    <Cover post={post} />
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[4], alignItems: 'center', marginBottom: s[6] }}>
       <span
         style={{

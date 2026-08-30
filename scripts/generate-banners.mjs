@@ -1,10 +1,9 @@
 /**
  * Per-post banner generation.
  *
- * Runs BEFORE `vite-react-ssg build`, unlike `generate-og.mjs` which runs
- * after. That ordering is forced: `Banner.tsx` imports the output, so it has to
- * exist before anything is prerendered. `npm run dev` gets it through `predev`
- * for the same reason.
+ * Runs BEFORE `vite-react-ssg build`. That ordering is forced: `Banner.tsx`
+ * imports the output, so it has to exist before anything is prerendered.
+ * `npm run dev` gets it through `predev` for the same reason.
  *
  * Output is a JSON map of data URIs rather than files in `public/`. Inlining
  * costs a couple of KB per page and buys back a network request for an image
@@ -20,9 +19,6 @@ import { bannerArt, GROUND } from '../src/lib/banner-art.mjs';
 import { collect, pathOf, root } from './lib/content.mjs';
 
 const OUT = join(root, 'src', 'generated');
-
-/** Width of the banner band across the top of an OG card. See generate-og.mjs. */
-const CARD_BAND_W = 1176;
 
 /**
  * Cells to SVG, run-length encoded per row.
@@ -73,18 +69,15 @@ for (const post of posts) {
   }
   const svg = toSvg(art);
 
-  // Two rasterisations of the same vector SVG, not one bitmap scaled twice:
-  // resvg drawing flat rects directly at each target width keeps hard pixel
-  // edges and the six-colour palette at both sizes. Upscaling the 360-wide
-  // page PNG for the card would resample it into ~5,000 interpolated colours,
-  // which is what made the OG cards hundreds of KB apiece.
+  // Rasterised from the vector SVG at the plate's own width, so the flat rects
+  // land on whole pixels and the six-colour palette survives. There was a
+  // second, wider rasterisation here for the band across the top of an OG card;
+  // the cards are photographs now, and it went with them.
   const pagePng = new Resvg(svg, { fitTo: { mode: 'width', value: art.width } }).render().asPng();
-  const cardPng = new Resvg(svg, { fitTo: { mode: 'width', value: CARD_BAND_W } }).render().asPng();
   const page = `data:image/png;base64,${pagePng.toString('base64')}`;
-  const card = `data:image/png;base64,${cardPng.toString('base64')}`;
-  banners[path] = { page, card };
-  total += page.length + card.length;
-  console.log(`[banners] ${path.padEnd(28)} page ${(page.length / 1024).toFixed(1)}KB, card ${(card.length / 1024).toFixed(1)}KB`);
+  banners[path] = { page };
+  total += page.length;
+  console.log(`[banners] ${path.padEnd(28)} ${(page.length / 1024).toFixed(1)}KB`);
 }
 
 mkdirSync(OUT, { recursive: true });
