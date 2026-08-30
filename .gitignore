@@ -10,7 +10,13 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+src/generated
 *.local
+
+# Cover masters: ~3MB screenshots per post, kept on disk so `npm run covers`
+# can regenerate the derivatives in public/covers and public/og. The
+# derivatives are committed; these are not.
+assets/covers
 
 # Editor directories and files
 .vscode/*

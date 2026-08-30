@@ -1,0 +1,117 @@
+---
+stream: wisdom
+title: "How to tell if a product is just an AI wrapper — three questions, ten seconds"
+useWhen: "You are evaluating an \"AI-powered\" tool, or deciding whether the thing you're building is one."
+summary: "Most \"AI-powered\" products are a prompt in a text box with a subscription attached. Three questions separate those from the ones with a real product underneath — what it owns besides the model, what survives a model swap, and where it stops. Worked against a live example on this site."
+date: "2026-08-29"
+lastVerified: "2026-08-29"
+moves:
+  - "Ask what the product owns that isn't the model. If the answer is the interface, that's a wrapper."
+  - "Ask what breaks if you swap the model for a different one. If nothing breaks, nothing was built."
+  - "Ask where it stops. A product that automates all the way to the irreversible action hasn't thought about being wrong."
+tradeoff: "This test disqualifies plenty of things worth building. A wrapper shipped in a weekend that solves a real problem beats a defensible architecture that ships in a year — and this test will tell you to build the second one."
+---
+
+"AI-powered" now means roughly what "cloud-based" meant in 2013: technically
+true of almost everything, useful as a signal for almost nothing.
+
+Underneath the label there are two different objects. One is a product that
+happens to use a model. The other is a text box that forwards your input to
+somebody else's API and charges you a monthly fee for the round trip. They cost
+about the same and they look identical on a landing page, so here are the three
+questions that separate them — and the honest cost of applying the test.
+
+## 1. What does it own that isn't the model?
+
+Every AI product is standing on infrastructure it doesn't own. That's not the
+problem; nobody trains a foundation model to build a scheduling tool. The
+question is whether anything else exists.
+
+Ask what the product owns. Real answers sound like: *a scraper that keeps
+evidence in a quotable form*, *ten years of proprietary case data*, *a
+permissions model that decides what the model is even allowed to see*, *a
+review queue with a state machine behind it*. Wrapper answers sound like: *the
+interface*, *the prompt*, *the user experience*.
+
+Prompts are not a moat. Someone will post yours on Twitter within a month of
+your launch, and it will work just as well for them as it does for you.
+
+The tell is usually visible from the pricing page. If a product can only
+describe itself in terms of what the model does — "it writes your emails", "it
+summarises your documents" — and never in terms of what it knows that you and
+the model don't, there is probably nothing under it.
+
+## 2. What breaks if you swap the model?
+
+This is the fastest of the three and the most diagnostic. Imagine the product's
+provider deprecates the model it's built on next quarter. What has to be rebuilt?
+
+If the answer is "change one string in a config file", you're looking at a
+wrapper. Not as an insult — as a description of the architecture. The model is
+the product, so the model is also the entire dependency surface.
+
+If the answer involves re-tuning a retrieval layer, revalidating an evaluation
+suite, reworking how outputs are checked against a source of truth, then there's
+real machinery. Something exists that has opinions about what a good output is,
+independent of which model produced it.
+
+The corollary is uncomfortable and worth sitting with: a genuine product gets
+*less* dramatically better when the underlying model improves, because the model
+was never doing all of the work. A wrapper's roadmap is somebody else's release
+notes.
+
+## 3. Where does it stop?
+
+The third question is about judgment rather than architecture, and it's the one
+that predicts whether you'll still be using the thing in six months.
+
+A wrapper automates end to end, because the end-to-end demo is what sells it.
+Paste in a lead, out comes a sent email. Upload a contract, out comes a signed
+one. It's an impressive demo precisely because nothing interrupts it.
+
+A product built by someone who has watched a model be confidently wrong stops
+one step short of the irreversible action. It drafts and queues. It scores and
+shows its reasoning. It flags and waits. The last step is a human pressing a
+button, and that's a design decision rather than a missing feature.
+
+## The counter-example, on this domain
+
+I'd rather point at something live than describe a hypothetical.
+[Signal](/#work) is a lead radar built on the Claude API. By question one it
+looks like a wrapper — an AI writes the outreach email, which is the most
+wrapper-shaped sentence in the category.
+
+Run the three questions on it properly:
+
+- **What it owns:** a scraper across five sources whose output is constrained to
+  things that can be quoted back. The score isn't a model output — it's derived
+  from that evidence, and the evidence sits in the table next to the number. The
+  model never sees anything the pipeline can't cite.
+- **What survives a model swap:** everything except the drafting. The scoring,
+  the sourcing, the seven-stage pipeline, the constraint that a draft may only
+  use quoted evidence — all of that is the product, and none of it changes if
+  Claude is swapped for something else.
+- **Where it stops:** at a draft, deliberately. Claude fills a review queue —
+  subject, body, two variants. Moving a lead to *contacted* is a human pressing a
+  button. It is worth having precisely because it stops one step short.
+
+That's the shape. The model does one job inside a system that was designed
+around what happens when the model is wrong.
+
+## Applying it to your own build
+
+The test cuts both ways, and it's more useful pointed inward than at a
+competitor's landing page. If you're building something and the honest answers
+are "the interface", "nothing", and "it does the whole thing" — you haven't
+necessarily built the wrong product. You've built a fast one. Just don't plan a
+defensible business on it, and don't be surprised when the model provider ships
+your feature as a checkbox.
+
+The way out isn't a better prompt. It's finding the part of the problem that
+isn't a language problem at all — the data nobody else has, the constraint
+nobody else enforces, the judgment call nobody else is willing to leave to a
+human — and building that. The model goes on top of it afterwards.
+
+If the thing you're bolting a model onto already exists, the failure mode is
+different and more expensive: [the architecture mistake founders make bolting AI
+onto an existing product](/wisdom/bolt-on-ai-mistake).

@@ -1,0 +1,103 @@
+---
+stream: dispatch
+title: "GLM-5.3-Flash — a 1M-context multimodal model under MIT at $0.15 per million"
+useWhen: "You priced part of your product against a frontier API more than six months ago."
+summary: "The anonymous free 1M-context model developers had been hammering since 20 August turned out to be Z.ai's GLM-5.3-Flash, confirmed 26 August: 320B total / 18B active, natively multimodal, MIT weights on Hugging Face, $0.15 per million in. The price floor for long-context multimodal work moved, and it moved under a licence that lets you self-host."
+date: "2026-08-29"
+lastVerified: "2026-08-29"
+dateline: "29 AUG 2026 — Bengaluru"
+items:
+  - headline: "\"Ox Alpha\" — free, 1M context, no claimed owner — was GLM-5.3-Flash all along"
+    why: "It appeared on a third-party API platform on 20 August at a price of zero and developers spent six days benchmarking a model nobody would admit to. Z.ai confirmed it on the 26th. The stealth launch is a distribution tactic worth noticing on its own: six days of unpaid, unbiased evaluation before anyone knew whose model to be sceptical of."
+  - headline: "320B total / 18B active, natively multimodal, 1,048,576-token context, MIT weights"
+    why: "Text, image and video in; 131,072 max output; hybrid sparse-plus-linear attention. Day-one serving support in SGLang, vLLM, TokenSpeed and KTransformers, which is the detail that decides whether \"open weights\" means anything in practice."
+  - headline: "$0.15 per million in, $0.50 out — half that until 9 September"
+    why: "Cached input is $0.03 per million. Whatever you make of the benchmarks, that is the number your existing cost model now has to justify itself against, and the promo ends in under two weeks."
+---
+
+Two things happened here and the second one is the story.
+
+First, a stealth launch: on 20 August a model with a 1M-token context window,
+image and video input, and a price of zero showed up on a third-party API
+platform under the name Ox Alpha, with no claimed owner. Developers spent six
+days hammering it. On 26 August Z.ai confirmed it was theirs.
+
+That's a distribution tactic worth stealing, incidentally — six days of
+enthusiastic unpaid evaluation from people who had no brand to be sceptical of
+yet, and by the time the name was attached the reputation was already built by
+strangers.
+
+Second, and more consequentially: the confirmed pricing and licence.
+
+## What actually changed
+
+Not your reasoning path. A 320B/18B mixture-of-experts model at $0.15 per million
+input tokens is not the thing you put in front of a decision that matters, and
+the benchmark table won't tell you otherwise in a way you should trust.
+
+What changed is the economics of the **high-volume, low-stakes layer** — and in
+most real products that layer is the majority of tokens by a wide margin:
+
+- Classification and routing of incoming text.
+- Extraction from documents where a schema validates the output anyway.
+- First-pass drafting that a human or a second model will revise.
+- Summarising long context where the cost of the context window was the entire
+  reason you weren't doing it.
+
+That last one is the interesting case. A 1M-token window at fifteen cents per
+million makes "just send the whole thing" viable for workloads where you
+previously had to build a retrieval layer to avoid the bill. Sometimes that's a
+genuine simplification and sometimes it's a trap — a retrieval layer is also what
+makes the output *attributable*, and dumping a million tokens in gives you an
+answer you can't trace.
+
+The two-tier architecture — cheap model for volume, frontier model for the calls
+that matter, with an explicit rule for which is which — stops being an
+optimisation you'll get to later and starts being the obvious default.
+
+## Open weights, and what that's worth
+
+MIT on Hugging Face is unusually permissive for a model this size, and the
+day-one support in SGLang and vLLM means self-hosting is a real option rather
+than a licence-page technicality.
+
+Where that matters: data residency, air-gapped deployments, anything where "we
+send customer data to a third-party API" is the blocker rather than the cost.
+Those constraints didn't previously have an answer at this capability level, and
+now they do.
+
+Where it doesn't: your margin. 320B total parameters is not cheap to serve, even
+at 18B active. Unless you have sustained volume and someone who knows how to run
+inference infrastructure, the hosted price at fifteen cents is almost certainly
+cheaper than your own GPUs plus the person minding them. Self-hosting is a
+compliance answer here far more often than a cost one.
+
+Also worth being precise about: open *weights* is not open *data*. You can run
+it, modify it and ship it. You can't audit what it was trained on — 30 trillion
+tokens of undisclosed corpus — and for some regulated buyers that's the question
+that actually gets asked.
+
+## What to actually do
+
+Take one high-volume, low-stakes task you're currently paying frontier prices
+for. Pull fifty real inputs from your own logs. Run both. Compare on your own
+criteria, not on the benchmark table.
+
+That's an afternoon, and it either saves you a recurring bill or it tells you the
+cheap tier isn't good enough for that specific job — which is also worth knowing
+and is not something a leaderboard can tell you. Do it before 9 September if you
+want to test at the promotional price, though don't build a business case on a
+promo; the list price is the number that has to work.
+
+## The week's other half
+
+This and [Claudeforce](/dispatch/claudeforce) are the same story from opposite
+ends. One says the value is moving *up*, into the system of record and the
+governance boundary. This one says it's draining *out* of the inference itself,
+because a 1M-context multimodal model is now MIT-licensed and costs fifteen cents
+a million.
+
+Both are bad news for a product whose entire substance is the call in between.
+
+*Sources: [MarkTechPost on the release](https://www.marktechpost.com/2026/08/26/z-ai-releases-glm-5-3-flash-a-320b-a18b-natively-multimodal-moe-with-a-1m-token-context/) ·
+[launch pricing, promo window and open weights](https://aiintelreport.com/frontier-models/z-ai-glm-5-3-flash-launch-discount-open-weights).*

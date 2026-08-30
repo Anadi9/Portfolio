@@ -4,30 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0a" />
-    <title>Anadi Thakur — Senior UI / Full-Stack Engineer</title>
-    <meta
-      name="description"
-      content="AI full-stack engineer with a UI specialty. Enterprise platforms for ZEISS, React Native apps, and LLM pipelines that do real work instead of demos."
-    />
     <meta name="author" content="Anadi Thakur" />
 
+    <!--
+      Title, description, canonical and the OG/Twitter block are rendered per
+      route (see `components/Seo.tsx`) and deliberately absent here. Static tags
+      in this file survive into every prerendered page, so a hardcoded title
+      here plus a rendered one on /notes puts two <title> elements in one
+      document and leaves the crawler to choose. Only invariants belong below.
+    -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!--
-      og:image is root-relative, which Facebook and LinkedIn resolve against the
-      page URL. Swap these two for absolute https:// URLs once the site has its
-      deploy domain — Twitter and a few scrapers will only take absolute.
-    -->
-    <meta property="og:title" content="Anadi Thakur — Senior UI / Full-Stack Engineer" />
-    <meta
-      property="og:description"
-      content="AI full-stack engineer with a UI specialty. Enterprise platforms for ZEISS, React Native apps, and LLM pipelines that do real work instead of demos."
-    />
-    <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Anadi Thakur" />
-    <meta property="og:image" content="/og.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -36,20 +26,13 @@
       content="Anadi Thakur — AI full-stack engineer with a UI specialty. React, TypeScript, Next.js, FastAPI, Claude API."
     />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Anadi Thakur — Senior UI / Full-Stack Engineer" />
-    <meta
-      name="twitter:description"
-      content="AI full-stack engineer with a UI specialty. Portfolio — 2026 edition."
-    />
-    <meta name="twitter:image" content="/og.png" />
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+      <link rel="alternate" type="application/rss+xml" title="Notes — Anadi Thakur" href="/rss.xml" />
   </head>
 
   <body>

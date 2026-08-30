@@ -1,0 +1,213 @@
+---
+stream: drop
+title: "Claude vs GPT vs Gemini — context, pricing, and what each is best for"
+useWhen: "You're about to commit a build to one model and want the specs that actually decide it."
+summary: "The three flagships side by side — context window, output ceiling, long-context surcharge and per-million pricing — with a plain-language note under each number, plus quick reference tables for image, video, voice, automation and coding tools. Figures as of August 2026."
+date: "2026-08-18"
+lastVerified: "2026-08-28"
+artifact: "8 comparison tables across models, image, video, voice, automation and code tools"
+format: "inline"
+keyword: "CHEATSHEET"
+---
+
+Every few months a new flagship resets the conversation, and the specs that
+actually decide whether a model fits your build — context window, output
+ceiling, how pricing scales with size — get buried under marketing language.
+
+This lays the three current flagships side by side, with a plain-language note
+under each metric so the numbers mean something before you commit an
+architecture to one of them.
+
+> **This page is dated on purpose.** Every figure below is published pricing and
+> specs as of **August 2026**, and this space moves monthly — Sora 2 was itself
+> deprecated mid-2026. Treat it as a starting default, not gospel, and re-check
+> a provider's own pricing page before a big usage decision.
+
+---
+
+## 1. Context and output
+
+*How much a model can read at once, and how much it can write back.*
+
+| | Claude (Opus 5) | GPT (5.6 Sol) | Gemini (3.1 Pro) |
+| --- | --- | --- | --- |
+| Context window | ~1M tokens | ~1.05M tokens | ~1M tokens (input) |
+| Max output | 128K tokens | 128K tokens | 65K tokens |
+| Long-context surcharge | None | 2x pricing above 272K tokens | Pricing tiers by prompt size |
+
+**Context window** — the total tokens a model can hold in a single call: your
+prompt, any files or retrieved context, plus its own reply, all sharing one
+budget. All three sit near 1M tokens — enough for a mid-size codebase or a few
+hundred pages of documents in one shot.
+
+**Max output** — the ceiling on a single response, independent of the context
+window. A 65K cap (Gemini) forces long code files or long-form documents into
+multiple turns; a 128K cap (Claude, GPT) usually clears them in one.
+
+**Long-context surcharge** — the clearest hidden cost on this page. Some
+providers charge more per token once a prompt crosses a size threshold. Claude
+holds one flat rate regardless of prompt size; GPT doubles its per-token price
+past 272K tokens; Gemini steps pricing up in tiers as the prompt grows. Worth
+modeling before you build something that habitually sends huge prompts.
+
+## 2. Pricing
+
+*Per million tokens, approximate, August 2026. Input price first, output second.*
+
+| | Claude | GPT | Gemini |
+| --- | --- | --- | --- |
+| Cheaper tier (Sonnet 5 / mid-tier) | $2–3 in / $10–15 out | — | $2 in / $12 out (up to 200K) |
+| Flagship tier (Opus 5 / Sol / 3.1 Pro) | $5 in / $25 out | ~$5 in / $30 out | Varies by tier, generally cheapest of the three |
+
+**Reading the two prices** — input tokens (what you send) are always cheaper
+than output tokens (what the model writes). Output generation is the expensive
+half of every call, often 4–6x the input rate. A workload that generates a lot
+of text — long reports, full files — costs far more than one that mostly reads
+and classifies.
+
+**Cheaper vs flagship tier** — each provider ships a smaller, faster, cheaper
+model alongside its flagship. The mid-tier models are the default for
+high-volume production traffic; reach for the flagship when a task needs the
+extra reasoning quality and the volume is low enough that the price gap doesn't
+compound.
+
+## 3. Best for
+
+*Matching the model to the shape of the job, not just the benchmark score.*
+
+| Use case | Pick |
+| --- | --- |
+| Production code in a real repo, careful multi-file changes | **Claude** — strongest on real-world coding benchmarks (SWE-bench, MCP orchestration) |
+| Fast, autonomous multi-step agent chains, terminal automation | **GPT** — leads on agentic, terminal-based task benchmarks |
+| High-volume, cost-sensitive bulk work (classification, summarizing, scale) | **Gemini** — best price-to-performance, especially Flash-tier models |
+| Long documents with no long-context penalty | **Claude** — no surcharge past standard limits |
+| Generating long code files or long-form output | **Claude or GPT** — 128K output vs Gemini's 65K cap |
+
+> **The one-line rule**
+> Real production code you'll maintain → Claude. A fast autonomous agent doing
+> many small steps → GPT. Bulk, cheap, or high-volume → Gemini.
+
+---
+
+# Part 2: beyond the chatbots
+
+*The rest of the toolkit — image, video, voice, automation and code.*
+
+## 4. Image generation
+
+*Same prompt, different strengths. Pick for the output you actually need.*
+
+| Tool | Best for | Pricing |
+| --- | --- | --- |
+| Midjourney | Most consistently striking, stylized images out of the box | $10/mo Basic, $30/mo Standard, $60/mo Pro |
+| Ideogram | Text inside images (~90% accuracy vs ~30% for Midjourney) — thumbnails, posters, memes with real text | Free tier (10 slow images/day, commercial rights included), $7–48/mo paid |
+| DALL·E 3 / GPT Image 2 | Best prompt fidelity — it actually does what you asked | Included in ChatGPT Plus, $20/mo |
+| Adobe Firefly | Commercially safe, trained on licensed content — best when a client needs zero copyright risk | Free tier, paid from ~$10/mo |
+| Recraft V3 | Vector graphics, icons, brand-consistent design assets | Free tier, paid from ~$12/mo |
+| Google Imagen (via Gemini) | Fast, cheap, integrated if you're already in the Google ecosystem | Included with Gemini plans |
+
+**Why the same prompt gives different results** — these models are trained for
+different priorities. Midjourney optimizes for aesthetic polish, Ideogram for
+legible rendered text, DALL·E / GPT Image for literal prompt-following. "Best"
+depends on which of those your output needs, not raw quality.
+
+**Free tier vs commercial rights** — a free tier that excludes commercial rights
+(Ideogram, ElevenLabs) is fine for personal testing but not for anything you'll
+publish or sell. Check the license before shipping free-tier output in client
+work.
+
+> **One-line rule**
+> Ideogram when the image needs real text on it. Midjourney when it needs to
+> look stunning. Firefly when a client needs commercial-safety guarantees.
+
+## 5. Video generation
+
+*Priced per second of output, not per subscription — cost scales with runtime.*
+
+| Tool | Best for | Pricing |
+| --- | --- | --- |
+| Google Veo 3.1 | Best all-around quality plus native audio, true 4K up to 60fps | Per-second on Vertex AI |
+| Kling 3.0 | Best value — cinematic motion, multi-shot sequences (3–15s) with subject consistency | ~$0.07–0.10/sec, 4–7x cheaper than alternatives |
+| Runway Gen-4.5 | Best creative control for editing and compositing workflows | AI Pro $19.99/mo, Ultra $249.99/mo, API $0.03–$0.50/sec |
+| Sora 2 | OpenAI's model — deprecated April 2026, API shuts down Sept 24, 2026 | ~$0.10/sec (720p) |
+
+**Per-second pricing** — unlike chat models, video generation bills by output
+runtime, not tokens. A 10-second clip costs roughly 10x a 1-second one. Budget
+by total seconds you expect to render, not by seat count.
+
+**When a model gets deprecated** — Sora 2's shutdown is the reminder that
+generative-video APIs churn fast. Don't hard-code a single provider into a
+production pipeline without a fallback.
+
+> **One-line rule**
+> Kling for cheap and high volume. Veo for the highest ceiling on quality.
+> Runway when you need granular editing control, not just generation.
+
+## 6. Voice, cloning and avatars
+
+*Turning a script into a voice or a face on camera, without recording either.*
+
+| Tool | Best for | Pricing |
+| --- | --- | --- |
+| ElevenLabs | Best voice cloning and text-to-speech quality, 3,000+ voices, 32 languages | Free (no commercial rights), $6 Starter, $22 Creator, $99 Pro |
+| HeyGen | AI talking-head avatars — script to "you on camera" without filming, 175+ languages | From ~$29/mo |
+| Synthesia | Corporate-style avatar videos, largest avatar library | From ~$29/mo |
+| D-ID | Budget talking-head avatars | From ~$5.99/mo |
+| Pose AI | All-in-one photo, video and UGC-style avatar content, identity-locked to your own face | $4.99 first week, then $14.99/wk (400 credits) |
+
+**Voice cloning vs stock avatars** — ElevenLabs clones your own voice for reuse
+across scripts; HeyGen, Synthesia and D-ID generate a face on camera, either
+yours or a stock avatar. Pick cloning to save re-recording time, avatars to post
+without being on camera at all.
+
+> **One-line rule**
+> ElevenLabs for voice — clone your own and stop re-recording. HeyGen if you
+> ever want to post without filming your face that day.
+
+## 7. Automation
+
+*Connecting tools so a workflow runs without you touching it again.*
+
+| Tool | Best for | Pricing |
+| --- | --- | --- |
+| Zapier | Non-technical, fastest to set up, 8,000+ connectors, AI Copilot builds zaps from plain English | Free tier, Professional ~$19.99–29.99/mo, billed per task |
+| Make | Visual builder with real branching logic — between Zapier's simplicity and n8n's power | From $9/mo (10,000 credits) |
+| n8n | Most powerful and cheapest at scale, self-hostable, built for AI agent workflows (multi-agent orchestration, RAG) | Free self-hosted, or from $20/mo hosted |
+
+**Per-task pricing at scale** — Zapier and Make bill per task or credit run, so
+costs climb with volume even though nothing else about the workflow changed.
+n8n's self-hosted flat rate is why it wins once a workflow runs thousands of
+times a month.
+
+> **One-line rule**
+> Zapier to get moving today. n8n once you're running the same workflow
+> thousands of times a month and per-task pricing starts hurting.
+
+If you want the workflows themselves rather than the tool comparison:
+[5 n8n automation workflows with the JSON](/drops/automate), or
+[20 automation ideas worth stealing](/drops/swipe).
+
+## 8. Bonus: build-in-public tools
+
+*The coding and content tools builders reach for alongside the above.*
+
+| Tool | Best for | Pricing |
+| --- | --- | --- |
+| Cursor | The benchmark AI code editor — multi-file refactors, understands your whole repo | From $20/mo |
+| GitHub Copilot | Easiest entry point, widest IDE support | Free tier (2,000 completions/mo), Pro $10/mo |
+| Windsurf | Agent (Cascade) that runs terminal commands and auto-fixes errors across your codebase | Free tier, Pro $20/mo |
+| Gamma | Turn a prompt or outline into a designed deck, doc or webpage in minutes | Free tier, paid from ~$10/mo |
+
+> **The one-line rule, recapped**
+>
+> - **Image** → Ideogram for text-in-image, Midjourney for pure aesthetics.
+> - **Video** → Kling for cheap and fast, Veo for the best quality.
+> - **Voice and face** → ElevenLabs, plus HeyGen if you don't want to film.
+> - **Automation** → Zapier to start, n8n once you're at scale.
+
+---
+
+No single model wins everywhere. New versions and pricing changes are constant.
+Re-check before committing a workflow, product, or client project to any one
+tool — and if this page's **last verified** stamp is more than a quarter old,
+trust the provider's pricing page over this one.

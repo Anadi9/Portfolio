@@ -1,0 +1,646 @@
+/*
+  Notes-route styling that can't be expressed as an inline style.
+
+  The prose map in `components/notes/prose.tsx` styles inline code with a cream
+  chip; inside a <pre> that chip fights the dark plate, and the nested <code>
+  is rendered by MDX, not by us, so it can't be styled at the call site.
+*/
+.pf-pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+  font: inherit !important;
+}
+
+/* --- feed card ----------------------------------------------------------
+   Every colour inside a card is a custom property so that one rule can flip the
+   whole row to ink at once. Inline styles can't reach a descendant on hover, and
+   threading `hovered` state through eleven nested spans to do it in React would
+   put a re-render behind a mouse move on a twelve-row list.
+
+   Hover is a quiet warm tint, not an invert: flipping a full-width row to ink
+   under the cursor reads as the page changing state rather than as a row
+   answering the mouse. The ink palette is kept for `:focus-visible` only, where
+   the keyboard needs feedback loud enough to find from across the page. No
+   transform here — the portfolio's `pf-nudge` translate reads as a nudge on a
+   button and as a layout bug on a full-width row. */
+.pf-feed-card {
+  --fc-bg: transparent;
+  --fc-ink: #0a0a0a;
+  --fc-body: #3a3a3a;
+  --fc-dim: #6b6b6b;
+  --fc-mark: #8a6a2a;
+  --fc-edge: rgba(10, 10, 10, 0.2);
+  --fc-plate: #f4f1ea;
+  --fc-plate-ink: #2a2a2a;
+  --fc-chip-edge: rgba(10, 10, 10, 0.45);
+
+  background: var(--fc-bg);
+  transition: background 0.22s ease, color 0.22s ease;
+}
+
+/* Tile variant — START HERE and READ NEXT, which sit on the cream band and so
+   need a filled ground of their own to read as cards. Declared above the
+   focus rule on purpose: same specificity, so source order is what decides, and
+   the ink state has to win. */
+.pf-feed-card--tile {
+  --fc-bg: #ffffff;
+}
+
+.pf-feed-card:focus-visible {
+  --fc-bg: #0a0a0a;
+  --fc-ink: #f2f2f2;
+  --fc-body: #c4c4c4;
+  --fc-dim: #9a9a9a;
+  --fc-mark: #c9a24b;
+  --fc-edge: rgba(255, 255, 255, 0.22);
+  --fc-plate: rgba(255, 255, 255, 0.07);
+  --fc-plate-ink: #e4e4e4;
+  --fc-chip-edge: rgba(228, 222, 208, 0.5);
+}
+
+@media (hover: hover) {
+  /* Tinted as a layer rather than by overriding `--fc-bg`, so the same rule
+     darkens a transparent feed row and a white tile without either losing its
+     own ground. */
+  .pf-feed-card:hover {
+    background-image: linear-gradient(rgba(10, 10, 10, 0.04), rgba(10, 10, 10, 0.04));
+    --fc-chip-edge: rgba(10, 10, 10, 0.6);
+  }
+}
+
+/* Long tradeoffs and long headlines both wrap to four lines on a phone, which
+   turns the feed back into twelve paragraphs. Two lines, then trust the click. */
+.pf-clamp-2,
+.pf-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pf-clamp-2 {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+/* Tile headlines get a third line. In a 340px column two lines cut most of
+   these titles mid-word, and a truncated headline is a worse hook than a long
+   one. */
+.pf-clamp-3 {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* START HERE, and the READ NEXT pair at the foot of every post. */
+.pf-onramp {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+}
+@media (min-width: 720px) {
+  .pf-onramp--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .pf-onramp--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- the notes frame ----------------------------------------------------
+   A one-row grid: gutter, rail, content, gutter. The rail's cell is therefore
+   the full height of the page, which is what gives `position: sticky` anything
+   to travel against.
+
+   Not a nested grid for the content column, and not `grid-row: 1 / -1` on the
+   rail. `-1` resolves to the last EXPLICIT row line, which on a grid with no
+   declared rows is line 1 — a rail placed that way is one row tall and sticky
+   does nothing. And making the content column a grid would put every block in
+   its own row, where margins no longer collapse: `prose.h2` carries 72px of
+   margin-top against the 20px margin-bottom of the paragraph above it, and
+   those collapse to 72 in flow and add to 92 in a grid. The whole vertical
+   rhythm of every post depends on that collapse.
+
+   So the content column stays normal flow, capped at the measure, and a figure
+   escapes it by pulling its right margin into the bleed. */
+.pf-frame {
+  --rail: 0px;
+  --measure: 760px;
+  --bleed: 0px;
+  --gutter: clamp(20px, 5vw, 40px);
+
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(0, 1fr)
+    [rail-start] var(--rail)
+    [rail-end content-start] minmax(0, calc(var(--measure) + var(--bleed)))
+    [content-end] minmax(0, 1fr) [full-end];
+  padding-block: 72px 112px;
+}
+
+/* The gutter stays INSIDE the content box rather than becoming a track of its
+   own. Tailwind's preflight sets `box-sizing: border-box`, so the old
+   `maxWidth: 760` with 40px of padding rendered a 680px column — about 75
+   characters at 17px, which is the measure the prose was actually tuned
+   against. Moving the gutter out to a track would have quietly widened every
+   post to ~85 characters. */
+.pf-content {
+  grid-column: content;
+  min-width: 0;
+  max-width: var(--measure);
+  padding-inline: var(--gutter);
+}
+
+/* The one declaration the right gutter exists for. Cancels the content box's
+   own right padding as well as spanning the bleed track, so a figure reaches
+   the outer edge of the field rather than stopping a gutter short. */
+.pf-bleed {
+  margin-right: calc(-1 * (var(--bleed) + var(--gutter)));
+}
+
+/* The index's feed is wider than a reading column — at 760 a feed headline gets
+   about 320px beside its payload plate and every title becomes five lines. Same
+   tracks, one number, and no bleed: the feed has no figures to widen. */
+.pf-frame--wide {
+  --measure: 1060px;
+}
+
+/* The rail track only opens where something is mounted into it. Reserving it
+   unconditionally would shift every page right by 252px to hold an empty
+   column. */
+@media (min-width: 1200px) {
+  .pf-frame--railed {
+    --rail: 252px;
+    --bleed: 188px;
+  }
+  .pf-frame--railed.pf-frame--wide {
+    --bleed: 0px;
+  }
+}
+
+/* --- the rail -----------------------------------------------------------
+   Below 1200px the grid gives it no track, so it presents as a CONTENTS
+   disclosure above the article. Same DOM either way — duplicating it would put
+   every heading anchor in the page twice. */
+.pf-rail {
+  grid-column: content;
+  justify-self: stretch;
+  max-width: var(--measure);
+  margin: 0 var(--gutter) 36px;
+  border: 2px solid #0a0a0a;
+}
+.pf-rail-summary {
+  cursor: pointer;
+  padding: 12px 16px;
+  background: #e4ded0;
+  font: 700 10px/1 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.14em;
+  list-style: none;
+}
+.pf-rail-summary::-webkit-details-marker {
+  display: none;
+}
+.pf-rail-body {
+  padding: 16px;
+}
+/* The stamp is the summary's job at narrow widths; repeating it inside the open
+   disclosure says the same word twice. */
+.pf-rail-stamp {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .pf-rail {
+    grid-column: rail;
+    justify-self: stretch;
+    align-self: start;
+    max-width: none;
+    position: sticky;
+    top: calc(var(--pf-header-h, 60px) + 24px);
+    margin: 0;
+    padding-right: 32px;
+    border: 0;
+    border-right: 1.5px solid rgba(10, 10, 10, 0.14);
+    max-height: calc(100vh - var(--pf-header-h, 60px) - 48px);
+    overflow-y: auto;
+  }
+  .pf-rail-summary {
+    display: none;
+  }
+  .pf-rail-body {
+    padding: 0;
+  }
+  .pf-rail-stamp {
+    display: block;
+  }
+}
+
+.pf-rail-progress {
+  height: 2px;
+  background: rgba(10, 10, 10, 0.14);
+}
+.pf-rail-progress span {
+  display: block;
+  height: 100%;
+  background: #8a6a2a;
+  transform-origin: left center;
+  transition: transform 0.12s linear;
+}
+
+.pf-rail-link {
+  color: #6b6b6b;
+  border-left: 1.5px solid transparent;
+  margin-left: -9px;
+  padding-left: 9px !important;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.pf-rail-link[aria-current='true'] {
+  color: #0a0a0a;
+  border-left-color: #8a6a2a;
+}
+.pf-rail-link:focus-visible {
+  color: #0a0a0a;
+  border-left-color: #0a0a0a;
+}
+@media (hover: hover) {
+  .pf-rail-link:hover {
+    color: #0a0a0a;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-rail-progress span,
+  .pf-rail-link {
+    transition: none;
+  }
+}
+
+/* An anchored heading has to clear the sticky header when jumped to. */
+.pf-content :is(h2, h3)[id] {
+  scroll-margin-top: calc(var(--pf-header-h, 60px) + 24px);
+}
+
+/* --- code blocks --------------------------------------------------------- */
+.pf-copy,
+.pf-copy-more {
+  background: transparent;
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
+  color: #0a0a0a;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.pf-copy:focus-visible,
+.pf-copy-more:focus-visible {
+  background: #0a0a0a;
+  color: #e4ded0;
+}
+@media (hover: hover) {
+  .pf-copy:hover,
+  .pf-copy-more:hover {
+    background: #0a0a0a;
+    color: #e4ded0;
+  }
+}
+.pf-copy-more {
+  display: block;
+  width: 100%;
+  text-align: center;
+  border: 0;
+  list-style: none;
+}
+.pf-copy-more::-webkit-details-marker {
+  display: none;
+}
+details[open] > .pf-copy-more {
+  border-bottom: 1.5px solid rgba(10, 10, 10, 0.2);
+}
+
+/* --- tables -------------------------------------------------------------- */
+.pf-table-wrap {
+  overflow-x: auto;
+}
+.pf-table-sort {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background: transparent;
+  border: 0;
+  color: #0a0a0a;
+  cursor: pointer;
+}
+.pf-table-sort:focus-visible {
+  outline: 2px solid #0a0a0a;
+  outline-offset: -2px;
+}
+@media (hover: hover) {
+  .pf-table-sort:hover {
+    background: rgba(10, 10, 10, 0.06);
+  }
+}
+
+/* Below 640 a comparison table used to make the reader scroll a sub-region
+   sideways to see the payload of the page. Each row becomes a labelled block
+   instead — same DOM, same real <table>, so the markup a crawler sees is
+   unchanged. */
+@media (max-width: 639px) {
+  .pf-table,
+  .pf-table tbody,
+  .pf-table tr,
+  .pf-table td {
+    display: block;
+    width: 100%;
+  }
+  .pf-table thead {
+    display: none;
+  }
+  .pf-table tr {
+    border-bottom: 2px solid #0a0a0a;
+    padding: 8px 0;
+  }
+  .pf-table tr:last-child {
+    border-bottom: 0;
+  }
+  .pf-table td {
+    border-top: 0 !important;
+    padding: 6px 16px !important;
+  }
+  .pf-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font: 700 10px/1 'JetBrains Mono', ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    color: #8a6a2a;
+  }
+}
+
+/* --- flow diagram -------------------------------------------------------- */
+.pf-flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+@media (min-width: 720px) {
+  .pf-flow {
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    grid-template-columns: none;
+  }
+}
+
+.pf-flow-node {
+  position: relative;
+  padding: 16px;
+  background: #ffffff;
+  border: 2px solid #0a0a0a;
+  transition: background 0.2s ease;
+}
+
+/* Connectors: vertical when the chain stacks, horizontal when it runs across.
+   Pseudo-elements rather than SVG — no viewBox to keep in sync with a layout
+   that changes direction at a breakpoint. */
+.pf-flow-node:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  background: #8a6a2a;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  height: 28px;
+  transform: translateX(-50%);
+}
+@media (min-width: 720px) {
+  .pf-flow-node:not(:last-child)::after {
+    left: 100%;
+    top: 50%;
+    width: 28px;
+    height: 2px;
+    transform: translateY(-50%);
+  }
+}
+
+@media (hover: hover) {
+  .pf-flow-node:hover {
+    background: #e4ded0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-copy,
+  .pf-copy-more,
+  .pf-flow-node {
+    transition: none;
+  }
+}
+
+/* --- prompt library ------------------------------------------------------ */
+.pf-prompt-search {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
+  font: 500 15px/1.4 'JetBrains Mono', ui-monospace, monospace;
+  color: #0a0a0a;
+}
+.pf-prompt-search:focus-visible {
+  outline: 2px solid #0a0a0a;
+  outline-offset: -2px;
+}
+
+.pf-prompt-chip {
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.pf-prompt-chip:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.pf-prompt-chip:focus-visible {
+  outline: 2px solid #8a6a2a;
+  outline-offset: 2px;
+}
+
+.pf-prompt-reset {
+  margin-left: 12px;
+  padding: 2px 8px;
+  background: transparent;
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
+  color: #0a0a0a;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .pf-prompt-reset:hover {
+    background: #0a0a0a;
+    color: #e4ded0;
+  }
+}
+
+/* Two columns where there is room. A hundred records in one column is the wall
+   this component exists to remove, and the cards are short enough to pair. */
+.pf-prompt-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+}
+@media (min-width: 900px) {
+  .pf-prompt-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.pf-prompt-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #0a0a0a;
+}
+.pf-prompt-card > div:last-child {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-prompt-chip {
+    transition: none;
+  }
+}
+
+/* A chain the post is arguing against. No red — the palette does not have one
+   and does not need one; grey and dashed is enough to read as "not this" at a
+   glance, which is the only job. */
+.pf-flow--wrong .pf-flow-node {
+  border-style: dashed;
+  border-color: rgba(10, 10, 10, 0.45);
+  background: #faf9f7;
+}
+.pf-flow--wrong .pf-flow-node:not(:last-child)::after {
+  background: rgba(10, 10, 10, 0.3);
+}
+
+/* Back to top. Fixed rather than sticky so it does not need a container tall
+   enough to travel in, and clear of the safe area on a phone. */
+.pf-to-top {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 20;
+  cursor: pointer;
+}
+.pf-to-top:focus-visible {
+  outline: 2px solid #c9a24b;
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  .pf-to-top:hover {
+    background: #8a6a2a;
+    border-color: #8a6a2a;
+  }
+}
+
+/* The banner plate.
+   `image-rendering: pixelated` is the whole technique: the source is a 360x60
+   PNG and the browser must replicate its pixels rather than smooth them, or the
+   art becomes a blurry gradient at the size it actually renders.
+   `object-position: left` so that what gets cropped is the tail of the word,
+   which is the part designed to be cropped, at every viewport width.
+   This is the ONLY place neon appears on this site — see the banners spec. */
+/* The cover band above the title.
+
+   `aspect-ratio` rather than a fixed height: the masters are captures and each
+   one is its own shape to within a percent of 2:1, and reserving the box by
+   ratio means the page never reflows when the image lands. The cap keeps it
+   from eating a short viewport whole. */
+.pf-cover {
+  aspect-ratio: 1.9;
+  max-height: 46vh;
+  margin-bottom: 40px;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid #e4ded0;
+  border-left-width: 24px;
+}
+
+.pf-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Toner. Same argument as the plate below. */
+@media print {
+  .pf-cover {
+    display: none;
+  }
+}
+
+/* The feed thumbnail. Same artwork, sitting beside the row on a wide viewport
+   and above it on a narrow one — a card whose picture arrives after its own
+   headline is a card that reads as a footnote to itself. */
+.pf-feed-row {
+  display: grid;
+  gap: 24px;
+}
+
+.pf-feed-media {
+  order: -1;
+  aspect-ratio: 1.9;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid rgba(10, 10, 10, 0.2);
+}
+
+.pf-feed-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 880px) {
+  .pf-feed-row {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .pf-feed-media {
+    order: 0;
+  }
+}
+
+.pf-banner {
+  height: clamp(96px, 14vw, 200px);
+  margin-bottom: 40px;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid #e4ded0;
+  border-left-width: 24px;
+}
+
+.pf-banner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  image-rendering: pixelated;
+}
+
+/* A neon plate on paper is a solid block of toner and tells the reader
+   nothing. */
+@media print {
+  .pf-banner {
+    display: none;
+  }
+}
