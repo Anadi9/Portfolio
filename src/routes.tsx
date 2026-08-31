@@ -21,6 +21,14 @@ export const routes: RouteRecord[] = [
     lazy: () => import('./pages/Home').then((m) => ({ Component: m.default })),
     entry: 'src/pages/Home.tsx',
   },
+  // Deliberately absent from every nav. It is shared by link, not browsed to —
+  // but it still has to prerender, or the link someone opens from a DM resolves
+  // to an empty root div.
+  {
+    path: '/work-with-me',
+    lazy: () => import('./pages/WorkWithMe').then((m) => ({ Component: m.default })),
+    entry: 'src/pages/WorkWithMe.tsx',
+  },
   {
     path: '/notes',
     lazy: () => import('./pages/NotesIndex').then((m) => ({ Component: m.default })),
