@@ -48,11 +48,42 @@ describe('renderEmail — body', () => {
     // bracket or ampersand later.
     expect(html).not.toMatch(/<(?!!|\/?(html|head|body|meta|title|div|p|h1|h2|h3|span|a|table|tr|td|strong|hr)\b)/i);
   });
+
+  it('escapes hostile content in findings', () => {
+    // Verify that the esc() function is load-bearing by injecting a hostile
+    // string and confirming it is escaped in the output.
+    const HOSTILE = '<script>alert(1)</script> & "xss"';
+    const baseModel = report(all(1));
+    const model = {
+      result: baseModel.result,
+      sections: baseModel.sections.map((s, i) =>
+        i === 0 ? { ...s, findings: [HOSTILE] } : s
+      ),
+    };
+    const { html } = renderEmail(model);
+
+    // Assert raw dangerous content is NOT present
+    expect(html).not.toContain('<script>alert(1)</script>');
+    // Assert escaped forms ARE present
+    expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+    expect(html).toContain('&amp;');
+    expect(html).toContain('&quot;xss&quot;');
+    // Assert the document structure is still valid (no unescaped injection)
+    expect(html).not.toMatch(/<(?!!|\/?(html|head|body|meta|title|div|p|h1|h2|h3|span|a|table|tr|td|strong|hr)\b)/i);
+  });
 });
 
 describe('renderEmail — undecided', () => {
-  it('marks an all-unknown run as undecided rather than as a low score alone', () => {
+  it('renders the undecidedLine paragraph when undecidedCount > 0', () => {
     const { html } = renderEmail(report(all(3)));
-    expect(html.toLowerCase()).toContain('not decided yet');
+    // Text unique to the undecidedLine block
+    expect(html).toContain('13 of 13 answers were');
+    expect(html).toContain('recorded separately from low');
+  });
+
+  it('does not render the undecidedLine paragraph when undecidedCount === 0', () => {
+    const { html } = renderEmail(report(all(0)));
+    // Text unique to the undecidedLine block should NOT appear
+    expect(html).not.toContain('recorded separately from low');
   });
 });
