@@ -37,9 +37,9 @@ export type Question = {
   findings: string[];
 };
 
-/** Section titles, verbatim from `src/content/drops/system.mdx`. */
+/** Section titles from the Quick-reference table in `src/content/drops/system.mdx`. */
 export const SECTIONS: Record<SectionId, string> = {
-  1: 'Problem statement',
+  1: 'Problem',
   2: 'Requirements',
   3: 'Constraints',
   4: 'Architecture',
