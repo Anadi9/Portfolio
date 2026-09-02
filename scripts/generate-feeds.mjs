@@ -47,6 +47,9 @@ if (!posts.length) {
 const pages = [
   { url: ORIGIN, modified: posts[0].modified, priority: '1.0' },
   { url: `${ORIGIN}/notes`, modified: posts[0].modified, priority: '0.9' },
+  // `/teardown` is the one sales-adjacent route meant to be found. `/work-with-me`
+  // stays out: it is shared by link on purpose and has nothing to rank for.
+  { url: `${ORIGIN}/teardown`, modified: posts[0].modified, priority: '0.9' },
   ...posts.map((p) => ({ url: p.url, modified: p.modified, priority: '0.8' })),
 ];
 

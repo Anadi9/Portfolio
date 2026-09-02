@@ -145,7 +145,10 @@ check(`index prerenders 12 feed thumbnails (found ${count(index, 'pf-feed-media'
 // The feeds list every published post and nothing else.
 const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
 const rss = readFileSync('dist/rss.xml', 'utf8');
-check(`sitemap lists 14 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 14);
+// 15 = 12 posts + `/` + `/notes` + `/teardown`. Bump this when a static route
+// is added to or removed from the sitemap in `generate-feeds.mjs`.
+check(`sitemap lists 15 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 15);
+check('sitemap lists /teardown', sitemap.includes('<loc>https://anadithakur.in/teardown</loc>'));
 check(`rss lists 12 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 12);
 check('robots.txt declares the sitemap', readFileSync('dist/robots.txt', 'utf8').includes('Sitemap:'));
 for (const page of pages) {
