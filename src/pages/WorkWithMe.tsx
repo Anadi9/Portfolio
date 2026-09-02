@@ -86,12 +86,6 @@ const stats = [
   { figure: 'Async', caption: 'first — any timezone' },
 ];
 
-const credibility = [
-  { figure: 'anta.build', caption: 'AI · Automation · Architecture' },
-  { figure: '212+', caption: 'builders following the same teardown thinking' },
-  { figure: '9 sections', caption: 'the architecture checklist I write from' },
-];
-
 const offers = [
   {
     fig: 'FIG. 01 — START HERE',
@@ -158,8 +152,7 @@ const faqs = [
   },
 ];
 
-/** Figure over caption — the hero stats and the credibility strip are the same
- *  object at the same ramp step, so they are one component. */
+/** Figure over caption — the hero stats, at one ramp step. */
 const Stat = ({ figure, caption }: { figure: string; caption: string }) => (
   <div style={{ display: 'grid', gap: s[2], maxWidth: '26ch' }}>
     <span style={{ ...heading('d6'), textTransform: 'uppercase', color: '#fff' }}>{figure}</span>
@@ -223,15 +216,6 @@ const WorkWithMe = () => (
         <div style={{ display: 'flex', gap: s[11], flexWrap: 'wrap', marginTop: s[10] }}>
           {stats.map((stat) => (
             <Stat key={stat.figure} {...stat} />
-          ))}
-        </div>
-      </section>
-
-      <section aria-label="Credibility" style={section}>
-        <p style={eyebrow}>WHERE THIS COMES FROM</p>
-        <div style={{ display: 'flex', gap: s[11], flexWrap: 'wrap', marginTop: s[7] }}>
-          {credibility.map((item) => (
-            <Stat key={item.figure} {...item} />
           ))}
         </div>
       </section>
