@@ -29,6 +29,14 @@ export const routes: RouteRecord[] = [
     lazy: () => import('./pages/WorkWithMe').then((m) => ({ Component: m.default })),
     entry: 'src/pages/WorkWithMe.tsx',
   },
+  // Unlike `/work-with-me`, this one is meant to be found — it is the entry
+  // point above the paid offers, so it carries full `Seo` and prerenders its
+  // intro and first question rather than a Start button.
+  {
+    path: '/teardown',
+    lazy: () => import('./pages/Teardown').then((m) => ({ Component: m.default })),
+    entry: 'src/pages/Teardown.tsx',
+  },
   {
     path: '/notes',
     lazy: () => import('./pages/NotesIndex').then((m) => ({ Component: m.default })),
