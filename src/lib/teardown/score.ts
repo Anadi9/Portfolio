@@ -10,10 +10,10 @@ import { MAX_RAW, QUESTIONS, type Axis, type SectionId } from './questions';
  */
 
 export type VerdictBand =
-  | 'THIN WRAPPER'
-  | 'WRAPPER WITH FOUNDATIONS'
-  | 'REAL PRODUCT, THIN IN PLACES'
-  | 'REAL PRODUCT';
+  | '🚨 THIN WRAPPER'
+  | '⚠️ WRAPPER WITH FOUNDATIONS'
+  | '🧩 REAL PRODUCT, THIN IN PLACES'
+  | '🎯 REAL PRODUCT';
 
 export type Result = {
   /** 0..100. */
@@ -30,12 +30,12 @@ const pct = (got: number, max: number) => (max === 0 ? 0 : Math.round((got / max
 
 export const band = (score: number): VerdictBand =>
   score >= 85
-    ? 'REAL PRODUCT'
+    ? '🎯 REAL PRODUCT'
     : score >= 65
-      ? 'REAL PRODUCT, THIN IN PLACES'
+      ? '🧩 REAL PRODUCT, THIN IN PLACES'
       : score >= 40
-        ? 'WRAPPER WITH FOUNDATIONS'
-        : 'THIN WRAPPER';
+        ? '⚠️ WRAPPER WITH FOUNDATIONS'
+        : '🚨 THIN WRAPPER';
 
 /**
  * The only validation the serverless function needs. Answers are the entire

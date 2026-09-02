@@ -102,7 +102,7 @@ export default function Teardown() {
         <section style={{ ...section, borderTop: 'none' }}>
           <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>FREE · {TOTAL} QUESTIONS · 3 MINUTES</p>
           <h1 style={{ margin: px(s[5], 0, 0), ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch' }}>
-            The <span style={{ color: c.mark }}>wrapper</span> test
+            The <span style={{ color: c.mark }}>wrapper</span> test 🧪
           </h1>
           <p
             style={{
@@ -136,7 +136,7 @@ export default function Teardown() {
         )}
 
         {complete && model && unlocked && (
-          <section aria-label="The breakdown" style={section}>
+          <section aria-label="The breakdown" style={{...section, background: c.mark, color: c.dimOnInk}}>
             <Report model={model} sendFailed={sendFailed} />
           </section>
         )}

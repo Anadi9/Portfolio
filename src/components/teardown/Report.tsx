@@ -22,17 +22,17 @@ const STATE_LABEL: Record<SectionReport['state'], string> = {
 const Section = ({ section }: { section: SectionReport }) => (
   <article style={{ borderTop: `${rule.base}px solid ${c.rule}`, padding: px(s[7], 0) }}>
     <div style={{ display: 'flex', gap: s[4], flexWrap: 'wrap', alignItems: 'baseline' }}>
-      <span style={{ font: `700 11px/1 ${mono}`, color: c.mark }}>
+      <span style={{ font: `700 11px/1 ${mono}`, color: c.paper }}>
         {String(section.id).padStart(2, '0')}
       </span>
       <h3 style={{ margin: 0, ...heading('d6'), color: '#fff' }}>{section.title}</h3>
-      <span style={{ ...label(10, 700, 0.14), color: c.dimOnInk, marginLeft: 'auto' }}>
+      <span style={{ ...label(10, 700, 0.14), color: c.ruleSoft, marginLeft: 'auto' }}>
         {STATE_LABEL[section.state]} · {section.score}/100
       </span>
     </div>
     <div style={{ display: 'grid', gap: s[3], marginTop: s[5], maxWidth: '62ch' }}>
       {section.findings.map((f, i) => (
-        <p key={`${section.id}-${i}`} style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.dimOnInk, textWrap: 'pretty' }}>
+        <p key={`${section.id}-${i}`} style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.rule, textWrap: 'pretty' }}>
           {f}
         </p>
       ))}
@@ -50,14 +50,14 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
   }, []);
 
   return (
-    <div>
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>THE BREAKDOWN</p>
+    <div style={{ background: c.mark, color: c.dimOnInk }}>
+      <p style={{ ...label(10, 700, 0.16), color: c.signal, margin: 0 }}>THE BREAKDOWN</p>
       <h2
         ref={headingRef}
         tabIndex={-1}
-        style={{ margin: px(s[5], 0, s[8]), ...heading('d4'), textTransform: 'uppercase', color: '#fff' }}
+        style={{ margin: px(s[5], 0, s[8]), ...heading('d4'), textTransform: 'uppercase', color: "#fff" }}
       >
-        Nine sections, as you answered them
+        Nine sections, as you answered them 📝
       </h2>
 
       {model.sections.map((section) => (
@@ -65,7 +65,7 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
       ))}
 
       <div style={{ borderTop: `${rule.base}px solid ${c.rule}`, paddingTop: s[7] }}>
-        <p style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '62ch' }}>
+        <p style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.ruleSoft, maxWidth: '62ch' }}>
           That is what the answers show. What to change first, in what order, and what it costs to get
           wrong is the recorded teardown.
         </p>
@@ -78,13 +78,13 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
             gap: s[3],
             marginTop: s[6],
             padding: px(s[4], s[5]),
-            background: c.accent,
-            color: c.ink,
+            background: c.ink,
+            color: c.accent,
             ...label(11, 700, 0.12),
             textDecoration: 'none',
           }}
         >
-          SEE THE TEARDOWN<span>↗</span>
+          👀 SEE THE TEARDOWN<span>↗</span>
         </a>
 
         {sendFailed && (

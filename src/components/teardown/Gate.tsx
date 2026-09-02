@@ -39,7 +39,7 @@ export default function Gate({ onSubmit }: { onSubmit: (email: string, honeypot:
       </h3>
       <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk }}>
         What every answer indicates, section by section, and which of them you haven&rsquo;t decided yet.
-        It opens here straight away; the email is so you keep a copy.
+        <span style={{ color: c.mark }}>It opens here straight away;</span> the email is so you keep a copy.
       </p>
 
       <div style={{ display: 'flex', gap: s[3], flexWrap: 'wrap', marginTop: s[7] }}>

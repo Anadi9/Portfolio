@@ -53,7 +53,7 @@ export const SECTIONS: Record<SectionId, string> = {
 /** Highest achievable raw score: 13 questions × 3. */
 export const MAX_RAW = 39;
 
-const UNKNOWN: Option = { label: "I'm not sure", weight: 0, unknown: true };
+const UNKNOWN: Option = { label: "🥹 I'm not sure", weight: 0, unknown: true };
 
 export const QUESTIONS: Question[] = [
   {
@@ -63,9 +63,9 @@ export const QUESTIONS: Question[] = [
     prompt:
       "Could you state what your product does in one sentence, without using the words 'AI', 'GPT' or 'Claude'?",
     options: [
-      { label: 'Yes, and the sentence is about an outcome, not a technology', weight: 3 },
-      { label: "Yes, but the sentence is basically 'it uses AI to do X'", weight: 1 },
-      { label: 'Not really, the product is the AI part', weight: 0 },
+      { label: '✅ Yes, and the sentence is about an outcome, not a technology', weight: 3 },
+      { label: "⚠️ Yes, but the sentence is basically 'it uses AI to do X'", weight: 1 },
+      { label: '❌ Not really, the product is the AI part', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -81,9 +81,9 @@ export const QUESTIONS: Question[] = [
     axis: 'evaluation',
     prompt: 'How do you decide an output is good enough to put in front of a user?',
     options: [
-      { label: 'A written eval set with a pass threshold, run before release', weight: 3 },
-      { label: 'A handful of test prompts someone checks by eye', weight: 1 },
-      { label: 'We ship and watch for complaints', weight: 0 },
+      { label: '✅ A written eval set with a pass threshold, run before release', weight: 3 },
+      { label: '⚠️ A handful of test prompts someone checks by eye', weight: 1 },
+      { label: '❌ We ship and watch for complaints', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -99,9 +99,9 @@ export const QUESTIONS: Question[] = [
     axis: 'cost',
     prompt: 'Do you know what one active user costs you in model spend per month?',
     options: [
-      { label: "Yes, to within a rough range, and it's tracked", weight: 3 },
-      { label: 'I know the total bill but not the per-user number', weight: 1 },
-      { label: 'No, we look at the invoice when it arrives', weight: 0 },
+      { label: "✅ Yes, to within a rough range, and it's tracked", weight: 3 },
+      { label: '⚠️ I know the total bill but not the per-user number', weight: 1 },
+      { label: '❌ No, we look at the invoice when it arrives', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -117,9 +117,9 @@ export const QUESTIONS: Question[] = [
     axis: 'defensibility',
     prompt: 'If your model vendor shipped your core feature natively next month, what would still be yours?',
     options: [
-      { label: "Proprietary data, workflow or integrations they don't have", weight: 3 },
-      { label: 'Our interface and our onboarding', weight: 1 },
-      { label: 'Honestly, not much', weight: 0 },
+      { label: "✅ Proprietary data, workflow or integrations they don't have", weight: 3 },
+      { label: '⚠️ Our interface and our onboarding', weight: 1 },
+      { label: '❌ Honestly, not much', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -135,9 +135,9 @@ export const QUESTIONS: Question[] = [
     axis: 'failure',
     prompt: 'What happens in your product when a model call times out or errors?',
     options: [
-      { label: 'A defined fallback path returns a degraded but useful result', weight: 3 },
-      { label: 'We retry, then show a friendly error', weight: 1 },
-      { label: 'The error surfaces as-is, or the request just hangs', weight: 0 },
+      { label: '✅ A defined fallback path returns a degraded but useful result', weight: 3 },
+      { label: '⚠️ We retry, then show a friendly error', weight: 1 },
+      { label: '❌ The error surfaces as-is, or the request just hangs', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -153,9 +153,9 @@ export const QUESTIONS: Question[] = [
     axis: 'defensibility',
     prompt: 'What do you store from each interaction?',
     options: [
-      { label: 'Structured records we could evaluate, tune or build features on', weight: 3 },
-      { label: 'Raw logs, kept in case we need them', weight: 1 },
-      { label: 'Nothing beyond what the user sees', weight: 0 },
+      { label: '✅ Structured records we could evaluate, tune or build features on', weight: 3 },
+      { label: '⚠️ Raw logs, kept in case we need them', weight: 1 },
+      { label: '❌ Nothing beyond what the user sees', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -171,9 +171,9 @@ export const QUESTIONS: Question[] = [
     axis: 'failure',
     prompt: 'When the model returns something malformed, what catches it?',
     options: [
-      { label: 'Schema validation, with defined behaviour when validation fails', weight: 3 },
-      { label: 'We parse defensively and hope', weight: 1 },
-      { label: 'It goes straight through to the user or the next system', weight: 0 },
+      { label: '✅ Schema validation, with defined behaviour when validation fails', weight: 3 },
+      { label: '⚠️ We parse defensively and hope', weight: 1 },
+      { label: '❌ It goes straight through to the user or the next system', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -189,9 +189,9 @@ export const QUESTIONS: Question[] = [
     axis: 'failure',
     prompt: 'The failure of your AI feature that would hurt a user most: is it written down anywhere?',
     options: [
-      { label: 'Written down, with the mitigation named beside it', weight: 3 },
-      { label: "We've talked about it but never written it down", weight: 1 },
-      { label: "We haven't gone through that", weight: 0 },
+      { label: '✅ Written down, with the mitigation named beside it', weight: 3 },
+      { label: "⚠️ We've talked about it but never written it down", weight: 1 },
+      { label: "❌ We haven't gone through that", weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -207,9 +207,9 @@ export const QUESTIONS: Question[] = [
     axis: 'cost',
     prompt: 'Is there a cap on what a single user or a single request can cost you?',
     options: [
-      { label: 'Yes, hard limits per request and per account', weight: 3 },
-      { label: 'Rate limiting, but no spend cap', weight: 1 },
-      { label: 'No caps', weight: 0 },
+      { label: '✅ Yes, hard limits per request and per account', weight: 3 },
+      { label: '⚠️ Rate limiting, but no spend cap', weight: 1 },
+      { label: '❌ No caps', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -225,9 +225,9 @@ export const QUESTIONS: Question[] = [
     axis: 'cost',
     prompt: "Why are you on the model you're on?",
     options: [
-      { label: 'A deliberate comparison, with the reason written down', weight: 3 },
-      { label: "It's what we started with and it works", weight: 1 },
-      { label: "It's the one everyone uses", weight: 0 },
+      { label: '✅ A deliberate comparison, with the reason written down', weight: 3 },
+      { label: "⚠️ It's what we started with and it works", weight: 1 },
+      { label: "❌ It's the one everyone uses", weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -243,9 +243,9 @@ export const QUESTIONS: Question[] = [
     axis: 'defensibility',
     prompt: 'What did you deliberately decide not to build?',
     options: [
-      { label: 'There is a list, with the reasons', weight: 3 },
-      { label: 'I could name one or two things', weight: 1 },
-      { label: 'We build whatever comes up', weight: 0 },
+      { label: '✅ There is a list, with the reasons', weight: 3 },
+      { label: '⚠️ I could name one or two things', weight: 1 },
+      { label: '❌ We build whatever comes up', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -261,9 +261,9 @@ export const QUESTIONS: Question[] = [
     axis: 'evaluation',
     prompt: "What's the biggest thing you don't know about your own product right now?",
     options: [
-      { label: "I can name it, and it's tracked somewhere", weight: 3 },
-      { label: "I can name it, but it's only in my head", weight: 1 },
-      { label: 'Nothing comes to mind', weight: 0 },
+      { label: "✅ I can name it, and it's tracked somewhere", weight: 3 },
+      { label: "⚠️ I can name it, but it's only in my head", weight: 1 },
+      { label: "❌ Nothing comes to mind", weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -279,9 +279,9 @@ export const QUESTIONS: Question[] = [
     axis: 'evaluation',
     prompt: 'When did you last change something because a number told you to, rather than because it felt right?',
     options: [
-      { label: 'Within the last month', weight: 3 },
-      { label: "At some point, but I'd have to think about when", weight: 1 },
-      { label: 'We go on judgement', weight: 0 },
+      { label: '✅ Within the last month', weight: 3 },
+      { label: "⚠️ At some point, but I'd have to think about when", weight: 1 },
+      { label: '❌ We go on judgement', weight: 0 },
       UNKNOWN,
     ],
     findings: [

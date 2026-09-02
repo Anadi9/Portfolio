@@ -104,8 +104,8 @@ const stats = [
 const offers = [
   {
     fig: 'FIG. 01 · START HERE',
-    name: 'The Teardown',
-    price: '$199',
+    name: 'The Teardown 🪚',
+    price: '$50',
     terms: 'flat, one-time',
     blurb:
       "A recorded, screen-by-screen review of your AI feature or product. I run it against the same wrapper-vs-real-product test I post about: where it's solid, where it'll break, and exactly what to change first.",
@@ -119,8 +119,8 @@ const offers = [
   },
   {
     fig: "FIG. 02 · WHEN YOU'RE READY TO FIX IT",
-    name: 'The Build',
-    price: 'From $750',
+    name: 'The Build 🧱',
+    price: 'From $550',
     terms: 'fixed scope',
     blurb:
       'I implement the fix myself (the AI feature, the integration, or the automation), scoped and priced up front from the teardown (or from a short brief if you already know what you need).',
@@ -213,10 +213,10 @@ const WorkWithMe = () => (
     <main style={{ flex: 1 }}>
       <section style={{ ...section, borderTop: 'none' }}>
         <p style={eyebrow}>BEFORE YOU SCALE IT</p>
-        <h1 style={{ margin: px(s[5], 0, 0), ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch' }}>
+        <h1 style={{ margin: px(s[5], 0, 0), ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch', color: c.accentEdge }}>
           Is it a real product,
           <br />
-          or just <span style={{ color: '#000' }}>a wrapper?</span>
+          or just <span style={{ color: c.plate }}>a wrapper 🤔❓</span>
         </h1>
         <p style={{ ...body, marginTop: s[6], font: `400 17px/1.5 ${display}` }}>
           I review AI features and product architecture for founders and small teams: the same test
@@ -266,7 +266,7 @@ const WorkWithMe = () => (
               }}
             >
               <div style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>{offer.fig}</div>
-              <h3 style={{ margin: 0, ...heading('d5'), textTransform: 'uppercase' }}>{offer.name}</h3>
+              <h3 style={{ margin: 0, ...heading('d5'), textTransform: 'uppercase', color: c.accentEdge }}>{offer.name}</h3>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: s[3], flexWrap: 'wrap' }}>
                 <span style={{ ...heading('d6'), color: c.mark }}>{offer.price}</span>
                 <span style={{ ...label(10, 700, 0.14), color: c.dimOnInk }}>{offer.terms}</span>
@@ -312,8 +312,8 @@ const WorkWithMe = () => (
         >
           {steps.map((step) => (
             <div key={step.num} style={{ borderLeft: `${rule.base}px solid ${c.rule}`, paddingLeft: s[5] }}>
-              <div style={{ ...heading('d6'), color: c.ink }}>{step.num}</div>
-              <h3 style={{ margin: px(s[3], 0, s[2]), font: `600 16px/1.3 ${display}`, textTransform: 'none' }}>
+              <div style={{ ...heading('d6'), color: c.accentEdge }}>{step.num}</div>
+              <h3 style={{ margin: px(s[3], 0, s[2]), font: `600 16px/1.3 ${display}`, textTransform: 'none', }}>
                 {step.title}
               </h3>
               <p style={body}>{step.body}</p>
@@ -322,15 +322,15 @@ const WorkWithMe = () => (
         </div>
       </section>
 
-      <section aria-label="Questions" style={section}>
-        <p style={eyebrow}>QUESTIONS</p>
+      <section aria-label="Questions" style={{...section, background: c.plate, color: c.dimOnInk}}>
+        <p style={{...eyebrow, color: c.accentEdge}}>QUESTIONS</p>
         <div style={{ marginTop: s[8], borderTop: `${rule.hair}px solid ${c.rule}` }}>
           {faqs.map((faq) => (
             <div key={faq.q} style={{ padding: px(s[6], 0), borderBottom: `${rule.hair}px solid ${c.rule}` }}>
               <h3 style={{ margin: px(0, 0, s[3]), font: `600 16px/1.3 ${display}`, textTransform: 'none' }}>
                 {faq.q}
               </h3>
-              <p style={body}>{faq.a}</p>
+              <p style={{...body, color: c.dimOnInk}}>{faq.a}</p>
             </div>
           ))}
         </div>
@@ -348,12 +348,8 @@ const WorkWithMe = () => (
         borderTop: `${rule.edge}px solid ${c.rule}`,
       }}
     >
-      <div style={{ display: 'grid', gap: s[4] }}>
+      <div>
         <span style={{ ...label(11, 700, 0.12), color: c.ink }}>ANADI THAKUR</span>
-        <p style={{ ...body, maxWidth: '40ch' }}>
-          Building @anta.build. Posting the same architecture thinking on Instagram: free
-          resources, no fluff.
-        </p>
       </div>
       <a href={DM} className="pf-underline" style={{ ...label(11, 700, 0.12), color: dimOnGold }}>
         MESSAGE ON INSTAGRAM ↗
