@@ -46,6 +46,17 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* Route change: the incoming page fades up under the mini loader bar.
+   Opacity only, on purpose — see the note in RouteTransition. */
+@keyframes pf-route-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pf-route-enter {
+  animation: pf-route-in 0.34s cubic-bezier(.2,.7,.3,1) both;
+}
+
 /* --- hover states -------------------------------------------------------
    Every state below is declared for two triggers: `:hover`, gated behind
    `@media (hover: hover)` so a tap on a touch screen can't leave it stuck on
@@ -135,8 +146,14 @@ button:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   [data-hero-badge],
   [data-marquee],
-  [data-rail-ticker] [data-tick] {
+  [data-rail-ticker] [data-tick],
+  [data-route-loader-dot] {
     animation: none !important;
+  }
+  /* The route fade is the one entrance that still runs here, collapsed to an
+     instant: without it the page would sit at the keyframe's opacity 0. */
+  .pf-route-enter {
+    animation-duration: 0.01ms !important;
   }
   [data-stack-col]:hover [data-stack-fill],
   [data-stack-col]:focus-within [data-stack-fill],

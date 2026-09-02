@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
@@ -167,6 +168,77 @@ const faqs = [
   },
 ];
 
+/** Where the hero's moving ground lives. Three files, one clip: the WebM for
+ *  everything that takes VP9, the MP4 behind it for Safari, and the poster,
+ *  which is frame one rather than a prettier frame from the middle, so nothing
+ *  jumps at the moment playback starts. */
+const backdrop = {
+  poster: '/media/summit-loop.jpg',
+  webm: '/media/summit-loop.webm',
+  mp4: '/media/summit-loop.mp4',
+} as const;
+
+/** The hero's moving ground: a summit timelapse, held back far enough that it
+ *  reads as weather behind the type rather than a photograph the type is sitting
+ *  on. The source is a 23s sunrise, re-encoded forward-then-reversed so the loop
+ *  has no cut in it, and downscaled hard: at a quarter opacity the detail a
+ *  bigger file buys is detail nobody sees.
+ *
+ *  One layer, no scrim over it. The clip blends in `luminosity`, so it
+ *  contributes its light and takes GOLD for its hue: the page's palette does not
+ *  grow by one colour, and the field stays the flat gold the route is built on.
+ *  With nothing tinted on top, the opacity is the only thing keeping ink legible,
+ *  which is what sets it at 0.25: that is the point where the darkest pixel of
+ *  the clip still holds 4.7:1 against ink, and the 17px body copy needs 4.5.
+ *
+ *  The `<video>` is client-only and mounts only if the visitor hasn't asked for
+ *  less motion. The prerendered HTML and the reduced-motion render both stop at
+ *  the poster, which is why the still is set as a background on the layer rather
+ *  than left to the element's own `poster` attribute. */
+const HeroBackdrop = () => {
+  const [motion, setMotion] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => setMotion(!query.matches);
+    sync();
+    query.addEventListener('change', sync);
+    return () => query.removeEventListener('change', sync);
+  }, []);
+
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: 'absolute',
+        inset: 0,
+        zIndex: 0,
+        overflow: 'hidden',
+        // mixBlendMode: 'luminosity',
+        opacity: 0.25,
+        backgroundImage: `url(${backdrop.poster})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {motion && (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={backdrop.poster}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        >
+          <source src={backdrop.webm} type="video/webm" />
+          <source src={backdrop.mp4} type="video/mp4" />
+        </video>
+      )}
+    </div>
+  );
+};
+
 /** Figure over caption: the hero stats, at one ramp step. */
 const Stat = ({ figure, caption }: { figure: string; caption: string }) => (
   <div style={{ display: 'grid', gap: s[2], maxWidth: '26ch' }}>
@@ -211,27 +283,47 @@ const WorkWithMe = () => (
     </header>
 
     <main style={{ flex: 1 }}>
-      <section style={{ ...section, borderTop: 'none' }}>
-        <p style={eyebrow}>BEFORE YOU SCALE IT</p>
-        <h1 style={{ margin: px(s[5], 0, 0), ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch', color: c.accentEdge }}>
-          Is it a real product,
-          <br />
-          or just <span style={{ color: c.plate }}>a wrapper 🤔❓</span>
-        </h1>
-        <p style={{ ...body, marginTop: s[6], font: `400 17px/1.5 ${display}` }}>
-          I review AI features and product architecture for founders and small teams: the same test
-          I run on my own builds, applied to yours. You get a plain-English diagnosis and a fix-it
-          plan before a small problem becomes a rebuild.
-        </p>
-        <div style={{ display: 'flex', gap: s[3], flexWrap: 'wrap', marginTop: s[8] }}>
-          <a href={DM} className="pf-nudge pf-nudge-lg" style={ctaSolid}>
-            MESSAGE ME ON INSTAGRAM<span>↗</span>
-          </a>
-        </div>
-        <div style={{ display: 'flex', gap: s[11], flexWrap: 'wrap', marginTop: s[10] }}>
-          {stats.map((stat) => (
-            <Stat key={stat.figure} {...stat} />
-          ))}
+      <section
+        style={{
+          ...section,
+          borderTop: 'none',
+          position: 'relative',
+          overflow: 'hidden',
+          isolation: 'isolate',
+          background: GOLD,
+          /* The first screen is the hero and nothing else: `svh` rather than `vh`
+             so a phone's collapsing address bar can't let the offer section peek
+             in under it, and `minHeight` rather than `height` so a short landscape
+             screen grows the section instead of clipping the stats off it. */
+          minHeight: '100svh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        <HeroBackdrop />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <p style={eyebrow}>BEFORE YOU SCALE IT</p>
+          <h1 style={{ margin: px(s[5], 0, 0), ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch', color: c.accent }}>
+            Is it a real product❓,
+            <br />
+            or just <span style={{ color: c.plate }}>a wrapper 🤔</span>
+          </h1>
+          <p style={{ ...body, marginTop: s[6], font: `400 17px/1.5 ${display}` }}>
+            I review AI features and product architecture for founders and small teams: the same test
+            I run on my own builds, applied to yours. You get a plain-English diagnosis and a fix-it
+            plan before a small problem becomes a rebuild.
+          </p>
+          <div style={{ display: 'flex', gap: s[3], flexWrap: 'wrap', marginTop: s[8] }}>
+            <a href={DM} className="pf-nudge pf-nudge-lg" style={ctaSolid}>
+              MESSAGE ME ON INSTAGRAM<span>↗</span>
+            </a>
+          </div>
+          <div style={{ display: 'flex', gap: s[11], flexWrap: 'wrap', marginTop: s[10] }}>
+            {stats.map((stat) => (
+              <Stat key={stat.figure} {...stat} />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -341,7 +433,7 @@ const WorkWithMe = () => (
       style={{
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        alignItems: "center",
         flexWrap: 'wrap',
         gap: s[6],
         padding: px(sectionY.top, gutter, s[10]),

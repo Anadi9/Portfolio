@@ -88,7 +88,7 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
         </a>
 
         {sendFailed && (
-          <p style={{ margin: px(s[6], 0, 0), font: `400 13px/1.4 ${display}`, color: c.dimOnInk }}>
+          <p style={{ margin: px(s[6], 0, 0), font: `400 13px/1.4 ${display}`, color: c.paper }}>
             Couldn&rsquo;t email a copy just now; it&rsquo;s all here on the page.
           </p>
         )}
