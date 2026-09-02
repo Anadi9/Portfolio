@@ -1,15 +1,15 @@
 ---
 stream: wisdom
-title: "Adding AI to an existing product — the architecture mistake that costs you twice"
+title: "Adding AI to an existing product: the architecture mistake that costs you twice"
 useWhen: "Someone has asked for an \"Ask AI\" button on a product that already exists, and you're about to start at the button."
-summary: "The most common mistake when bolting AI onto a working product isn't the model choice or the prompt — it's designing from the button inward instead of from the data outward. Why the demo works and the release doesn't, the three things to build first, and what doing it properly costs you in visible progress."
+summary: "The most common mistake when bolting AI onto a working product isn't the model choice or the prompt; it's designing from the button inward instead of from the data outward. Why the demo works and the release doesn't, the three things to build first, and what doing it properly costs you in visible progress."
 date: "2026-08-30"
 lastVerified: "2026-08-30"
 moves:
   - "Start from what the model has to read, not from what the user clicks."
-  - "Make retrieval a real component with its own contract and its own tests — not four lines inside a request handler."
+  - "Make retrieval a real component with its own contract and its own tests, not four lines inside a request handler."
   - "Design the wrong-answer path before the right-answer path, because you will ship the wrong answer to somebody."
-tradeoff: "Doing this properly means two or three weeks where there is nothing to demo. You build a boring retrieval layer while a competitor ships an Ask AI button, and no stakeholder can see your progress. The bill arrives later either way — this just decides who pays it."
+tradeoff: "Doing this properly means two or three weeks where there is nothing to demo. You build a boring retrieval layer while a competitor ships an Ask AI button, and no stakeholder can see your progress. The bill arrives later either way, and this just decides who pays it."
 ---
 
 The request is always some version of the same sentence: *can we add AI to it?*
@@ -22,13 +22,13 @@ pleased.
 Then it goes in front of real users and the model confidently invents an invoice
 number, or answers a question about last quarter using this quarter's data, or
 explains a feature that was removed in 2024. And the diagnosis in the room is
-always about the model — *maybe we need a bigger one, maybe the prompt needs
-work* — when the actual mistake happened before anyone wrote a prompt.
+always about the model (*maybe we need a bigger one, maybe the prompt needs
+work*) when the actual mistake happened before anyone wrote a prompt.
 
 ## The mistake is the direction you designed in
 
 Bolting AI on means starting at the interface and working inward. Button, modal,
-API call, and then — only when it's obviously broken — some scrambling about
+API call, and then, only when it's obviously broken, some scrambling about
 what context to pass.
 
 That order guarantees the same failure every time, because it makes context an
@@ -52,7 +52,7 @@ pasted in. Production doesn't work because real users ask about their own data.
 />
 
 <Flow
-  caption="Outward-in. One different starting point, and the button ends up last — behind three things that can be tested with no model in the loop."
+  caption="Outward-in. One different starting point, and the button ends up last, behind three things that can be tested with no model in the loop."
   nodes={[
     { kind: 'trigger', name: 'What must it read?', config: 'Which records, from which tables, filtered how, scoped to whose permissions, how fresh.' },
     { kind: 'step', name: 'Retrieval component', config: 'Question and user in, passages and sources out. Tested with no model in the loop.' },
@@ -67,15 +67,15 @@ pasted in. Production doesn't work because real users ask about their own data.
 Invert the direction. Before the button exists, answer one question in writing:
 **for this feature to be right, what does the model need to be looking at?**
 
-Not "the user's data" — that's not an answer, it's the shape of one. Which
+Not "the user's data". That's not an answer, it's the shape of one. Which
 records. From which tables. Filtered how. Scoped to which permissions. How
-fresh. In what form — raw rows, or a rendered summary, or quoted excerpts with
+fresh. In what form: raw rows, or a rendered summary, or quoted excerpts with
 their source ids attached?
 
 Answering that concretely tends to produce one of three outcomes, and all three
 are worth more than a demo:
 
-1. **The data exists and is reachable.** Good — you now have a retrieval spec
+1. **The data exists and is reachable.** Good: you now have a retrieval spec
    before you have a feature, and the rest is ordinary engineering.
 2. **The data exists but not in a form anything can query.** This is the common
    one, and it's the real project. The AI feature is a two-week job sitting
@@ -91,7 +91,7 @@ changes any of them.
 ## Retrieval is a component, not four lines in a handler
 
 The second move is structural. In most bolted-on implementations, the code that
-decides what the model sees lives inline in the request handler — a query, a
+decides what the model sees lives inline in the request handler: a query, a
 `.slice(0, 20)`, a template string, and off it goes.
 
 That code is the most important code in the feature and it's the least visible,
@@ -101,7 +101,7 @@ them because they're not a thing that can be looked at on its own.
 
 Pull it out. Give it a name and a contract: it takes a question and a user, and
 it returns a set of passages with their sources. Test it *without a model in the
-loop* — for a known question, does it return the right records? That test is
+loop*: for a known question, does it return the right records? That test is
 cheap, deterministic, fast, and it catches the overwhelming majority of "the AI
 gave a wrong answer" reports, because most of them aren't about the AI.
 
@@ -119,7 +119,7 @@ the design has three parts:
 - **Attribution.** Every claim traces back to the record it came from, visibly,
   so a user can check it in one click instead of trusting it or discarding it.
   A user who can check is a user who can safely be wrong with you.
-- **A refusal path.** The retrieval layer found nothing relevant — what happens?
+- **A refusal path.** The retrieval layer found nothing relevant. What happens?
   If the answer is "we send the empty context to the model anyway", you've built
   a hallucination generator with a schedule. Not finding anything must be a
   distinct, designed outcome, and it should say so plainly.

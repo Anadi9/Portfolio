@@ -8,7 +8,7 @@ type Sort = { column: number; direction: 'asc' | 'desc' } | null;
  * Every table on every post.
  *
  * Two things the markdown version could not do. It scrolled sideways on a
- * phone — `minWidth: 480` inside an `overflow-x: auto` box — which on the cheat
+ * phone (`minWidth: 480` inside an `overflow-x: auto` box) which on the cheat
  * sheet meant the payload of the page was the part you had to go looking for;
  * each row is a labelled block under 640px now, using the same DOM and the same
  * real `<table>`, so nothing changes for a crawler. And a comparison table you

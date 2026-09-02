@@ -10,7 +10,7 @@ import { QUESTIONS } from '@/lib/teardown/questions';
 import { report } from '@/lib/teardown/report';
 
 /**
- * `/teardown` — the free Wrapper Test.
+ * `/teardown`: the free Wrapper Test.
  *
  * Unlike `/work-with-me`, this page is meant to be found: it carries full
  * `Seo`, and the intro plus the first question render into the prerendered
@@ -18,14 +18,14 @@ import { report } from '@/lib/teardown/report';
  * gets the actual proposition instead of a button.
  *
  * The whole quiz is one `answers` array in state. Nothing leaves the browser
- * until an email is submitted — abandoning halfway sends us nothing, by design.
+ * until an email is submitted; abandoning halfway sends us nothing, by design.
  *
  * Submitting reveals the report immediately and fires the POST without
  * awaiting it. That ordering is the point: a failed send costs the reader a
  * copy in their inbox, never the report itself.
  */
 
-const TITLE = 'The Wrapper Test — is your AI product real, or a wrapper?';
+const TITLE = 'The Wrapper Test: is your AI product real, or a wrapper?';
 const DESCRIPTION =
   'A free 13-question diagnostic for AI features. Score your own product on defensibility, failure design, cost floor and evaluation, and get a nine-section written breakdown. No call, no signup to see your result.';
 
@@ -113,12 +113,12 @@ export default function Teardown() {
               textWrap: 'pretty',
             }}
           >
-            Answer thirteen questions about your own AI feature and see where it is thin — defensibility,
+            Answer thirteen questions about your own AI feature and see where it is thin: defensibility,
             failure design, cost floor, evaluation. It scores your answers, not a guess about your product,
             so nothing here is invented. Your result appears straight away; nothing is asked for to see it.
           </p>
           <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '58ch' }}>
-            This tells you <em>where</em> the problems are. It does not tell you how to fix them — that is
+            This tells you <em>where</em> the problems are. It does not tell you how to fix them; that is
             what the <Link to="/work-with-me" className="pf-underline" style={{ color: c.accent }}>recorded teardown</Link> is
             for.
           </p>

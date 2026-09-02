@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Portfolio — 2026 edition
+   Portfolio · 2026 edition
    Layout lives in inline styles on the components; this file carries the
    globals, keyframes, hover states, and the responsive overrides that have to
    beat those inline styles.
@@ -51,7 +51,7 @@ body {
    `@media (hover: hover)` so a tap on a touch screen can't leave it stuck on
    until you tap something else, and `:focus-visible`, so the keyboard gets the
    same feedback the mouse does. The richer JS-driven states in
-   use-portfolio-motion go through `bindActive`, which adds a third trigger —
+   use-portfolio-motion go through `bindActive`, which adds a third trigger;
    see the note there. */
 
 /* Solid button that nudges up-left on hover. */
@@ -96,7 +96,7 @@ button:focus-visible,
   outline-offset: 3px;
 }
 
-/* Stack columns and contact cells are GSAP-driven — see blocks 9 and 10 in
+/* Stack columns and contact cells are GSAP-driven; see blocks 9 and 10 in
    use-portfolio-motion. Their hover states have no CSS equivalent here except
    the reduced-motion fallback further down. */
 
@@ -181,7 +181,7 @@ button:focus-visible,
    layout, where the page's vertical scroll drags the track sideways, and 1 is
    the swipe layout, where the track is a real horizontal scroller the finger
    drives directly. use-portfolio-motion reads it and builds one mechanism or
-   the other. The pin isn't merely unnecessary on a touch screen, it's wrong —
+   the other. The pin isn't merely unnecessary on a touch screen, it's wrong:
    it holds the section still while the reader swipes at a row that only moves
    when they scroll past it. */
 
@@ -203,7 +203,7 @@ button:focus-visible,
     align-items: center !important;
     width: 100% !important;
     height: auto !important;
-    /* Inset, so the inversion band covers it — see the seam block in
+    /* Inset, so the inversion band covers it; see the seam block in
        use-portfolio-motion. Horizontal bar here, so the edge moves to the bottom. */
     box-shadow: inset 0 -3px 0 var(--ink) !important;
     z-index: 60 !important;
@@ -253,7 +253,7 @@ button:focus-visible,
   [data-htrack] {
     /* The track is the one [data-hpad] element that is itself a flex row, and
        the wrap above would break it into a vertical stack inside a clipped
-       window — plates cut off top and bottom, and nothing to scroll sideways. */
+       window: plates cut off top and bottom, and nothing to scroll sideways. */
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
@@ -278,19 +278,19 @@ button:focus-visible,
 }
 
 @media (max-width: 680px) {
-  /* Tighter spine — 18px of gutter is all the room there is at this width. */
+  /* Tighter spine: 18px of gutter is all the room there is at this width. */
   [data-timeline] {
     --spine-x: 16px;
     padding-left: 40px !important;
   }
   /* The bar is three blocks: identity, nav, CTA. The outer two are sized by
      their content and the nav is what's left over, so at this width the nav
-     was down to ~110px of the 533px it wants — a stub reading "HOME ■ SE"
+     was down to ~110px of the 533px it wants: a stub reading "HOME ■ SE"
      with the CTA hard against it, which looks like the CTA is sitting on top
      of the nav. The identity block gives up everything but the mark: the name
      is restated in 40px type in the hero directly below, and the two chips are
      repeated in the contact grid and on the reel's end card. That hands the
-     nav ~240px — two items and an honest scroll — and it's the nav that has to
+     nav ~240px, two items and an honest scroll, and it's the nav that has to
      work here, being the only way to reach a section from the top of the page. */
   [data-rail-header] { padding: 10px 12px !important; }
   [data-rail-name], [data-rail-chips] { display: none !important; }
@@ -305,7 +305,7 @@ button:focus-visible,
   [data-hero-badge] { width: 56px !important; height: 56px !important; top: 14px !important; right: 14px !important; }
   #home { height: auto !important; min-height: 100vh !important; min-height: 100dvh !important; overflow: visible !important; }
   /* The wipe is an opaque hero-sized panel parked one screen below the hero,
-     and `overflow: visible` above stops the hero clipping it — so it lands on
+     and `overflow: visible` above stops the hero clipping it, so it lands on
      top of the work reel and paints the whole thing out in ink. It has no job
      at this width in any case: the hero hand-off that drives it is gated to
      wider viewports in use-portfolio-motion, so below the breakpoint it never

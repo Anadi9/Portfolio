@@ -6,7 +6,7 @@ export type FlowNode = { name: string; kind: 'trigger' | 'step' | 'action'; conf
 /**
  * `wrong` marks a chain the post is arguing against.
  *
- * Grey, dashed connectors rather than the gold ones — the palette has no red
+ * Grey, dashed connectors rather than the gold ones, because the palette has no red
  * and does not want one. A reader scanning two diagrams should be able to tell
  * which is the cautionary tale before reading a word of either.
  */
@@ -22,8 +22,8 @@ const KIND_LABEL: Record<FlowNode['kind'], string> = {
  * A workflow, drawn.
  *
  * This site is about automation and until now every workflow on it was a
- * numbered list of prose. The shape of a chain — how many hops before it writes
- * anything, where the filter sits — is exactly what a list is worst at
+ * numbered list of prose. The shape of a chain (how many hops before it writes
+ * anything, where the filter sits) is exactly what a list is worst at
  * carrying.
  *
  * Static on purpose. The config text is always visible, so a tap-to-reveal

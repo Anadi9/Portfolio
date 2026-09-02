@@ -58,7 +58,7 @@ const all = build();
 
 /**
  * Drafts are visible while running `vite dev` and dropped from the production
- * build — including from the prerendered route list, so an unfinished page is
+ * build, including from the prerendered route list, so an unfinished page is
  * never crawlable.
  */
 export const posts: Post[] = import.meta.env.PROD ? all.filter((p) => !p.draft) : all;
@@ -79,7 +79,7 @@ export const pinnedPosts = (): Post[] =>
  * How good a follow-on read each stream makes, best first.
  *
  * A drop is evergreen and hands over an artifact, so it survives being read six
- * months late. A dispatch is dated by construction — offering one as the next
+ * months late. A dispatch is dated by construction, so offering one as the next
  * read is offering last week's news to someone who arrived from search, which
  * is why it ranks last even though it is often the newest thing on the site.
  */
@@ -88,13 +88,13 @@ const FOLLOW_ON_RANK: Record<Stream, number> = { drop: 0, wisdom: 1, dispatch: 2
 /**
  * The two posts offered at the foot of `post`.
  *
- * `related` in frontmatter wins where it's set — that is the curation lever,
+ * `related` in frontmatter wins where it's set, and that is the curation lever,
  * and it is worth reaching for whenever the chain is a real argument rather
  * than a plausible next click.
  *
- * Failing that, candidates are ordered by a different stream first — a drop
+ * Failing that, candidates are ordered by a different stream first: a drop
  * handing off to the wisdom post arguing for it is a reason to keep reading,
- * where a drop handing off to another drop is just a longer list — then by the
+ * where a drop handing off to another drop is just a longer list. Then by the
  * ranking above, then newest first. That order is then rotated by the source
  * post's own position in the feed.
  *

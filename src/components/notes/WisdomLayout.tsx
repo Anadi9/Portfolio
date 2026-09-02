@@ -14,7 +14,7 @@ import { prose } from './prose';
  * The stream's signature is the tradeoff block: an argument that names no cost
  * is a pitch, so the layout reserves a dark plate for the cost and renders it
  * whether or not the writer felt like being honest that day. `moves` above it
- * are the numbered spine — what to actually do — so the page can be skimmed to
+ * are the numbered spine, what to actually do, so the page can be skimmed to
  * its conclusions and still be worth reading in full.
  */
 const WisdomLayout = ({ post }: { post: WisdomPost }) => {
@@ -23,7 +23,7 @@ const WisdomLayout = ({ post }: { post: WisdomPost }) => {
   return (
     <NotesShell post={post}>
       <Seo
-        title={`${post.title} — ${BYLINE}`}
+        title={`${post.title} · ${BYLINE}`}
         description={post.summary}
         path={post.path}
         image={ogImageFor(post.path)}

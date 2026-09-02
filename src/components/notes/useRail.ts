@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * Which heading the reader is currently under.
  *
  * IntersectionObserver rather than a scroll handler measuring every heading in
- * a loop: the notes routes carry no scroll engine at all — no GSAP, no Lenis —
+ * a loop: the notes routes carry no scroll engine at all (no GSAP, no Lenis)
  * and this is not the place to reintroduce one.
  *
  * The bottom margin of -70% means a heading counts as current from the moment
@@ -77,7 +77,7 @@ export const useReadProgress = (): number => {
  *
  * The rail is a `<details>` so that it works below 1200px, where the grid gives
  * it no track and it has to present as a CONTENTS bar instead. Above that the
- * summary is hidden by CSS — but a `<details>` with an invisible summary still
+ * summary is hidden by CSS, but a `<details>` with an invisible summary still
  * needs `open` to show its body, so the breakpoint has to be readable from
  * JavaScript too.
  *
@@ -108,7 +108,7 @@ export const useDisclosureOpen = (query = '(min-width: 1200px)'): boolean => {
  * up somewhere else.
  *
  * `navigator.clipboard` is absent on insecure origins and in some embedded
- * browsers. The button still renders — it is in the server HTML either way —
+ * browsers. The button still renders, since it is in the server HTML either way,
  * and simply does nothing rather than throwing, which is the quieter failure.
  */
 export const useCopy = (resetAfter = 1600) => {

@@ -19,8 +19,8 @@ import type { Post } from '@/data/notes';
  *
  * `post` is the article this chrome is wrapping, and its only job is READ NEXT.
  * Putting it here rather than in the three stream layouts means every post gets
- * a way onward by construction — a layout added later can't quietly ship
- * without one — and the index, which passes no post, simply doesn't render it.
+ * a way onward by construction (a layout added later can't quietly ship
+ * without one) and the index, which passes no post, simply doesn't render it.
  */
 const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) => (
   <div
@@ -70,7 +70,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
 
     {/* The plate closes the article rather than opening it. The cover does the
         opening now, and two decorative bands stacked above one headline is one
-        band too many — but the plate is the only thing on the page that is
+        band too many, but the plate is the only thing on the page that is
         drawn from the post's own slug, and a sign-off is a better job for it
         than competing with the artwork. Rendered here for the same reason
         READ NEXT is: every post gets one by construction. */}
@@ -96,7 +96,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
       }}
     >
       <div style={{ maxWidth: MEASURE, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: s[4], justifyContent: 'space-between' }}>
-        <span style={{ ...label(10, 500, 0.14), color: c.dimOnInk }}>NOTES — {BYLINE}</span>
+        <span style={{ ...label(10, 500, 0.14), color: c.dimOnInk }}>NOTES · {BYLINE}</span>
         <span style={{ display: 'flex', gap: s[5] }}>
           <a href="/rss.xml" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
             RSS
@@ -116,7 +116,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
  * `wide` is for the index, and only for the index. A post is prose and wants
  * the 760px measure; the feed is a two-column card with an OG thumbnail beside
  * it, and at 760 the headline gets about 320px to itself, which turns every
- * title into five lines of display type. Same gutters, same centring — one
+ * title into five lines of display type. Same gutters, same centring; one
  * number changes.
  */
 export const Column = ({
@@ -138,7 +138,7 @@ export const Column = ({
   </div>
 );
 
-/** Mono meta line — `USE WHEN`, datelines, verification stamps. */
+/** Mono meta line: `USE WHEN`, datelines, verification stamps. */
 export const MetaLine = ({ tag, children }: { tag: string; children: ReactNode }) => (
   <p style={{ margin: px(0, 0, s[3]), font: `500 12px/1.5 ${mono}`, letterSpacing: '0.04em', color: c.dim }}>
     <span style={{ ...label(10, 700, 0.14), color: c.markOnPaper, marginRight: s[3] }}>{tag}</span>

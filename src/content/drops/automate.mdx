@@ -2,7 +2,7 @@
 stream: drop
 title: "5 n8n automation workflows that save 10+ hours a week (with the JSON)"
 useWhen: "You've picked an automation to build and want the actual node chain, not another list of ideas."
-summary: "Five automations running behind my content and my studio, each with the trigger → action chain, a ready-to-rebuild n8n workflow skeleton in copyable JSON, the Zapier equivalent, and the setup gotcha that breaks it. No code required — about an hour of setup for all five."
+summary: "Five automations running behind my content and my studio, each with the trigger → action chain, a ready-to-rebuild n8n workflow skeleton in copyable JSON, the Zapier equivalent, and the setup gotcha that breaks it. No code required, about an hour of setup for all five."
 date: "2026-08-12"
 lastVerified: "2026-08-28"
 artifact: "5 n8n workflow skeletons in JSON, plus Zapier equivalents"
@@ -11,7 +11,7 @@ keyword: "AUTOMATE"
 ---
 
 These are the five automations running in the background of my content and my
-studio right now. This is the **build guide** — each one gets the trigger, the
+studio right now. This is the **build guide**: each one gets the trigger, the
 node chain, the JSON skeleton, the Zapier equivalent, and the thing that
 actually goes wrong during setup.
 
@@ -19,7 +19,7 @@ If you're still deciding *which* automation to build, start with the wider list
 instead: [20 automation ideas worth stealing](/drops/swipe), then come back here
 for the build.
 
-None of this requires code — an n8n or Zapier account and about an hour of setup
+None of this requires code, just an n8n or Zapier account and about an hour of setup
 covers all five.
 
 > **On the JSON below:** node IDs and credentials are unique to every n8n
@@ -32,7 +32,7 @@ covers all five.
 ## 1. Comment-to-DM lead capture
 
 **What it does:** someone comments your keyword on a post, they're automatically
-DM'd your free resource, and their details land in a spreadsheet — so you have a
+DM'd your free resource, and their details land in a spreadsheet, so you have a
 running list of everyone who asked instead of scrolling comments to find them.
 
 **Setup time:** ~10 minutes · **Idea index entry:** [#1 on the swipe file](/drops/swipe)
@@ -40,7 +40,7 @@ running list of everyone who asked instead of scrolling comments to find them.
 <Flow
   caption="The DM is native to Instagram. Everything after it is the part you build."
   nodes={[
-    { kind: 'trigger', name: 'Keyword comment', config: "Instagram's own keyword reply sends the DM — no n8n in this hop." },
+    { kind: 'trigger', name: 'Keyword comment', config: "Instagram's own keyword reply sends the DM, with no n8n in this hop." },
     { kind: 'step', name: 'Webhook', config: 'n8n or Zapier watches for the DM automation event.' },
     { kind: 'action', name: 'Append row', config: 'Username, keyword, timestamp into Sheets or Airtable.' },
   ]}
@@ -49,7 +49,7 @@ running list of everyone who asked instead of scrolling comments to find them.
 #### Trigger
 
 Instagram Professional Dashboard → Automations → Keyword replies. The DM itself
-is **100% native to Instagram** — no n8n or Zapier needed for that part.
+is **100% native to Instagram**, with no n8n or Zapier needed for that part.
 
 #### Steps
 
@@ -131,7 +131,7 @@ page.
   nodes={[
     { kind: 'trigger', name: 'New file', config: 'Watched Google Drive or Dropbox folder.' },
     { kind: 'step', name: 'Extract', config: 'Transcript or description off the file.' },
-    { kind: 'step', name: 'AI draft', config: 'Fixed prompt — 3 captions and 12 hashtags.' },
+    { kind: 'step', name: 'AI draft', config: 'Fixed prompt: 3 captions and 12 hashtags.' },
     { kind: 'action', name: 'Post for review', config: 'Notion row or a Slack channel.' },
   ]}
 />
@@ -198,7 +198,7 @@ Message* (Claude or OpenAI) → Action = *Create Database Item* (Notion).
 
 Keep the prompt template fixed so output quality is consistent, and feed it your
 last 5–10 best-performing captions once as style examples. Without that, the
-output reads like generic AI copy and you rewrite everything anyway — which
+output reads like generic AI copy and you rewrite everything anyway, which
 defeats the automation.
 
 ---
@@ -206,7 +206,7 @@ defeats the automation.
 ## 3. Lead intake and CRM enrichment
 
 **What it does:** anyone who fills out your intake form gets automatically
-enriched — company, role — added to your CRM, with a Slack ping so you never
+enriched (company, role) and added to your CRM, with a Slack ping so you never
 miss a new lead.
 
 **Setup time:** ~15 minutes · **Idea index entry:** [#8 on the swipe file](/drops/swipe)
@@ -278,8 +278,8 @@ removes the manual data-entry step, which is where the time actually goes.
 
 ## 4. Sunday auto-digest
 
-**What it does:** every Sunday night, one message rolls up your week — GitHub or
-Linear activity, post performance, and the week ahead — so Monday starts with
+**What it does:** every Sunday night, one message rolls up your week (GitHub or
+Linear activity, post performance, and the week ahead), so Monday starts with
 full context and zero app-hopping.
 
 **Setup time:** ~15–20 minutes
@@ -296,7 +296,7 @@ full context and zero app-hopping.
 
 #### Trigger
 
-Scheduled — every Sunday at a fixed time, say 8pm.
+Scheduled: every Sunday at a fixed time, say 8pm.
 
 #### Steps
 
@@ -347,7 +347,7 @@ Linear → Action = *Send Message* (Claude or OpenAI) → Action = *Send Email*
 
 #### Setup notes
 
-Start with one or two data sources — GitHub plus your calendar — rather than all
+Start with one or two data sources (GitHub plus your calendar) rather than all
 of them at once. A digest that pulls from six APIs breaks weekly and you stop
 trusting it. Add sources incrementally once the core is reliable.
 
@@ -442,7 +442,7 @@ part worth stealing, not the vendor.
 
 ## Where to go next
 
-- Want the wider menu before you build? [20 automation ideas worth stealing](/drops/swipe) — trigger, tool, and time saved for each.
-- Building something bigger than a workflow? [The system design template](/drops/system) — the 20 minutes before you write any code.
+- Want the wider menu before you build? [20 automation ideas worth stealing](/drops/swipe): trigger, tool, and time saved for each.
+- Building something bigger than a workflow? [The system design template](/drops/system): the 20 minutes before you write any code.
 
-Questions setting any of these up? Get in touch — happy to help.
+Questions setting any of these up? Get in touch, happy to help.

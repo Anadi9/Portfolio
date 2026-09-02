@@ -18,7 +18,7 @@ type Disposer = () => void;
  * reveals, the pinned hero hand-off, the horizontal work reel, the timeline
  * draw, section wipes and the custom cursor.
  *
- * The DOM contract is the `data-*` attributes the section components render —
+ * The DOM contract is the `data-*` attributes the section components render, so
  * markup and motion stay decoupled, so a section can move without touching this.
  *
  * `ready` is the hand-off from the intro loader. Everything scroll-linked is
@@ -40,14 +40,14 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
 
     /* ---- one activation, three input modes -------------------------------
        Every rich "hover" state on the page is bound through here, because
-       hover is only one of the ways a person singles out an element — and it
+       hover is only one of the ways a person singles out an element, and it
        is the one a phone doesn't have at all.
 
          pointer   mouseenter / mouseleave, but only where hover genuinely
                    exists. Bound unconditionally, a tap on a touch screen fires
                    a synthetic mouseenter with no matching mouseleave, so the
                    last thing you touched stays lit until you touch something
-                   else — which is exactly the bug this replaces.
+                   else, which is exactly the bug this replaces.
          keyboard  focusin / focusout, so tabbing gets the same feedback the
                    mouse does. Focus moving between two children of the same
                    element is not a leave, or the state flickers off and on.
@@ -69,7 +69,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
             if (a) (e.isIntersecting ? a.on : a.off)();
           });
         },
-        // Middle band on both axes — the work reel moves its plates through
+        // Middle band on both axes: the work reel moves its plates through
         // horizontally while everything else arrives vertically.
         { rootMargin: '-38% -22% -38% -22%' },
       );
@@ -77,7 +77,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
     }
 
     /**
-     * @param inView opt out for anything permanently on screen — the rail is
+     * @param inView opt out for anything permanently on screen: the rail is
      * sticky, so an in-view trigger there would simply latch on and stay.
      */
     const bindActive = (
@@ -155,8 +155,8 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
        that section and the rail, each running
        `backdrop-filter: invert(1) hue-rotate(180deg)`.
 
-       The hue-rotate is load-bearing. A plain invert — equivalently,
-       `mix-blend-mode: difference` against white — swings every warm hue by
+       The hue-rotate is load-bearing. A plain invert, equivalently
+       `mix-blend-mode: difference` against white, swings every warm hue by
        180 degrees: the cream comes out navy (#E4DED0 to #1B212F) and the gold
        comes out cornflower (#C9A24B to #365DB4). Inverting lightness and
        rotating the hue back leaves the palette where it started.
@@ -220,7 +220,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
      *
      * Below the breakpoint the rail lies down into a bar and the nav becomes a
      * horizontal scroller too narrow to hold all five sections, so marking the
-     * active one is not enough on its own — the mark can easily be sitting off
+     * active one is not enough on its own: the mark can easily be sitting off
      * the left edge while you read. Only runs when the nav actually overflows,
      * which is exactly the narrow layout.
      */
@@ -364,7 +364,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
       bindActive(plate, enter, leave);
       // Parallax is the one part with no keyboard or touch equivalent: it
       // tracks a pointer position that doesn't exist. The torn slices still
-      // build on focus and in view — they just sit still.
+      // build on focus and in view; they just sit still.
       if (canHover) {
         plate.addEventListener('mousemove', move);
         disposers.push(() => plate.removeEventListener('mousemove', move));
@@ -459,7 +459,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
       const flood = q<HTMLElement>('[data-portrait-flood]');
       const chars = qa<HTMLElement>('[data-hchar]');
 
-      /* 1 — the name cuts in, the portrait wipes down behind it.
+      /* 1: the name cuts in, the portrait wipes down behind it.
          Built paused and parked in `heroIntro`: it used to run on mount, which
          meant it finished at ~1.45s while the loader was still up until ~2.6s,
          so the wipe uncovered a hero that had already played. The ready effect
@@ -483,7 +483,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         heroIntro.current = intro;
       }
 
-      /* 2 — hero pins, then hands off on a hard wipe */
+      /* 2: hero pins, then hands off on a hard wipe */
       if (!reduced && heroName && window.innerWidth > 680) {
         const t = gsap.timeline({
           scrollTrigger: {
@@ -507,7 +507,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         }
       }
 
-      /* 3 — the work reel moves sideways, by one of two mechanisms.
+      /* 3: the work reel moves sideways, by one of two mechanisms.
 
          Which one is CSS's call: `--reel-swipe` on the wrapper is 0 on the wide
          layout and 1 below the breakpoint, the same contract `--spine-x` uses
@@ -577,7 +577,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         let unmount = swiping ? mountSwipe() : mountPinned();
 
         /* Crossing the breakpoint swaps the mechanism outright, so the old one
-           is torn down — a surviving pin would hold a section that no longer
+           is torn down: a surviving pin would hold a section that no longer
            pins, and a surviving scroll listener would fight the tween. */
         const remount = () => {
           if (swipeMode() === swiping) return;
@@ -593,9 +593,9 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         });
       }
 
-      /* 4 — the route: a curve measured from the cards, drawn by a moving pen.
+      /* 4: the route, a curve measured from the cards, drawn by a moving pen.
          The path is generated at runtime so every bend lands on a card's inner
-         edge, and each card is played by the pen reaching its node — line and
+         edge, and each card is played by the pen reaching its node, so line and
          cards stay in lockstep however the cards reflow. */
       const routeSvg = q<SVGSVGElement>('[data-path-svg]');
       const routeTrack = q<SVGPathElement>('[data-path-track]');
@@ -638,7 +638,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
        *
        * Declared by the media query in portfolio.css as `--spine-x` and read
        * back here, so the breakpoint exists in exactly one place. The route
-       * used to be `display: none` below 1024px — the section's whole premise
+       * used to be `display: none` below 1024px, and the section's whole premise
        * ("scroll, the line draws itself") simply switched off on the devices
        * most people were reading it on. It isn't hidden now: the cards stack
        * into one column and the weave straightens into a vertical spine down
@@ -722,7 +722,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         let hasRoute = buildRoute();
 
         /* Crossing the breakpoint flips which side of the line the cards live
-           on, and that direction is baked into their entry tweens — so the
+           on, and that direction is baked into their entry tweens, so the
            card timelines are rebuilt, not just the geometry. Set below. */
         let resyncNodes: (() => void) | null = null;
 
@@ -780,12 +780,12 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
 
             const tl = gsap.timeline({ paused: true });
 
-            /* the pen touches down — node spins open, stub reaches for the card */
+            /* the pen touches down: node spins open, stub reaches for the card */
             tl.set(n.group, { opacity: 1 }, 0)
               .fromTo(n.mark, { scale: 0, rotation: 0 }, { scale: 1, rotation: 45, duration: 0.5, ease: 'back.out(2.6)' }, 0)
               .fromTo(n.stub, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.26, ease: 'power2.out' }, 0.08);
 
-            /* the card prints — wipes out of the line, ink bar sweeps across */
+            /* the card prints: wipes out of the line, ink bar sweeps across */
             tl.fromTo(
               n.card,
               { opacity: 0, x: left ? -34 : 34, clipPath: left ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)' },
@@ -834,7 +834,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
           };
 
           /* Breakpoint crossed: rebuild every card timeline against the new
-             side, and jump — not replay — the ones already landed, so a resize
+             side, and jump, not replay, the ones already landed, so a resize
              doesn't re-animate the section under the reader. */
           resyncNodes = () => {
             nodes.forEach((n) => {
@@ -848,7 +848,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
             n.tl = buildNodeTl(n);
 
             /* the pen drives playback; this is the fallback for when the route
-               SVG isn't measurable, not for the narrow layout — that has a
+               SVG isn't measurable, not for the narrow layout; that has a
                spine of its own now */
             triggers.push(
               ScrollTrigger.create({
@@ -936,7 +936,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
       }
       if (reduced) return;
 
-      /* 6 — the marquee accelerates and skews with scroll velocity */
+      /* 6: the marquee accelerates and skews with scroll velocity */
       const marquee = q<HTMLElement>('[data-marquee]');
       if (marquee) {
         marquee.style.animation = 'none';
@@ -961,7 +961,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         disposers.push(() => window.clearTimeout(settle));
       }
 
-      /* 7 — hard full-bleed wipes between sections */
+      /* 7: hard full-bleed wipes between sections */
       qa<HTMLElement>('[data-swipe]').forEach((el) => {
         const target = document.getElementById(el.getAttribute('data-swipe') ?? '');
         if (!target) return;
@@ -977,7 +977,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         if (t.scrollTrigger) triggers.push(t.scrollTrigger);
       });
 
-      /* 8 — inverting square cursor that becomes a VIEW plate over plates */
+      /* 8: inverting square cursor that becomes a VIEW plate over plates */
       const cursor = q<HTMLElement>('[data-cursor]');
       const cursorLabel = cursor?.querySelector<HTMLElement>('[data-cursor-label]');
       if (cursor && cursorLabel && window.matchMedia('(pointer: fine)').matches) {
@@ -1046,7 +1046,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         });
       }
 
-      /* 9 — the stack prints: heading cuts up, the rule draws, then each column
+      /* 9: the stack prints: heading cuts up, the rule draws, then each column
          wipes down carrying its meter, its rating and its rows. Hovering a
          column floods it and inverts the type. */
       const stackSection = q<HTMLElement>('#stack');
@@ -1139,7 +1139,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         });
       }
 
-      /* 10 — say hello: the headline cuts up letter by letter and then leans
+      /* 10: say hello, the headline cuts up letter by letter and then leans
          toward the cursor, the ghost line drifts on scroll, and the four cells
          print in and flood with ink on hover. */
       const contactSection = q<HTMLElement>('#contact');
@@ -1202,7 +1202,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
           bindActive(cell, enter, leave);
         });
 
-        /* magnetic headline — each letter leans toward the pointer and settles
+        /* magnetic headline: each letter leans toward the pointer and settles
            back. Centres are cached per hover (with the live transform removed)
            so the letters can't chase their own offsets. */
         const headBlock = q<HTMLElement>('[data-contact-head]');
@@ -1288,7 +1288,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
     /* Two frames, deliberately. The loader restores `html { overflow }` on its
        way out, which brings the scrollbar back and changes the document width.
        Every pin above was measured against the locked layout, so the refresh
-       has to wait until the unlocked one has actually been laid out — otherwise
+       has to wait until the unlocked one has actually been laid out, or
        the hero and reel pins start a scrollbar's width off. */
     let second = 0;
     const first = requestAnimationFrame(() => {

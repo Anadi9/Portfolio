@@ -117,7 +117,7 @@ const IntroLoader = ({ onLoadingComplete }: IntroLoaderProps) => {
           color: c.dim,
         }}
       >
-        <span>PORTFOLIO — 2026 EDITION</span>
+        <span>PORTFOLIO · 2026 EDITION</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: s[2] }}>
           <span
             style={{

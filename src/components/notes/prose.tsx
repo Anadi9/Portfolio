@@ -11,7 +11,7 @@ import ProseTable from './ProseTable';
  *
  * Notes headings take the `vw: true` branch of the display ramp throughout. The
  * ramp's `cqw` default is tuned against a ~1450px container, and this column
- * caps at 760 — measuring against it would land an H1 at roughly half the size
+ * caps at 760, so measuring against it would land an H1 at roughly half the size
  * the step is meant to be. There is no container query context here to measure
  * anyway, so the viewport is both the honest and the intended reference.
  */
@@ -34,7 +34,7 @@ const body: CSSProperties = {
  *
  * Tables and `<pre>` are both components now rather than styled elements.
  * `ProseTable` parses what MDX hands it so a comparison table can be reordered
- * and can present as labelled cards on a phone — a table that scrolls sideways
+ * and can present as labelled cards on a phone, because a table that scrolls sideways
  * hides the payload of a page like the cheat sheet behind a gesture. `CopyBlock`
  * exists because the workflow skeletons on `/drops/automate` are there to be
  * pasted somewhere else.

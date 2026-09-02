@@ -20,8 +20,8 @@ describe('corpus headings', () => {
   });
 
   /**
-   * `automate` writes its per-workflow subheadings — Trigger, Steps, Setup
-   * notes — as h4, so the repeated-heading path the plugin handles is exercised
+   * `automate` writes its per-workflow subheadings (Trigger, Steps, Setup
+   * notes) as h4, so the repeated-heading path the plugin handles is exercised
    * by its own unit test rather than by the corpus. What the corpus proves here
    * is that the five workflow titles come through as the rail's spine, which is
    * the thing the page actually needs.

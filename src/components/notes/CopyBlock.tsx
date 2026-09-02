@@ -16,7 +16,7 @@ const languageOf = (children: ReactNode): string | undefined => {
  *
  * Read off the source string rather than the DOM, because this has to be right
  * during server render and there is no DOM there. It is reliable for MDX code
- * fences, whose children are a single string — no syntax highlighter is
+ * fences, whose children are a single string, since no syntax highlighter is
  * installed to break that into spans. The copy path uses `textContent` instead,
  * which is correct whatever the tree turns out to be.
  */
@@ -30,7 +30,7 @@ const lineCount = (children: ReactNode): number => {
  * A code block you can actually take away.
  *
  * The five n8n workflow skeletons on `/drops/automate` are the artifact of that
- * page — the whole point is to paste them into your own instance — and until
+ * page, whose whole point is to paste them into your own instance, and until
  * now the only way to get one was to select it by hand.
  *
  * Collapse is a `<details>`, so the full text stays in the DOM open or closed.

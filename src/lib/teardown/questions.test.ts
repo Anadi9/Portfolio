@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { MAX_RAW, QUESTIONS, SECTIONS } from './questions';
 
-describe('question bank — shape', () => {
+describe('question bank: shape', () => {
   it('has exactly 13 questions', () => {
     expect(QUESTIONS).toHaveLength(13);
   });
@@ -40,7 +40,7 @@ describe('question bank — shape', () => {
   });
 });
 
-describe('question bank — coverage', () => {
+describe('question bank: coverage', () => {
   it('covers all nine sections', () => {
     expect(new Set(QUESTIONS.map((q) => q.section))).toEqual(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9]));
     expect(Object.keys(SECTIONS)).toHaveLength(9);
@@ -61,7 +61,7 @@ describe('question bank — coverage', () => {
   });
 });
 
-describe('question bank — no prescriptions', () => {
+describe('question bank: no prescriptions', () => {
   // Decision 3 of the spec, checked at the source. A finding observes; it never
   // instructs. These are the verbs that turn an observation into advice.
   const PRESCRIPTIVE = /\b(you should|you need to|make sure|consider|try|start by|we recommend|fix|add a|build a)\b/i;

@@ -15,7 +15,7 @@ export const EMPTY_QUERY: PromptQuery = { q: '', categoryId: null, audience: nul
  * Substring match across every field a reader might remember.
  *
  * Not just the title. Someone looking for the pre-mortem prompt is as likely to
- * search "devil's advocate" — a phrase that only appears in the prompt body —
+ * search "devil's advocate", a phrase that only appears in the prompt body,
  * as they are to search its heading, and a search that only reads titles fails
  * exactly the person who half-remembers what a prompt said.
  *
@@ -32,7 +32,7 @@ const matchesText = (prompt: Prompt, needle: string): boolean => {
     .every((term) => haystack.includes(term));
 };
 
-/** The three filters, ANDed. Order preserved — the array is already curated. */
+/** The three filters, ANDed. Order preserved, since the array is already curated. */
 export const filterPrompts = (prompts: Prompt[], query: PromptQuery): Prompt[] =>
   prompts.filter(
     (p) =>

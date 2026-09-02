@@ -4,8 +4,8 @@ import { c, label, px, rule, s } from '@/components/portfolio/tokens';
 /**
  * Appears once you are a screen and a half down, and not before.
  *
- * The long pages here are genuinely long — `/drops/prompts` is a hundred
- * records, `/drops/swipe` is twenty — and the rail's sticky TOC only helps
+ * The long pages here are genuinely long (`/drops/prompts` is a hundred
+ * records, `/drops/swipe` is twenty) and the rail's sticky TOC only helps
  * above 1200px. Below that the only way back to the filters or the header is a
  * flick, repeated.
  *

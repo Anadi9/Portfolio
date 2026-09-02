@@ -75,7 +75,7 @@ describe('chip counts', () => {
 
   it('respects the other filters but not its own', () => {
     const counts = audienceCounts(PROMPTS, { ...EMPTY_QUERY, categoryId: 1, audience: 'students' });
-    // Scoped to category 1, but NOT to the selected audience — otherwise every
+    // Scoped to category 1, but NOT to the selected audience, otherwise every
     // unselected chip would read zero.
     expect(counts.all).toBe(20);
     expect(counts.both + counts.professionals + counts.students).toBe(20);

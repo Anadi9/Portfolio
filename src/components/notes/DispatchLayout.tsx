@@ -13,7 +13,7 @@ import { prose } from './prose';
  *
  * Dated by nature, so the layout leads with the dateline and puts every item's
  * "why it matters" directly under its headline. A dispatch that only lists
- * headlines is a feed reader, and nobody needs another one — the second line is
+ * headlines is a feed reader, and nobody needs another one, and the second line is
  * the entire reason the page exists.
  */
 const DispatchLayout = ({ post }: { post: DispatchPost }) => {
@@ -22,7 +22,7 @@ const DispatchLayout = ({ post }: { post: DispatchPost }) => {
   return (
     <NotesShell post={post}>
       <Seo
-        title={`${post.title} — ${BYLINE}`}
+        title={`${post.title} · ${BYLINE}`}
         description={post.summary}
         path={post.path}
         image={ogImageFor(post.path)}

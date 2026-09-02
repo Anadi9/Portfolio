@@ -53,7 +53,7 @@ for (const page of pages) {
 
   // Every image the page does fetch is a cover, it asks for all three widths,
   // and each width is a file that actually shipped. A `srcset` naming a missing
-  // width is invisible in the HTML and invisible in dev — the browser just
+  // width is invisible in the HTML and invisible in dev: the browser just
   // quietly picks another one, until it picks that one.
   const fetched = [...html.matchAll(/<img[^>]+src="(?!data:)([^"]+)"/g)].map((m) => m[1]);
   for (const src of fetched) {
@@ -70,7 +70,7 @@ for (const page of pages) {
  * A JPEG's dimensions, from its first SOF marker.
  *
  * The PNG version of this was two `readUInt32BE`s at fixed offsets. JPEG has no
- * fixed offset — the frame header sits behind a variable run of segments — so
+ * fixed offset (the frame header sits behind a variable run of segments) so
  * the segment chain has to be walked. Worth the fifteen lines: the size of an
  * OG card is the one thing about it every crawler agrees on, and a card written
  * at the wrong size looks perfect locally and wrong in every share.
@@ -91,7 +91,7 @@ const jpegSize = (buf) => {
 
 // Spec §8.10, rewritten for the covers: all twelve OG cards ship, each 1200 x
 // 630. They are committed files now rather than build output, so this is
-// checking that a post was not added without one — the failure mode the old
+// checking that a post was not added without one, the failure mode the old
 // generator threw on, moved to the only place left that can still catch it.
 const ogCards = globSync('dist/og/**/*.jpg');
 check(`found 12 OG cards (found ${ogCards.length})`, ogCards.length === 12);
@@ -151,7 +151,7 @@ check(`sitemap lists 15 urls (found ${count(sitemap, '<loc>')})`, count(sitemap,
 check('sitemap lists /teardown', sitemap.includes('<loc>https://anadithakur.in/teardown</loc>'));
 
 // Decision 9: `/teardown` is meant to be found, so its intro and first
-// question must be in the static HTML, not behind a client-only render — a
+// question must be in the static HTML, not behind a client-only render; a
 // regression here would still pass the sitemap check above while leaving
 // crawlers an empty root div.
 const teardown = readFileSync('dist/teardown/index.html', 'utf8');
@@ -170,7 +170,7 @@ for (const page of pages) {
 //
 // Chunks are found by the markers they emit rather than by filename. Vite names
 // a shared chunk after whichever module it happened to hoist, and that name
-// moves whenever the import graph shifts — this check previously looked for
+// moves whenever the import graph shifts, and this check previously looked for
 // `useRail-*.js` and started finding nothing the moment a hook was added
 // elsewhere. A check that silently scans nothing is worse than no check, which
 // is why the count is asserted too.
@@ -191,4 +191,4 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`  ✗ ${failure}`);
   process.exit(1);
 }
-console.log(`check-notes: OK — ${pages.length} pages, ${anchors} rail anchors, none dead`);
+console.log(`check-notes: OK, ${pages.length} pages, ${anchors} rail anchors, none dead`);

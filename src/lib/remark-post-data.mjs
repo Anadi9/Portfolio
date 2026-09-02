@@ -9,7 +9,7 @@ import { visit } from 'unist-util-visit';
  *
  * The rail has to be in the prerendered HTML. Reading heading ids out of the
  * DOM after mount would mean the whole table of contents pops in on hydration
- * and never exists for a crawler — the same argument `DropLayout` already makes
+ * and never exists for a crawler, the same argument `DropLayout` already makes
  * about a page whose content is a file.
  *
  * The ids MUST match the ones `rehype-slug` writes onto the headings
@@ -19,7 +19,7 @@ import { visit } from 'unist-util-visit';
  * land identically. `automate.mdx` repeats `Trigger` five times, so this is
  * load-bearing rather than defensive.
  *
- * `words` counts prose only — code blocks are excluded, because nobody reads a
+ * `words` counts prose only; code blocks are excluded, because nobody reads a
  * forty-line n8n workflow linearly and counting it would tell a reader that
  * `/drops/automate` takes twenty minutes when the prose takes six.
  *
@@ -50,7 +50,7 @@ export default function remarkPostData() {
     //
     // Two statements rather than one with two declarators, so the compiled
     // output reads `export const headings = [...];` and `export const words =
-    // N;` on their own — which is what anything grepping the module (a test,
+    // N;` on their own, which is what anything grepping the module (a test,
     // a person) expects to find.
     for (const [name, value] of [
       ['headings', headings],

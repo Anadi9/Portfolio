@@ -4,7 +4,7 @@ import { coverFor, type Post } from '@/data/notes';
  * The cover band above the title.
  *
  * Every cover is a capture with the eyebrow, headline and standfirst already
- * burnt into it — they were composed as share cards, and the artwork and the
+ * burnt into it; they were composed as share cards, and the artwork and the
  * type were laid out together. The band shows that frame as it is: the burnt
  * words are part of the picture, and the page sets them again underneath in
  * real type.

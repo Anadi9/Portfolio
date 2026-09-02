@@ -5,7 +5,7 @@
 /*
  * Tailwind + shadcn tokens. The portfolio itself is styled by
  * src/styles/portfolio.css and the token module in
- * src/components/portfolio/tokens.ts — these variables only back the
+ * src/components/portfolio/tokens.ts. These variables only back the
  * shadcn/ui primitives and the 404 page.
  */
 @layer base {

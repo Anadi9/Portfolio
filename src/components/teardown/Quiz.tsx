@@ -8,11 +8,11 @@ import { QUESTIONS } from '@/lib/teardown/questions';
  * The parent owns the answers array, which is what makes the whole quiz
  * replayable and what keeps this component free of effects. `current` is the
  * first unanswered index, so answering advances and the Back button rewinds by
- * clearing — there is no separate cursor to drift out of step with the data.
+ * clearing; there is no separate cursor to drift out of step with the data.
  *
  * Options are real `<button>`s inside a `<fieldset>`: native focus, native
  * Enter and Space, and a legend a screen reader announces as the group's name.
- * No `data-*` attributes here — `usePortfolioMotion` mounts on the front page
+ * No `data-*` attributes here: `usePortfolioMotion` mounts on the front page
  * alone, so anything marked for it would simply never animate.
  */
 
@@ -38,7 +38,7 @@ export default function Quiz({
   const current = answers.findIndex((a) => a === null);
 
   // The starting index, captured once. Comparing against it is what keeps
-  // focus untouched on first mount — a reader arriving from search must not
+  // focus untouched on first mount, since a reader arriving from search must not
   // have the viewport yanked to the legend before they've read the intro.
   // Only a genuine *change* after mount should move focus.
   const initial = useRef(current);

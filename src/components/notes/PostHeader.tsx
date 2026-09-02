@@ -10,7 +10,7 @@ const fmtDate = (iso: string) =>
 /**
  * Title block shared by all three streams.
  *
- * The H1 carries the search query, not the reel hook — that rule lives in the
+ * The H1 carries the search query, not the reel hook; that rule lives in the
  * content, but the layout has to give it the room to be long, which is why the
  * heading step here is `d4` and not the hero-sized `d1`.
  *

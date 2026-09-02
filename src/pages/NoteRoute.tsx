@@ -9,7 +9,7 @@ import { pathToStream } from '@/data/notes';
  *
  * Stream comes from the first path segment rather than a prop, so `/drops/x`,
  * `/wisdom/x` and `/dispatch/x` can all point at this one lazily-loaded module
- * — which is what keeps the entire content corpus and its three layouts out of
+ * which is what keeps the entire content corpus and its three layouts out of
  * the chunk the front page has to download.
  */
 export const Component = () => {

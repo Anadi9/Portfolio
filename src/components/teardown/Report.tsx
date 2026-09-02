@@ -3,7 +3,7 @@ import { c, display, heading, label, mono, px, rule, s } from '@/components/port
 import type { ReportModel, SectionReport } from '@/lib/teardown/report';
 
 /**
- * The nine sections, revealed the moment the email is submitted — it does not
+ * The nine sections, revealed the moment the email is submitted; it does not
  * wait on the network. A failed send therefore degrades to "no email arrived",
  * never to "no report", which is why `sendFailed` is a quiet line at the
  * bottom rather than an error state around the whole thing.
@@ -41,8 +41,8 @@ const Section = ({ section }: { section: SectionReport }) => (
 );
 
 export default function Report({ model, sendFailed }: { model: ReportModel; sendFailed: boolean }) {
-  // `Report` only ever mounts on the Gate -> Report phase transition — never
-  // in the prerendered page — so focusing on mount here is always a
+  // `Report` only ever mounts on the Gate -> Report phase transition, never
+  // in the prerendered page, so focusing on mount here is always a
   // deliberate transition, never a yank on first arrival.
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
 
         {sendFailed && (
           <p style={{ margin: px(s[6], 0, 0), font: `400 13px/1.4 ${display}`, color: c.dimOnInk }}>
-            Couldn&rsquo;t email a copy just now — it&rsquo;s all here on the page.
+            Couldn&rsquo;t email a copy just now; it&rsquo;s all here on the page.
           </p>
         )}
       </div>

@@ -1,12 +1,12 @@
 import { Head } from 'vite-react-ssg';
 
-/** Canonical origin. Every notes URL is absolute against this — see `Seo`. */
+/** Canonical origin. Every notes URL is absolute against this; see `Seo`. */
 export const ORIGIN = 'https://anadithakur.in';
 
 export const BYLINE = '@the.anadi';
 
 /**
- * Per-page head. Every route owns its own — `index.html` deliberately carries
+ * Per-page head. Every route owns its own, and `index.html` deliberately carries
  * no title or description, because a static one there and a rendered one here
  * both end up in the same `<head>` and a crawler has to pick.
  *

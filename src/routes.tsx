@@ -21,7 +21,7 @@ export const routes: RouteRecord[] = [
     lazy: () => import('./pages/Home').then((m) => ({ Component: m.default })),
     entry: 'src/pages/Home.tsx',
   },
-  // Deliberately absent from every nav. It is shared by link, not browsed to —
+  // Deliberately absent from every nav. It is shared by link, not browsed to,
   // but it still has to prerender, or the link someone opens from a DM resolves
   // to an empty root div.
   {
@@ -29,7 +29,7 @@ export const routes: RouteRecord[] = [
     lazy: () => import('./pages/WorkWithMe').then((m) => ({ Component: m.default })),
     entry: 'src/pages/WorkWithMe.tsx',
   },
-  // Unlike `/work-with-me`, this one is meant to be found — it is the entry
+  // Unlike `/work-with-me`, this one is meant to be found: it is the entry
   // point above the paid offers, so it carries full `Seo` and prerenders its
   // intro and first question rather than a Start button.
   {
@@ -45,7 +45,7 @@ export const routes: RouteRecord[] = [
 
   // One dynamic route per stream, each resolved against the content index at
   // build time. `getStaticPaths` imports the corpus dynamically so it stays out
-  // of the client entry chunk — it only ever runs in Node, during prerender.
+  // of the client entry chunk; it only ever runs in Node, during prerender.
   // It returns whole paths, not bare slugs: the prerenderer treats each returned
   // string as a URL to render, so a slug alone lands the page at `/system`.
   {

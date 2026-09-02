@@ -1,13 +1,13 @@
 /**
  * The banner art system: a deterministic pixel plate per post.
  *
- * Pure. No filesystem, no rasteriser, no React — it returns a cell array and
+ * Pure. No filesystem, no rasteriser, no React; it returns a cell array and
  * nothing else. That is what lets the same code run inside Vitest, inside the
  * Vite build, and inside the plain-Node generator script without any of them
  * needing the others' environment.
  *
  * Everything is a function of the post's path (stream + slug), not the bare
- * slug — two streams can share a filename (`/drops/agents`, `/wisdom/agents`),
+ * slug: two streams can share a filename (`/drops/agents`, `/wisdom/agents`),
  * and seeding from the slug alone would give them a pixel-identical field. A
  * post's banner is fixed the moment its file is named and never changes on
  * rebuild, which is the whole reason this is seeded rather than random.
@@ -21,7 +21,7 @@ export const BANNER_H = 60;
  *
  * Cream and gold are the site's own (`c.accent`, `c.mark`), carried in so the
  * plate is recognisably this site's rather than any neon plate. The three neon
- * hues exist nowhere else on the site — see the spec's §3. The lime is
+ * hues exist nowhere else on the site; see the spec's §3. The lime is
  * yellow-green rather than emerald specifically so a banner pixel can never be
  * mistaken for the reserved status light `c.signal`.
  */
@@ -144,15 +144,15 @@ const INSET = 3;
 /**
  * Constant cap height, variable tracking.
  *
- * The obvious approach — vary the type size until the string hits a target
- * width — does not work on a 6:1 plate: sizing `SWIPE` to span 360 cells needs
+ * The obvious approach, varying the type size until the string hits a target
+ * width, does not work on a 6:1 plate: sizing `SWIPE` to span 360 cells needs
  * glyphs several times taller than the 60 available. Tracking is the only free
  * variable, so every word is set at the same size and the *gaps* do the work.
  * The result is that all twelve plates share a baseline, a cap height, and an
  * overspan, and differ only in how airy the letters are.
  *
  * The scale steps down if a word is ever long enough that its advance would be
- * narrower than a glyph — which the corpus (5 to 10 characters) never triggers,
+ * narrower than a glyph, which the corpus (5 to 10 characters) never triggers,
  * but a future `CHEATSHEETS` would.
  */
 export const layoutWord = (word) => {
@@ -209,7 +209,7 @@ const BAYER = [
 ];
 
 /**
- * Layer 1 — the ground.
+ * Layer 1: the ground.
  *
  * An ordered dither ramp, densest at the left and thinning to the right. The
  * direction is not decorative: the word runs off the right edge, and the tail
@@ -226,7 +226,7 @@ const dither = (cells, primary) => {
 };
 
 /**
- * Layer 2 — the wireframe.
+ * Layer 2: the wireframe.
  *
  * A horizon with a hash-placed vanishing point, floor lines converging on it,
  * and receding horizontals spaced quadratically so they crowd toward the
@@ -258,7 +258,7 @@ const wireframe = (cells, rng, secondary) => {
 };
 
 /**
- * Layer 5a — glitch.
+ * Layer 5a: glitch.
  *
  * Two or three horizontal bands shifted sideways. Cells shifted in from beyond
  * the edge become ground rather than wrapping: a wrap reads as a deliberate
@@ -285,12 +285,12 @@ const glitch = (cells, mask, rng) => {
 };
 
 /**
- * Layer 5b — scanlines.
+ * Layer 5b: scanlines.
  *
  * Every second row goes dark, except where the word owns the cell, or where
  * the cell is the gold horizon. The horizon is a structural line rather than
  * field texture, so it is exempted by value rather than by nudging `vy` onto
- * an even row — that way a later tweak to the `0.42` constant in `wireframe`
+ * an even row, so that a later tweak to the `0.42` constant in `wireframe`
  * cannot silently delete it again. Scanning the word would halve its contrast
  * at exactly the size where it is supposed to be the loudest thing on the
  * page.

@@ -5,7 +5,7 @@ import { renderEmail } from './email';
 
 const all = (i: number) => QUESTIONS.map(() => i);
 
-describe('renderEmail — subject', () => {
+describe('renderEmail: subject', () => {
   it('carries the verdict and the score', () => {
     const { subject } = renderEmail(report(all(0)));
     expect(subject).toContain('REAL PRODUCT');
@@ -19,7 +19,7 @@ describe('renderEmail — subject', () => {
   });
 });
 
-describe('renderEmail — body', () => {
+describe('renderEmail: body', () => {
   const { html } = renderEmail(report(all(1)));
 
   it('contains all nine section titles', () => {
@@ -73,7 +73,7 @@ describe('renderEmail — body', () => {
   });
 });
 
-describe('renderEmail — undecided', () => {
+describe('renderEmail: undecided', () => {
   it('renders the undecidedLine paragraph when undecidedCount > 0', () => {
     const { html } = renderEmail(report(all(3)));
     // Text unique to the undecidedLine block

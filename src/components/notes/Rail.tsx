@@ -9,7 +9,7 @@ import { useActiveHeading, useDisclosureOpen, useReadProgress } from './useRail'
  * Deliberately one rail and not two. `NotesShell` already argues that a column
  * of chrome before the first sentence is an interruption; two of them box the
  * measure in on both sides and turn a personal site into documentation
- * software. The right gutter stays empty on purpose — it is bleed room for
+ * software. The right gutter stays empty on purpose: it is bleed room for
  * figures, not a second slab.
  *
  * One DOM tree, presented two ways. Below 1200px the grid gives it no track, so
@@ -40,7 +40,7 @@ const Rail = ({
   return (
     <details className="pf-rail" open={open}>
       <summary className="pf-rail-summary">
-        CONTENTS — {stamp}
+        CONTENTS · {stamp}
         {minutes !== null && ` · ${minutes} MIN`}
       </summary>
 

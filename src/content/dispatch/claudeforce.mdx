@@ -1,14 +1,14 @@
 ---
 stream: dispatch
-title: "Claudeforce — Salesforce put Claude inside its trust boundary, and itself inside Claude"
+title: "Claudeforce: Salesforce put Claude inside its trust boundary, and itself inside Claude"
 useWhen: "You were planning to build something that sits between a CRM and a model."
-summary: "Salesforce and Anthropic announced Claudeforce on 26 August: Claude as the default reasoning model across Agentforce, and a Salesforce plugin inside Claude with 37 prebuilt sales skills. The second direction is the one that matters — it makes the system of record a tool the model calls, which is a different answer to the SaaSpocalypse question than either side has been giving."
+summary: "Salesforce and Anthropic announced Claudeforce on 26 August: Claude as the default reasoning model across Agentforce, and a Salesforce plugin inside Claude with 37 prebuilt sales skills. The second direction is the one that matters, because it makes the system of record a tool the model calls, which is a different answer to the SaaSpocalypse question than either side has been giving."
 date: "2026-08-29"
 lastVerified: "2026-08-29"
-dateline: "29 AUG 2026 — Bengaluru"
+dateline: "29 AUG 2026 · Bengaluru"
 items:
   - headline: "Claude is now the default reasoning model across Agentforce"
-    why: "It powers the Atlas Reasoning Engine, runs Agentforce Vibes and Agentforce Coworker by default, and is selectable in Agent Builder. On its own this is a procurement story — a vendor swap at the model layer, the kind of thing that happens twice a year and changes nothing structural."
+    why: "It powers the Atlas Reasoning Engine, runs Agentforce Vibes and Agentforce Coworker by default, and is selectable in Agent Builder. On its own this is a procurement story, a vendor swap at the model layer, the kind of thing that happens twice a year and changes nothing structural."
   - headline: "Salesforce in Claude ships as a plugin with 37 prebuilt sales skills"
     why: "Pilot customers now, open beta in September, more skills late in the year. This is the direction that isn't a vendor swap: the CRM becomes something the model reaches into to read live revenue context and take governed action, rather than a place you leave the model to go and work."
   - headline: "Claude is the first LLM provider fully inside the Salesforce Trust Boundary"
@@ -32,7 +32,7 @@ Salesforce calls a model, you get a summary. The model sits underneath, doing a
 job, invisible.
 
 A plugin with 37 sales skills inside Claude reverses that. The surface is the
-model. The system of record is the thing being called — for live pipeline
+model. The system of record is the thing being called: for live pipeline
 context, for governed writes back into the CRM. Salesforce becomes a backend
 with permissions attached.
 
@@ -41,7 +41,7 @@ either of the two you usually hear. It isn't *SaaS dies* and it isn't *nothing
 changes*. It's: **the interface layer is what's under threat, and the governed
 action layer is what survives.** Salesforce's bet is that nobody is going to
 rebuild seventeen years of permissions model, audit trail, and object graph
-inside a chat client — so let the chat client be the front door and keep owning
+inside a chat client, so let the chat client be the front door and keep owning
 the part that's hard to reproduce.
 
 Read the Trust Boundary line in that light and it stops being boilerplate. It's
@@ -49,21 +49,21 @@ the moat being named out loud.
 
 ## What this closes
 
-If your plan involved building the layer between a CRM and a model — pull
-records, assemble context, prompt, write back — that space just got smaller from
+If your plan involved building the layer between a CRM and a model (pull
+records, assemble context, prompt, write back), that space just got smaller from
 both ends. The model vendor is shipping the skills; the CRM vendor is shipping
 the boundary. The middle was always the thinnest part of the stack, and this is
 what it looks like when the two ends notice.
 
 It's the [wrapper problem](/wisdom/ai-wrapper-tell) arriving as a market event
-rather than an argument. Question one on that page — *what does it own that
-isn't the model?* — is now being answered on your behalf by two companies with
+rather than an argument. Question one on that page, *what does it own that
+isn't the model?*, is now being answered on your behalf by two companies with
 more distribution than you.
 
 What doesn't close: everything the trust boundary can't reach. Data that isn't
 in Salesforce. Judgment the object model can't express. Workflows that cross
 systems nobody has agreed to integrate. Verticals too small for a prebuilt skill
-to ever exist. That's not a consolation prize — it's most of the actual work in
+to ever exist. That's not a consolation prize; it's most of the actual work in
 most actual businesses.
 
 ## The honest caveats
@@ -73,7 +73,7 @@ September. The gap between "available in beta" and "the default way a sales team
 works" is measured in quarters, and enterprise adoption of Agentforce has been
 slower than the keynotes implied.
 
-**37 skills is a small number.** It covers the obvious sales surface — pipeline
+**37 skills is a small number.** It covers the obvious sales surface: pipeline
 updates, account context, opportunity hygiene. It is not the long tail, and the
 long tail is where most integration revenue has always lived.
 
@@ -85,7 +85,7 @@ partnership between two companies with a shared competitor.
 ## What to actually do
 
 If you're building an integration against a system of record right now, build it
-as a skill surface — a set of typed, permissioned actions with a contract —
+as a skill surface, a set of typed, permissioned actions with a contract,
 rather than as a UI or a scraped API. That's the shape both ends of this
 announcement are converging on, and it's the shape that survives whichever way
 the arrow ends up pointing.

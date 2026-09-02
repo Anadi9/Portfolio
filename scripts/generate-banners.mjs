@@ -9,7 +9,7 @@
  * costs a couple of KB per page and buys back a network request for an image
  * that sits above the fold, where a late arrival is a visible pop.
  *
- * The art itself lives in `src/lib/banner-art.mjs` and is deliberately pure —
+ * The art itself lives in `src/lib/banner-art.mjs` and is deliberately pure;
  * this file only knows about the filesystem, the rasteriser and base64.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -26,7 +26,7 @@ const OUT = join(root, 'src', 'generated');
  * One rect per horizontal run rather than one per cell: a 360 × 60 plate is
  * 21,600 cells, and the dither and scanlines produce long runs, so this is
  * roughly an order of magnitude fewer nodes for the rasteriser to walk. The SVG
- * is never shipped — it exists only long enough to become a PNG.
+ * is never shipped: it exists only long enough to become a PNG.
  */
 const toSvg = ({ width, height, palette, cells }) => {
   const rects = [];
@@ -53,7 +53,7 @@ const toSvg = ({ width, height, palette, cells }) => {
 
 const posts = collect();
 if (!posts.length) {
-  console.log('[banners] no published posts — nothing to render.');
+  console.log('[banners] no published posts, nothing to render.');
   process.exit(0);
 }
 
@@ -65,7 +65,7 @@ for (const post of posts) {
   try {
     art = bannerArt({ ...post, path });
   } catch (err) {
-    throw new Error(`banner: ${path} — ${err.message}`);
+    throw new Error(`banner: ${path}: ${err.message}`);
   }
   const svg = toSvg(art);
 

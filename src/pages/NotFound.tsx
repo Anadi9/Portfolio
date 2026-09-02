@@ -25,11 +25,11 @@ const NotFound = () => {
       {/* Prerendered as `dist/404.html` by some hosts; noindex keeps a
           soft-404 out of the index either way. */}
       <Head>
-        <title>Not found — Anadi Thakur</title>
+        <title>Not found · Anadi Thakur</title>
         <meta name="robots" content="noindex" />
       </Head>
 
-      <span style={{ ...label(11, 700, 0.16), color: c.mark }}>ERROR — 404</span>
+      <span style={{ ...label(11, 700, 0.16), color: c.mark }}>ERROR · 404</span>
       <h1
         style={{
           margin: 0,

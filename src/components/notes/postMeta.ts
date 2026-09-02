@@ -14,7 +14,7 @@ const fmtDate = (iso: string) =>
  *
  * All of this used to sit in `PostHeader`, which meant a reader met six lines
  * of apparatus before the first sentence of the article. It is genuinely useful
- * — a drop's keyword is what the Instagram DM automation answers — but it is
+ * (a drop's keyword is what the Instagram DM automation answers) but it is
  * reference, not the lede, and reference belongs in the margin.
  *
  * Wisdom gets nothing. Its tradeoff is the stream's signature block and stays

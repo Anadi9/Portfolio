@@ -5,12 +5,12 @@ import type { Post } from '@/data/notes';
  * The plate that closes the article.
  *
  * A neon pixel field cannot be the page's background without fighting the
- * paper, so it is framed as an object sitting *in* the page — a screen embedded
+ * paper, so it is framed as an object sitting *in* the page: a screen embedded
  * in a document. The cream edge is what does that framing.
  *
  * It sat above the title until the covers arrived. Two bands over one headline
  * was one too many, and of the two the cover is the one carrying artwork made
- * for the post, so the plate moved to the end and became a sign-off — the last
+ * for the post, so the plate moved to the end and became a sign-off, the last
  * thing under the last paragraph, before READ NEXT.
  *
  * The image is still a data URI baked in at build time rather than a file.
@@ -18,7 +18,7 @@ import type { Post } from '@/data/notes';
  * request it saves is one the page would otherwise make after everything else
  * has settled, which is exactly when a late band is most visible.
  *
- * `alt=""` because it is decoration — the word on the plate repeats what the
+ * `alt=""` because it is decoration, and the word on the plate repeats what the
  * eyebrow and the H1 already said.
  *
  * Renders nothing for a post with no plate rather than a broken image. A

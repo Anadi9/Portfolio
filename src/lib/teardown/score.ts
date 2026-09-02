@@ -1,7 +1,7 @@
 import { MAX_RAW, QUESTIONS, type Axis, type SectionId } from './questions';
 
 /**
- * Scoring — arithmetic only.
+ * Scoring: arithmetic only.
  *
  * Nothing in this module returns a sentence. That is deliberate: it makes the
  * tests pure numbers, and it leaves `report.ts` as the single place a finding
@@ -40,7 +40,7 @@ export const band = (score: number): VerdictBand =>
 /**
  * The only validation the serverless function needs. Answers are the entire
  * wire format, so an exhaustive check here is an exhaustive check of the
- * payload — which is why the body carries answers and not a scored report.
+ * payload, which is why the body carries answers and not a scored report.
  */
 export const isValidAnswers = (value: unknown): value is number[] =>
   Array.isArray(value) &&

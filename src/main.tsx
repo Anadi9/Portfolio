@@ -19,8 +19,8 @@ export const createRoot = ViteReactSSG({ routes });
  *
  * This module also runs in Node during the prerender pass, where there is no
  * `document` to attach a script to, so the call is guarded on `window`. There
- * is no root layout route to hang an `<Analytics />` component off — every
- * entry in `routes` is top-level — so the script is injected here instead.
+ * is no root layout route to hang an `<Analytics />` component off (every
+ * entry in `routes` is top-level), so the script is injected here instead.
  * `inject` patches `pushState`, which is how react-router navigates, so
  * client-side route changes are counted without any per-page wiring.
  */

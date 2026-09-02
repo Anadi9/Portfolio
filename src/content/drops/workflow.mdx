@@ -1,6 +1,6 @@
 ---
 stream: drop
-title: "n8n standup automation — auto-generate a daily standup from Linear into Slack"
+title: "n8n standup automation: auto-generate a daily standup from Linear into Slack"
 useWhen: "Your team writes standup updates by hand every morning and half of them say \"same as yesterday\"."
 summary: "A scheduled n8n workflow that reads what actually moved in Linear over the last 24 hours and posts a grouped standup into Slack before anyone opens a laptop. Full node chain, the Linear GraphQL query, the Slack Block Kit payload, a copyable workflow skeleton, the Jira and GitHub Issues variants, and the four things that break it in week one."
 date: "2026-08-29"
@@ -22,7 +22,7 @@ have.
 
 So export it automatically. This is the workflow that reads Linear for
 everything that changed in the last 24 hours, groups it by person, and posts it
-into Slack at 9:00 — before anyone has opened a laptop.
+into Slack at 9:00, before anyone has opened a laptop.
 
 If you're still deciding which automation to build first, the wider list is here:
 [20 automation ideas worth stealing](/drops/swipe). This one is the build guide.
@@ -37,12 +37,12 @@ The output is the thing to design first, because it's what decides whether
 anyone reads it. Here's the actual message shape:
 
 ```
-📋  Standup — Thu 29 Aug
+📋  Standup: Thu 29 Aug
 
 Priya Raman
   ✅  ENG-214 Rate-limit the ingest endpoint
   🔄  ENG-231 Retry queue for failed transcripts
-  🚧  ENG-233 Webhook signature check — blocked on Stripe keys
+  🚧  ENG-233 Webhook signature check (blocked on Stripe keys)
 
 Dev Malhotra
   ✅  ENG-228 Fix timezone drift in the digest job
@@ -56,11 +56,11 @@ Nothing moved: Aarav S.
 Three things about that shape are deliberate, and each one is a decision you
 should make on purpose rather than inherit from mine:
 
-- **Grouped by person, not by status.** Standup is a coordination ritual — you
+- **Grouped by person, not by status.** Standup is a coordination ritual; you
   read it to find out who to talk to. Status-grouped output reads like a burndown
   chart and nobody talks to anybody.
 - **"Nothing moved" is named, not hidden.** This is the part people get nervous
-  about. It isn't a shaming mechanic — it's the only line in the message that
+  about. It isn't a shaming mechanic; it's the only line in the message that
   starts a conversation. Someone with nothing on the board for two days is either
   blocked, in meetings, or working on something that isn't tracked, and all three
   are worth knowing.
@@ -91,17 +91,17 @@ Cron, weekdays only, at 09:00 in the team's timezone:
 n8n evaluates cron in the **instance** timezone, not yours, not the workflow's.
 On a fresh self-hosted container that's UTC, which means an IST team gets its
 standup at 14:30. Set `GENERIC_TIMEZONE=Asia/Kolkata` in the n8n environment, or
-set the timezone explicitly in the workflow's own settings — the workflow-level
+set the timezone explicitly in the workflow's own settings; the workflow-level
 setting wins, and is the one that survives moving the container.
 
-### 2. HTTP Request — pull from Linear
+### 2. HTTP Request: pull from Linear
 
 Linear has no "what changed" endpoint. You query issues filtered on `updatedAt`,
 which covers the whole surface you care about: created, moved, assigned,
 commented, closed.
 
 `POST https://api.linear.app/graphql`, with your personal API key in an
-`Authorization` header (no `Bearer` prefix — Linear takes the raw key, and this
+`Authorization` header (no `Bearer` prefix; Linear takes the raw key, and this
 is the single most common reason a first attempt returns 400).
 
 ```graphql
@@ -129,11 +129,11 @@ query StandupWindow($since: DateTimeOrDuration!) {
 Pass `since` as `{{ $now.minus(24, 'hours').toISO() }}` from an n8n expression.
 
 `state.type` is what you actually branch on, not `state.name`. Team-defined
-state names drift — someone renames "In Review" to "Review" and a formatter
+state names drift: someone renames "In Review" to "Review" and a formatter
 matching on strings silently stops marking anything as in-progress. The `type`
 enum is fixed: `backlog`, `unstarted`, `started`, `completed`, `canceled`.
 
-### 3. Code — group and format
+### 3. Code: group and format
 
 One Code node, running once for all items. This is where the output shape above
 gets built:
@@ -148,7 +148,7 @@ const ICON = {
 };
 
 // Everyone who should appear even with nothing to report. Keeping this list in
-// the node — rather than deriving it from the issues — is what makes the
+// the node, rather than deriving it from the issues, is what makes the
 // "nothing moved" line possible at all.
 const TEAM = ['Priya Raman', 'Dev Malhotra', 'Aarav S.'];
 const BLOCKED_LABEL = /blocked|waiting on/i;
@@ -176,7 +176,7 @@ const idle = [...byPerson].filter(([, list]) => !list.length).map(([name]) => na
 const blocks = [
   {
     type: 'header',
-    text: { type: 'plain_text', text: `📋  Standup — ${$now.toFormat('EEE d LLL')}` },
+    text: { type: 'plain_text', text: `📋  Standup: ${$now.toFormat('EEE d LLL')}` },
   },
 ];
 
@@ -212,13 +212,13 @@ blocks.push({
 return [{ json: { blocks, count: issues.length } }];
 ```
 
-### 4. IF — anything to report?
+### 4. IF: anything to report?
 
 Condition: `{{ $json.count }}` greater than `0`. True branch goes to Slack, false
 branch goes nowhere. A workflow that ends on a false branch is a successful run,
-not an error — n8n will show it green and that's correct.
+not an error; n8n will show it green and that's correct.
 
-### 5. Slack — post message
+### 5. Slack: post message
 
 Use the Slack node in **Send Message** mode with `blocks` set to
 `{{ $json.blocks }}`, or hit `chat.postMessage` directly through an HTTP Request
@@ -235,12 +235,12 @@ fix is typing `/invite @standup` in the channel.
 
 As with the [five automations](/drops/automate), node IDs and credential
 references are unique to your instance, so this isn't a byte-identical import
-file. Every node, parameter and connection is real — rebuilding from it takes
+file. Every node, parameter and connection is real, and rebuilding from it takes
 about as long as the setup time above.
 
 ```json
 {
-  "name": "Daily Standup — Linear to Slack",
+  "name": "Daily Standup: Linear to Slack",
   "nodes": [
     {
       "name": "Schedule - Weekday 9am",
@@ -325,19 +325,19 @@ about as long as the setup time above.
 
 ## If you're not on Linear
 
-The shape is identical — only the second node changes. The Code node needs its
+The shape is identical; only the second node changes. The Code node needs its
 field paths adjusted, and nothing else in the chain moves.
 
 | Tracker | Swap the HTTP node for | Filter on | Status field |
 |---|---|---|---|
-| **Jira** | `POST /rest/api/3/search` with a JQL body | `updated >= -24h AND project = ENG` | `fields.status.statusCategory.key` — `new`, `indeterminate`, `done` |
+| **Jira** | `POST /rest/api/3/search` with a JQL body | `updated >= -24h AND project = ENG` | `fields.status.statusCategory.key`, one of `new`, `indeterminate`, `done` |
 | **GitHub Issues** | `GET /repos/:owner/:repo/issues?since=` | `since` as an ISO timestamp | `state` plus labels; there's no in-progress state, so use a `status:` label |
-| **Notion** | `POST /v1/databases/:id/query` | `last_edited_time` `on_or_after` filter | Whatever your status select is named — read the property, don't hardcode option IDs |
+| **Notion** | `POST /v1/databases/:id/query` | `last_edited_time` `on_or_after` filter | Whatever your status select is named; read the property, don't hardcode option IDs |
 | **Asana** | `GET /tasks?modified_since=` | `modified_since` | `completed` boolean only; in-progress needs a custom field |
 
 GitHub is the one that surprises people: its issues endpoint returns pull
 requests too, as issue objects with a `pull_request` key. Filter them out unless
-you want every PR in the standup, which — for most teams — you actually might.
+you want every PR in the standup, which, for most teams, you actually might.
 
 ### The Make / Zapier equivalent
 
@@ -353,7 +353,7 @@ one worth self-hosting for.
 
 **The 100-item ceiling.** `first: 100` is Linear's page size, not a suggestion.
 A team of eight moving fast will exceed it on a Monday covering a weekend, and
-the failure is silent — you get a valid standup that's quietly missing the tail.
+the failure is silent: you get a valid standup that's quietly missing the tail.
 Either paginate with `pageInfo.endCursor`, or narrow the window and accept the
 cap. Don't ignore it because it worked on day one with three issues.
 
@@ -362,14 +362,14 @@ Friday morning, or the whole weekend vanishes. `$now.minus($now.weekday === 1 ? 
 handles it in one expression.
 
 **Bot noise fatigue.** If the standup posts and nobody replies to it for two
-weeks, the automation didn't fail — the ritual did. Post it in the channel where
+weeks, the automation didn't fail; the ritual did. Post it in the channel where
 the team already talks, not a dedicated `#standup` channel that becomes a log
 nobody opens.
 
 **Everything worth reporting has to be in the tracker.** This is the real
 precondition, and no amount of workflow design gets around it. If half the team's
 work lives in DMs and the other half in Linear, the bot will make that visible on
-day one. That's genuinely useful information — but it's a management problem the
+day one. That's genuinely useful information, but it's a management problem the
 automation surfaces, not one it solves.
 
 ---
@@ -380,5 +380,5 @@ automation surfaces, not one it solves.
 - Building something bigger than a workflow? [The system design template](/drops/system).
 - Still choosing? [20 automation ideas worth stealing](/drops/swipe).
 
-Set this up and it broke somewhere I didn't warn you about? Get in touch — I'll
+Set this up and it broke somewhere I didn't warn you about? Get in touch and I'll
 add it to the list.

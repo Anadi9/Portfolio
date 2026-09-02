@@ -9,7 +9,7 @@ const countBy = <T extends string | number>(values: T[]) =>
  *
  * The data file was parsed out of `prompts.mdx`, not retyped, and these are the
  * counts the markdown itself greps to. If a future edit drops a record or
- * retags one, this is what says so — the page claims a hundred prompts in its
+ * retags one, this is what says so, because the page claims a hundred prompts in its
  * title, its summary and its OG card.
  */
 describe('the prompt library', () => {

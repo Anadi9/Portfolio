@@ -19,12 +19,12 @@ export const c = {
   markOnPaper: '#8A6A2A',
 
   /**
-   * Status hue — one colour, reserved.
+   * Status hue: one colour, reserved.
    *
    * Nothing decorative is allowed to use it: it appears only where the page
    * makes a claim about availability (the two live dots, the open-for-work
-   * badge, the "available now" milestone). That exclusivity is the whole point
-   * — the gold is used often enough that a gold dot reads as ornament, and a
+   * badge, the "available now" milestone). That exclusivity is the whole point:
+   * the gold is used often enough that a gold dot reads as ornament, and a
    * status light that reads as ornament isn't a status light. Same two-tier
    * split as `mark` / `markOnPaper`: one hue, two lightnesses, because a single
    * green can't hold contrast against both the cream and the ink.
@@ -45,7 +45,7 @@ export const display = 'Archivo, Helvetica, sans-serif';
 
 /**
  * Width axis. Archivo is variable on width, which makes it tempting to pick a
- * new value per block — six of them had crept in. Exactly two settings ship, so
+ * new value per block, and six of them had crept in. Exactly two settings ship, so
  * the display type reads as one voice.
  */
 export const stretch = {
@@ -58,7 +58,7 @@ export const stretch = {
 /** Border weights. hair = internal division, base = component edge, edge = section joint. */
 export const rule = { hair: 1.5, base: 2, edge: 3 } as const;
 
-/** Space scale (px), 4-based. Index is the step — `s[6]` is 24px. */
+/** Space scale (px), 4-based. Index is the step, so `s[6]` is 24px. */
 export const s = [0, 4, 8, 12, 16, 20, 24, 28, 36, 44, 56, 72, 88, 112] as const;
 
 /** Page gutter, and the vertical rhythm every section opens and closes on. */
@@ -69,7 +69,7 @@ export const sectionY = { top: s[12], bottom: s[12] } as const;
 export const px = (...n: number[]) => n.map((v) => `${v}px`).join(' ');
 
 /**
- * Display ramp — one geometric progression (~1.34) shared by every heading, so
+ * Display ramp: one geometric progression (~1.34) shared by every heading, so
  * the sections scale together instead of drifting apart. Before this, six
  * headings mixed `cqw` and `vw` at unrelated rates and visibly fell out of
  * step with each other around 1200–1600px.
@@ -102,14 +102,14 @@ const RAMP = {
 
 export type Step = keyof typeof RAMP;
 
-/** Widths at which a step stops growing — container for `cqw`, viewport for `vw`. */
+/** Widths at which a step stops growing: container for `cqw`, viewport for `vw`. */
 const CAP_CQW = 1450;
 const CAP_VW = 1700;
 
 /**
  * A step off the display ramp. Size, leading and tracking always travel together.
  *
- * `fixed` opts out of the fluid term and pins the step to its cap — for type
+ * `fixed` opts out of the fluid term and pins the step to its cap, for type
  * inside a fixed-width component like the rail, where there is nothing sensible
  * for a percentage to measure against.
  */
@@ -131,7 +131,7 @@ export const heading = (
 };
 
 /**
- * Mono label — the small caps-and-tracking type used everywhere.
+ * Mono label: the small caps-and-tracking type used everywhere.
  *
  * Floored at 10px. The design had drifted to 8px and 9px in the rail and the
  * hero badge, which is below any reasonable legibility threshold at this

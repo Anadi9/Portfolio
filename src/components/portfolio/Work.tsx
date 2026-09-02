@@ -53,7 +53,7 @@ export const Marquee = () => (
  * for two of them and far too short for the one I actually built end to end.
  * This is the part someone technical reads before deciding whether the reel was
  * marketing: the problem, the three decisions worth defending, what shipped,
- * and what it cost. Nothing here claims a metric — the numbers describe the
+ * and what it cost. Nothing here claims a metric; the numbers describe the
  * thing, not its performance.
  */
 const CaseStudy = () => {
@@ -87,7 +87,7 @@ const CaseStudy = () => {
               marginBottom: s[6],
             }}
           >
-            CASE STUDY — {featured.index}
+            CASE STUDY · {featured.index}
           </div>
           <h3 style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase' }}>
             {featured.title[0]}
@@ -124,7 +124,7 @@ const CaseStudy = () => {
         </dl>
       </div>
 
-      {/* The problem, at standfirst size — the only long-form line in the block. */}
+      {/* The problem, at standfirst size: the only long-form line in the block. */}
       <p
         data-reveal="1"
         style={{
@@ -308,7 +308,7 @@ const Work = () => (
                 }}
               >
                 <span style={{ ...label(12, 700, 0.12), color: c.mark }}>
-                  {p.index} — {p.kind}
+                  {p.index} · {p.kind}
                 </span>
                 <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: s[2] }}>
                   {p.tech.map((t) => (
@@ -453,8 +453,8 @@ const Work = () => (
         <div style={{ flex: 1, height: 3, background: c.rule }}>
           <div data-hbar="1" style={{ height: '100%', background: c.accent, transform: 'scaleX(0)', transformOrigin: 'left center' }} />
         </div>
-        {/* The gesture changes with the layout — the wide reel advances on the
-            page's scroll, the narrow one on a swipe — so the hint has to say
+        {/* The gesture changes with the layout: the wide reel advances on the
+            page's scroll, the narrow one on a swipe, so the hint has to say
             whichever is true. CSS owns the swap, same as the breakpoint. */}
         <span style={{ flex: 'none', ...label(11, 500, 0.14), color: c.dim }}>
           <span data-hhint="wide">KEEP SCROLLING →</span>

@@ -55,7 +55,7 @@ const Contact = () => (
         userSelect: 'none',
       }}
     >
-      Say hello — say hello — say hello —
+      Say hello · say hello · say hello ·
     </span>
 
     <div
@@ -111,7 +111,7 @@ const Contact = () => (
         </h2>
       </div>
       <p data-contact-copy="1" style={{ margin: `0 0 ${s[3]}px`, font: `400 16px/1.5 ${display}`, color: 'rgba(10,10,10,.78)', textWrap: 'pretty' }}>
-        Fastest route is email — I answer within a day, usually with questions. If you&apos;d rather read code first,
+        Fastest route is email; I answer within a day, usually with questions. If you&apos;d rather read code first,
         GitHub is right there.
       </p>
     </div>

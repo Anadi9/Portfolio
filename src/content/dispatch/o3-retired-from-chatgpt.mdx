@@ -1,15 +1,15 @@
 ---
 stream: dispatch
-title: "OpenAI retired o3 from ChatGPT — and the API is on a completely different clock"
+title: "OpenAI retired o3 from ChatGPT, and the API is on a completely different clock"
 useWhen: "You have a model name written as a string literal somewhere in your codebase."
-summary: "o3 left ChatGPT on 26 August after a 90-day sunset. The API wasn't touched by that at all — a separate notice puts the o3 snapshots at 11 December. Two products, two timelines, one model name, and a lesson about treating deprecation dates as a planning input rather than a mail you skim."
+summary: "o3 left ChatGPT on 26 August after a 90-day sunset. The API wasn't touched by that at all: a separate notice puts the o3 snapshots at 11 December. Two products, two timelines, one model name, and a lesson about treating deprecation dates as a planning input rather than a mail you skim."
 date: "2026-08-29"
 lastVerified: "2026-08-29"
-dateline: "29 AUG 2026 — Bengaluru"
+dateline: "29 AUG 2026 · Bengaluru"
 items:
   - headline: "o3 left ChatGPT on 26 August, ending a 90-day sunset announced on 28 May"
-    why: "Ninety days is the window you actually get. It's enough to migrate deliberately and not enough to migrate accidentally — which means the clock starts when you read the notice, not when you next have capacity."
-  - headline: "The API was untouched by that retirement — a separate June notice sets 11 December for the o3 snapshots"
+    why: "Ninety days is the window you actually get. It's enough to migrate deliberately and not enough to migrate accidentally, which means the clock starts when you read the notice, not when you next have capacity."
+  - headline: "The API was untouched by that retirement: a separate June notice sets 11 December for the o3 snapshots"
     why: "o3-2025-04-16 and o3-pro-2025-06-10 come out of the API on a schedule that has nothing to do with the consumer product. If you assumed one announcement covered both surfaces, you were wrong in the safe direction this time. Next time it could be the other way."
   - headline: "o3-pro stays in ChatGPT for Pro, Team, Enterprise and Edu"
     why: "The retirement was consumer-grade o3 specifically. Partial retirements are the norm now, so \"is o3 gone?\" has four different answers depending on which surface and which plan you mean."
@@ -31,8 +31,8 @@ those are surprises waiting to happen. The consumer announcement got the press
 coverage; the developer notice that actually affects your production traffic went
 out ten weeks earlier, to a different list, with a date six months further out.
 
-OpenAI's stated reason — retiring older models with limited usage to support
-newer architectures — is entirely reasonable and will keep being the reason. This
+OpenAI's stated reason, retiring older models with limited usage to support
+newer architectures, is entirely reasonable and will keep being the reason. This
 is now a permanent feature of building on hosted models, not an event.
 
 ## The part that's actually about your code
@@ -52,7 +52,7 @@ Three things worth doing this week, none of which take long:
    the ones in notebooks, in scripts, in that one Lambda. Most teams find more
    than they expected, and find at least one in a place nobody owns.
 2. **Move them to config, with the pinned snapshot as the value.** Pinning is
-   still correct — you don't want a silent model change under you. Pinning in
+   still correct; you don't want a silent model change under you. Pinning in
    *config* means the migration is a deploy, not a code change.
 3. **Keep an eval you can re-run.** Twenty or thirty real inputs from your own
    traffic with known-good outputs. That is the entire difference between a
@@ -66,16 +66,16 @@ There's a diagnostic in [the wrapper post](/wisdom/ai-wrapper-tell) that asks
 what breaks if you swap the model. A deprecation notice is that question being
 asked by someone else, on their schedule, with a deadline attached.
 
-If the answer is "we change a config value and re-run the evals" — you have a
+If the answer is "we change a config value and re-run the evals", you have a
 product, and this news is a calendar entry. If the answer is "we don't actually
-know what would change" — you have a dependency you can't reason about, and the
+know what would change", you have a dependency you can't reason about, and the
 90 days you get next time will not be enough.
 
 ## The caveat worth stating
 
 None of this is a criticism of OpenAI's process. Ninety days with a public notice
 is a reasonable deprecation policy, better than several providers, and the split
-between consumer and API timelines is the right call — those users have genuinely
+between consumer and API timelines is the right call; those users have genuinely
 different switching costs.
 
 The risk isn't the policy. It's that most teams have no mechanism for receiving

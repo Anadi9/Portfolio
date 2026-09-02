@@ -38,8 +38,8 @@ const logoChip: React.CSSProperties = {
  *
  * Styled once, in ink-on-paper. It used to carry a second full set of colours
  * that JavaScript swapped in over the dark sections; the inversion is now done
- * optically by `[data-rail-invert]` — see the seam block in
- * `usePortfolioMotion` — so there is exactly one source of truth for how the
+ * optically by `[data-rail-invert]` (see the seam block in
+ * `usePortfolioMotion`) so there is exactly one source of truth for how the
  * rail looks.
  */
 const Rail = () => (
@@ -154,7 +154,7 @@ const Rail = () => (
       {/* Both halves carry the full list, and the track is sized by content
           rather than 200% of the rail. It used to split the six clients three
           and three into two 50% halves: -50% only reads as seamless when the
-          second half repeats the first, so the loop visibly reset every 22s —
+          second half repeats the first, so the loop visibly reset every 22s,
           and six chips are far wider than the 264px half they were given, so
           they overlapped. max-content makes -50% exactly one group wide. */}
       <div

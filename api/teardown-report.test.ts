@@ -5,9 +5,9 @@ import handler from './teardown-report';
 
 /**
  * `api/teardown-report.ts` is the only server-side code and the only public
- * HTTP endpoint in the project. It needs no DOM — it is a plain async
+ * HTTP endpoint in the project. It needs no DOM: it is a plain async
  * function over `{ method, body }` plus a `res` exposing
- * `status`/`json`/`setHeader` — so it is tested here with local fakes and a
+ * `status`/`json`/`setHeader`, so it is tested here with local fakes and a
  * mocked `resend` module. No test in this file makes a real network call.
  */
 
@@ -70,7 +70,7 @@ afterEach(() => {
   process.env = { ...ORIGINAL_ENV };
 });
 
-describe('teardown-report — method', () => {
+describe('teardown-report: method', () => {
   it('rejects GET with 405 and sets Allow: POST', async () => {
     const res = makeRes();
     await handler(makeReq('GET', {}), res as unknown as VercelResponse);
@@ -80,7 +80,7 @@ describe('teardown-report — method', () => {
   });
 });
 
-describe('teardown-report — configuration', () => {
+describe('teardown-report: configuration', () => {
   it('returns 501 when RESEND_API_KEY is not set', async () => {
     delete process.env.RESEND_API_KEY;
     const res = makeRes();
@@ -93,7 +93,7 @@ describe('teardown-report — configuration', () => {
   });
 });
 
-describe('teardown-report — honeypot', () => {
+describe('teardown-report: honeypot', () => {
   it('returns 200 with no Resend call when the honeypot is filled', async () => {
     const res = makeRes();
     await handler(
@@ -106,7 +106,7 @@ describe('teardown-report — honeypot', () => {
   });
 });
 
-describe('teardown-report — payload validation', () => {
+describe('teardown-report: payload validation', () => {
   it('rejects answers of the wrong length with 400', async () => {
     const res = makeRes();
     await handler(
@@ -155,7 +155,7 @@ describe('teardown-report — payload validation', () => {
   });
 });
 
-describe('teardown-report — Resend failures', () => {
+describe('teardown-report: Resend failures', () => {
   it('returns 502 when Resend returns an error', async () => {
     sendMock.mockResolvedValueOnce({ error: { message: 'bounced' } });
     const res = makeRes();
@@ -176,7 +176,7 @@ describe('teardown-report — Resend failures', () => {
     expect(res.statusCode).toBe(502);
   });
 
-  it('still returns 200 when the audience add fails — the send is the point, the list is a side effect', async () => {
+  it('still returns 200 when the audience add fails: the send is the point, the list is a side effect', async () => {
     process.env.RESEND_AUDIENCE_ID = 'test-audience';
     contactsCreateMock.mockRejectedValueOnce(new Error('audience add failed'));
     const res = makeRes();

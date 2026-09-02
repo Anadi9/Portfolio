@@ -1,5 +1,5 @@
 /**
- * The Wrapper Test question bank — the content of the free teardown.
+ * The Wrapper Test question bank: the content of the free teardown.
  *
  * Everything downstream of this file is arithmetic. The judgement lives here,
  * in the option weights and in `findings`, and `findings` is the ONLY place a
@@ -7,7 +7,7 @@
  * verbatim; nothing composes, templates or interpolates one.
  *
  * That constraint is what keeps the free tool diagnostic. A finding names what
- * an answer indicates and stops there — the fix is what the paid teardown is
+ * an answer indicates and stops there; the fix is what the paid teardown is
  * for, and there is deliberately no field on this type to put one in.
  *
  * Weights are 3 / 1 / 0 / 0 for every question, so the fourth option (always a
@@ -33,7 +33,7 @@ export type Question = {
   axis: Axis;
   prompt: string;
   options: Option[];
-  /** Parallel to `options`. Observation only — see the file comment. */
+  /** Parallel to `options`. Observation only; see the file comment. */
   findings: string[];
 };
 
@@ -63,9 +63,9 @@ export const QUESTIONS: Question[] = [
     prompt:
       "Could you state what your product does in one sentence, without using the words 'AI', 'GPT' or 'Claude'?",
     options: [
-      { label: 'Yes — and the sentence is about an outcome, not a technology', weight: 3 },
+      { label: 'Yes, and the sentence is about an outcome, not a technology', weight: 3 },
       { label: "Yes, but the sentence is basically 'it uses AI to do X'", weight: 1 },
-      { label: 'Not really — the product is the AI part', weight: 0 },
+      { label: 'Not really, the product is the AI part', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -101,7 +101,7 @@ export const QUESTIONS: Question[] = [
     options: [
       { label: "Yes, to within a rough range, and it's tracked", weight: 3 },
       { label: 'I know the total bill but not the per-user number', weight: 1 },
-      { label: 'No — we look at the invoice when it arrives', weight: 0 },
+      { label: 'No, we look at the invoice when it arrives', weight: 0 },
       UNKNOWN,
     ],
     findings: [
@@ -187,7 +187,7 @@ export const QUESTIONS: Question[] = [
     id: 'worst-failure-written-down',
     section: 7,
     axis: 'failure',
-    prompt: 'The failure of your AI feature that would hurt a user most — is it written down anywhere?',
+    prompt: 'The failure of your AI feature that would hurt a user most: is it written down anywhere?',
     options: [
       { label: 'Written down, with the mitigation named beside it', weight: 3 },
       { label: "We've talked about it but never written it down", weight: 1 },
@@ -207,7 +207,7 @@ export const QUESTIONS: Question[] = [
     axis: 'cost',
     prompt: 'Is there a cap on what a single user or a single request can cost you?',
     options: [
-      { label: 'Yes — hard limits per request and per account', weight: 3 },
+      { label: 'Yes, hard limits per request and per account', weight: 3 },
       { label: 'Rate limiting, but no spend cap', weight: 1 },
       { label: 'No caps', weight: 0 },
       UNKNOWN,

@@ -93,13 +93,13 @@ const PromptCard = ({
  *
  * This page is the largest on the site and was, until now, its worst: 100
  * records in a fixed order with no way to narrow them, which meant the only
- * retrieval strategy was ctrl-F or scrolling. The rail did not help — turning
+ * retrieval strategy was ctrl-F or scrolling. The rail did not help: turning
  * every prompt into an `###` gave it 107 entries, a second wall beside the
  * first.
  *
  * All hundred render on the server. Filtering is client state on top, the same
  * arrangement the index feed uses, so the artifact is still wholly on the page
- * for anyone arriving from search — which is the promise `DropLayout` makes and
+ * for anyone arriving from search, which is the promise `DropLayout` makes and
  * this page has more riding on than any other.
  *
  * Category and audience counts are computed against the rest of the query
@@ -190,7 +190,7 @@ const PromptLibrary = () => {
 
       {grouped.length === 0 ? (
         <p style={{ margin: px(s[10], 0), font: `400 17px/1.6 ${display}`, color: c.dim }}>
-          Nothing matches that. The prompts are worded plainly — try a word you would expect to see in one,
+          Nothing matches that. The prompts are worded plainly; try a word you would expect to see in one,
           like <em>refactor</em>, <em>outline</em> or <em>lighting</em>.
         </p>
       ) : (

@@ -4,14 +4,14 @@ import { c, display, heading, label, px, rule, s } from '@/components/portfolio/
 /**
  * The one thing on this page that is asked for.
  *
- * The gate is a courtesy, not a lock — the report is computed in the browser
+ * The gate is a courtesy, not a lock: the report is computed in the browser
  * from data already in the bundle, so anyone reading source has it for free.
  * That is decision 5 of the spec and it is fine: hardening it would mean
  * moving the report server-side and paying a round trip on every reveal, to
  * protect something given away.
  *
  * The honeypot is a real input, positioned off-screen rather than hidden with
- * `display:none` — some bots skip anything undisplayed. It is `aria-hidden`
+ * `display:none`, since some bots skip anything undisplayed. It is `aria-hidden`
  * and out of the tab order, so nobody using the page ever meets it.
  */
 
@@ -39,7 +39,7 @@ export default function Gate({ onSubmit }: { onSubmit: (email: string, honeypot:
       </h3>
       <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk }}>
         What every answer indicates, section by section, and which of them you haven&rsquo;t decided yet.
-        It opens here straight away — the email is so you keep a copy.
+        It opens here straight away; the email is so you keep a copy.
       </p>
 
       <div style={{ display: 'flex', gap: s[3], flexWrap: 'wrap', marginTop: s[7] }}>

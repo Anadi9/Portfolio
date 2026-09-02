@@ -1,7 +1,7 @@
 /**
  * The AI Prompt Playbook, as data.
  *
- * These hundred records were markdown until now — five `##` categories, a `###`
+ * These hundred records were markdown until now: five `##` categories, a `###`
  * per prompt, and 37KB of source that rendered as one uninterrupted wall. They
  * were never really prose: every entry has the identical shape, which is the
  * definition of a table pretending to be a document.
@@ -11,7 +11,7 @@
  * the table of contents into a second wall beside the first.
  *
  * Extracted mechanically from the MDX, not retyped: 100 records, 20 per
- * category, 49 both / 30 professionals / 21 students — the same counts the
+ * category, 49 both / 30 professionals / 21 students, the same counts the
  * source file greps to. `prompts.test.ts` holds that shape in place.
  *
  * Adding a prompt now means appending to this array rather than writing
@@ -23,7 +23,7 @@
 export type Audience = 'both' | 'professionals' | 'students';
 
 export type Prompt = {
-  /** `"1.1"` — category number, then position within it. Stable; used as the id. */
+  /** `"1.1"`: category number, then position within it. Stable; used as the id. */
   id: string;
   categoryId: number;
   category: string;
@@ -31,7 +31,7 @@ export type Prompt = {
   audience: Audience;
   /** The prompt itself, verbatim. This is the thing people came to copy. */
   prompt: string;
-  /** The one line explaining why it works. Kept — it is what makes this a
+  /** The one line explaining why it works. Kept, because it is what makes this a
       playbook rather than a list. */
   why: string;
 };
@@ -52,10 +52,10 @@ export const AUDIENCE_LABEL: Record<Audience, string> = {
  */
 export const CATEGORIES: { id: number; name: string; anchor: string; intro: string }[] = [
   { id: 1, name: 'Engineering & Coding', anchor: '1-engineering--coding', intro: 'Treat the model like a senior collaborator you\'re handing context to, not an autocomplete engine. The quality gap between "fix this" and a well-scoped prompt is enormous, and it\'s almost entirely about how much real context you hand over up front.' },
-  { id: 2, name: 'Learning Anything', anchor: '2-learning-anything', intro: 'Most people use AI as an answer-dispenser when learning, which feels productive but builds nothing. Used as a tutor — one that quizzes, questions, and pushes back — it builds understanding you can actually retrieve later, under pressure, without the tool in front of you.' },
+  { id: 2, name: 'Learning Anything', anchor: '2-learning-anything', intro: 'Most people use AI as an answer-dispenser when learning, which feels productive but builds nothing. Used as a tutor, one that quizzes, questions, and pushes back, it builds understanding you can actually retrieve later, under pressure, without the tool in front of you.' },
   { id: 3, name: 'Design (Product, UI/UX & Visual)', anchor: '3-design-product-uiux--visual', intro: 'Good critique locates a specific problem; good creative direction imposes a specific constraint. Vague prompts get vague design feedback ("looks clean!") and vague creative options. Specific prompts get you something you can actually act on.' },
-  { id: 4, name: 'Content & Growth', anchor: '4-content--growth', intro: 'Content and outreach fail for the same reason — genericness. A hook that could apply to any topic stops no one; an outreach message that could go to anyone gets deleted by everyone. Specificity is the entire game in both.' },
-  { id: 5, name: 'AI Image, Video & Animation Generation', anchor: '5-ai-image-video--animation-generation', intro: 'Generators respond to concrete, describable detail — subject, action, environment, style, lighting, camera, mood — not adjectives like "cinematic" or "beautiful" on their own. The less you leave to the model\'s default interpretation, the closer the output lands to what you actually wanted. These prompts are written to work across tools rather than one specific app.' },
+  { id: 4, name: 'Content & Growth', anchor: '4-content--growth', intro: 'Content and outreach fail for the same reason: genericness. A hook that could apply to any topic stops no one; an outreach message that could go to anyone gets deleted by everyone. Specificity is the entire game in both.' },
+  { id: 5, name: 'AI Image, Video & Animation Generation', anchor: '5-ai-image-video--animation-generation', intro: 'Generators respond to concrete, describable detail (subject, action, environment, style, lighting, camera, mood) not adjectives like "cinematic" or "beautiful" on their own. The less you leave to the model\'s default interpretation, the closer the output lands to what you actually wanted. These prompts are written to work across tools rather than one specific app.' },
 ];
 
 export const PROMPTS: Prompt[] = [
@@ -66,7 +66,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Turn a rough idea into a spec',
     audience: 'both',
     prompt:
-      'I want to build [idea]. Ask me the 5 most important clarifying questions before proposing any solution — things like scope, edge cases, and what \'done\' looks like.',
+      'I want to build [idea]. Ask me the 5 most important clarifying questions before proposing any solution: things like scope, edge cases, and what \'done\' looks like.',
     why: 'forces requirements-gathering before code, which is the step almost everyone skips.',
   },
   {
@@ -86,7 +86,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Senior-level code review',
     audience: 'both',
     prompt:
-      'Review this code like a senior engineer doing a PR review, not a linter. Flag anything that\'ll bite me in 6 months — bad naming, hidden coupling, missing error handling. Be blunt. [paste code]',
+      'Review this code like a senior engineer doing a PR review, not a linter. Flag anything that\'ll bite me in 6 months: bad naming, hidden coupling, missing error handling. Be blunt. [paste code]',
     why: 'pushes past syntax-checking into actual judgment.',
   },
   {
@@ -126,7 +126,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Refactor without breaking behavior',
     audience: 'both',
     prompt:
-      'Refactor this for readability only — no behavior changes, no new features. List exactly what changed and why so I can verify nothing broke. [paste code]',
+      'Refactor this for readability only: no behavior changes, no new features. List exactly what changed and why so I can verify nothing broke. [paste code]',
     why: 'keeps refactors auditable instead of a leap of faith.',
   },
   {
@@ -136,7 +136,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Write the tests a rushed engineer skips',
     audience: 'professionals',
     prompt:
-      'Write test cases for this function, prioritizing boundary values, null inputs, and one adversarial case. Skip the obvious happy path — I\'ve got that. [paste code]',
+      'Write test cases for this function, prioritizing boundary values, null inputs, and one adversarial case. Skip the obvious happy path; I\'ve got that. [paste code]',
     why: 'targets the gaps, not the tests you\'d write anyway.',
   },
   {
@@ -176,7 +176,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Explain code like a PR description',
     audience: 'both',
     prompt:
-      'Explain what this code does like you\'re writing the PR description for someone who\'s never seen it — what changed, why, what to watch for in review. [paste code]',
+      'Explain what this code does like you\'re writing the PR description for someone who\'s never seen it: what changed, why, what to watch for in review. [paste code]',
     why: 'forces plain-language clarity before you ship, not after someone asks.',
   },
   {
@@ -217,7 +217,7 @@ export const PROMPTS: Prompt[] = [
     audience: 'professionals',
     prompt:
       'Here\'s a slow [query/function] and its execution context. Identify the most likely bottleneck before suggesting an optimization, and tell me how you\'d confirm it. [paste code + context]',
-    why: 'diagnosis before treatment — the same discipline as debugging.',
+    why: 'diagnosis before treatment, the same discipline as debugging.',
   },
   {
     id: '1.17',
@@ -226,7 +226,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Design an API before building it',
     audience: 'professionals',
     prompt:
-      'I need an API for [use case]. Propose the endpoints, request/response shapes, and error cases — then tell me the one design decision most likely to need reworking later.',
+      'I need an API for [use case]. Propose the endpoints, request/response shapes, and error cases, then tell me the one design decision most likely to need reworking later.',
     why: 'front-loads the decisions that are expensive to change after the fact.',
   },
   {
@@ -236,7 +236,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Explain an error like I\'m five commits behind',
     audience: 'students',
     prompt:
-      'Explain this error message as if I just started learning [language/framework] — what it means, why it\'s happening in my code specifically, and the underlying concept I\'m missing. [paste error + code]',
+      'Explain this error message as if I just started learning [language/framework]: what it means, why it\'s happening in my code specifically, and the underlying concept I\'m missing. [paste error + code]',
     why: 'teaches the underlying concept, not just the one-line fix.',
   },
   {
@@ -246,7 +246,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Compare two technical approaches',
     audience: 'both',
     prompt:
-      'I\'m choosing between [approach A] and [approach B] for [problem]. Give me a real trade-off table — not a listicle — and tell me which you\'d pick for a team of [size] shipping in [timeframe].',
+      'I\'m choosing between [approach A] and [approach B] for [problem]. Give me a real trade-off table, not a listicle, and tell me which you\'d pick for a team of [size] shipping in [timeframe].',
     why: 'a contextualized recommendation beats a generic pros/cons list.',
   },
   {
@@ -276,7 +276,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Socratic tutor mode',
     audience: 'students',
     prompt:
-      'Teach me [topic] using the Socratic method — ask me questions that lead me to the answer instead of explaining it outright. Only give me the answer if I get stuck twice in a row.',
+      'Teach me [topic] using the Socratic method: ask me questions that lead me to the answer instead of explaining it outright. Only give me the answer if I get stuck twice in a row.',
     why: 'active recall beats passive reading, every time.',
   },
   {
@@ -286,7 +286,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Test understanding, not memory',
     audience: 'students',
     prompt:
-      'Quiz me on [topic] with questions that test whether I understand it, not whether I memorized it — application and edge-case questions, not definitions.',
+      'Quiz me on [topic] with questions that test whether I understand it, not whether I memorized it: application and edge-case questions, not definitions.',
     why: 'surfaces shallow understanding before an exam does it for you.',
   },
   {
@@ -326,7 +326,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Turn a chapter into flashcards',
     audience: 'students',
     prompt:
-      'Read this and generate 15 flashcards — question on one side, answer on the other — prioritizing the ideas most likely to be tested, not the most memorable trivia. [paste text]',
+      'Read this and generate 15 flashcards, question on one side and answer on the other, prioritizing the ideas most likely to be tested, not the most memorable trivia. [paste text]',
     why: 'optimizes for exams, not novelty.',
   },
   {
@@ -346,7 +346,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Debate both sides to understand a topic',
     audience: 'both',
     prompt:
-      'Argue the strongest case for [position] on [topic], then argue the strongest case against it. Don\'t tell me which is right — let me decide after seeing both.',
+      'Argue the strongest case for [position] on [topic], then argue the strongest case against it. Don\'t tell me which is right; let me decide after seeing both.',
     why: 'understanding a real debate teaches more than being handed a conclusion.',
   },
   {
@@ -356,7 +356,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Learn from a mistake, not just the correction',
     audience: 'students',
     prompt:
-      'Here\'s a problem I got wrong and my incorrect answer: [problem + your answer]. Don\'t just give me the right answer — explain the specific reasoning error that led to mine.',
+      'Here\'s a problem I got wrong and my incorrect answer: [problem + your answer]. Don\'t just give me the right answer; explain the specific reasoning error that led to mine.',
     why: 'fixes the thought process, not just this one instance.',
   },
   {
@@ -436,7 +436,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Explain a mistake in my own work',
     audience: 'students',
     prompt:
-      'Here\'s my [assignment/solution]: [paste it]. Don\'t grade it — just tell me where my reasoning breaks down, in the order I\'d have discovered the problems myself while working through it.',
+      'Here\'s my [assignment/solution]: [paste it]. Don\'t grade it; just tell me where my reasoning breaks down, in the order I\'d have discovered the problems myself while working through it.',
     why: 'mirrors real discovery and builds your own debugging instinct.',
   },
   {
@@ -446,7 +446,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Connect a new topic to what I already know',
     audience: 'both',
     prompt:
-      'I already understand [topic A] well. Explain [new topic B] by mapping it onto what I already know about A — where the mapping holds, and where it misleads.',
+      'I already understand [topic A] well. Explain [new topic B] by mapping it onto what I already know about A: where the mapping holds, and where it misleads.',
     why: 'learning by analogy to your own existing knowledge, not a stranger\'s.',
   },
   {
@@ -456,7 +456,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Prep for an oral exam or viva',
     audience: 'students',
     prompt:
-      'I have an oral exam/viva on [topic]. Play the examiner — ask me increasingly specific follow- up questions on my answers the way a real examiner would to probe for real understanding.',
+      'I have an oral exam/viva on [topic]. Play the examiner: ask me increasingly specific follow- up questions on my answers the way a real examiner would to probe for real understanding.',
     why: 'simulates the actual pressure format, not just the content.',
   },
   {
@@ -516,7 +516,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Compare two directions honestly',
     audience: 'professionals',
     prompt:
-      'Here are two design directions for [thing]: [A] and [B]. Don\'t average them — tell me which one better serves [specific goal] and why the other one fails at it.',
+      'Here are two design directions for [thing]: [A] and [B]. Don\'t average them; tell me which one better serves [specific goal] and why the other one fails at it.',
     why: 'forces a real decision instead of a watered-down compromise.',
   },
   {
@@ -526,7 +526,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Explain accessibility gaps in plain terms',
     audience: 'both',
     prompt:
-      'Review this design for accessibility issues — color contrast, touch target size, screen-reader logic — and explain each issue in terms of a specific user who\'d be blocked by it. [describe/ attach design]',
+      'Review this design for accessibility issues (color contrast, touch target size, screen-reader logic) and explain each issue in terms of a specific user who\'d be blocked by it. [describe/ attach design]',
     why: 'makes abstract accessibility rules concrete and hard to dismiss.',
   },
   {
@@ -566,7 +566,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Reverse-engineer why something works',
     audience: 'students',
     prompt:
-      'Here\'s a design/interface I admire: [describe/link]. Break down the specific decisions that make it work — not just \'it\'s clean,\' but the actual mechanics.',
+      'Here\'s a design/interface I admire: [describe/link]. Break down the specific decisions that make it work, not just \'it\'s clean,\' but the actual mechanics.',
     why: 'builds design vocabulary through analysis, not imitation.',
   },
   {
@@ -576,7 +576,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Write empty state and error state copy',
     audience: 'both',
     prompt:
-      'Write the empty state and error state copy for [feature]. Make it useful, not just apologetic — tell the user what to do next in both cases.',
+      'Write the empty state and error state copy for [feature]. Make it useful, not just apologetic: tell the user what to do next in both cases.',
     why: 'edge states are often the most neglected part of any UX.',
   },
   {
@@ -696,7 +696,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Turn a personal experience into a lesson',
     audience: 'both',
     prompt:
-      'I went through [experience]. Help me turn this into content that leads with the specific, relatable detail before the lesson — not the lesson first.',
+      'I went through [experience]. Help me turn this into content that leads with the specific, relatable detail before the lesson, not the lesson first.',
     why: 'specificity builds trust before advice does.',
   },
   {
@@ -776,7 +776,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Repurpose one piece across formats',
     audience: 'both',
     prompt:
-      'Here\'s a piece of long-form content: [paste/describe]. Turn it into a short social post, a one-line quote graphic, and a 3-slide carousel — each rewritten for how people actually consume that format, not just cut down.',
+      'Here\'s a piece of long-form content: [paste/describe]. Turn it into a short social post, a one-line quote graphic, and a 3-slide carousel, each rewritten for how people actually consume that format, not just cut down.',
     why: 'format-native repurposing beats copy-pasting and shrinking.',
   },
   {
@@ -786,7 +786,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Diagnose why content underperformed',
     audience: 'professionals',
     prompt:
-      'This piece of content underperformed: [describe/paste]. Compared to what I know performs well for this audience, what\'s the most likely reason — hook, format, timing, or relevance?',
+      'This piece of content underperformed: [describe/paste]. Compared to what I know performs well for this audience, what\'s the most likely reason: hook, format, timing, or relevance?',
     why: 'diagnosis before you repeat the same mistake next week.',
   },
   {
@@ -866,7 +866,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Build a full visual prompt from a vague idea',
     audience: 'both',
     prompt:
-      'I want an image of [vague idea]. Turn this into a full prompt specifying subject, action, environment, lighting, camera angle, and art style — ask me which style direction I want before finalizing.',
+      'I want an image of [vague idea]. Turn this into a full prompt specifying subject, action, environment, lighting, camera angle, and art style, then ask me which style direction I want before finalizing.',
     why: 'forces the specificity generators actually need to work well.',
   },
   {
@@ -886,7 +886,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Write a consistent character description',
     audience: 'professionals',
     prompt:
-      'I need the same character to appear across multiple generated images. Write a locked character description — physical details, outfit, distinguishing features — precise enough to stay consistent across separate generations.',
+      'I need the same character to appear across multiple generated images. Write a locked character description (physical details, outfit, distinguishing features) precise enough to stay consistent across separate generations.',
     why: 'consistency requires precision, not just repeating a name.',
   },
   {
@@ -906,7 +906,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Storyboard before generating video',
     audience: 'professionals',
     prompt:
-      'I want a short video of [concept]. Break it into a shot-by-shot storyboard first — what\'s in frame, camera movement, and duration per shot — before writing generation prompts for each.',
+      'I want a short video of [concept]. Break it into a shot-by-shot storyboard first (what\'s in frame, camera movement, and duration per shot) before writing generation prompts for each.',
     why: 'plans the sequence before you spend generations discovering it doesn\'t work.',
   },
   {
@@ -916,7 +916,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Write a camera-language prompt',
     audience: 'both',
     prompt:
-      'Rewrite this prompt using proper camera/cinematography language — shot type, lens feel, camera movement — instead of vague descriptors like \'cinematic.\' [paste prompt]',
+      'Rewrite this prompt using proper camera/cinematography language (shot type, lens feel, camera movement) instead of vague descriptors like \'cinematic.\' [paste prompt]',
     why: 'specific camera terms consistently outperform vague style words.',
   },
   {
@@ -926,7 +926,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Generate style-transfer instructions',
     audience: 'both',
     prompt:
-      'I like the visual style of [reference, described in words]. Break that style down into its component parts — color, texture, linework, lighting — so I can apply it to a completely different subject.',
+      'I like the visual style of [reference, described in words]. Break that style down into its component parts (color, texture, linework, lighting) so I can apply it to a completely different subject.',
     why: 'separates style from subject so it actually transfers cleanly.',
   },
   {
@@ -1026,7 +1026,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Write a prompt using composition rules',
     audience: 'both',
     prompt:
-      'Rewrite this prompt to specify a composition rule — rule of thirds, leading lines, framing — instead of just describing the subject. [paste prompt]',
+      'Rewrite this prompt to specify a composition rule (rule of thirds, leading lines, framing) instead of just describing the subject. [paste prompt]',
     why: 'composition control is the detail most people skip entirely.',
   },
   {
@@ -1046,7 +1046,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Prompt for a specific texture or material',
     audience: 'both',
     prompt:
-      'I need [object] to look like it\'s made of [material] convincingly. Describe the specific surface qualities — reflectivity, texture, how light interacts with it — that sell that material.',
+      'I need [object] to look like it\'s made of [material] convincingly. Describe the specific surface qualities (reflectivity, texture, how light interacts with it) that sell that material.',
     why: 'materials are sold through light behavior, not the material\'s name.',
   },
   {
@@ -1056,7 +1056,7 @@ export const PROMPTS: Prompt[] = [
     title: 'Critique your own generated output like a director',
     audience: 'both',
     prompt:
-      'Here\'s the image/video I generated and the prompt I used: [describe/paste]. Critique it like a director reviewing a shot — what\'s technically off, and what\'s the single next prompt revision that would fix the biggest problem first?',
+      'Here\'s the image/video I generated and the prompt I used: [describe/paste]. Critique it like a director reviewing a shot: what\'s technically off, and what\'s the single next prompt revision that would fix the biggest problem first?',
     why: 'one prioritized fix beats a list of everything that\'s wrong.',
   },
 ];

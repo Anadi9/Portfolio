@@ -13,7 +13,7 @@ import { score, type Result } from './score';
  * where you are thin and stops, because the fix is what the paid teardown is.
  * A test asserts the exact key set, so adding one fails the build.
  *
- * Takes raw answers rather than a `Result` — findings need the answers, and
+ * Takes raw answers rather than a `Result`, because findings need the answers, and
  * threading both through every caller would be two things to keep in sync.
  */
 

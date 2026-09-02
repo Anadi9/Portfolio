@@ -18,7 +18,7 @@ describe('band', () => {
   });
 });
 
-describe('score — extremes', () => {
+describe('score: extremes', () => {
   it('scores a perfect run 100 and REAL PRODUCT', () => {
     const r = score(all(0));
     expect(r.score).toBe(100);
@@ -41,7 +41,7 @@ describe('score — extremes', () => {
   });
 });
 
-describe('score — axes are independent', () => {
+describe('score: axes are independent', () => {
   it('drops only the axis whose questions were answered badly', () => {
     // Answer every `cost` question at index 2 (weight 0), everything else at 0 (weight 3).
     const answers = QUESTIONS.map((q) => (q.axis === 'cost' ? 2 : 0));
@@ -53,14 +53,14 @@ describe('score — axes are independent', () => {
   });
 });
 
-describe('score — weakest', () => {
+describe('score: weakest', () => {
   it('returns exactly three sections, worst first', () => {
     const r = score(all(0));
     expect(r.weakest).toHaveLength(3);
   });
 
   it('breaks ties by ascending section id, so output is deterministic', () => {
-    // Every section scores 100 — the tie-break alone decides the order.
+    // Every section scores 100, so the tie-break alone decides the order.
     expect(score(all(0)).weakest).toEqual([1, 2, 3]);
   });
 

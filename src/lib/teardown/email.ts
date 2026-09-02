@@ -6,7 +6,7 @@ import type { ReportModel, SectionReport } from './report';
  *
  * Every rule is inlined on its element: email clients strip `<style>` blocks
  * unpredictably and support neither CSS variables nor `@media`. The hex values
- * are hand copies of `tokens.ts` — that module exports React `CSSProperties`
+ * are hand copies of `tokens.ts`, because that module exports React `CSSProperties`
  * objects, which an email string cannot consume.
  *
  * Like every other module downstream of the question bank, this one only ever
@@ -22,7 +22,7 @@ const GOLD = '#C9A24B';
 const DIM = '#9a9a9a';
 const RULE = '#2a2a2a';
 
-/** Findings are authored, not user input — but escaping costs nothing and means
+/** Findings are authored, not user input, but escaping costs nothing and means
  *  a bracket added to a finding later cannot break the document. */
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -54,7 +54,7 @@ const sectionBlock = (s: SectionReport) => `
 export function renderEmail(model: ReportModel): { subject: string; html: string } {
   const { result, sections } = model;
 
-  const subject = `Your Wrapper Test: ${result.verdict} — ${result.score}/100`;
+  const subject = `Your Wrapper Test: ${result.verdict} · ${result.score}/100`;
 
   const undecidedLine =
     result.undecidedCount > 0

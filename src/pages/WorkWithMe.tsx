@@ -4,18 +4,18 @@ import { Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 
 /**
- * `/work-with-me` — the Teardown and the Build.
+ * `/work-with-me`: the Teardown and the Build.
  *
  * A sales plate, not a portfolio section, and deliberately not linked from any
  * nav: it is shared by link (DM, bio) and reached on purpose. It prerenders
  * like every other route, so the link resolves to real HTML rather than an
  * empty root div.
  *
- * Built out of `portfolio/tokens` on ink, which is why there is no stylesheet
+ * Built out of `portfolio/tokens` on gold, which is why there is no stylesheet
  * beside this file. The page arrived as a standalone document with its own
  * palette and two extra font families; rendered through the ramp and the space
- * scale instead, it costs no new CSS and no new fonts — Archivo and JetBrains
- * Mono are already in `index.html` — and it moves with the rest of the site the
+ * scale instead, it costs no new CSS and no new fonts (Archivo and JetBrains
+ * Mono are already in `index.html`) and it moves with the rest of the site the
  * next time a token changes.
  *
  * Note what is deliberately absent: no `data-*` attributes. Those are the motion
@@ -29,15 +29,25 @@ import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/com
  * decorative use that would stop a status light reading as a status light.
  */
 
-const TITLE = 'Work with me — Anadi Thakur';
+const TITLE = 'Work with me · Anadi Thakur';
 const DESCRIPTION =
   'AI architecture teardowns and fixed-scope builds for founders and small teams. A recorded review of your AI feature in 48 hours, then the fix built at an agreed price.';
 
-/** Instagram's DM deep link. Every CTA on the page is this one destination —
+/** Instagram's DM deep link. Every CTA on the page is this one destination:
  *  there is no form, which is the point the copy makes. */
 const DM = 'https://ig.me/m/the.anadi';
 
-/** Section shell. Ink, one rule at the joint, the page's vertical rhythm. */
+/** The page ground. Gold, not ink: the route is a sales plate shared by link,
+ *  and it announces itself as one before a word is read. Everything set on it
+ *  is ink or near-ink, since `c.mark` would disappear into its own hue here, which
+ *  is why the accent role moves to black on this route. */
+const GOLD = '#C9A24A';
+
+/** Dim body copy on gold. `c.dimOnInk` is tuned for a black ground and greys
+ *  out to nothing here, so the dim tier is ink at reduced alpha instead. */
+const dimOnGold = 'rgba(10, 10, 10, 0.72)';
+
+/** Section shell. One rule at the joint, the page's vertical rhythm. */
 const section: CSSProperties = {
   containerType: 'inline-size',
   borderTop: `${rule.edge}px solid ${c.rule}`,
@@ -45,30 +55,35 @@ const section: CSSProperties = {
 };
 
 /** The small caps line that opens each section. */
-const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: c.mark, margin: 0 };
+const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: dimOnGold, margin: 0 };
 
-/** Body copy on ink, held to a readable measure. */
+/** Body copy on gold, held to a readable measure. */
 const body: CSSProperties = {
   margin: 0,
   font: `400 15px/1.55 ${display}`,
-  color: c.dimOnInk,
+  color: dimOnGold,
   textWrap: 'pretty',
   maxWidth: '62ch',
 };
 
-/** Solid CTA — cream on ink, the same plate as the end-of-reel card in Work. */
+/** The same measure and size inside the dark offer cards, where the ground
+ *  goes back to ink and the dim tier goes back with it. */
+const bodyOnPlate: CSSProperties = { ...body, color: c.dimOnInk };
+
+/** Solid CTA: ink on cream. It has to hold on both grounds the page has (the
+ *  gold field and the ink offer card), and ink does; cream on gold did not. */
 const ctaSolid: CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: s[3],
   padding: px(s[4], s[5]),
-  background: c.accent,
-  color: c.ink,
+  background: c.ink,
+  color: c.accent,
   ...label(11, 700, 0.12),
   textDecoration: 'none',
 };
 
-/** Outline CTA — the second of two, never the only one on a screen. */
+/** Outline CTA: the second of two, never the only one on a screen. */
 const ctaOutline: CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
@@ -83,17 +98,17 @@ const ctaOutline: CSSProperties = {
 const stats = [
   { figure: '48h', caption: 'turnaround on reviews' },
   { figure: '2', caption: 'ways to work together' },
-  { figure: 'Async', caption: 'first — any timezone' },
+  { figure: 'Async', caption: 'first, any timezone' },
 ];
 
 const offers = [
   {
-    fig: 'FIG. 01 — START HERE',
+    fig: 'FIG. 01 · START HERE',
     name: 'The Teardown',
     price: '$199',
     terms: 'flat, one-time',
     blurb:
-      "A recorded, screen-by-screen review of your AI feature or product. I run it against the same wrapper-vs-real-product test I post about — where it's solid, where it'll break, and exactly what to change first.",
+      "A recorded, screen-by-screen review of your AI feature or product. I run it against the same wrapper-vs-real-product test I post about: where it's solid, where it'll break, and exactly what to change first.",
     points: [
       '30–40 min recorded walkthrough, not a call you have to schedule',
       'Written fix-it plan, prioritized',
@@ -103,12 +118,12 @@ const offers = [
     solid: true,
   },
   {
-    fig: "FIG. 02 — WHEN YOU'RE READY TO FIX IT",
+    fig: "FIG. 02 · WHEN YOU'RE READY TO FIX IT",
     name: 'The Build',
     price: 'From $750',
     terms: 'fixed scope',
     blurb:
-      'I implement the fix myself — the AI feature, the integration, or the automation — scoped and priced up front from the teardown (or from a short brief if you already know what you need).',
+      'I implement the fix myself (the AI feature, the integration, or the automation), scoped and priced up front from the teardown (or from a short brief if you already know what you need).',
     points: [
       'Fixed price, agreed before work starts',
       "Built around Claude, GPT, or whatever's already in your stack",
@@ -128,7 +143,7 @@ const steps = [
   {
     num: '02',
     title: 'I record the teardown',
-    body: 'You get a video walkthrough and a written plan — async, so timezone never blocks it.',
+    body: 'You get a video walkthrough and a written plan, both async, so timezone never blocks it.',
   },
   {
     num: '03',
@@ -140,7 +155,7 @@ const steps = [
 const faqs = [
   {
     q: "What if I don't know exactly what's wrong yet?",
-    a: "That's what the teardown is for. Send me what you have and I'll find it — you don't need the diagnosis before you book it.",
+    a: "That's what the teardown is for. Send me what you have and I'll find it; you don't need the diagnosis before you book it.",
   },
   {
     q: 'Do you sign NDAs?',
@@ -148,23 +163,23 @@ const faqs = [
   },
   {
     q: 'What if the Build turns out bigger than expected?',
-    a: "You'll always see the fixed price before anything starts — if scope grows mid-project, we agree on the change before I touch it, not after.",
+    a: "You'll always see the fixed price before anything starts; if scope grows mid-project, we agree on the change before I touch it, not after.",
   },
 ];
 
-/** Figure over caption — the hero stats, at one ramp step. */
+/** Figure over caption: the hero stats, at one ramp step. */
 const Stat = ({ figure, caption }: { figure: string; caption: string }) => (
   <div style={{ display: 'grid', gap: s[2], maxWidth: '26ch' }}>
-    <span style={{ ...heading('d6'), textTransform: 'uppercase', color: '#fff' }}>{figure}</span>
-    <span style={{ ...label(10, 700, 0.14), lineHeight: 1.5, color: c.dimOnInk }}>{caption}</span>
+    <span style={{ ...heading('d6'), textTransform: 'uppercase', color: c.ink }}>{figure}</span>
+    <span style={{ ...label(10, 700, 0.14), lineHeight: 1.5, color: dimOnGold }}>{caption}</span>
   </div>
 );
 
 const WorkWithMe = () => (
-  <div style={{ background: c.ink, color: '#fff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+  <div style={{ background: GOLD, color: c.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
     <Seo title={TITLE} description={DESCRIPTION} path="/work-with-me" type="website" />
 
-    {/* The notes-shell bar, inverted. Same mark, same wordmark, same two links —
+    {/* The notes-shell bar, inverted. Same mark, same wordmark, same two links, so
         someone who lands here from a DM gets the same way back into the site
         that a reader of a note gets. */}
     <header
@@ -181,15 +196,15 @@ const WorkWithMe = () => (
       <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
         <span
           aria-hidden
-          style={{ width: 22, height: 22, background: c.accent, border: `${rule.hair}px solid ${c.accentEdge}`, display: 'block' }}
+          style={{ width: 22, height: 22, background: c.ink, border: `${rule.hair}px solid ${c.rule}`, display: 'block' }}
         />
-        <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>ANADI THAKUR</span>
+        <span style={{ ...label(11, 700, 0.12), color: c.ink }}>ANADI THAKUR</span>
       </Link>
       <nav aria-label="Site" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
-        <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
+        <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.ink }}>
           NOTES
         </Link>
-        <Link to="/#work" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
+        <Link to="/#work" className="pf-underline" style={{ ...label(11, 700, 0.14), color: dimOnGold }}>
           WORK
         </Link>
       </nav>
@@ -201,10 +216,10 @@ const WorkWithMe = () => (
         <h1 style={{ margin: px(s[5], 0, 0), ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch' }}>
           Is it a real product,
           <br />
-          or just <span style={{ color: c.mark }}>a wrapper?</span>
+          or just <span style={{ color: '#000' }}>a wrapper?</span>
         </h1>
         <p style={{ ...body, marginTop: s[6], font: `400 17px/1.5 ${display}` }}>
-          I review AI features and product architecture for founders and small teams — the same test
+          I review AI features and product architecture for founders and small teams: the same test
           I run on my own builds, applied to yours. You get a plain-English diagnosis and a fix-it
           plan before a small problem becomes a rebuild.
         </p>
@@ -227,7 +242,7 @@ const WorkWithMe = () => (
         </h2>
 
         {/* Two plates, side by side, in the order you take them. The ordering is
-            carried by the FIG. numbers and by which card gets the solid CTA —
+            carried by the FIG. numbers and by which card gets the solid CTA;
             the original's dashed "then" connector was a third divider between
             two cards that already sit in sequence. */}
         <div
@@ -256,12 +271,12 @@ const WorkWithMe = () => (
                 <span style={{ ...heading('d6'), color: c.mark }}>{offer.price}</span>
                 <span style={{ ...label(10, 700, 0.14), color: c.dimOnInk }}>{offer.terms}</span>
               </div>
-              <p style={body}>{offer.blurb}</p>
+              <p style={bodyOnPlate}>{offer.blurb}</p>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: s[3] }}>
                 {offer.points.map((point) => (
                   <li key={point} style={{ display: 'flex', gap: s[3], font: `400 14px/1.5 ${display}`, color: '#fff' }}>
                     <span aria-hidden style={{ color: c.mark, flexShrink: 0 }}>
-                      —
+                      ·
                     </span>
                     {point}
                   </li>
@@ -297,7 +312,7 @@ const WorkWithMe = () => (
         >
           {steps.map((step) => (
             <div key={step.num} style={{ borderLeft: `${rule.base}px solid ${c.rule}`, paddingLeft: s[5] }}>
-              <div style={{ ...heading('d6'), color: c.mark }}>{step.num}</div>
+              <div style={{ ...heading('d6'), color: c.ink }}>{step.num}</div>
               <h3 style={{ margin: px(s[3], 0, s[2]), font: `600 16px/1.3 ${display}`, textTransform: 'none' }}>
                 {step.title}
               </h3>
@@ -334,13 +349,13 @@ const WorkWithMe = () => (
       }}
     >
       <div style={{ display: 'grid', gap: s[4] }}>
-        <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>ANADI THAKUR</span>
+        <span style={{ ...label(11, 700, 0.12), color: c.ink }}>ANADI THAKUR</span>
         <p style={{ ...body, maxWidth: '40ch' }}>
-          Building @anta.build. Posting the same architecture thinking on Instagram — free
+          Building @anta.build. Posting the same architecture thinking on Instagram: free
           resources, no fluff.
         </p>
       </div>
-      <a href={DM} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
+      <a href={DM} className="pf-underline" style={{ ...label(11, 700, 0.12), color: dimOnGold }}>
         MESSAGE ON INSTAGRAM ↗
       </a>
     </footer>

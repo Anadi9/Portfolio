@@ -12,7 +12,7 @@ import { prose } from './prose';
  * Resource Drop.
  *
  * The artifact is the page. Whatever the format says, the body renders inline
- * indexable text — a download link is an extra way to take it away, never the
+ * indexable text; a download link is an extra way to take it away, never the
  * only way to read it, because a page whose content is a file is a page with no
  * content as far as search is concerned.
  */
@@ -22,7 +22,7 @@ const DropLayout = ({ post }: { post: DropPost }) => {
   return (
     <NotesShell post={post}>
       <Seo
-        title={`${post.title} — ${BYLINE}`}
+        title={`${post.title} · ${BYLINE}`}
         description={post.summary}
         path={post.path}
         image={ogImageFor(post.path)}
@@ -85,7 +85,7 @@ const DropLayout = ({ post }: { post: DropPost }) => {
         >
           <p style={{ ...label(10, 700, 0.14), color: c.markOnPaper, margin: px(0, 0, s[3]) }}>NOTHING IS GATED</p>
           <p style={{ margin: 0, font: `400 16px/1.6 ${display}`, color: c.ink }}>
-            The whole thing is on this page — no signup, no email wall, no follow-up sequence. If it saved you an
+            The whole thing is on this page: no signup, no email wall, no follow-up sequence. If it saved you an
             afternoon, that was the job. More of these land here as I build them.
           </p>
         </aside>

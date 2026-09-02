@@ -8,7 +8,7 @@ import { isValidAnswers } from '../src/lib/teardown/score';
  * POST /api/teardown-report
  *
  * Takes raw answers and an address; re-runs the same pure modules the browser
- * ran and sends the result. It never accepts a scored report from the client —
+ * ran and sends the result. It never accepts a scored report from the client:
  * the answers are thirteen small integers, which means the payload can be
  * validated exhaustively, and there is exactly one implementation of the
  * scoring in the system.
@@ -38,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // A preview deploy without secrets still serves the page and the in-browser
     // report. Only the copy in the inbox is missing, and the client already
     // degrades to a quiet line for exactly this case.
-    console.warn('[teardown] RESEND_API_KEY not set — no email sent');
+    console.warn('[teardown] RESEND_API_KEY not set: no email sent');
     return res.status(501).json({ error: 'email not configured' });
   }
 
@@ -72,7 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(502).json({ error: 'send failed' });
   }
 
-  // The list is a side effect. A failure here must not fail the request — the
+  // The list is a side effect. A failure here must not fail the request, since the
   // send is what the reader asked for and it has already happened.
   if (audienceId) {
     try {

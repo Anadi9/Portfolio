@@ -4,7 +4,7 @@ import { report } from './report';
 
 const all = (i: number) => QUESTIONS.map(() => i);
 
-describe('report — completeness', () => {
+describe('report: completeness', () => {
   it('always returns all nine sections in ascending order', () => {
     for (const i of [0, 1, 2, 3]) {
       const m = report(all(i));
@@ -33,7 +33,7 @@ describe('report — completeness', () => {
   });
 });
 
-describe('report — decided / undecided / mixed', () => {
+describe('report: decided / undecided / mixed', () => {
   it('marks every section undecided when every answer is unknown', () => {
     for (const s of report(all(3)).sections) {
       expect(s.state).toBe('undecided');
@@ -60,10 +60,10 @@ describe('report — decided / undecided / mixed', () => {
   });
 });
 
-describe('report — decision 3: diagnose, never prescribe', () => {
+describe('report: decision 3: diagnose, never prescribe', () => {
   it('has no field on any section that could hold a fix', () => {
     // Every section across all four `all(i)` answer patterns, plus the mixed
-    // case below — not just `sections[0]`, which is always a single-question,
+    // case below, not just `sections[0]`, which is always a single-question,
     // always-`decided` section and would miss a field reachable only via
     // `'mixed'` state or a multi-question section.
     for (const i of [0, 1, 2, 3]) {

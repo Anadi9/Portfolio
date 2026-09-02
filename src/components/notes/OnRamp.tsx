@@ -10,7 +10,7 @@ import { MEASURE } from './prose';
  * Same `pf-feed-card` custom properties as the feed row, so it inverts to ink
  * on hover with no extra CSS, plus `--tile` for a filled ground on the cream
  * band. It shows the stamp, the headline and the same payload line the feed row
- * puts on a plate — a quarter of the space, the same promise.
+ * puts on a plate: a quarter of the space, the same promise.
  */
 const MiniCard = ({ post, index }: { post: Post; index?: number }) => {
   const payload = payloadOf(post);
@@ -67,7 +67,7 @@ const MiniCard = ({ post, index }: { post: Post; index?: number }) => {
  * A reverse-chron list answers "what is newest", and nobody arriving from a
  * reel is asking that. They're asking which one to open first, and twelve rows
  * of equal weight refuse to answer. These three do, in the order the work
- * actually happens — decide, then prompt, then automate.
+ * actually happens: decide, then prompt, then automate.
  */
 export const StartHere = ({ posts }: { posts: Post[] }) => {
   if (posts.length === 0) return null;
@@ -102,7 +102,7 @@ export const StartHere = ({ posts }: { posts: Post[] }) => {
  *
  * Before this, every post dead-ended on its closing aside and the only way on
  * was the back button, which means one read never became two. Cross-stream by
- * default — see `relatedTo` — so a template hands off to the argument behind it
+ * default (see `relatedTo`) so a template hands off to the argument behind it
  * rather than to another template.
  */
 export const NextUp = ({ posts }: { posts: Post[] }) => {

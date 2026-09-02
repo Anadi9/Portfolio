@@ -5,7 +5,7 @@ import IntroLoader from '@/components/IntroLoader';
 import { Seo, ORIGIN } from '@/components/Seo';
 import { site } from '@/data/portfolio';
 
-const TITLE = `${site.name} — ${site.role}`;
+const TITLE = `${site.name} · ${site.role}`;
 const DESCRIPTION =
   'AI full-stack engineer with a UI specialty. Enterprise platforms for ZEISS, React Native apps, and LLM pipelines that do real work instead of demos.';
 
@@ -13,7 +13,7 @@ const DESCRIPTION =
  * The front page, and the only route the intro takes over.
  *
  * The loader used to be mounted in `App` outside the router, which meant it
- * played on every URL — someone landing on `/drops/system` from a search result
+ * played on every URL: someone landing on `/drops/system` from a search result
  * would have sat through a full-screen takeover before seeing the thing they
  * clicked. Scoping it to this route is what makes the notes routes viable.
  *
@@ -28,7 +28,7 @@ const Home = () => {
     <>
       {/*
         The front page's own head. It used to live as static tags in
-        `index.html`, which meant every route rendered them *and* its own — two
+        `index.html`, which meant every route rendered them *and* its own: two
         titles and two descriptions in one document, with the crawler left to
         choose. `index.html` now carries only what is genuinely invariant.
       */}
@@ -49,7 +49,7 @@ const Home = () => {
       />
 
       {/*
-        The page mounts under the loader so the wipe uncovers the real hero —
+        The page mounts under the loader so the wipe uncovers the real hero,
         but the hero's own entrance has to wait for the curtain, or it plays out
         behind it and the reveal lands on an already-finished frame. `ready` is
         what hands the moment over.

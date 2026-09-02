@@ -44,7 +44,7 @@ describe('metaRowsOf', () => {
     expect(rows.at(-1)).toEqual({ tag: 'LAST VERIFIED', value: '29 AUG 2026' });
   });
 
-  it('gives wisdom nothing — its tradeoff belongs in the body', () => {
+  it('gives wisdom nothing: its tradeoff belongs in the body', () => {
     expect(metaRowsOf({ ...base, stream: 'wisdom', moves: [], tradeoff: 't' } as WisdomPost)).toEqual([]);
   });
 

@@ -4,7 +4,7 @@ import { milestones } from '@/data/portfolio';
 /**
  * Career timeline.
  *
- * The route line is *not* a hardcoded path — `usePortfolioMotion` measures the
+ * The route line is *not* a hardcoded path; `usePortfolioMotion` measures the
  * cards and generates the curve so every bend lands on a card's inner edge.
  * The markup here only declares the slots: one `[data-node]` group per
  * milestone, plus the drawing head that rides the line as it draws.
@@ -43,7 +43,7 @@ const Journey = () => (
         no straight line
       </h2>
       <p style={{ margin: `${s[6]}px 0 0`, maxWidth: 660, font: `400 17px/1.5 ${display}`, color: '#4a4a4a', textWrap: 'pretty' }}>
-        Intern to independent, with a detour through enterprise. Scroll — the line draws itself.
+        Intern to independent, with a detour through enterprise. Scroll: the line draws itself.
       </p>
     </div>
 
@@ -61,7 +61,7 @@ const Journey = () => (
         }}
         aria-hidden
       >
-        {/* the route ahead, faint — the ink line draws over it */}
+        {/* the route ahead, faint; the ink line draws over it */}
         <path data-path-track="1" fill="none" stroke={c.ink} strokeOpacity={0.14} strokeWidth={1} strokeDasharray="2 7" />
 
         <path
@@ -124,7 +124,7 @@ const Journey = () => (
                 willChange: 'transform',
               }}
             >
-              {/* print pass — sweeps across the card as it lands */}
+              {/* print pass: sweeps across the card as it lands */}
               <div
                 data-mile-flash="1"
                 style={{
@@ -174,8 +174,8 @@ const Journey = () => (
                   paddingTop: s[3],
                   borderTop: `${rule.hair}px solid ${onInk ? 'rgba(255,255,255,.2)' : onAccent ? 'rgba(10,10,10,.35)' : 'rgba(10,10,10,.18)'}`,
                   ...label(10, 500, 0.12),
-                  // The status hue only ever appears on an availability claim
-                  // — here that is the '26 card's AVAILABLE NOW.
+                  // The status hue only ever appears on an availability claim,
+                  // and here that is the '26 card's AVAILABLE NOW.
                   color: m.status
                     ? onInk
                       ? c.signalOnInk

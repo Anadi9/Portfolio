@@ -17,7 +17,7 @@ const exported = (code: string) => {
   return JSON.parse(match[1]) as { depth: number; id: string; text: string }[];
 };
 
-describe('remarkPostData — headings', () => {
+describe('remarkPostData: headings', () => {
   it('exports h2 and h3 in document order, ignoring h1 and h4', async () => {
     const code = await build(
       ['# Title', '## First section', '### A detail', '#### Ignored', '## Second section'].join('\n\n'),
@@ -45,7 +45,7 @@ describe('remarkPostData — headings', () => {
         '## Auto-repurpose new content',
         '### Trigger',
         '### Setup notes',
-        '## `n8n` & Zapier — 100% parity?',
+        '## `n8n` & Zapier: 100% parity?',
         '### Trigger',
       ].join('\n\n'),
     );
@@ -72,12 +72,12 @@ const wordsOf = (code: string) => {
   return Number(match[1]);
 };
 
-describe('remarkPostData — words', () => {
+describe('remarkPostData: words', () => {
   it('counts prose words', async () => {
     expect(wordsOf(await build('One two three four five.'))).toBe(5);
   });
 
-  it('counts heading text too — a reader reads those', async () => {
+  it('counts heading text too, since a reader reads those', async () => {
     expect(wordsOf(await build(['## Two words', 'Three more words here.'].join('\n\n')))).toBe(6);
   });
 

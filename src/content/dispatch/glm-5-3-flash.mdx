@@ -1,17 +1,17 @@
 ---
 stream: dispatch
-title: "GLM-5.3-Flash — a 1M-context multimodal model under MIT at $0.15 per million"
+title: "GLM-5.3-Flash: a 1M-context multimodal model under MIT at $0.15 per million"
 useWhen: "You priced part of your product against a frontier API more than six months ago."
 summary: "The anonymous free 1M-context model developers had been hammering since 20 August turned out to be Z.ai's GLM-5.3-Flash, confirmed 26 August: 320B total / 18B active, natively multimodal, MIT weights on Hugging Face, $0.15 per million in. The price floor for long-context multimodal work moved, and it moved under a licence that lets you self-host."
 date: "2026-08-29"
 lastVerified: "2026-08-29"
-dateline: "29 AUG 2026 — Bengaluru"
+dateline: "29 AUG 2026 · Bengaluru"
 items:
-  - headline: "\"Ox Alpha\" — free, 1M context, no claimed owner — was GLM-5.3-Flash all along"
+  - headline: "\"Ox Alpha\", free, 1M context, no claimed owner, was GLM-5.3-Flash all along"
     why: "It appeared on a third-party API platform on 20 August at a price of zero and developers spent six days benchmarking a model nobody would admit to. Z.ai confirmed it on the 26th. The stealth launch is a distribution tactic worth noticing on its own: six days of unpaid, unbiased evaluation before anyone knew whose model to be sceptical of."
   - headline: "320B total / 18B active, natively multimodal, 1,048,576-token context, MIT weights"
     why: "Text, image and video in; 131,072 max output; hybrid sparse-plus-linear attention. Day-one serving support in SGLang, vLLM, TokenSpeed and KTransformers, which is the detail that decides whether \"open weights\" means anything in practice."
-  - headline: "$0.15 per million in, $0.50 out — half that until 9 September"
+  - headline: "$0.15 per million in, $0.50 out, half that until 9 September"
     why: "Cached input is $0.03 per million. Whatever you make of the benchmarks, that is the number your existing cost model now has to justify itself against, and the promo ends in under two weeks."
 ---
 
@@ -22,7 +22,7 @@ image and video input, and a price of zero showed up on a third-party API
 platform under the name Ox Alpha, with no claimed owner. Developers spent six
 days hammering it. On 26 August Z.ai confirmed it was theirs.
 
-That's a distribution tactic worth stealing, incidentally — six days of
+That's a distribution tactic worth stealing, incidentally: six days of
 enthusiastic unpaid evaluation from people who had no brand to be sceptical of
 yet, and by the time the name was attached the reputation was already built by
 strangers.
@@ -35,7 +35,7 @@ Not your reasoning path. A 320B/18B mixture-of-experts model at $0.15 per millio
 input tokens is not the thing you put in front of a decision that matters, and
 the benchmark table won't tell you otherwise in a way you should trust.
 
-What changed is the economics of the **high-volume, low-stakes layer** — and in
+What changed is the economics of the **high-volume, low-stakes layer**, and in
 most real products that layer is the majority of tokens by a wide margin:
 
 - Classification and routing of incoming text.
@@ -47,12 +47,12 @@ most real products that layer is the majority of tokens by a wide margin:
 That last one is the interesting case. A 1M-token window at fifteen cents per
 million makes "just send the whole thing" viable for workloads where you
 previously had to build a retrieval layer to avoid the bill. Sometimes that's a
-genuine simplification and sometimes it's a trap — a retrieval layer is also what
+genuine simplification and sometimes it's a trap, because a retrieval layer is also what
 makes the output *attributable*, and dumping a million tokens in gives you an
 answer you can't trace.
 
-The two-tier architecture — cheap model for volume, frontier model for the calls
-that matter, with an explicit rule for which is which — stops being an
+The two-tier architecture (cheap model for volume, frontier model for the calls
+that matter, with an explicit rule for which is which) stops being an
 optimisation you'll get to later and starts being the obvious default.
 
 ## Open weights, and what that's worth
@@ -73,8 +73,8 @@ cheaper than your own GPUs plus the person minding them. Self-hosting is a
 compliance answer here far more often than a cost one.
 
 Also worth being precise about: open *weights* is not open *data*. You can run
-it, modify it and ship it. You can't audit what it was trained on — 30 trillion
-tokens of undisclosed corpus — and for some regulated buyers that's the question
+it, modify it and ship it. You can't audit what it was trained on (30 trillion
+tokens of undisclosed corpus) and for some regulated buyers that's the question
 that actually gets asked.
 
 ## What to actually do
@@ -84,7 +84,7 @@ for. Pull fifty real inputs from your own logs. Run both. Compare on your own
 criteria, not on the benchmark table.
 
 That's an afternoon, and it either saves you a recurring bill or it tells you the
-cheap tier isn't good enough for that specific job — which is also worth knowing
+cheap tier isn't good enough for that specific job, which is also worth knowing
 and is not something a leaderboard can tell you. Do it before 9 September if you
 want to test at the promotional price, though don't build a business case on a
 promo; the list price is the number that has to work.

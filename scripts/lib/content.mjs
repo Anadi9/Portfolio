@@ -5,7 +5,7 @@
  * the Vite build and both need the same list of published posts.
  *
  * The frontmatter is parsed here rather than imported from
- * `src/content/index.ts` because that module is a Vite module —
+ * `src/content/index.ts` because that module is a Vite module and
  * `import.meta.glob` does not exist in plain Node. Only flat scalar keys are
  * read (`title`, `summary`, `stream`, `date`, `lastVerified`, `draft`,
  * `keyword`), which is all either consumer needs and all the streams agree on.
@@ -32,7 +32,7 @@ export const frontmatter = (src, file) => {
   const fm = {};
   for (const line of m[1].split('\n')) {
     const kv = /^([A-Za-z][A-Za-z0-9_]*):\s*(.*)$/.exec(line);
-    if (!kv) continue; // list items and continuation lines — not needed here
+    if (!kv) continue; // list items and continuation lines, not needed here
     let v = kv[2].trim();
     if (/^"(.*)"$/.test(v) || /^'(.*)'$/.test(v)) v = v.slice(1, -1);
     fm[kv[1]] = v === 'true' ? true : v === 'false' ? false : v;

@@ -22,7 +22,7 @@
    under the cursor reads as the page changing state rather than as a row
    answering the mouse. The ink palette is kept for `:focus-visible` only, where
    the keyboard needs feedback loud enough to find from across the page. No
-   transform here — the portfolio's `pf-nudge` translate reads as a nudge on a
+   transform here: the portfolio's `pf-nudge` translate reads as a nudge on a
    button and as a layout bug on a full-width row. */
 .pf-feed-card {
   --fc-bg: transparent;
@@ -39,7 +39,7 @@
   transition: background 0.22s ease, color 0.22s ease;
 }
 
-/* Tile variant — START HERE and READ NEXT, which sit on the cream band and so
+/* Tile variant: START HERE and READ NEXT, which sit on the cream band and so
    need a filled ground of their own to read as cards. Declared above the
    focus rule on purpose: same specificity, so source order is what decides, and
    the ink state has to win. */
@@ -111,7 +111,7 @@
 
    Not a nested grid for the content column, and not `grid-row: 1 / -1` on the
    rail. `-1` resolves to the last EXPLICIT row line, which on a grid with no
-   declared rows is line 1 — a rail placed that way is one row tall and sticky
+   declared rows is line 1, so a rail placed that way is one row tall and sticky
    does nothing. And making the content column a grid would put every block in
    its own row, where margins no longer collapse: `prose.h2` carries 72px of
    margin-top against the 20px margin-bottom of the paragraph above it, and
@@ -137,7 +137,7 @@
 
 /* The gutter stays INSIDE the content box rather than becoming a track of its
    own. Tailwind's preflight sets `box-sizing: border-box`, so the old
-   `maxWidth: 760` with 40px of padding rendered a 680px column — about 75
+   `maxWidth: 760` with 40px of padding rendered a 680px column, about 75
    characters at 17px, which is the measure the prose was actually tuned
    against. Moving the gutter out to a track would have quietly widened every
    post to ~85 characters. */
@@ -155,7 +155,7 @@
   margin-right: calc(-1 * (var(--bleed) + var(--gutter)));
 }
 
-/* The index's feed is wider than a reading column — at 760 a feed headline gets
+/* The index's feed is wider than a reading column: at 760 a feed headline gets
    about 320px beside its payload plate and every title becomes five lines. Same
    tracks, one number, and no bleed: the feed has no figures to widen. */
 .pf-frame--wide {
@@ -177,7 +177,7 @@
 
 /* --- the rail -----------------------------------------------------------
    Below 1200px the grid gives it no track, so it presents as a CONTENTS
-   disclosure above the article. Same DOM either way — duplicating it would put
+   disclosure above the article. Same DOM either way; duplicating it would put
    every heading anchor in the page twice. */
 .pf-rail {
   grid-column: content;
@@ -339,7 +339,7 @@ details[open] > .pf-copy-more {
 
 /* Below 640 a comparison table used to make the reader scroll a sub-region
    sideways to see the payload of the page. Each row becomes a labelled block
-   instead — same DOM, same real <table>, so the markup a crawler sees is
+   instead, with the same DOM and the same real <table>, so the markup a crawler sees is
    unchanged. */
 @media (max-width: 639px) {
   .pf-table,
@@ -399,7 +399,7 @@ details[open] > .pf-copy-more {
 }
 
 /* Connectors: vertical when the chain stacks, horizontal when it runs across.
-   Pseudo-elements rather than SVG — no viewBox to keep in sync with a layout
+   Pseudo-elements rather than SVG, so there is no viewBox to keep in sync with a layout
    that changes direction at a breakpoint. */
 .pf-flow-node:not(:last-child)::after {
   content: '';
@@ -514,7 +514,7 @@ details[open] > .pf-copy-more {
   }
 }
 
-/* A chain the post is arguing against. No red — the palette does not have one
+/* A chain the post is arguing against. No red, because the palette does not have one
    and does not need one; grey and dashed is enough to read as "not this" at a
    glance, which is the only job. */
 .pf-flow--wrong .pf-flow-node {
@@ -552,7 +552,7 @@ details[open] > .pf-copy-more {
    art becomes a blurry gradient at the size it actually renders.
    `object-position: left` so that what gets cropped is the tail of the word,
    which is the part designed to be cropped, at every viewport width.
-   This is the ONLY place neon appears on this site — see the banners spec. */
+   This is the ONLY place neon appears on this site; see the banners spec. */
 /* The cover band above the title.
 
    `aspect-ratio` rather than a fixed height: the masters are captures and each
@@ -585,7 +585,7 @@ details[open] > .pf-copy-more {
 }
 
 /* The feed thumbnail. Same artwork, sitting beside the row on a wide viewport
-   and above it on a narrow one — a card whose picture arrives after its own
+   and above it on a narrow one, because a card whose picture arrives after its own
    headline is a card that reads as a footnote to itself. */
 .pf-feed-row {
   display: grid;

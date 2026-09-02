@@ -4,7 +4,7 @@ import { streamLabel, type DispatchPost, type DropPost, type Post, type WisdomPo
  * What a post is willing to prove about itself before you click it.
  *
  * The index used to show `summary` on every row, which is written for a meta
- * description and reads like one — twelve rows of competent, interchangeable
+ * description and reads like one: twelve rows of competent, interchangeable
  * prose. Every stream already carries something far more specific in its
  * frontmatter and it was all invisible until the page loaded: a drop knows what
  * artifact it hands over, a wisdom post knows what its argument costs you, a
@@ -17,7 +17,7 @@ export type Payload = {
   tag: string;
   /** The one line that earns the click. */
   line: string;
-  /** Dispatch only — "+2 MORE", where the rest of the items are. */
+  /** Dispatch only: "+2 MORE", where the rest of the items are. */
   more?: string;
 };
 

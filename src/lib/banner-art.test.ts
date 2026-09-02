@@ -19,7 +19,7 @@ import {
   rngFor,
 } from './banner-art.mjs';
 
-describe('banner-art — constants', () => {
+describe('banner-art: constants', () => {
   it('is a 6:1 grid', () => {
     expect(BANNER_W).toBe(360);
     expect(BANNER_H).toBe(60);
@@ -33,7 +33,7 @@ describe('banner-art — constants', () => {
   });
 });
 
-describe('banner-art — rngFor', () => {
+describe('banner-art: rngFor', () => {
   it('is deterministic for the same slug', () => {
     const a = Array.from({ length: 8 }, rngFor('automate'));
     const b = Array.from({ length: 8 }, rngFor('automate'));
@@ -56,7 +56,7 @@ describe('banner-art — rngFor', () => {
   });
 });
 
-describe('banner-art — bannerWord', () => {
+describe('banner-art: bannerWord', () => {
   it('uses the drop keyword, not the stream name', () => {
     expect(bannerWord({ stream: 'drop', keyword: 'AUTOMATE' })).toBe('AUTOMATE');
   });
@@ -79,7 +79,7 @@ describe('banner-art — bannerWord', () => {
   });
 });
 
-describe('banner-art — neonFor', () => {
+describe('banner-art: neonFor', () => {
   it('picks exactly two distinct neon indices', () => {
     for (const slug of ['automate', 'cheatsheet', 'swipe', 'system', 'workflow', 'prompts']) {
       const [primary, secondary] = neonFor(rngFor(slug));
@@ -93,7 +93,7 @@ describe('banner-art — neonFor', () => {
 /** Every word this corpus can ever ask the font for. */
 const CORPUS_WORDS = ['SWIPE', 'SYSTEM', 'PROMPTS', 'AUTOMATE', 'WORKFLOW', 'CHEATSHEET', 'WISDOM', 'DISPATCH'];
 
-describe('banner-art — FONT', () => {
+describe('banner-art: FONT', () => {
   it('covers A-Z and nothing else', () => {
     const keys = Object.keys(FONT).sort();
     expect(keys).toHaveLength(26);
@@ -124,7 +124,7 @@ describe('banner-art — FONT', () => {
   });
 });
 
-describe('banner-art — layoutWord', () => {
+describe('banner-art: layoutWord', () => {
   it('always overspans the plate so the word is clipped', () => {
     for (const word of CORPUS_WORDS) {
       const { advance, x0 } = layoutWord(word);
@@ -157,7 +157,7 @@ describe('banner-art — layoutWord', () => {
   });
 });
 
-describe('banner-art — bannerArt word layer', () => {
+describe('banner-art: bannerArt word layer', () => {
   const art = () => bannerArt({ path: '/drops/automate', stream: 'drop', keyword: 'AUTOMATE' });
 
   it('returns a full grid', () => {
@@ -211,7 +211,7 @@ const ALL = [
   { path: '/dispatch/glm-5-3-flash', stream: 'dispatch' },
 ];
 
-describe('banner-art — field layers', () => {
+describe('banner-art: field layers', () => {
   it('gives the field two distinct neon hues, never three', () => {
     for (const post of ALL) {
       const { primary, secondary } = bannerArt(post);

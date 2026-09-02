@@ -11,7 +11,7 @@ import { useDisclosureOpen } from '@/components/notes/useRail';
 type Filter = 'all' | Stream;
 
 const DESCRIPTION =
-  'Free, ungated resources, build notes and AI dispatches from Anadi Thakur — automation templates, system-design worksheets and the reasoning behind them.';
+  'Free, ungated resources, build notes and AI dispatches from Anadi Thakur: automation templates, system-design worksheets and the reasoning behind them.';
 
 /**
  * One reverse-chron feed with filter chips, not three columns.
@@ -46,14 +46,14 @@ const NotesIndex = () => {
   return (
     <NotesShell>
       <Seo
-        title={`Notes — ${BYLINE}`}
+        title={`Notes · ${BYLINE}`}
         description={DESCRIPTION}
         path="/notes"
         type="blog"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Blog',
-          name: 'Notes — Anadi Thakur',
+          name: 'Notes · Anadi Thakur',
           description: DESCRIPTION,
           url: `${ORIGIN}/notes`,
           author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
@@ -63,7 +63,7 @@ const NotesIndex = () => {
         wide
         rail={
           <details className="pf-rail" open={railOpen}>
-            <summary className="pf-rail-summary">FILTER — {chips.find((chip) => chip.key === filter)?.label}</summary>
+            <summary className="pf-rail-summary">FILTER · {chips.find((chip) => chip.key === filter)?.label}</summary>
             <div className="pf-rail-body">
               <p
                 className="pf-rail-stamp"
@@ -125,7 +125,7 @@ const NotesIndex = () => {
           Notes
         </h1>
         <p style={{ margin: px(s[6], 0, s[9]), maxWidth: 620, font: `400 19px/1.55 ${display}`, color: '#3a3a3a' }}>
-          Templates, build notes and AI dispatches. Whatever the piece promises is on the page in full — no signup, no
+          Templates, build notes and AI dispatches. Whatever the piece promises is on the page in full: no signup, no
           gate, nothing held back for later.
         </p>
 
@@ -137,7 +137,7 @@ const NotesIndex = () => {
         {shown.length === 0 ? (
           <p style={{ margin: px(s[10], 0), font: `400 17px/1.6 ${display}`, color: c.dim }}>
             {q.trim()
-              ? `Nothing matches “${q.trim()}”. Try a tool or a topic — n8n, Slack, prompts, architecture.`
+              ? `Nothing matches “${q.trim()}”. Try a tool or a topic: n8n, Slack, prompts, architecture.`
               : 'Nothing in this stream yet. The other chips have the rest.'}
           </p>
         ) : (

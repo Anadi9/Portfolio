@@ -26,7 +26,7 @@ const Chip = ({ children }: { children: React.ReactNode }) => (
 /**
  * One row of the feed.
  *
- * Three streams, one skeleton — eyebrow, headline, `useWhen` — and then a
+ * Three streams, one skeleton (eyebrow, headline, `useWhen`) and then a
  * payload block that differs per stream. The skeleton is what keeps the feed
  * reading as one feed; the payload is what stops twelve rows looking like the
  * same row twelve times. Which field goes in the payload is decided in

@@ -37,7 +37,7 @@ const Hero = () => (
         borderBottom: `${rule.base}px solid ${c.ink}`,
       }}
     >
-      <span style={{ ...label(11, 700, 0.16), color: c.ink }}>PORTFOLIO — 2026 EDITION</span>
+      <span style={{ ...label(11, 700, 0.16), color: c.ink }}>PORTFOLIO · 2026 EDITION</span>
       <span style={{ display: 'flex', alignItems: 'center', gap: s[2], ...label(11, 500, 0.12), color: c.ink }}>
         {/* Status hue, first of four uses. See the `signal` note in tokens. */}
         <span
@@ -206,7 +206,7 @@ const Hero = () => (
           }}
         >
           <p style={{ margin: 0, font: `400 15px/1.42 ${display}`, color: c.ink, textWrap: 'pretty' }}>
-            I take a product from the model call to the last 8px of padding — enterprise platforms for ZEISS, React
+            I take a product from the model call to the last 8px of padding: enterprise platforms for ZEISS, React
             Native apps, and LLM pipelines that do real work instead of demos.
           </p>
           <div style={{ display: 'flex', gap: s[3] }}>

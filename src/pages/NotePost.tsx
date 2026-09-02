@@ -7,7 +7,7 @@ import type { DispatchPost, DropPost, Post, WisdomPost } from '@/data/notes';
  * Picks the layout off the frontmatter's stream discriminant.
  *
  * One route element per post is generated in `routes.tsx`, so this never has to
- * handle a missing post — an unknown URL falls through to the 404 route instead
+ * handle a missing post: an unknown URL falls through to the 404 route instead
  * of rendering an empty article shell.
  */
 const NotePost = ({ post }: { post: Post }) => {

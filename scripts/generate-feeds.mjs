@@ -28,7 +28,7 @@ const posts = collect()
   .map((p) => ({
     ...p,
     url: `${ORIGIN}/${streamPath[p.stream]}/${p.slug}`,
-    // `lastVerified` is the honest modification date where a post has one — the
+    // `lastVerified` is the honest modification date where a post has one: the
     // cheat sheet is re-checked against reality without its `date` changing,
     // and a crawler should hear about that.
     modified: p.lastVerified || p.date,
@@ -36,7 +36,7 @@ const posts = collect()
   .sort((a, b) => (a.date === b.date ? a.slug.localeCompare(b.slug) : b.date.localeCompare(a.date)));
 
 if (!posts.length) {
-  console.log('[feeds] no published posts — nothing to write.');
+  console.log('[feeds] no published posts, nothing to write.');
   process.exit(0);
 }
 
@@ -77,9 +77,9 @@ const rfc822 = (iso) => new Date(`${iso}T09:00:00Z`).toUTCString();
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Notes — Anadi Thakur</title>
+    <title>Notes · Anadi Thakur</title>
     <link>${ORIGIN}/notes</link>
-    <description>Templates, build notes and AI dispatches. Whatever the piece promises is on the page in full — no signup, no gate.</description>
+    <description>Templates, build notes and AI dispatches. Whatever the piece promises is on the page in full: no signup, no gate.</description>
     <language>en</language>
     <lastBuildDate>${rfc822(posts[0].date)}</lastBuildDate>
     <atom:link href="${ORIGIN}/rss.xml" rel="self" type="application/rss+xml" />
@@ -109,7 +109,7 @@ let robots = '';
 try {
   robots = readFileSync(robotsPath, 'utf8');
 } catch {
-  /* not present — we write one below */
+  /* not present, so we write one below */
 }
 if (!robots.includes('Sitemap:')) {
   writeFileSync(robotsPath, `${robots.trimEnd()}${robots ? '\n' : ''}\nSitemap: ${ORIGIN}/sitemap.xml\n`.trimStart());

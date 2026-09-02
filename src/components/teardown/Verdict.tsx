@@ -5,7 +5,7 @@ import type { Result } from '@/lib/teardown/score';
 
 /**
  * The ungated result. Verdict, score, four axis bars, three weakest sections
- * named and not elaborated — the elaboration is the report behind the email.
+ * named and not elaborated; the elaboration is the report behind the email.
  *
  * The bars use `c.mark`, never `c.signal`. A score is not an availability
  * claim, and the greens are reserved so a green dot on this site still reads
@@ -42,8 +42,8 @@ const Bar = ({ axis, value }: { axis: Axis; value: number }) => (
 export default function Verdict({ result }: { result: Result }) {
   const axes: Axis[] = ['defensibility', 'failure', 'cost', 'evaluation'];
 
-  // `Verdict` only ever mounts on the Quiz -> Verdict phase transition — it
-  // is never present in the prerendered page — so focusing on mount here is
+  // `Verdict` only ever mounts on the Quiz -> Verdict phase transition, and it
+  // is never present in the prerendered page, so focusing on mount here is
   // always a deliberate transition, never a yank on first arrival.
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function Verdict({ result }: { result: Result }) {
       {result.undecidedCount > 0 && (
         <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '54ch' }}>
           {result.undecidedCount} of {QUESTIONS.length} answers were <em>I&rsquo;m not sure</em>. Those are counted apart from
-          low scores — an undecided question and a badly decided one are different problems.
+          low scores: an undecided question and a badly decided one are different problems.
         </p>
       )}
 

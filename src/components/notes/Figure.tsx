@@ -5,8 +5,8 @@ import { c, label, mono, px, rule, s } from '@/components/portfolio/tokens';
  * The container every figure sits in.
  *
  * `bleed` is the whole reason the right gutter exists. A five-node workflow
- * chain does not fit the reading measure, and the alternative — the
- * `overflow-x: auto` box the tables used to use — makes the reader scroll a
+ * chain does not fit the reading measure, and the alternative, the
+ * `overflow-x: auto` box the tables used to use, makes the reader scroll a
  * sub-region sideways to see the payload of the page.
  *
  * The caption is mono and small on purpose: it matches `MetaLine`, so a figure

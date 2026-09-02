@@ -1,7 +1,7 @@
 import { c, heading, label, stretch } from './tokens';
 
 /**
- * There used to be one of these on every section boundary — journey, stack and
+ * There used to be one of these on every section boundary: journey, stack and
  * contact. Three full-bleed interruptions in a row read as noise rather than
  * punctuation, and they announced a heading you were about to read anyway. Only
  * the closing one survives, where it lands as a payoff instead of a toll gate.
@@ -18,7 +18,7 @@ const wipes = [{ target: 'contact', bg: c.accent, fg: c.ink, lines: ['Say hello'
  * showing its seams.
  *
  * Two corrections keep it from lifting the page a shade lighter instead of
- * texturing it, both aimed at landing the tile's mean on neutral grey — the
+ * texturing it, both aimed at landing the tile's mean on neutral grey, the
  * value `overlay` passes through untouched:
  *
  *   · the alpha channel is flattened to 1. feTurbulence randomises all four
@@ -26,7 +26,7 @@ const wipes = [{ target: 'contact', bg: c.accent, fg: c.ink, lines: ['Say hello'
  *     than scattering around it.
  *   · `color-interpolation-filters` is forced to sRGB. Filters default to
  *     linearRGB, and converting that result back for display pulled the mean
- *     luma up to 187 of 255 — a permanent wash over every surface on the page.
+ *     luma up to 187 of 255, a permanent wash over every surface on the page.
  *
  * It does not animate. Film grain crawls; paper grain doesn't, and this page is
  * pretending to be printed. It also means the topmost full-viewport layer on
