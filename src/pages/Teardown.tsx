@@ -124,7 +124,7 @@ export default function Teardown() {
           </p>
         </section>
 
-        <section aria-label="The test" style={section}>
+        <section aria-label={complete ? 'Your result' : 'The test'} style={section}>
           {!complete && <Quiz answers={answers} onAnswer={onAnswer} />}
           {complete && model && <Verdict result={model.result} />}
         </section>

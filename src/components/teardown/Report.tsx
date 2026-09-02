@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import type { ReportModel, SectionReport } from '@/lib/teardown/report';
 
@@ -30,8 +31,8 @@ const Section = ({ section }: { section: SectionReport }) => (
       </span>
     </div>
     <div style={{ display: 'grid', gap: s[3], marginTop: s[5], maxWidth: '62ch' }}>
-      {section.findings.map((f) => (
-        <p key={f} style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.dimOnInk, textWrap: 'pretty' }}>
+      {section.findings.map((f, i) => (
+        <p key={`${section.id}-${i}`} style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.dimOnInk, textWrap: 'pretty' }}>
           {f}
         </p>
       ))}
@@ -40,10 +41,22 @@ const Section = ({ section }: { section: SectionReport }) => (
 );
 
 export default function Report({ model, sendFailed }: { model: ReportModel; sendFailed: boolean }) {
+  // `Report` only ever mounts on the Gate -> Report phase transition — never
+  // in the prerendered page — so focusing on mount here is always a
+  // deliberate transition, never a yank on first arrival.
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
   return (
     <div>
       <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>THE BREAKDOWN</p>
-      <h2 style={{ margin: px(s[5], 0, s[8]), ...heading('d4'), textTransform: 'uppercase', color: '#fff' }}>
+      <h2
+        ref={headingRef}
+        tabIndex={-1}
+        style={{ margin: px(s[5], 0, s[8]), ...heading('d4'), textTransform: 'uppercase', color: '#fff' }}
+      >
         Nine sections, as you answered them
       </h2>
 

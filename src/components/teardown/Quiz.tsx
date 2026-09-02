@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { QUESTIONS } from '@/lib/teardown/questions';
 
@@ -35,6 +36,21 @@ export default function Quiz({
   onAnswer: (questionIndex: number, optionIndex: number) => void;
 }) {
   const current = answers.findIndex((a) => a === null);
+
+  // The starting index, captured once. Comparing against it is what keeps
+  // focus untouched on first mount — a reader arriving from search must not
+  // have the viewport yanked to the legend before they've read the intro.
+  // Only a genuine *change* after mount should move focus.
+  const initial = useRef(current);
+  const legendRef = useRef<HTMLLegendElement>(null);
+
+  useEffect(() => {
+    if (current !== -1 && current !== initial.current) {
+      legendRef.current?.focus();
+    }
+    initial.current = current;
+  }, [current]);
+
   if (current === -1) return null;
 
   const q = QUESTIONS[current];
@@ -60,7 +76,11 @@ export default function Quiz({
       </p>
 
       <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
-        <legend style={{ ...heading('d6'), color: '#fff', padding: 0, margin: px(s[4], 0, s[7]) }}>
+        <legend
+          ref={legendRef}
+          tabIndex={-1}
+          style={{ ...heading('d6'), color: '#fff', padding: 0, margin: px(s[4], 0, s[7]) }}
+        >
           {q.prompt}
         </legend>
 

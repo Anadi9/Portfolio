@@ -1,5 +1,6 @@
+import { useEffect, useRef } from 'react';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
-import { SECTIONS, type Axis } from '@/lib/teardown/questions';
+import { QUESTIONS, SECTIONS, type Axis } from '@/lib/teardown/questions';
 import type { Result } from '@/lib/teardown/score';
 
 /**
@@ -41,11 +42,21 @@ const Bar = ({ axis, value }: { axis: Axis; value: number }) => (
 export default function Verdict({ result }: { result: Result }) {
   const axes: Axis[] = ['defensibility', 'failure', 'cost', 'evaluation'];
 
+  // `Verdict` only ever mounts on the Quiz -> Verdict phase transition — it
+  // is never present in the prerendered page — so focusing on mount here is
+  // always a deliberate transition, never a yank on first arrival.
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
   return (
     <div>
       <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>YOUR RESULT</p>
 
       <h2
+        ref={headingRef}
+        tabIndex={-1}
         style={{
           margin: px(s[5], 0, 0),
           ...heading('d3'),
@@ -64,7 +75,7 @@ export default function Verdict({ result }: { result: Result }) {
 
       {result.undecidedCount > 0 && (
         <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '54ch' }}>
-          {result.undecidedCount} of 13 answers were <em>I&rsquo;m not sure</em>. Those are counted apart from
+          {result.undecidedCount} of {QUESTIONS.length} answers were <em>I&rsquo;m not sure</em>. Those are counted apart from
           low scores — an undecided question and a badly decided one are different problems.
         </p>
       )}
