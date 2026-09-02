@@ -61,10 +61,22 @@ describe('report — decided / undecided / mixed', () => {
 });
 
 describe('report — decision 3: diagnose, never prescribe', () => {
-  it('has no field on a section that could hold a fix', () => {
-    const s = report(all(0)).sections[0];
-    const keys = Object.keys(s).sort();
-    expect(keys).toEqual(['findings', 'id', 'score', 'state', 'title']);
+  it('has no field on any section that could hold a fix', () => {
+    // Every section across all four `all(i)` answer patterns, plus the mixed
+    // case below — not just `sections[0]`, which is always a single-question,
+    // always-`decided` section and would miss a field reachable only via
+    // `'mixed'` state or a multi-question section.
+    for (const i of [0, 1, 2, 3]) {
+      for (const s of report(all(i)).sections) {
+        const keys = Object.keys(s).sort();
+        expect(keys).toEqual(['findings', 'id', 'score', 'state', 'title']);
+      }
+    }
+    const mixedAnswers = QUESTIONS.map((_, i) => (i === 3 ? 3 : 0));
+    for (const s of report(mixedAnswers).sections) {
+      const keys = Object.keys(s).sort();
+      expect(keys).toEqual(['findings', 'id', 'score', 'state', 'title']);
+    }
   });
 
   it('renders no finding that was not authored in questions.ts', () => {

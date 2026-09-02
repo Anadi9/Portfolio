@@ -149,6 +149,14 @@ const rss = readFileSync('dist/rss.xml', 'utf8');
 // is added to or removed from the sitemap in `generate-feeds.mjs`.
 check(`sitemap lists 15 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 15);
 check('sitemap lists /teardown', sitemap.includes('<loc>https://anadithakur.in/teardown</loc>'));
+
+// Decision 9: `/teardown` is meant to be found, so its intro and first
+// question must be in the static HTML, not behind a client-only render — a
+// regression here would still pass the sitemap check above while leaving
+// crawlers an empty root div.
+const teardown = readFileSync('dist/teardown/index.html', 'utf8');
+check('/teardown prerenders its intro', teardown.includes('thirteen questions'));
+check('/teardown prerenders question 1', teardown.includes('without using the words'));
 check(`rss lists 12 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 12);
 check('robots.txt declares the sitemap', readFileSync('dist/robots.txt', 'utf8').includes('Sitemap:'));
 for (const page of pages) {
