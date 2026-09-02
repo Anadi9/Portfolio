@@ -1,3 +1,4 @@
+import { QUESTIONS } from './questions';
 import type { ReportModel, SectionReport } from './report';
 
 /**
@@ -58,7 +59,7 @@ export function renderEmail(model: ReportModel): { subject: string; html: string
   const undecidedLine =
     result.undecidedCount > 0
       ? `<p style="margin:14px 0 0;font:400 15px/1.55 Helvetica,Arial,sans-serif;color:${DIM};">
-             ${result.undecidedCount} of 13 answers were "I'm not sure". Those are recorded separately from low
+             ${result.undecidedCount} of ${QUESTIONS.length} answers were "I'm not sure". Those are recorded separately from low
              scores, because an undecided question and a badly decided one are different problems.
            </p>`
       : '';

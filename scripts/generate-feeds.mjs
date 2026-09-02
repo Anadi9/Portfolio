@@ -42,8 +42,8 @@ if (!posts.length) {
 
 /* --- sitemap ------------------------------------------------------------- */
 
-// `/` and `/notes` are the two non-post routes worth listing. `/404` and the
-// SPA catch-all are not pages anyone should be sent to from search.
+// `/`, `/notes` and `/teardown` are the three non-post routes worth listing.
+// `/404` and the SPA catch-all are not pages anyone should be sent to from search.
 const pages = [
   { url: ORIGIN, modified: posts[0].modified, priority: '1.0' },
   { url: `${ORIGIN}/notes`, modified: posts[0].modified, priority: '0.9' },
