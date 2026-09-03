@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
-import { renderEmail } from '../src/lib/teardown/email';
-import { report } from '../src/lib/teardown/report';
-import { isValidAnswers } from '../src/lib/teardown/score';
+import { renderEmail } from '../src/lib/teardown/email.js';
+import { report } from '../src/lib/teardown/report.js';
+import { isValidAnswers } from '../src/lib/teardown/score.js';
 
 /**
  * POST /api/teardown-report
@@ -14,7 +14,12 @@ import { isValidAnswers } from '../src/lib/teardown/score';
  * scoring in the system.
  *
  * Imports are relative, not `@/`-aliased: Vite resolves that alias, the
- * function bundler does not.
+ * function bundler does not. They also carry explicit `.js` extensions, which
+ * name the emitted file rather than this source one. `package.json` is
+ * `"type": "module"` and Vercel transpiles this file instead of bundling it, so
+ * Node's ESM resolver loads it directly and rejects an extensionless relative
+ * specifier. `serverless-imports.test.ts` guards that, because nothing else
+ * catches it: Vite, vitest and esbuild all resolve these paths without help.
  *
  * Known limitation, accepted in the spec: there is no per-IP throttle, because
  * doing it properly needs shared state we deliberately have not built. The

@@ -1,5 +1,5 @@
-import { QUESTIONS, SECTIONS, type SectionId } from './questions';
-import { score, type Result } from './score';
+import { QUESTIONS, SECTIONS, type SectionId } from './questions.js';
+import { score, type Result } from './score.js';
 
 /**
  * The prose layer, and the only one.

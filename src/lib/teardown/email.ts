@@ -1,5 +1,5 @@
-import { QUESTIONS } from './questions';
-import type { ReportModel, SectionReport } from './report';
+import { QUESTIONS } from './questions.js';
+import type { ReportModel, SectionReport } from './report.js';
 
 /**
  * The emailed report.

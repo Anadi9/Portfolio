@@ -1,4 +1,4 @@
-import { MAX_RAW, QUESTIONS, type Axis, type SectionId } from './questions';
+import { MAX_RAW, QUESTIONS, type Axis, type SectionId } from './questions.js';
 
 /**
  * Scoring: arithmetic only.
