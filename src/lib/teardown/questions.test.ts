@@ -13,12 +13,12 @@ describe('question bank: shape', () => {
     }
   });
 
-  it("ends every question with a single unknown option labelled \"I'm not sure\"", () => {
+  it("ends every question with a single unknown option labelled \"🥹 I'm not sure\"", () => {
     for (const q of QUESTIONS) {
       const unknowns = q.options.filter((o) => o.unknown);
       expect(unknowns).toHaveLength(1);
       expect(q.options[3].unknown).toBe(true);
-      expect(q.options[3].label).toBe("I'm not sure");
+      expect(q.options[3].label).toBe("🥹 I'm not sure");
       expect(q.options[3].weight).toBe(0);
     }
   });

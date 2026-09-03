@@ -21,7 +21,7 @@ describe('report: completeness', () => {
   it('carries the full Result alongside the sections', () => {
     const m = report(all(0));
     expect(m.result.score).toBe(100);
-    expect(m.result.verdict).toBe('REAL PRODUCT');
+    expect(m.result.verdict).toBe('🎯 REAL PRODUCT');
   });
 
   it('gives each section one finding per question in that section', () => {

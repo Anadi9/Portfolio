@@ -7,14 +7,14 @@ const all = (i: number) => QUESTIONS.map(() => i);
 
 describe('band', () => {
   it('places every boundary exactly', () => {
-    expect(band(0)).toBe('THIN WRAPPER');
-    expect(band(39)).toBe('THIN WRAPPER');
-    expect(band(40)).toBe('WRAPPER WITH FOUNDATIONS');
-    expect(band(64)).toBe('WRAPPER WITH FOUNDATIONS');
-    expect(band(65)).toBe('REAL PRODUCT, THIN IN PLACES');
-    expect(band(84)).toBe('REAL PRODUCT, THIN IN PLACES');
-    expect(band(85)).toBe('REAL PRODUCT');
-    expect(band(100)).toBe('REAL PRODUCT');
+    expect(band(0)).toBe('🚨 THIN WRAPPER');
+    expect(band(39)).toBe('🚨 THIN WRAPPER');
+    expect(band(40)).toBe('⚠️ WRAPPER WITH FOUNDATIONS');
+    expect(band(64)).toBe('⚠️ WRAPPER WITH FOUNDATIONS');
+    expect(band(65)).toBe('🧩 REAL PRODUCT, THIN IN PLACES');
+    expect(band(84)).toBe('🧩 REAL PRODUCT, THIN IN PLACES');
+    expect(band(85)).toBe('🎯 REAL PRODUCT');
+    expect(band(100)).toBe('🎯 REAL PRODUCT');
   });
 });
 
@@ -22,7 +22,7 @@ describe('score: extremes', () => {
   it('scores a perfect run 100 and REAL PRODUCT', () => {
     const r = score(all(0));
     expect(r.score).toBe(100);
-    expect(r.verdict).toBe('REAL PRODUCT');
+    expect(r.verdict).toBe('🎯 REAL PRODUCT');
     expect(Object.values(r.axes)).toEqual([100, 100, 100, 100]);
     expect(r.undecidedCount).toBe(0);
   });
@@ -30,7 +30,7 @@ describe('score: extremes', () => {
   it('scores the worst run 0 and THIN WRAPPER', () => {
     const r = score(all(2));
     expect(r.score).toBe(0);
-    expect(r.verdict).toBe('THIN WRAPPER');
+    expect(r.verdict).toBe('🚨 THIN WRAPPER');
     expect(r.undecidedCount).toBe(0);
   });
 
