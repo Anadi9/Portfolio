@@ -15,27 +15,53 @@ export type VerdictBand =
   | '🧩 REAL PRODUCT, THIN IN PLACES'
   | '🎯 REAL PRODUCT';
 
+/**
+ * Which sections came out thinnest — and whether that question has an answer.
+ *
+ * Nine sections and three slots means the cut can land inside a tie, and a
+ * run where everything scores alike has no thinnest section at all. Taking the
+ * first three ids in that case would present document order as a finding, so
+ * the tie is kept in the shape and left for a reader to see.
+ */
+export type Thinnest = {
+  /** Sections strictly thinner than the tie at the cut, worst first. 0..3. */
+  ranked: SectionId[];
+  /** Sections sharing the cut score, ascending id. Empty for a clean three. */
+  tied: SectionId[];
+  /** The score `tied` share. Meaningless, and 0, when `tied` is empty. */
+  tiedScore: number;
+};
+
 export type Result = {
   /** 0..100. */
   score: number;
   verdict: VerdictBand;
   axes: Record<Axis, number>;
   sectionScores: Record<SectionId, number>;
-  /** Three section ids, worst first, ties broken by ascending id. */
-  weakest: SectionId[];
+  thinnest: Thinnest;
   undecidedCount: number;
 };
 
 const pct = (got: number, max: number) => (max === 0 ? 0 : Math.round((got / max) * 100));
 
+/**
+ * The four bands and the score each one starts at, highest first.
+ *
+ * `band` reads this table rather than a chain of its own, because the ladder
+ * is now drawn for a reader: a shared result shows where its score falls, and
+ * a printed threshold that disagreed with the one that picked the verdict
+ * would discredit the very thing it is there to make checkable.
+ */
+export const BANDS: readonly { readonly min: number; readonly verdict: VerdictBand }[] = [
+  { min: 85, verdict: '🎯 REAL PRODUCT' },
+  { min: 65, verdict: '🧩 REAL PRODUCT, THIN IN PLACES' },
+  { min: 40, verdict: '⚠️ WRAPPER WITH FOUNDATIONS' },
+  { min: 0, verdict: '🚨 THIN WRAPPER' },
+];
+
 export const band = (score: number): VerdictBand =>
-  score >= 85
-    ? '🎯 REAL PRODUCT'
-    : score >= 65
-      ? '🧩 REAL PRODUCT, THIN IN PLACES'
-      : score >= 40
-        ? '⚠️ WRAPPER WITH FOUNDATIONS'
-        : '🚨 THIN WRAPPER';
+  // The last entry starts at 0, so a 0..100 score always finds one.
+  BANDS.find((b) => score >= b.min)!.verdict;
 
 /**
  * The only validation the serverless function needs. Answers are the entire
@@ -84,15 +110,27 @@ export function score(answers: number[]): Result {
     sectionScores[id] = pct(sectionGot[id], sectionMax[id]);
   }
 
-  // Ascending id is the tie-break, and `sort` is stable, so sorting the already
-  // ascending id list by score alone gives it for free.
-  const weakest = (Object.keys(sectionScores) as unknown as string[])
+  const ids = (Object.keys(sectionScores) as unknown as string[])
     .map((k) => Number(k) as SectionId)
-    .sort((a, b) => a - b)
-    .sort((a, b) => sectionScores[a] - sectionScores[b])
-    .slice(0, 3);
+    .sort((a, b) => a - b);
+
+  // Ascending id, then a stable sort by score, so ties keep id order.
+  const asc = [...ids].sort((a, b) => sectionScores[a] - sectionScores[b]);
+
+  // The third-place score. Everything below it is unambiguously thin; every
+  // section holding it is tied for the last slot, however many there are.
+  const cut = sectionScores[asc[2]];
+  const below = asc.filter((id) => sectionScores[id] < cut);
+  const at = ids.filter((id) => sectionScores[id] === cut);
+
+  // Below and at together always cover at least three. Exactly three means the
+  // cut fell cleanly and no id was picked over an equal one.
+  const thinnest: Thinnest =
+    below.length + at.length === 3
+      ? { ranked: [...below, ...at], tied: [], tiedScore: 0 }
+      : { ranked: below, tied: at, tiedScore: cut };
 
   const total = pct(raw, MAX_RAW);
 
-  return { score: total, verdict: band(total), axes, sectionScores, weakest, undecidedCount };
+  return { score: total, verdict: band(total), axes, sectionScores, thinnest, undecidedCount };
 }

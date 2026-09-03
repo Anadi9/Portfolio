@@ -3,6 +3,8 @@ import { Link } from 'vite-react-ssg';
 import { useLocation } from 'react-router-dom';
 import { Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/portfolio/tokens';
+import Ladder from '@/components/teardown/Ladder';
+import Sample from '@/components/teardown/Sample';
 import Verdict from '@/components/teardown/Verdict';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { band, score as scoreOf } from '@/lib/teardown/score';
@@ -10,7 +12,7 @@ import { decodeAnswers, resultPaths } from '@/lib/teardown/share';
 import NotFound from './NotFound';
 
 /**
- * `/teardown/r/:score`: somebody else's Wrapper Test result.
+ * `/teardown/r/:score`: a shared Wrapper Test result.
  *
  * Forty of these prerender, one per reachable score, because the score is the
  * only part of a result a crawler reads: it sets the title and picks the OG
@@ -116,7 +118,7 @@ export default function TeardownResult() {
             <Verdict result={scoreOf(answers)} mine={false} />
           ) : (
             <>
-              <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>SOMEONE ELSE&rsquo;S RESULT</p>
+              <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>TEARDOWN RESULT</p>
               <h1
                 style={{
                   margin: px(s[5], 0, 0),
@@ -132,8 +134,18 @@ export default function TeardownResult() {
                 {pathScore}
                 <span style={{ color: c.dimOnInk }}>/100</span>
               </p>
+              <Ladder score={pathScore} verdict={verdict} />
             </>
           )}
+        </section>
+
+        {/*
+          Sits between the result and the ask, and only on this page: the reader
+          who just took the test has seen all thirteen, but the stranger holding
+          somebody else's score has seen none of them.
+        */}
+        <section aria-label="One of the questions" style={section}>
+          <Sample score={pathScore} />
         </section>
 
         <section aria-label="Take the test" style={section}>
@@ -149,9 +161,24 @@ export default function TeardownResult() {
               textWrap: 'pretty',
             }}
           >
-            {QUESTIONS.length} questions about your own AI feature, three minutes, and a written breakdown of
-            where it is thin. It scores your answers, not a guess about your product. Your result appears
-            straight away; nothing is asked for to see it.
+            The same {QUESTIONS.length}, about your own AI feature. Three minutes, and a written breakdown
+            of where it is thin. It scores your answers, not a guess about your product.
+          </p>
+          {/*
+            The default suspicion about any scored quiz is that the score is
+            bait for an address. That is the one objection standing between a
+            reader of somebody else's result and a run of their own, so it gets
+            its own line beside the button rather than a clause in a paragraph.
+          */}
+          <p
+            style={{
+              margin: px(s[6], 0, 0),
+              font: `700 15px/1.5 ${display}`,
+              color: '#fff',
+              maxWidth: '58ch',
+            }}
+          >
+            Your result appears straight away. No email is asked for to see it.
           </p>
           <p style={{ marginTop: s[8] }}>
             <Link

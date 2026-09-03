@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { QUESTIONS } from './questions';
-import { band, isValidAnswers, score } from './score';
+import { BANDS, band, isValidAnswers, score } from './score';
 
 /** 13 answers, all at the given option index. */
 const all = (i: number) => QUESTIONS.map(() => i);
@@ -53,23 +53,57 @@ describe('score: axes are independent', () => {
   });
 });
 
-describe('score: weakest', () => {
-  it('returns exactly three sections, worst first', () => {
-    const r = score(all(0));
-    expect(r.weakest).toHaveLength(3);
+describe('BANDS', () => {
+  it('is the table `band` reads, so a drawn ladder cannot disagree with a verdict', () => {
+    for (let n = 0; n <= 100; n += 1) {
+      const row = BANDS.find((b) => n >= b.min)!;
+      expect(band(n)).toBe(row.verdict);
+    }
   });
 
-  it('breaks ties by ascending section id, so output is deterministic', () => {
-    // Every section scores 100, so the tie-break alone decides the order.
-    expect(score(all(0)).weakest).toEqual([1, 2, 3]);
+  it('descends and reaches 0, so every score lands in exactly one band', () => {
+    const mins = BANDS.map((b) => b.min);
+    expect(mins).toEqual([...mins].sort((a, b) => b - a));
+    expect(new Set(mins).size).toBe(mins.length);
+    expect(mins.at(-1)).toBe(0);
   });
 
-  it('puts a genuinely weak section first regardless of id', () => {
-    // Section 9 is questions 12 and 13; answer both at index 2 (weight 0).
+  it('names every band exactly once', () => {
+    expect(new Set(BANDS.map((b) => b.verdict)).size).toBe(BANDS.length);
+  });
+});
+
+describe('score: thinnest', () => {
+  it('names three when three are genuinely the thinnest', () => {
+    // Sections 7, 8 and 9 answered at weight 0; everything else at its best.
+    const answers = QUESTIONS.map((q) => (q.section >= 7 ? 2 : 0));
+    const t = score(answers).thinnest;
+    expect(t.ranked).toEqual([7, 8, 9]);
+    expect(t.tied).toEqual([]);
+  });
+
+  it('claims no thinnest section when every section scores the same', () => {
+    // `all(0)` scores every section 100, so nothing is thinner than anything.
+    const t = score(all(0)).thinnest;
+    expect(t.ranked).toEqual([]);
+    expect(t.tied).toHaveLength(9);
+    expect(t.tiedScore).toBe(100);
+  });
+
+  it('separates the genuinely thin from a tie at the cut', () => {
+    // Section 9 alone is thin; the other eight tie, so a "thinnest three"
+    // would be section 9 plus two arbitrary ids.
     const answers = QUESTIONS.map((q) => (q.section === 9 ? 2 : 0));
-    const r = score(answers);
-    expect(r.weakest[0]).toBe(9);
-    expect(r.sectionScores[9]).toBe(0);
+    const t = score(answers).thinnest;
+    expect(t.ranked).toEqual([9]);
+    expect(t.tied).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(t.tiedScore).toBe(100);
+  });
+
+  it('orders a ranked list worst first', () => {
+    const answers = QUESTIONS.map((q) => (q.section === 9 ? 2 : q.section === 8 ? 1 : 0));
+    const t = score(answers).thinnest;
+    expect(t.ranked[0]).toBe(9);
   });
 });
 

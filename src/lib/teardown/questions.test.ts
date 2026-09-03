@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_RAW, QUESTIONS, SECTIONS } from './questions';
+import { MAX_RAW, QUESTIONS, SECTIONS, sampleFor } from './questions';
 
 describe('question bank: shape', () => {
   it('has exactly 13 questions', () => {
@@ -72,5 +72,23 @@ describe('question bank: no prescriptions', () => {
         expect(f, `${q.id}: ${f}`).not.toMatch(PRESCRIPTIVE);
       }
     }
+  });
+});
+
+describe('sampleFor', () => {
+  it('returns the same question for a score every time', () => {
+    expect(sampleFor(33)).toBe(sampleFor(33));
+  });
+
+  it('spreads across the bank rather than favouring one question', () => {
+    // The forty reachable scores are 0, 3, 5, 8 ... but any dense range shows
+    // the spread: thirteen consecutive scores must hit all thirteen questions.
+    const hit = new Set(Array.from({ length: QUESTIONS.length }, (_, i) => sampleFor(i).id));
+    expect(hit.size).toBe(QUESTIONS.length);
+  });
+
+  it('picks a real question at both ends of the scale', () => {
+    expect(QUESTIONS).toContain(sampleFor(0));
+    expect(QUESTIONS).toContain(sampleFor(100));
   });
 });

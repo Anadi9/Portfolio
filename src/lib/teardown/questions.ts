@@ -292,3 +292,11 @@ export const QUESTIONS: Question[] = [
     ],
   },
 ];
+
+/**
+ * The question a shared result prints verbatim, chosen by the score.
+ *
+ * Deterministic so a given link always shows the same one, and spread across
+ * the bank so the forty prerendered pages are not forty copies of question one.
+ */
+export const sampleFor = (score: number) => QUESTIONS[score % QUESTIONS.length];

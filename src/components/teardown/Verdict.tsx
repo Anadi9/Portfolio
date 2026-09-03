@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { QUESTIONS, SECTIONS, type Axis } from '@/lib/teardown/questions';
 import type { Result } from '@/lib/teardown/score';
+import Ladder from './Ladder';
 
 /**
- * The ungated result. Verdict, score, four axis bars, three weakest sections
- * named and not elaborated; the elaboration is the report behind the email.
+ * The ungated result. Verdict, score, four axis bars, and the thinnest
+ * sections named and not elaborated; the elaboration is the report behind the
+ * email. When the scores do not support a ranking, the tie is shown instead.
  *
  * The bars use `c.mark`, never `c.signal`. A score is not an availability
  * claim, and the greens are reserved so a green dot on this site still reads
@@ -60,10 +62,24 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
   // The shared page carries no other heading, so the verdict is its `h1`.
   const Heading = mine ? 'h2' : 'h1';
 
+  // Three slots over nine sections: the cut can land inside a tie, and a level
+  // run has no thinnest section at all. The eyebrow says which of those this
+  // is, so the list never claims a ranking the scores do not support.
+  const { ranked, tied, tiedScore } = result.thinnest;
+  const eyebrow =
+    ranked.length === 3 ? 'THINNEST THREE' : ranked.length > 0 ? 'THINNEST SECTIONS' : 'NO THINNEST SECTION';
+
   return (
     <div>
+      {/*
+        The shared page cannot tell the sharer from the recipient: it is
+        prerendered, carries no identity, and `?a=` is only packed answers.
+        So the eyebrow asserts nothing about who is reading — it says what the
+        thing is, which stays true whether the taker is previewing their own
+        link or a stranger has just opened it.
+      */}
       <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>
-        {mine ? 'YOUR RESULT' : 'SOMEONE ELSE’S RESULT'}
+        {mine ? 'YOUR RESULT' : 'TEARDOWN RESULT'}
       </p>
 
       <Heading
@@ -92,6 +108,8 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
         </p>
       )}
 
+      <Ladder score={result.score} verdict={result.verdict} />
+
       <div
         style={{
           display: 'grid',
@@ -106,17 +124,41 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
       </div>
 
       <div style={{ marginTop: s[10], borderTop: `${rule.base}px solid ${c.rule}`, paddingTop: s[6] }}>
-        <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>THINNEST THREE</p>
-        <ol style={{ margin: px(s[5], 0, 0), padding: 0, listStyle: 'none', display: 'grid', gap: s[3] }}>
-          {result.weakest.map((id) => (
-            <li key={id} style={{ display: 'flex', gap: s[4], alignItems: 'baseline' }}>
-              <span style={{ font: `700 11px/1 ${mono}`, color: c.dimOnInk }}>
-                {String(id).padStart(2, '0')}
-              </span>
-              <span style={{ ...heading('d6'), color: '#fff' }}>{SECTIONS[id]}</span>
-            </li>
-          ))}
-        </ol>
+        <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>{eyebrow}</p>
+
+        {ranked.length > 0 && (
+          <ol style={{ margin: px(s[5], 0, 0), padding: 0, listStyle: 'none', display: 'grid', gap: s[3] }}>
+            {ranked.map((id) => (
+              <li key={id} style={{ display: 'flex', gap: s[4], alignItems: 'baseline' }}>
+                <span style={{ font: `700 11px/1 ${mono}`, color: c.dimOnInk }}>
+                  {String(id).padStart(2, '0')}
+                </span>
+                <span style={{ ...heading('d6'), color: '#fff' }}>{SECTIONS[id]}</span>
+                <span style={{ font: `700 13px/1 ${mono}`, color: c.dimOnInk }}>
+                  {result.sectionScores[id]}
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {tied.length > 0 && (
+          <p
+            style={{
+              margin: px(ranked.length > 0 ? s[6] : s[5], 0, 0),
+              font: `400 15px/1.55 ${display}`,
+              color: c.dimOnInk,
+              maxWidth: '54ch',
+            }}
+          >
+            {ranked.length > 0 ? 'The rest tie' : 'Every section scored the same'} at {tiedScore}
+            {ranked.length > 0 ? ': ' : ' — '}
+            {tied.map((id) => SECTIONS[id]).join(', ')}
+            {ranked.length > 0
+              ? '. Naming three of them would be picking by section order, not by score.'
+              : '. Nothing came out thinner than anything else.'}
+          </p>
+        )}
       </div>
     </div>
   );
