@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { QUESTIONS } from '../src/lib/teardown/questions';
-import handler from './teardown-report';
+import { QUESTIONS } from './questions';
+import handler from '../../../api/teardown-report';
 
 /**
  * `api/teardown-report.ts` is the only server-side code and the only public
@@ -9,6 +9,13 @@ import handler from './teardown-report';
  * function over `{ method, body }` plus a `res` exposing
  * `status`/`json`/`setHeader`, so it is tested here with local fakes and a
  * mocked `resend` module. No test in this file makes a real network call.
+ *
+ * It lives here rather than beside the handler because Vercel turns every file
+ * under `api/` into a deployed function. As `api/teardown-report.test.ts` this
+ * was live at `/api/teardown-report.test`, answering the public internet with a
+ * 500: it imports `vitest`, which is a devDependency and absent at runtime.
+ * Nothing under `api/` may be anything but a function entrypoint, which
+ * `serverless-imports.test.ts` now asserts.
  */
 
 const { sendMock, contactsCreateMock } = vi.hoisted(() => ({
