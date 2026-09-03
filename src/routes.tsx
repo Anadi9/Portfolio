@@ -50,6 +50,17 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/Teardown').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Teardown.tsx',
       },
+      // Forty prerendered pages, one per reachable score, resolved from the
+      // scorer rather than listed here — see `resultPaths`. A shared result
+      // carries its answers in `?a=`, which the prerenderer neither sees nor
+      // needs: the score in the path is what sets the title and the OG card,
+      // and that is the whole of what a crawler reads.
+      {
+        path: '/teardown/r/:score',
+        lazy: () => import('./pages/TeardownResult').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/TeardownResult.tsx',
+        getStaticPaths: async () => (await import('./lib/teardown/share')).resultPaths(),
+      },
       {
         path: '/notes',
         lazy: () => import('./pages/NotesIndex').then((m) => ({ Component: m.default })),

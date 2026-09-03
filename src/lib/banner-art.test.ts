@@ -94,11 +94,19 @@ describe('banner-art: neonFor', () => {
 const CORPUS_WORDS = ['SWIPE', 'SYSTEM', 'PROMPTS', 'AUTOMATE', 'WORKFLOW', 'CHEATSHEET', 'WISDOM', 'DISPATCH'];
 
 describe('banner-art: FONT', () => {
-  it('covers A-Z and nothing else', () => {
+  it('covers A-Z and 0-9 and nothing else', () => {
+    // The digits are not for banners, which only ever letter a word: they are
+    // for the share card, which sets a score. They live here because the glyph
+    // table and the stamping are one thing, and a second 5 × 7 font elsewhere
+    // would drift from this one.
     const keys = Object.keys(FONT).sort();
-    expect(keys).toHaveLength(26);
-    expect(keys[0]).toBe('A');
-    expect(keys[25]).toBe('Z');
+    expect(keys).toHaveLength(36);
+    expect(keys.filter((k) => /[A-Z]/.test(k))).toHaveLength(26);
+    expect(keys.filter((k) => /[0-9]/.test(k))).toHaveLength(10);
+  });
+
+  it('has a glyph for every digit', () => {
+    for (const ch of '0123456789') expect(FONT[ch], ch).toBeDefined();
   });
 
   it('is uniformly 7 rows of 5 cells', () => {

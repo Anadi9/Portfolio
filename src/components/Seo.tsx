@@ -20,6 +20,7 @@ export const Seo = ({
   path,
   type = 'article',
   image = '/og.png',
+  robots,
   jsonLd,
 }: {
   title: string;
@@ -28,6 +29,13 @@ export const Seo = ({
   type?: 'website' | 'article' | 'blog';
   /** Root-relative; made absolute here, because Twitter won't take anything else. */
   image?: string;
+  /**
+   * Only set by pages that should be shareable but not indexed. The result
+   * pages are forty near-duplicates of one another, which on a corpus this
+   * small is the thin content that dilutes the pages worth finding — but they
+   * still have to pass their link equity on, hence `follow` rather than `none`.
+   */
+  robots?: string;
   jsonLd?: Record<string, unknown>;
 }) => {
   const url = `${ORIGIN}${path}`;
@@ -36,6 +44,7 @@ export const Seo = ({
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
+      {robots && <meta name="robots" content={robots} />}
       <link rel="canonical" href={url} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />

@@ -5,6 +5,7 @@ import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/com
 import Gate from '@/components/teardown/Gate';
 import Quiz from '@/components/teardown/Quiz';
 import Report from '@/components/teardown/Report';
+import Share from '@/components/teardown/Share';
 import Verdict from '@/components/teardown/Verdict';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { report } from '@/lib/teardown/report';
@@ -128,6 +129,14 @@ export default function Teardown() {
           {!complete && <Quiz answers={answers} onAnswer={onAnswer} />}
           {complete && model && <Verdict result={model.result} />}
         </section>
+
+        {/* Above the gate on purpose: a link to the result should not depend on
+            having handed over an address. */}
+        {complete && (
+          <section aria-label="Share your result" style={section}>
+            <Share answers={answers as number[]} />
+          </section>
+        )}
 
         {complete && model && !unlocked && (
           <section aria-label="The written breakdown" style={section}>
