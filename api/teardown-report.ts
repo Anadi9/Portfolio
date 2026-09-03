@@ -63,11 +63,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'invalid email' });
   }
 
-  const { subject, html } = renderEmail(report(answers));
+  const { subject, html, attachment } = renderEmail(report(answers));
   const resend = new Resend(key);
 
   try {
-    const sent = await resend.emails.send({ from: FROM, to: email, subject, html });
+    const sent = await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject,
+      html,
+      // The keepable copy, and the only copy: the page never offers a download,
+      // so the file exists in the inbox or nowhere. Resend takes base64 content.
+      attachments: [
+        {
+          filename: attachment.filename,
+          content: Buffer.from(attachment.html, 'utf8').toString('base64'),
+        },
+      ],
+    });
     if (sent.error) {
       console.error('[teardown] send failed', sent.error);
       return res.status(502).json({ error: 'send failed' });

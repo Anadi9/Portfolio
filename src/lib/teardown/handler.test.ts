@@ -162,6 +162,29 @@ describe('teardown-report: payload validation', () => {
   });
 });
 
+describe('teardown-report: the attached copy', () => {
+  it('sends the keepable document as a base64 attachment', async () => {
+    const res = makeRes();
+    await handler(
+      makeReq('POST', { answers: validAnswers(), email: 'reader@example.com', hp: '' }),
+      res as unknown as VercelResponse,
+    );
+    expect(res.statusCode).toBe(200);
+
+    const [{ attachments }] = sendMock.mock.calls[0] as [
+      { attachments: { filename: string; content: string }[] },
+    ];
+    expect(attachments).toHaveLength(1);
+    expect(attachments[0].filename).toMatch(/^wrapper-test-WT-13-\d{3}-[A-D]\.html$/);
+
+    // Resend takes base64, not markup: a raw string here silently ships a
+    // broken file, and only the reader would find out.
+    const decoded = Buffer.from(attachments[0].content, 'base64').toString('utf8');
+    expect(decoded).toMatch(/^<!doctype html>/i);
+    expect(decoded).toContain('END OF REPORT');
+  });
+});
+
 describe('teardown-report: Resend failures', () => {
   it('returns 502 when Resend returns an error', async () => {
     sendMock.mockResolvedValueOnce({ error: { message: 'bounced' } });

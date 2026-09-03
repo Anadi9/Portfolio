@@ -23,6 +23,7 @@ const ROOT = join(import.meta.dirname, '../../..');
 const GRAPH = [
   'api/teardown-report.ts',
   'src/lib/teardown/email.ts',
+  'src/lib/teardown/document.ts',
   'src/lib/teardown/report.ts',
   'src/lib/teardown/score.ts',
   'src/lib/teardown/questions.ts',

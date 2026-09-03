@@ -136,7 +136,7 @@ export default function Teardown() {
         )}
 
         {complete && model && unlocked && (
-          <section aria-label="The breakdown" style={{...section, background: c.mark, color: c.dimOnInk}}>
+          <section aria-label="The breakdown" style={{ ...section, background: c.accent, color: c.ink }}>
             <Report model={model} sendFailed={sendFailed} />
           </section>
         )}
