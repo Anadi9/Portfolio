@@ -10,6 +10,12 @@ import type { Result } from '@/lib/teardown/score';
  * The bars use `c.mark`, never `c.signal`. A score is not an availability
  * claim, and the greens are reserved so a green dot on this site still reads
  * as a status light rather than as decoration.
+ *
+ * `mine` distinguishes the two places this renders. On `/teardown` it is the
+ * run the reader just finished, sitting under the page's own `h1`, reached by
+ * a phase transition that has to move focus. On `/teardown/r/:score` it is a
+ * stranger's result, it is the only heading on the page, and it mounts on
+ * arrival, where moving focus would be a yank rather than a transition.
  */
 
 const AXIS_LABEL: Record<Axis, string> = {
@@ -39,24 +45,30 @@ const Bar = ({ axis, value }: { axis: Axis; value: number }) => (
   </div>
 );
 
-export default function Verdict({ result }: { result: Result }) {
+export default function Verdict({ result, mine = true }: { result: Result; mine?: boolean }) {
   const axes: Axis[] = ['defensibility', 'failure', 'cost', 'evaluation'];
 
-  // `Verdict` only ever mounts on the Quiz -> Verdict phase transition, and it
-  // is never present in the prerendered page, so focusing on mount here is
-  // always a deliberate transition, never a yank on first arrival.
+  // When `mine`, this mounts on the Quiz -> Verdict phase transition and is
+  // never in the prerendered page, so focusing is a deliberate transition.
+  // A shared result mounts on arrival instead, where the same call would be a
+  // yank, so it neither focuses nor advertises itself as a focus target.
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
+    if (mine) headingRef.current?.focus();
+  }, [mine]);
+
+  // The shared page carries no other heading, so the verdict is its `h1`.
+  const Heading = mine ? 'h2' : 'h1';
 
   return (
     <div>
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>YOUR RESULT</p>
+      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>
+        {mine ? 'YOUR RESULT' : 'SOMEONE ELSE’S RESULT'}
+      </p>
 
-      <h2
+      <Heading
         ref={headingRef}
-        tabIndex={-1}
+        tabIndex={mine ? -1 : undefined}
         style={{
           margin: px(s[5], 0, 0),
           ...heading('d3'),
@@ -66,7 +78,7 @@ export default function Verdict({ result }: { result: Result }) {
         }}
       >
         {result.verdict}
-      </h2>
+      </Heading>
 
       <p style={{ margin: px(s[4], 0, 0), font: `700 20px/1 ${mono}`, color: '#fff' }}>
         {result.score}

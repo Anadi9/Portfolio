@@ -47,8 +47,8 @@ export default function Share({ answers }: { answers: number[] }) {
         Send the verdict to whoever owns the roadmap.
       </h2>
       <p style={{ margin: px(s[4], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '54ch' }}>
-        The link shows your score and the four axis bars. It does not show the written breakdown, and it
-        does not carry your email.
+        The link shows your score, the four axis bars and the three sections that came out thinnest. It
+        does not show the written breakdown, and it does not carry your email.
       </p>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[3], marginTop: s[6], alignItems: 'stretch' }}>

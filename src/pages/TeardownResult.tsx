@@ -110,14 +110,13 @@ export default function TeardownResult() {
 
       <main style={{ flex: 1 }}>
         <section aria-label="A shared result" style={{ ...section, borderTop: 'none' }}>
-          <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>SOMEONE ELSE&rsquo;S RESULT</p>
-
           {answers ? (
-            <div style={{ marginTop: s[9] }}>
-              <Verdict result={scoreOf(answers)} />
-            </div>
+            // `Verdict` prints its own eyebrow and heading in the shared voice,
+            // so the score-only branch below is the only one that writes them.
+            <Verdict result={scoreOf(answers)} mine={false} />
           ) : (
             <>
+              <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>SOMEONE ELSE&rsquo;S RESULT</p>
               <h1
                 style={{
                   margin: px(s[5], 0, 0),
