@@ -5,7 +5,7 @@ import FeedCard from '@/components/notes/FeedCard';
 import { StartHere } from '@/components/notes/OnRamp';
 import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
 import { pinnedPosts, posts } from '@/content';
-import { STREAMS, streamLabel, type Post, type Stream } from '@/data/notes';
+import { STREAMS, streamLabel, streamPath, type Post, type Stream } from '@/data/notes';
 import { useDisclosureOpen } from '@/components/notes/useRail';
 
 type Filter = 'all' | Stream;
@@ -20,9 +20,15 @@ const DESCRIPTION =
  * as neglect where the same two posts inside a working feed read as a feed.
  * The chips are client state on top of a fully prerendered list, so every post
  * is in the static HTML whichever chip is selected.
+ *
+ * `stream` is set by the bare stream routes (`/fixes`, `/drops`…): the same
+ * feed, prerendered with that chip already pressed, so a URL someone trims
+ * back from a post lands on its stream rather than the 404.
  */
-const NotesIndex = () => {
-  const [filter, setFilter] = useState<Filter>('all');
+const NotesIndex = ({ stream }: { stream?: Stream }) => {
+  const [filter, setFilter] = useState<Filter>(stream ?? 'all');
+  const path = stream ? `/${streamPath[stream]}` : '/notes';
+  const title = stream ? `${streamLabel[stream][0]}${streamLabel[stream].slice(1).toLowerCase()} · Notes · ${BYLINE}` : `Notes · ${BYLINE}`;
   const railOpen = useDisclosureOpen();
   const [q, setQ] = useState('');
   // Title, the "reach for this when" line and the summary. Not the body: the
@@ -46,16 +52,16 @@ const NotesIndex = () => {
   return (
     <NotesShell>
       <Seo
-        title={`Notes · ${BYLINE}`}
+        title={title}
         description={DESCRIPTION}
-        path="/notes"
+        path={path}
         type="blog"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Blog',
           name: 'Notes · Anadi Thakur',
           description: DESCRIPTION,
-          url: `${ORIGIN}/notes`,
+          url: `${ORIGIN}${path}`,
           author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
         }}
       />

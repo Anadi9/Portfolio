@@ -1,5 +1,6 @@
 import type { RouteRecord } from 'vite-react-ssg';
 import RouteTransition from './components/RouteTransition';
+import { STREAMS, streamPath } from './data/notes';
 
 /**
  * The route table, as an array rather than JSX.
@@ -101,6 +102,13 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/NotesIndex').then((m) => ({ Component: m.default })),
         entry: 'src/pages/NotesIndex.tsx',
       },
+      // The bare stream paths: the /notes feed with that stream's chip pressed.
+      ...STREAMS.map((stream) => ({
+        path: `/${streamPath[stream]}`,
+        lazy: () =>
+          import('./pages/NotesIndex').then((m) => ({ Component: () => <m.default stream={stream} /> })),
+        entry: 'src/pages/NotesIndex.tsx',
+      })),
 
       // One dynamic route per stream, each resolved against the content index at
       // build time. `getStaticPaths` imports the corpus dynamically so it stays out
