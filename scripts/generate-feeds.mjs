@@ -48,13 +48,15 @@ if (!posts.length) {
 // `vercel.json`, and a sitemap should never list a redirect), `/portfolio`
 // (canonical at portfolio.anadithakur.in, a different host this sitemap can't
 // speak for), `/work-with-me` (shared by link, nothing to rank for), the
-// teardown result pages (`noindex`), `/404` and the SPA catch-all.
+// teardown result pages (`noindex`), the kit's thank-you page (`noindex`),
+// `/404` and the SPA catch-all.
 const pages = [
   { url: ORIGIN, modified: posts[0].modified, priority: '1.0' },
   { url: `${ORIGIN}/rescue/audit`, modified: posts[0].modified, priority: '0.9' },
   { url: `${ORIGIN}/scan`, modified: posts[0].modified, priority: '0.9' },
   { url: `${ORIGIN}/teardown`, modified: posts[0].modified, priority: '0.9' },
   { url: `${ORIGIN}/notes`, modified: posts[0].modified, priority: '0.9' },
+  { url: `${ORIGIN}/products/production-kit`, modified: posts[0].modified, priority: '0.9' },
   ...posts.map((p) => ({ url: p.url, modified: p.modified, priority: '0.8' })),
 ];
 

@@ -84,6 +84,18 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/Scan').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Scan.tsx',
       },
+      // The kit's sales page and where Stripe returns a buyer. Delivery itself
+      // is `/api/production-kit-download`, which checks the payment with Stripe.
+      {
+        path: '/products/production-kit',
+        lazy: () => import('./pages/ProductionKit').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/ProductionKit.tsx',
+      },
+      {
+        path: '/products/production-kit/thanks',
+        lazy: () => import('./pages/ProductionKitThanks').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/ProductionKitThanks.tsx',
+      },
       {
         path: '/notes',
         lazy: () => import('./pages/NotesIndex').then((m) => ({ Component: m.default })),

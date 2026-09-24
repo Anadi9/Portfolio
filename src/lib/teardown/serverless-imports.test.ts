@@ -34,6 +34,13 @@ const GRAPH = [
   'src/lib/teardown/report.ts',
   'src/lib/teardown/score.ts',
   'src/lib/teardown/questions.ts',
+  'api/production-kit-checkout.ts',
+  'api/production-kit-download.ts',
+  'api/stripe-webhook.ts',
+  'src/lib/kit/stripe.ts',
+  'src/lib/kit/archive.ts',
+  'src/lib/kit/email.ts',
+  'src/lib/kit/product.ts',
 ];
 
 /** Relative specifiers only: bare ones are resolved from node_modules, not by path. */
@@ -70,7 +77,14 @@ describe('api/ directory: deployable files only', () => {
   const entries = readdirSync(join(ROOT, 'api'));
 
   it('contains nothing but the function entrypoints', () => {
-    expect([...entries].sort()).toEqual(['rescue-audit.ts', 'scan.ts', 'teardown-report.ts']);
+    expect([...entries].sort()).toEqual([
+      'production-kit-checkout.ts',
+      'production-kit-download.ts',
+      'rescue-audit.ts',
+      'scan.ts',
+      'stripe-webhook.ts',
+      'teardown-report.ts',
+    ]);
   });
 
   it('contains no test files', () => {
