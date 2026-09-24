@@ -235,7 +235,7 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
             textDecoration: 'none',
           }}
         >
-          👀 SEE THE TEARDOWN<span>↗</span>
+          👀 GET THE $50 TEARDOWN<span>↗</span>
         </a>
 
         <p style={{ margin: px(s[7], 0, 0), font: `400 13px/1.6 ${display}`, color: paper.dim, maxWidth: '66ch' }}>

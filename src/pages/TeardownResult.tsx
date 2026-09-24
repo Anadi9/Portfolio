@@ -118,7 +118,7 @@ export default function TeardownResult() {
             <Verdict result={scoreOf(answers)} mine={false} />
           ) : (
             <>
-              <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>TEARDOWN RESULT</p>
+              <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>WRAPPER TEST RESULT</p>
               <h1
                 style={{
                   margin: px(s[5], 0, 0),

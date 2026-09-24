@@ -114,6 +114,7 @@ const offers = [
       '30–40 min recorded walkthrough, not a call you have to schedule',
       'Written fix-it plan, prioritized',
       'Delivered within 48 hours',
+      'The $50 comes off the Build if you hire me for the fix',
     ],
     cta: 'REQUEST A TEARDOWN',
     solid: true,
@@ -149,7 +150,7 @@ const steps = [
   {
     num: '03',
     title: 'You decide what’s next',
-    body: 'Fix it yourself with the plan, or have me build it under a fixed-price scope.',
+    body: 'Fix it yourself with the plan, or have me build it under a fixed-price scope, with the $50 taken off.',
   },
 ];
 

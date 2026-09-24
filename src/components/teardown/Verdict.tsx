@@ -79,7 +79,7 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
         link or a stranger has just opened it.
       */}
       <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>
-        {mine ? 'YOUR RESULT' : 'TEARDOWN RESULT'}
+        {mine ? 'YOUR RESULT' : 'WRAPPER TEST RESULT'}
       </p>
 
       <Heading

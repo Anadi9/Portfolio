@@ -174,7 +174,7 @@ ${model.sections.map(sectionBlock).join('\n')}
                       </p>
                       <a href="${ORIGIN}/work-with-me"
                          style="display:inline-block;padding:14px 18px;background:${INK};color:${PAPER};font:700 11px/1 ${MONO};letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;">
-                        See the teardown
+                        Get the $50 teardown
                       </a>
                     </td>
                   </tr>
