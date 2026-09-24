@@ -50,10 +50,13 @@ describe('corpus headings', () => {
 describe('fix stream', () => {
   const fixes = posts.filter((p) => p.stream === 'fix') as FixPost[];
 
-  it('publishes the three fixes under /fixes/', () => {
+  it('publishes the six fixes under /fixes/', () => {
     expect(fixes.map((p) => p.path).sort()).toEqual([
+      '/fixes/ai-prompt-breaks-other-things',
       '/fixes/lovable-app-invisible-to-google-and-chatgpt',
       '/fixes/lovable-supabase-rls',
+      '/fixes/supabase-auth-signup-login-broken',
+      '/fixes/supabase-service-role-key-leaked',
       '/fixes/works-locally-breaks-on-vercel',
     ]);
     for (const post of fixes) {
@@ -79,10 +82,16 @@ describe('fix stream', () => {
     expect(area('lovable-supabase-rls')).toBe('Database');
     expect(area('works-locally-breaks-on-vercel')).toBe('Deployment');
     expect(area('lovable-app-invisible-to-google-and-chatgpt')).toBe('Visibility');
+    expect(area('supabase-auth-signup-login-broken')).toBe('Auth');
+    expect(area('ai-prompt-breaks-other-things')).toBe('Stability');
+    expect(area('supabase-service-role-key-leaked')).toBe('Database');
   });
 
-  it('offers /scan on the Supabase post only', () => {
-    expect(fixes.filter((p) => p.scan).map((p) => p.slug)).toEqual(['lovable-supabase-rls']);
+  it('offers /scan on the Supabase database posts only', () => {
+    expect(fixes.filter((p) => p.scan).map((p) => p.slug).sort()).toEqual([
+      'lovable-supabase-rls',
+      'supabase-service-role-key-leaked',
+    ]);
   });
 
   it('marks fixes cover-less, since no cover master exists for them', () => {

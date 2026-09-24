@@ -1,5 +1,5 @@
 import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
-import { ogImageFor, type DropPost } from '@/data/notes';
+import { hasCover, ogImageFor, type DropPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
 import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
 import PostHeader from './PostHeader';
@@ -25,7 +25,7 @@ const DropLayout = ({ post }: { post: DropPost }) => {
         title={`${post.title} · ${BYLINE}`}
         description={post.summary}
         path={post.path}
-        image={ogImageFor(post.path)}
+        image={hasCover(post) ? ogImageFor(post.path) : undefined}
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Article',
