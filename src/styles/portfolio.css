@@ -179,6 +179,12 @@ button:focus-visible,
   }
 }
 
+/* The two offer doors on the contact panel: plain CSS, not the GSAP cell fill,
+   so they read the same with or without motion. */
+[data-contact-door] { transition: background-color 0.2s ease, color 0.2s ease; }
+[data-contact-door]:hover,
+[data-contact-door]:focus-visible { background: var(--ink); color: var(--accent) !important; }
+
 /* --- responsive ---------------------------------------------------------
 
    `--spine-x` is the single source of truth for the timeline layout, and it is
@@ -336,4 +342,42 @@ button:focus-visible,
   [data-case] { padding-top: 56px !important; padding-bottom: 72px !important; }
   [data-stack-grid] { grid-template-columns: 1fr !important; }
   [data-contact-links] { grid-template-columns: 1fr !important; }
+  [data-contact-doors] { grid-template-columns: 1fr !important; }
+  [data-contact-door] { border-right: 0 !important; }
+  [data-contact-door] + [data-contact-door] { border-top: 2px solid var(--ink) !important; }
+}
+
+/* --- /rescue --------------------------------------------------------------
+   The page is inline-styled like the rest; these are the responsive steps and
+   the two things inline styles can't express (the FAQ marker, the sticky bar's
+   breakpoint). */
+[data-rescue-faq] > summary::-webkit-details-marker { display: none; }
+/* /rescue/audit: the radio and checkbox inputs are visually hidden inside their
+   labels, so the focus ring has to be drawn on the label. */
+[data-audit-chip]:has(input:focus-visible) { outline: 2px solid #0a0a0a; outline-offset: 2px; }
+[data-rescue-faq-sign]::before { content: '+'; }
+[data-rescue-faq][open] [data-rescue-faq-sign]::before { content: '\2212'; }
+
+@media (max-width: 1024px) {
+  [data-rescue-four] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+@media (max-width: 900px) {
+  [data-rescue-split] { grid-template-columns: minmax(0, 1fr) !important; gap: 36px !important; }
+  [data-rescue-portrait] { max-width: 320px; }
+}
+
+@media (max-width: 680px) {
+  [data-rescue-hpad], [data-rescue-header], [data-rescue-footer] {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+  [data-rescue-navlink] { display: none; }
+  [data-rescue-four] { grid-template-columns: minmax(0, 1fr) !important; }
+  [data-rescue-track] { display: none !important; }
+  [data-rescue-area] { display: none; }
+  [data-rescue-finding] { grid-template-columns: 1fr !important; gap: 10px !important; }
+  [data-rescue-bar] { display: flex !important; }
+  /* Room for the bar, so it never sits over the last links. */
+  [data-rescue-footer] { padding-bottom: 104px !important; }
 }

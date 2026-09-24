@@ -3,6 +3,9 @@ import { Head } from 'vite-react-ssg';
 /** Canonical origin. Every notes URL is absolute against this; see `Seo`. */
 export const ORIGIN = 'https://anadithakur.in';
 
+/** The portfolio's own host. `vercel.json` serves `/portfolio` as its root. */
+export const PORTFOLIO_ORIGIN = 'https://portfolio.anadithakur.in';
+
 export const BYLINE = '@the.anadi';
 
 /**
@@ -22,6 +25,7 @@ export const Seo = ({
   image = '/og.png',
   robots,
   jsonLd,
+  origin = ORIGIN,
 }: {
   title: string;
   description: string;
@@ -37,8 +41,10 @@ export const Seo = ({
    */
   robots?: string;
   jsonLd?: Record<string, unknown>;
+  /** The host `path` is canonical on. Only the portfolio, which lives on its own subdomain, sets it. */
+  origin?: string;
 }) => {
-  const url = `${ORIGIN}${path}`;
+  const url = `${origin}${path}`;
   const img = image.startsWith('http') ? image : `${ORIGIN}${image}`;
   return (
     <Head>
