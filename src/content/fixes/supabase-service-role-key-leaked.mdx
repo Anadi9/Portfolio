@@ -8,7 +8,6 @@ lastVerified: "2026-09-24"
 fix: "Replace the leaked secret key in Supabase's API keys settings, update it on your server only, strip it from client code and git history, check the logs, then move the privileged work into an Edge Function and fix RLS so the public key is enough."
 symptom: "Database"
 scan: true
-cover: false
 related:
   - "/fixes/lovable-supabase-rls"
   - "/fixes/works-locally-breaks-on-vercel"

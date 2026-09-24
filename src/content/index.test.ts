@@ -94,8 +94,8 @@ describe('fix stream', () => {
     ]);
   });
 
-  it('marks fixes cover-less, since no cover master exists for them', () => {
-    for (const post of fixes) expect(hasCover(post), post.path).toBe(false);
+  it('gives every fix a cover', () => {
+    for (const post of fixes) expect(hasCover(post), post.path).toBe(true);
   });
 
   it('only relates fixes to posts that exist', () => {

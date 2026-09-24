@@ -7,6 +7,7 @@
     "predev": "node scripts/generate-banners.mjs",
     "dev": "vite-react-ssg dev",
     "covers": "node scripts/generate-covers.mjs",
+    "covers:masters": "node scripts/generate-cover-masters.mjs",
     "prebuild": "node scripts/generate-banners.mjs",
     "build": "vite-react-ssg build && node scripts/generate-feeds.mjs && node scripts/generate-share-cards.mjs",
     "prebuild:dev": "node scripts/generate-banners.mjs",

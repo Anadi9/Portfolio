@@ -19,10 +19,11 @@ const count = (html, needle) => (html.match(new RegExp(needle, 'g')) ?? []).leng
 const pages = globSync('dist/{drops,wisdom,dispatch,fixes}/*/index.html');
 check(`found 19 prerendered posts (found ${pages.length})`, pages.length === 19);
 
-// Posts published with `cover: false` (the fixes, so far) ship no cover band
-// and no OG card by design; the cover assertions below apply to the rest.
+// Posts published with `cover: false` ship no cover band and no OG card by
+// design; the cover assertions below apply to the rest. None do today: a post
+// without a hand-made master gets a generated one (`npm run covers:masters`).
 const coverless = new Set(collect().filter((p) => p.cover === false).map((p) => `dist${pathOf(p)}/index.html`));
-check(`found 7 cover-less posts (found ${coverless.size})`, coverless.size === 7);
+check(`found 0 cover-less posts (found ${coverless.size})`, coverless.size === 0);
 
 let anchors = 0;
 for (const page of pages) {
@@ -104,12 +105,12 @@ const jpegSize = (buf) => {
   return null;
 };
 
-// Spec §8.10, rewritten for the covers: all twelve OG cards ship, each 1200 x
+// Spec §8.10, rewritten for the covers: all nineteen OG cards ship, each 1200 x
 // 630. They are committed files now rather than build output, so this is
 // checking that a post was not added without one, the failure mode the old
 // generator threw on, moved to the only place left that can still catch it.
 const ogCards = globSync('dist/og/**/*.jpg');
-check(`found 12 OG cards (found ${ogCards.length})`, ogCards.length === 12); // cover-less posts use /og.png
+check(`found 19 OG cards (found ${ogCards.length})`, ogCards.length === 19); // cover-less posts use /og.png
 for (const card of ogCards) {
   const buf = readFileSync(card);
   const size = jpegSize(buf);
