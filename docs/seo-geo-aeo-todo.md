@@ -43,14 +43,19 @@ crawlable by the right bots, and put the answer where a machine can lift it.
 
 ## P1 — structured data gaps (these are what AEO actually eats)
 
-- [ ] **`dateModified` on Dispatch.** `DispatchLayout.tsx:29` builds NewsArticle
+> 24 Sep 2026: every post's head now comes from `components/notes/postSeo.ts`
+> (`headOf`, `articleJsonLd`). Posts carry `seoTitle`/`description` where the
+> title or summary would be truncated in results; `index.test.ts` enforces
+> 65/160. Article `author` references `https://portfolio.anadithakur.in/#person`.
+
+- [x] **`dateModified` on Dispatch.** `DispatchLayout.tsx:29` builds NewsArticle
       JSON-LD with `datePublished` only, while `DropLayout.tsx:35` and
       `WisdomLayout.tsx:36` both emit `dateModified: post.lastVerified ?? post.date`.
       Dispatch is the stream where freshness is the whole value proposition.
-- [ ] **Add `image`, `publisher`, `url` and `inLanguage` to every article's JSON-LD.**
+- [x] **Add `image`, `publisher`, `url` and `inLanguage` to every article's JSON-LD.**
       `image` should be the absolute per-post OG JPEG that `ogImageFor()` already
       computes — Google will not show an article rich result without it.
-- [ ] **`BreadcrumbList` on every post.** Home → Notes → {stream} → post. Cheap,
+- [x] **`BreadcrumbList` on every post.** Home → Notes → {stream} → post. Cheap,
       and it's what puts the readable breadcrumb trail under the result instead
       of a raw URL.
 - [ ] **`FAQPage` on the posts that are already Q&A shaped.** `ai-wrapper-tell`

@@ -3,6 +3,7 @@ import { posts } from './index';
 import { hasCover, pathToStream, streamPath, type FixPost } from '@/data/notes';
 import { SYMPTOMS } from '@/lib/rescue/intake';
 import { auditHref, symptomIndex } from '@/components/notes/fixLinks';
+import { headOf } from '@/components/notes/postSeo';
 
 describe('corpus headings', () => {
   it('has posts to check', () => {
@@ -103,6 +104,32 @@ describe('fix stream', () => {
       for (const path of post.related ?? []) {
         expect(posts.some((p) => p.path === path), `${post.path} → ${path}`).toBe(true);
       }
+    }
+  });
+});
+
+/**
+ * The head a results page shows. A post only sets `seoTitle` or `description`
+ * to fit the snippet, so one that doesn't fit defeats its own reason to exist.
+ */
+describe('search snippet', () => {
+  it('keeps every seoTitle within 65 characters, byline included', () => {
+    for (const post of posts) {
+      if (post.seoTitle) expect(headOf(post).title.length, post.path).toBeLessThanOrEqual(65);
+    }
+  });
+
+  it('keeps every description within 160 characters', () => {
+    for (const post of posts) {
+      if (post.description) expect(post.description.length, post.path).toBeLessThanOrEqual(160);
+    }
+  });
+
+  it('gives every post whose own title or summary would be truncated a short form', () => {
+    for (const post of posts) {
+      const { title, description } = headOf(post);
+      expect(title.length, `${post.path} needs a seoTitle`).toBeLessThanOrEqual(65);
+      expect(description.length, `${post.path} needs a description`).toBeLessThanOrEqual(160);
     }
   });
 });

@@ -35,6 +35,18 @@ type BaseFrontmatter = {
   useWhen: string;
   /** Meta description and feed standfirst. Kept separate from `useWhen`. */
   summary: string;
+  /**
+   * The `<title>` when `title` is too long for a results page. Google cuts
+   * around 60 characters, and the H1s here run past 100, so the words people
+   * actually search for were the ones being truncated. Search phrasing first;
+   * the page itself keeps `title`.
+   */
+  seoTitle?: string;
+  /**
+   * The meta description when `summary` is too long to survive as a snippet
+   * (roughly 155 characters). The standfirst on the page stays `summary`.
+   */
+  description?: string;
   /** ISO date, `YYYY-MM-DD`. Sorts the feed. */
   date: string;
   /** Set once content is verified against reality; see the cheatsheet risk. */

@@ -165,11 +165,12 @@ check(`index prerenders 19 feed thumbnails (found ${count(index, 'pf-feed-media'
 // The feeds list every published post and nothing else.
 const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
 const rss = readFileSync('dist/rss.xml', 'utf8');
-// 24 = 19 posts + `/` + `/rescue/audit` + `/scan` + `/teardown` + `/notes`.
+// 25 = 19 posts + `/` + `/rescue/audit` + `/scan` + `/teardown` + `/notes` +
+// `/products/production-kit`.
 // Bump this when a static route is added to or removed from the sitemap in
 // `generate-feeds.mjs`.
-check(`sitemap lists 24 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 24);
-for (const path of ['', '/rescue/audit', '/scan', '/teardown', '/notes']) {
+check(`sitemap lists 25 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 25);
+for (const path of ['', '/rescue/audit', '/scan', '/teardown', '/notes', '/products/production-kit']) {
   check(`sitemap lists ${path || '/'}`, sitemap.includes(`<loc>https://anadithakur.in${path}</loc>`));
 }
 // A redirect and another host's page, neither of which belongs in this file.

@@ -3,6 +3,8 @@ stream: fix
 title: "Your Lovable app's Supabase tables are readable by anyone: how RLS works and how to check yours"
 useWhen: "Your app was built with Lovable, Bolt or Cursor on Supabase, it has real users, and nobody has ever read its row-level security policies."
 summary: "The Supabase key inside your app's JavaScript is public by design. The only thing between that key and every row in your database is row-level security, and if it's switched off or written as using (true), anyone can read your tables with one curl command. How to check in two minutes, and the policies to write instead."
+seoTitle: "Supabase RLS in Lovable apps: are tables exposed?"
+description: "Your Lovable app's Supabase key is public, so row-level security is all that guards your data. Check your tables in two minutes, then write owner policies."
 date: "2026-09-24"
 lastVerified: "2026-09-24"
 fix: "Turn on row-level security for every table in the public schema, then write policies that compare auth.uid() to the row's owner. Never using (true)."

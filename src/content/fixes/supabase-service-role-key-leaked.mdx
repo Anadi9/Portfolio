@@ -3,6 +3,8 @@ stream: fix
 title: "Your Supabase service_role key is in your frontend: how to check, what to do first, and the real fix"
 useWhen: "Your app talks to Supabase from the browser, and somewhere in its code or its environment variables there's a key with service_role or sb_secret_ in it, or you can't say for certain that there isn't."
 summary: "Supabase gives you two kinds of key. The public one is meant to be in your JavaScript; the service_role (or sb_secret_) key skips every security rule on your database and must never leave a server. How it ends up in AI-built frontends, how to check your live site in five minutes, what to do in the first hour if it's there, and how to rebuild the feature so it never needs to be."
+seoTitle: "Supabase service_role key exposed in your frontend?"
+description: "Is a Supabase service_role or sb_secret_ key in your browser code? Check your live site in five minutes, see what to rotate first, and fix it for good."
 date: "2026-09-24"
 lastVerified: "2026-09-24"
 fix: "Replace the leaked secret key in Supabase's API keys settings, update it on your server only, strip it from client code and git history, check the logs, then move the privileged work into an Edge Function and fix RLS so the public key is enough."

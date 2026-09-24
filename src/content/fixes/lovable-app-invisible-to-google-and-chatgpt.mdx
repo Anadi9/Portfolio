@@ -3,6 +3,8 @@ stream: fix
 title: "Why Google and ChatGPT can't see your Lovable app, and how to fix it"
 useWhen: "Your app built with Lovable, Bolt or v0 is live, but it doesn't show up in Google, AI assistants don't know it exists, and shared links show a generic preview."
 summary: "Apps built with Lovable and Bolt are client-side rendered: the server sends an empty page, and JavaScript fills it in afterwards. Google gets there eventually and slowly; most AI crawlers and link previewers never do. How to see exactly what a crawler sees in thirty seconds, and the fixes, from prerendering to per-page titles, a sitemap and Search Console."
+seoTitle: "Why Google and ChatGPT can't see your Lovable app"
+description: "Lovable and other React apps send crawlers an empty page. Check yours in 30 seconds, then prerender real HTML, give each page its own meta tags, add a sitemap."
 date: "2026-09-24"
 lastVerified: "2026-09-24"
 fix: "Prerender your public pages to real HTML at build time, give each one its own title, description and preview tags, then publish a sitemap and submit it in Search Console."

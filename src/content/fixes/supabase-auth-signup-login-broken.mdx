@@ -3,6 +3,8 @@ stream: fix
 title: "Users sign up, then can't log in: the six ways Supabase auth breaks in AI-built apps"
 useWhen: "People can create an account in your Lovable, Bolt or Cursor app, but logging in fails, the confirmation email never shows up, or they're logged out every time they refresh."
 summary: "When sign-up works and login doesn't, the cause is almost never the password. It's email confirmation the app doesn't handle, confirmation emails the built-in sender won't deliver, a Site URL still pointing at localhost, a link opened in the wrong browser, a session the app forgets on reload, or a profile row that RLS refused to create. How to tell which in five minutes, and the fix for each."
+seoTitle: "Supabase users can sign up but can't log in: 6 fixes"
+description: "Sign-up works but login fails, confirmation emails never arrive, or users get logged out on refresh? The six causes in Lovable and Bolt apps, and each fix."
 date: "2026-09-24"
 lastVerified: "2026-09-24"
 fix: "Handle unconfirmed users on purpose, send auth email through your own SMTP, point Site URL and Redirect URLs at your real domain, and create profile rows with a security definer trigger on auth.users instead of from the browser."

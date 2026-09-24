@@ -3,6 +3,8 @@ stream: fix
 title: "Every new prompt fixes one thing and breaks two others: why AI-built apps regress, and how to stop the loop"
 useWhen: "Your app was built with Lovable, Bolt, Cursor or Claude Code, and every fix you ask for quietly breaks something that used to work, so you're spending more time re-fixing than building."
 summary: "When an AI tool edits your app, it often rewrites more than you asked, has no memory of why the old code was the way it was, and nothing checks that everything else still works afterwards. That's the regression loop. Why it happens, and the habits that end it: checkpoints you revert to, one change per prompt, a plan before code, a few automated tests, and a file that remembers your decisions."
+seoTitle: "AI fixes one bug and breaks two: stop the loop"
+description: "Lovable, Bolt or Cursor keeps breaking what used to work? Why AI edits cause regressions, and the habits that stop it: checkpoints, small prompts, tests."
 date: "2026-09-24"
 lastVerified: "2026-09-24"
 fix: "Stop prompting forward from a broken state: revert to the last good checkpoint, ask for one named change at a time with what must not change, and put a signup-to-core-action smoke test between every change and every deploy."

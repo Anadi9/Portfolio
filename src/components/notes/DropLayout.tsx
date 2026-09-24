@@ -1,7 +1,8 @@
 import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { hasCover, ogImageFor, type DropPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
-import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
+import { Seo } from '@/components/Seo';
+import { articleJsonLd, headOf } from './postSeo';
 import PostHeader from './PostHeader';
 import Rail from './Rail';
 import { metaRowsOf } from './postMeta';
@@ -22,20 +23,10 @@ const DropLayout = ({ post }: { post: DropPost }) => {
   return (
     <NotesShell post={post}>
       <Seo
-        title={`${post.title} · ${BYLINE}`}
-        description={post.summary}
+        {...headOf(post)}
         path={post.path}
         image={hasCover(post) ? ogImageFor(post.path) : undefined}
-        jsonLd={{
-          '@context': 'https://schema.org',
-          '@type': 'Article',
-          headline: post.title,
-          description: post.summary,
-          datePublished: post.date,
-          dateModified: post.lastVerified ?? post.date,
-          author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
-          mainEntityOfPage: `${ORIGIN}${post.path}`,
-        }}
+        jsonLd={articleJsonLd(post, 'Article')}
       />
       <Column
         rail={

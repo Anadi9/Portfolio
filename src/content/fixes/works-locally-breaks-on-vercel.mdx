@@ -3,6 +3,8 @@ stream: fix
 title: "Works locally, breaks on Vercel: the five reasons a Lovable or Cursor app fails in production"
 useWhen: "Your app runs fine on your laptop or in the Lovable preview, and the deployed version is a blank page, a 404, a failed build or a login that bounces to localhost."
 summary: "When a Vite app works on your machine and breaks on Vercel, it's almost always one of five things: environment variables that never reached the build, deep links that 404 on refresh, a file name whose capitalisation only matters on Linux, the wrong output directory, or Supabase auth still pointing at localhost. How to tell which one you've got, and the fix for each."
+seoTitle: "Works locally, breaks on Vercel: the 5 usual causes"
+description: "Works on localhost, fails on Vercel? Missing env vars, 404s on refresh, case-sensitive imports, the wrong output folder or localhost redirects. Fixes for each."
 date: "2026-09-24"
 lastVerified: "2026-09-24"
 fix: "Add every VITE_ variable in Vercel's project settings and redeploy, rewrite unknown paths to index.html, match import casing to file names exactly, build to dist, and add your real domain to Supabase's redirect URLs."
