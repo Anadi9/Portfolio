@@ -43,7 +43,7 @@ export type NavItem = { id: string; label: string; href?: string };
 export const nav: NavItem[] = [
   { id: 'home', label: 'HOME' },
   { id: 'work', label: 'SELECTED WORK' },
-  { id: 'notes', label: 'NOTES', href: '/notes' },
+  { id: 'notes', label: 'NOTES', href: 'https://anadithakur.in/notes' },
   { id: 'journey', label: 'THE ROUTE HERE' },
   { id: 'stack', label: 'STACK' },
   { id: 'contact', label: 'CONTACT' },

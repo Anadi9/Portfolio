@@ -1145,14 +1145,13 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
       const contactSection = q<HTMLElement>('#contact');
       const contactChars = qa<HTMLElement>('[data-contact-char]');
       if (contactSection) {
-        const contactBadge = q<HTMLElement>('[data-contact-badge]');
         const contactCopy = q<HTMLElement>('[data-contact-copy]');
         const contactFoot = q<HTMLElement>('[data-contact-foot]');
         const contactCells = qa<HTMLElement>('[data-contact-cell]');
         const ghost = q<HTMLElement>('[data-contact-ghost]');
 
         gsap.set(contactChars, { yPercent: 122, rotate: 5 });
-        gsap.set([contactBadge, contactCopy, contactFoot], { opacity: 0, y: 18 });
+        gsap.set([contactCopy, contactFoot], { opacity: 0, y: 18 });
         gsap.set(contactCells, { clipPath: 'inset(0% 100% 0% 0%)' });
 
         const contactIn = gsap.timeline({
@@ -1161,7 +1160,6 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         if (contactIn.scrollTrigger) triggers.push(contactIn.scrollTrigger);
 
         contactIn
-          .to(contactBadge, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0)
           .to(contactChars, { yPercent: 0, rotate: 0, duration: 1.1, ease: 'expo.out', stagger: 0.028 }, 0.08)
           .to(contactCopy, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0.4)
           .to(contactCells, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.42, ease: 'steps(6)', stagger: 0.08 }, 0.5)

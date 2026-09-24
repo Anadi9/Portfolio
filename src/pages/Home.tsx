@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ClientOnly } from 'vite-react-ssg';
 import Index from './Index';
 import IntroLoader from '@/components/IntroLoader';
-import { Seo, ORIGIN } from '@/components/Seo';
+import { Seo, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { site } from '@/data/portfolio';
 
 const TITLE = `${site.name} · ${site.role}`;
@@ -36,13 +36,14 @@ const Home = () => {
         title={TITLE}
         description={DESCRIPTION}
         path="/"
+        origin={PORTFOLIO_ORIGIN}
         type="website"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Person',
           name: site.name,
           jobTitle: site.role,
-          url: ORIGIN,
+          url: PORTFOLIO_ORIGIN,
           email: `mailto:${site.email}`,
           sameAs: [site.github, site.linkedin],
         }}

@@ -1,5 +1,6 @@
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from './tokens';
 import { site } from '@/data/portfolio';
+import { ORIGIN } from '@/components/Seo';
 
 const [emailUser, emailHost] = site.email.split('@');
 
@@ -11,6 +12,26 @@ const cells = [
 ];
 
 const HEAD = ["Let's build", 'something'];
+
+/**
+ * The way out to the client side of the domain. The portfolio is served from
+ * portfolio.anadithakur.in and the offers live on anadithakur.in, so these are
+ * plain absolute anchors, not router links: a `Link` would try to render the
+ * offer inside the portfolio host, which `vercel.json` only 301s back out of.
+ * Sorted by the problem the visitor arrives with rather than by product name.
+ */
+const doors = [
+  {
+    kind: 'MY AI-BUILT APP IS BROKEN',
+    value: 'Built with Lovable, Bolt, Cursor or v0 and falling over in production. Free audit, fixed price.',
+    to: `${ORIGIN}/`,
+  },
+  {
+    kind: "I'M BUILDING AN AI FEATURE",
+    value: 'Find out whether it is a real product or a wrapper. Free 13-question test, 3 minutes.',
+    to: `${ORIGIN}/teardown`,
+  },
+];
 
 /**
  * Closing panel: the ask, then four ways to reach me.
@@ -71,16 +92,6 @@ const Contact = () => (
       }}
     >
       <div>
-        <div
-          data-contact-badge="1"
-          style={{ display: 'flex', alignItems: 'center', gap: s[3], marginBottom: s[6], ...label(11, 700, 0.16), color: c.ink }}
-        >
-          <span
-            data-status-dot="1"
-            style={{ width: 8, height: 8, background: c.signal, display: 'block', animation: 'pf-blink 1.6s steps(1,end) infinite' }}
-          />
-          TAKING INTERVIEWS &amp; SELECT CONTRACTS
-        </div>
         <h2
           data-contact-headline="1"
           aria-label={HEAD.join(' ')}
@@ -115,6 +126,34 @@ const Contact = () => (
         GitHub is right there.
       </p>
     </div>
+
+    <nav
+      aria-label="Hire me for"
+      data-contact-doors="1"
+      style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', borderTop: `${rule.base}px solid ${c.ink}` }}
+    >
+      {doors.map((door, i) => (
+        <a
+          key={door.to}
+          href={door.to}
+          data-contact-door="1"
+          style={{
+            display: 'grid',
+            gap: s[3],
+            padding: px(s[6], s[5]),
+            borderRight: i === doors.length - 1 ? undefined : `${rule.base}px solid ${c.ink}`,
+            textDecoration: 'none',
+            color: c.ink,
+          }}
+        >
+          <span style={{ display: 'flex', justifyContent: 'space-between', gap: s[4], ...label(12, 700, 0.14) }}>
+            {door.kind}
+            <span aria-hidden>→</span>
+          </span>
+          <span style={{ font: `400 15px/1.5 ${display}`, opacity: 0.78, maxWidth: '48ch', textWrap: 'pretty' }}>{door.value}</span>
+        </a>
+      ))}
+    </nav>
 
     <div
       data-contact-links="1"

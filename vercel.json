@@ -1,0 +1,31 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/rescue", "destination": "/", "permanent": true },
+    {
+      "source": "/portfolio",
+      "has": [{ "type": "host", "value": "anadithakur.in" }],
+      "destination": "https://portfolio.anadithakur.in/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio",
+      "has": [{ "type": "host", "value": "www.anadithakur.in" }],
+      "destination": "https://portfolio.anadithakur.in/",
+      "permanent": true
+    },
+    {
+      "source": "/:path((?!assets/|portfolio$)(?!.*\\.).+)",
+      "has": [{ "type": "host", "value": "portfolio.anadithakur.in" }],
+      "destination": "https://anadithakur.in/:path",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "portfolio.anadithakur.in" }],
+      "destination": "/portfolio"
+    }
+  ]
+}

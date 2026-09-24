@@ -29,8 +29,17 @@ export const routes: RouteRecord[] = [
     path: '/',
     element: <RouteTransition />,
     children: [
+      // The domain sells one thing: the rescue offer is the front page. The
+      // portfolio moved to `/portfolio`, which `vercel.json` serves as the root
+      // of portfolio.anadithakur.in and 301s to from the main host, so the
+      // path itself is never the URL anyone sees.
       {
         index: true,
+        lazy: () => import('./pages/Rescue').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Rescue.tsx',
+      },
+      {
+        path: '/portfolio',
         lazy: () => import('./pages/Home').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Home.tsx',
       },
@@ -61,6 +70,20 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/TeardownResult.tsx',
         getStaticPaths: async () => (await import('./lib/teardown/share')).resultPaths(),
       },
+      // The intake for the free audit every CTA on the front page points at.
+      // `/rescue` itself is now `/` and 301s there from `vercel.json`.
+      {
+        path: '/rescue/audit',
+        lazy: () => import('./pages/RescueAudit').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/RescueAudit.tsx',
+      },
+      // The free Supabase security check: a lead magnet for the rescue offer.
+      // Its findings CTA deep-links into `/rescue/audit?s=1`.
+      {
+        path: '/scan',
+        lazy: () => import('./pages/Scan').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Scan.tsx',
+      },
       {
         path: '/notes',
         lazy: () => import('./pages/NotesIndex').then((m) => ({ Component: m.default })),
@@ -89,6 +112,12 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/NoteRoute'),
         entry: 'src/pages/NoteRoute.tsx',
         getStaticPaths: async () => (await import('./content')).postsByStream('dispatch').map((p) => p.path),
+      },
+      {
+        path: '/fixes/:slug',
+        lazy: () => import('./pages/NoteRoute'),
+        entry: 'src/pages/NoteRoute.tsx',
+        getStaticPaths: async () => (await import('./content')).postsByStream('fix').map((p) => p.path),
       },
 
       // ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE
