@@ -1,0 +1,32 @@
+---
+description: Security rules for keys, secrets, server-side validation and user input. Applies to all code.
+globs:
+alwaysApply: true
+---
+
+# Security
+
+## Keys and secrets
+- The browser may only see the Supabase publishable/anon key. It is safe only because Row Level Security protects the data.
+- The Supabase secret/service_role key bypasses RLS. Never put it (or any other secret: Stripe `sk_`, OpenAI/Anthropic keys, SMTP passwords, database URLs) in:
+  - a `VITE_`, `NEXT_PUBLIC_`, `PUBLIC_` or `EXPO_PUBLIC_` variable (these are inlined into the client bundle)
+  - client components (`"use client"`) or anything under `src/` in a Vite SPA
+  - source code, logs, error messages or committed `.env` files
+- Use secrets only in server code: Next.js route handlers/server actions, `api/` serverless functions, Supabase Edge Functions. In Next.js add `import "server-only"` to modules that read them.
+- If you find a committed or client-exposed secret, stop and tell the user it must be rotated. Deleting it from code is not enough.
+- Keep `.env*` in `.gitignore` (except `.env.example` with names and no values).
+
+## Trust boundaries
+- Everything from the client is untrusted: body, query params, headers, `user_id` fields, prices, roles.
+- Validate input shape and size on the server (zod or equivalent). Client validation is UX only.
+- Derive the current user on the server from the session (`supabase.auth.getUser()`), never from a request body field.
+- Enforce ownership and permissions in the database (RLS, constraints) or on the server, never only by hiding UI.
+- Never compute prices, discounts, credits or permissions on the client and send them as truth.
+- Verify webhook signatures (Stripe etc.) before acting on the payload.
+- Don't use `dangerouslySetInnerHTML` with user content unless it's sanitized (e.g. DOMPurify).
+- Don't return raw database errors or stack traces from API routes.
+
+## Before calling a task done
+- No new secrets in client code or public env vars.
+- New tables have RLS enabled with policies (see supabase rules).
+- New API routes check authentication and validate input.

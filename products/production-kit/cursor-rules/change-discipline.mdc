@@ -1,0 +1,16 @@
+---
+description: How to change existing code without breaking working features. Applies to every task.
+globs:
+alwaysApply: true
+---
+
+# Change discipline
+
+- Reproduce a bug and state its root cause before changing code. If you can't reproduce it, say so.
+- Make the smallest diff that solves the task. Don't rewrite, rename, reformat, restructure or "clean up" working code outside the task. Don't swap libraries or upgrade dependencies unless asked.
+- Read the callers of anything you change; keep props, function signatures, API shapes and column names stable, or update every caller.
+- Don't delete code you don't understand; ask.
+- Destructive database or git operations need explicit user permission.
+- Verify before claiming done: run build, type check, lint and tests where they exist, and report the actual results. If you can't verify something, give the user exact manual steps.
+- End with: files changed, what each change does, how to test, and any actions the user must take (migrations, env vars, dashboard settings, redeploy). List other problems you noticed without fixing them.
+- Suggest a git commit after each working step.

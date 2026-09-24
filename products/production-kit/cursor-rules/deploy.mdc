@@ -1,0 +1,35 @@
+---
+description: Deployment and environment rules for Vercel, Vite and Next.js - env vars, SPA routing, build checks, auth URLs. Use when touching config, env vars, routing or deploy settings.
+globs: vercel.json, netlify.toml, vite.config.*, next.config.*, .env*, package.json, public/_redirects, middleware.ts, proxy.ts
+alwaysApply: false
+---
+
+# Deployment
+
+## Environment variables
+- Only `VITE_*` (Vite) or `NEXT_PUBLIC_*` (Next.js) reach the browser, and they're public. Secrets never use these prefixes.
+- Public vars are inlined at build time: changing them on Vercel requires a redeploy.
+- Set vars per Vercel environment (Production, Preview, Development). Preview should not write to the production database if avoidable.
+- Keep `.env.example` up to date with every variable name. Read env vars in one module and fail loudly if a required one is missing.
+
+## SPA routing
+- Vite + React Router on Vercel needs this `vercel.json`, or deep links 404 on refresh:
+  ```json
+  { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+  ```
+- Netlify: `public/_redirects` containing `/*  /index.html  200`.
+- Have a catch-all 404 route. Next.js needs no rewrite; use `app/not-found.tsx`.
+
+## Build
+- `npm run build` must pass locally before a change is considered done. Don't disable type checks or lint rules to get a green build.
+- Test the production build (`npm run preview` / `npm run start`), not only the dev server.
+- Lazy-load routes and heavy components to keep the initial bundle small.
+
+## Auth URLs
+- Supabase Site URL = production URL. Redirect URLs include production, preview (`https://*-<team>.vercel.app/**`) and localhost.
+- After adding a custom domain, update Supabase Site URL, Redirect URLs and OAuth provider settings.
+- Production needs custom SMTP for auth emails; the built-in sender is for testing.
+
+## Errors
+- App-level error boundary (`app/error.tsx` + `app/global-error.tsx` in Next.js; an ErrorBoundary around the router in Vite).
+- Production error visibility (Sentry or similar, or Vercel logs for functions).

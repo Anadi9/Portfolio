@@ -1,0 +1,42 @@
+---
+description: Supabase rules for Row Level Security, policies, storage, auth, migrations and queries. Use when writing SQL, migrations, Supabase client calls, auth code or storage uploads.
+globs: supabase/**, **/*.sql, **/lib/supabase*, **/utils/supabase/**, **/integrations/supabase/**
+alwaysApply: false
+---
+
+# Supabase
+
+## Row Level Security
+- Every table in `public` has `alter table ... enable row level security;` in the same migration that creates it, with its policies.
+- Reference the user as `(select auth.uid())`, not bare `auth.uid()` (evaluated once per query instead of per row).
+- Every policy names its role: `to authenticated` or `to anon`.
+- `insert`: `with check ((select auth.uid()) = user_id)`. Default `user_id` to `auth.uid()`.
+- `update`: both `using (...)` and `with check (...)`, or users can reassign rows.
+- Never `using (true)` / `with check (true)` for insert, update or delete.
+- Never authorize with `auth.jwt() -> 'user_metadata'` (users can edit it). Use `app_metadata` or a roles table.
+- Membership checks (teams/orgs): use a `security definer` helper in a non-exposed schema (`private`) with `set search_path = ''`, to avoid policy recursion.
+- Views in `public`: `create view ... with (security_invoker = true)`, or they bypass RLS.
+- `security definer` functions: `set search_path = ''`, fully qualified names, and keep them out of `public` unless they're meant to be called via `rpc()` and check permissions themselves.
+- RLS filters rows, not columns. Keep private columns (email, phone, billing) out of publicly readable tables.
+- Index every column used in policies and foreign keys (`user_id`, `team_id`).
+
+## Storage
+- User uploads go in private buckets; serve them with `createSignedUrl`.
+- Upload path starts with the user id: `${user.id}/${fileName}`.
+- Policies on `storage.objects` check both `bucket_id` and `(storage.foldername(name))[1] = (select auth.uid())::text`.
+- Set `file_size_limit` and `allowed_mime_types` on buckets.
+
+## Schema changes
+- Use migration files (`supabase migration new <name>`), committed to git. Never edit an applied migration; add a new one.
+- Destructive changes (drop, rename, type change) need explicit user confirmation.
+- `uuid` keys with `gen_random_uuid()`, `timestamptz`, `not null` and `check` constraints where they apply.
+- Regenerate types after schema changes: `supabase gen types typescript --linked`.
+
+## Client code
+- One client instance per environment (a single module for the browser client).
+- Check `error` on every call: `const { data, error } = await supabase...; if (error) ...`.
+- Select only needed columns; paginate with `.range()`; use embedded selects instead of queries in loops.
+- Pass `emailRedirectTo` / `redirectTo` built from the current origin on every auth call that sends an email or redirects.
+- On the server, use `getUser()` or `getClaims()`, not `getSession()`, to trust the user.
+- In `onAuthStateChange`, don't `await` other Supabase calls inside the callback.
+- Next.js: `@supabase/ssr` with separate browser and server clients and session-refreshing middleware.
