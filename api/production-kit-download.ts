@@ -11,7 +11,7 @@ import { getSession, isPaidKitSession, isSessionId } from '../src/lib/kit/stripe
  * Checkout Session id is the credential: it is unguessable, Stripe is asked on
  * every request whether it was paid, and only a paid session stamped as the kit
  * gets the zip. Anyone the buyer forwards the link to can download it too, which
- * for a $9 folder of Markdown is the right trade against accounts and passwords.
+ * for a $19 folder of Markdown is the right trade against accounts and passwords.
  *
  * The kit folder reaches the function through `includeFiles` in `vercel.json`;
  * the path below is read at runtime, so file tracing can't see it on its own.

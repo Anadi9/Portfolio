@@ -9,7 +9,7 @@ export const KIT = {
   id: 'production-kit',
   name: 'The Production Kit',
   /** Minor units, as Stripe wants them. */
-  amount: 900,
+  amount: 1900,
   currency: 'usd',
   path: '/products/production-kit',
   thanksPath: '/products/production-kit/thanks',

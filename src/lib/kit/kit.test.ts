@@ -68,7 +68,7 @@ describe('buildKitArchive', () => {
 
 describe('copy', () => {
   it('formats the price without trailing zeros', () => {
-    expect(kitPrice).toBe('$9');
+    expect(kitPrice).toBe('$19');
   });
 
   it('puts the download link in both parts of the email', () => {
