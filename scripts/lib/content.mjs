@@ -23,7 +23,7 @@ export const ORIGIN = 'https://anadithakur.in';
 // Kept in step with src/data/notes.ts. A stream added there without a line here
 // throws below rather than silently shipping a post with no card and no feed
 // entry.
-export const streamPath = { drop: 'drops', wisdom: 'wisdom', dispatch: 'dispatch' };
+export const streamPath = { drop: 'drops', wisdom: 'wisdom', dispatch: 'dispatch', fix: 'fixes' };
 
 /** The `---` block at the top of an MDX file, as flat scalars. */
 export const frontmatter = (src, file) => {

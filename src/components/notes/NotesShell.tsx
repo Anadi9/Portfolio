@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { MEASURE } from './prose';
-import { BYLINE } from '@/components/Seo';
+import { BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { NextUp } from './OnRamp';
 import Banner from './Banner';
 import BackToTop from './BackToTop';
@@ -60,9 +60,11 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
         <Link to="/notes" style={{ ...label(11, 700, 0.14), color: c.ink, textDecoration: 'none' }}>
           NOTES
         </Link>
-        <Link to="/#work" style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
+        {/* The portfolio lives on its own subdomain now; `/` is the rescue
+            offer, so `/#work` would land on a page with no #work in it. */}
+        <a href={PORTFOLIO_ORIGIN} style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
           WORK
-        </Link>
+        </a>
       </nav>
     </header>
 
@@ -101,9 +103,9 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
           <a href="/rss.xml" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
             RSS
           </a>
-          <Link to="/" style={{ ...label(10, 700, 0.14), color: c.mark, textDecoration: 'none' }}>
+          <a href={PORTFOLIO_ORIGIN} style={{ ...label(10, 700, 0.14), color: c.mark, textDecoration: 'none' }}>
             BACK TO THE PORTFOLIO →
-          </Link>
+          </a>
         </span>
       </div>
     </footer>
@@ -111,7 +113,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
 );
 
 /**
- * The reading column used by all three stream layouts.
+ * The reading column used by every stream layout.
  *
  * `wide` is for the index, and only for the index. A post is prose and wants
  * the 760px measure; the feed is a two-column card with an OG thumbnail beside

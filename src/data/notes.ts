@@ -1,22 +1,23 @@
 import type { ComponentType } from 'react';
 
 /**
- * The three publishing streams on /notes.
+ * The four publishing streams on /notes.
  *
  * They share one reverse-chron feed rather than three columns; Wisdom sitting
  * at zero or two posts would read as a neglected section, where the same posts
  * mixed into one feed just read as a feed. The distinction survives as a filter
  * chip and as the layout each stream gets.
  */
-export type Stream = 'drop' | 'wisdom' | 'dispatch';
+export type Stream = 'drop' | 'wisdom' | 'dispatch' | 'fix';
 
-export const STREAMS: readonly Stream[] = ['drop', 'wisdom', 'dispatch'] as const;
+export const STREAMS: readonly Stream[] = ['drop', 'wisdom', 'dispatch', 'fix'] as const;
 
 /** URL segment per stream. `drop` → /drops/:slug. */
 export const streamPath: Record<Stream, string> = {
   drop: 'drops',
   wisdom: 'wisdom',
   dispatch: 'dispatch',
+  fix: 'fixes',
 };
 
 /** Chip label on the index, and the eyebrow on each post. */
@@ -24,6 +25,7 @@ export const streamLabel: Record<Stream, string> = {
   drop: 'RESOURCE DROP',
   wisdom: 'BUILDER WISDOM',
   dispatch: 'DISPATCH',
+  fix: 'FIXES',
 };
 
 /** Fields every post carries, whatever the stream. */
@@ -59,6 +61,13 @@ type BaseFrontmatter = {
    * where any recent post would do.
    */
   related?: string[];
+  /**
+   * `false` for a post with no cover master in `assets/covers/`. The page then
+   * opens on its eyebrow instead of a hero band, the feed card shows the pixel
+   * plate in the thumbnail slot, and the share card falls back to the site's
+   * own `/og.png`. See `hasCover`.
+   */
+  cover?: boolean;
 };
 
 /**
@@ -96,7 +105,31 @@ export type DispatchFrontmatter = BaseFrontmatter & {
   items: { headline: string; why: string }[];
 };
 
-export type Frontmatter = DropFrontmatter | WisdomFrontmatter | DispatchFrontmatter;
+/**
+ * A fix: one failure mode of an AI-built app, why it happens, and the repair.
+ *
+ * The only stream that sells something, and it says so once, at the end: the
+ * layout closes every fix on a CTA to the free audit, deep-linked to the
+ * symptom the post is about, so a reader who recognised their app in it lands
+ * on a form with that box already ticked.
+ */
+export type FixFrontmatter = BaseFrontmatter & {
+  stream: 'fix';
+  /** The repair in one line. The feed card's payload and the rail's first row. */
+  fix: string;
+  /**
+   * The `area` of the matching row in `SYMPTOMS` (src/lib/rescue/intake.ts):
+   * `Database`, `Deployment`, `Visibility`. Named rather than indexed, because
+   * the index is what the audit URL carries and rows get inserted above the
+   * catch-all; `auditHref` resolves it at render time. Left off, or naming an
+   * area that no longer exists, the CTA links to the audit with nothing ticked.
+   */
+  symptom?: string;
+  /** Adds a second CTA to the free Supabase check at `/scan`. */
+  scan?: boolean;
+};
+
+export type Frontmatter = DropFrontmatter | WisdomFrontmatter | DispatchFrontmatter | FixFrontmatter;
 
 /**
  * One entry in a post's rail TOC.
@@ -121,6 +154,10 @@ export type Post<F extends Frontmatter = Frontmatter> = F & {
 export type DropPost = Post<DropFrontmatter>;
 export type WisdomPost = Post<WisdomFrontmatter>;
 export type DispatchPost = Post<DispatchFrontmatter>;
+export type FixPost = Post<FixFrontmatter>;
+
+/** Whether the post has a cover band and OG card on disk. */
+export const hasCover = (post: Pick<Post, 'cover'>) => post.cover !== false;
 
 /**
  * The per-post cover, in the three widths `scripts/generate-covers.mjs` writes.
@@ -168,6 +205,7 @@ export const pathToStream: Record<string, Stream> = {
   drops: 'drop',
   wisdom: 'wisdom',
   dispatch: 'dispatch',
+  fixes: 'fix',
 };
 
 /**

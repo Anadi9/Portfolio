@@ -5,11 +5,12 @@ import { findPost } from '@/content';
 import { pathToStream } from '@/data/notes';
 
 /**
- * The single element behind all three post routes.
+ * The single element behind every post route.
  *
  * Stream comes from the first path segment rather than a prop, so `/drops/x`,
- * `/wisdom/x` and `/dispatch/x` can all point at this one lazily-loaded module
- * which is what keeps the entire content corpus and its three layouts out of
+ * `/wisdom/x`, `/dispatch/x` and `/fixes/x` can all point at this one
+ * lazily-loaded module, which is what keeps the entire content corpus and its
+ * layouts out of
  * the chunk the front page has to download.
  */
 export const Component = () => {

@@ -1,5 +1,5 @@
 import { formatChip } from './streamPayload';
-import type { DispatchPost, DropPost, Post } from '@/data/notes';
+import type { DispatchPost, DropPost, FixPost, Post } from '@/data/notes';
 
 export type MetaRow = { tag: string; value: string };
 
@@ -34,6 +34,10 @@ export const metaRowsOf = (post: Post): MetaRow[] => {
   if (post.stream === 'dispatch') {
     const count = (post as DispatchPost).items.length;
     rows.push({ tag: 'IN THIS ONE', value: `${count} claim${count === 1 ? '' : 's'}` });
+  }
+
+  if (post.stream === 'fix') {
+    rows.push({ tag: 'THE FIX', value: (post as FixPost).fix });
   }
 
   if (post.lastVerified) rows.push({ tag: 'LAST VERIFIED', value: fmtDate(post.lastVerified) });

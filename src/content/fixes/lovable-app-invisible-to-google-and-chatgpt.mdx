@@ -1,0 +1,212 @@
+---
+stream: fix
+title: "Why Google and ChatGPT can't see your Lovable app, and how to fix it"
+useWhen: "Your app built with Lovable, Bolt or v0 is live, but it doesn't show up in Google, AI assistants don't know it exists, and shared links show a generic preview."
+summary: "Apps built with Lovable and Bolt are client-side rendered: the server sends an empty page, and JavaScript fills it in afterwards. Google gets there eventually and slowly; most AI crawlers and link previewers never do. How to see exactly what a crawler sees in thirty seconds, and the fixes, from prerendering to per-page titles, a sitemap and Search Console."
+date: "2026-09-24"
+lastVerified: "2026-09-24"
+fix: "Prerender your public pages to real HTML at build time, give each one its own title, description and preview tags, then publish a sitemap and submit it in Search Console."
+symptom: "Visibility"
+cover: false
+related:
+  - "/fixes/works-locally-breaks-on-vercel"
+  - "/fixes/lovable-supabase-rls"
+---
+
+You've shipped. The landing page is good, the pricing page is clear, and you've
+told a few people. Weeks later, searching for your own product name brings up
+nothing useful, ChatGPT has never heard of you, and when someone pastes your link
+into Slack or LinkedIn the preview is blank or says the same thing on every page.
+
+Nothing is broken, exactly. Your app is doing what it was built to do. It's just
+that what it was built to do is invisible to most of the machines that decide
+whether people find you.
+
+## What a crawler actually receives
+
+Lovable, Bolt and v0 (when it exports a Vite app) build what's called a
+**single-page app**, rendered on the client. Here's what that means in practice.
+When anything, a person or a bot, asks your server for `/pricing`, the server
+sends back the same small HTML file every time. Stripped down, it's this:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>My App</title>
+    <script type="module" src="/assets/index-a1b2c3.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+That's the whole page. No headline, no pricing, no text at all. The content
+arrives only after the browser downloads and runs the JavaScript file, which then
+builds the page inside that empty `root` div.
+
+For a person in a browser, that happens in a second and nobody notices. For a
+crawler, it depends on whether the crawler runs JavaScript:
+
+- **Google** does, but not immediately. Pages are fetched first and queued for
+  rendering later, and pages that have nothing in them until they're rendered
+  get indexed slower and less reliably than pages that arrive complete.
+- **Most AI crawlers** (the bots that fetch pages for ChatGPT, Claude,
+  Perplexity and similar) generally read the HTML they're sent and don't run the
+  JavaScript. They see the empty div. As far as they're concerned, your site has
+  no content.
+- **Link previewers** (Slack, LinkedIn, X, WhatsApp, iMessage) read the `title`
+  and preview tags from the HTML and never run JavaScript. If your app sets its
+  page titles in JavaScript, every link shows whatever is in `index.html`.
+
+## How to check yours in thirty seconds
+
+Open your live site, go to any page that isn't the home page, and press
+`Ctrl+U` (`Cmd+Option+U` on a Mac) to view the page source. Not "inspect
+element", which shows the page *after* JavaScript has run. View source shows what
+the server sent.
+
+If you can't find your headline or any of your page's text in there, neither can
+a crawler that doesn't render.
+
+From a terminal, the same test:
+
+```bash
+curl -s https://yourapp.com/pricing | grep -i -E "<title>|<h1"
+```
+
+Run it for two or three different pages. If they all print the same `title` and
+no `h1`, every page on your site looks identical from the outside.
+
+For Google's own view, set up [Google Search Console](https://search.google.com/search-console)
+for your domain, paste a page's address into the **URL Inspection** bar at the
+top, and choose **View crawled page**. It shows the HTML Google indexed and
+whether the page is in the index at all.
+
+## The fix: send real HTML
+
+The cure is to make the server send each page's actual content, so that nothing
+has to run JavaScript to read it. There are two ways to get there.
+
+**Prerendering** (also called static site generation) runs your app once at
+build time, visits every public page, and saves the finished HTML for each one
+as its own file. `/pricing` becomes a real `pricing/index.html` with your pricing
+text in it. When a browser loads it, React takes over and the app behaves
+exactly as before. For a marketing site with an app behind a login, this is
+almost always the right answer: it keeps your hosting static and cheap and
+changes little about how the code is written.
+
+For a Vite app, [vite-react-ssg](https://github.com/Daydreamer-riri/vite-react-ssg)
+does this. (It's what this site is built with.) The core change is that your
+routes become a list rather than JSX, and the entry point hands them to the
+prerenderer:
+
+```tsx
+// src/main.tsx
+import { ViteReactSSG } from 'vite-react-ssg';
+import { routes } from './routes';
+
+export const createRoot = ViteReactSSG({ routes });
+```
+
+and the build script in `package.json` changes from `vite build` to
+`vite-react-ssg build`. The output is a folder of real HTML files, one per page.
+
+Two things usually need fixing along the way. Any code that touches `window`,
+`document` or `localStorage` while a page is first being drawn will crash the
+build, because at build time there is no browser; move it into a `useEffect`.
+And pages behind a login shouldn't be prerendered at all, because there's
+nothing on them a search engine should see.
+
+**Server-side rendering** means moving to a framework such as Next.js, which
+renders each page on request. It's the right call when pages depend on data that
+changes constantly, like listings or profiles, but it's a migration, not a
+setting. Most AI-built apps don't need it for their public pages.
+
+## Then give every page its own identity
+
+Real HTML is necessary but not enough. Each public page also needs its own tags
+in its `head`, and they have to be in the prerendered HTML, not added by
+JavaScript later:
+
+```html
+<title>Pricing · YourApp</title>
+<meta name="description" content="Plans from $9 a month. Cancel anytime." />
+<link rel="canonical" href="https://yourapp.com/pricing" />
+<meta property="og:title" content="Pricing · YourApp" />
+<meta property="og:description" content="Plans from $9 a month. Cancel anytime." />
+<meta property="og:image" content="https://yourapp.com/og/pricing.png" />
+```
+
+With vite-react-ssg, a page declares these with its `Head` component and they're
+written into that page's HTML at build time:
+
+```tsx
+import { Head } from 'vite-react-ssg';
+
+export default function Pricing() {
+  return (
+    <>
+      <Head>
+        <title>Pricing · YourApp</title>
+        <meta name="description" content="Plans from $9 a month. Cancel anytime." />
+        <link rel="canonical" href="https://yourapp.com/pricing" />
+      </Head>
+      {/* the page */}
+    </>
+  );
+}
+```
+
+The `canonical` tag matters more than it looks. If your app answers on both
+`yourapp.lovable.app` and `yourapp.com`, you have two copies of every page, and
+the canonical tag is how you tell search engines which one is real.
+
+**Structured data** is the other thing worth adding while you're in the `head`: a
+small block of JSON-LD describing what the page is, which search engines and AI
+systems read to understand what you are rather than guessing from your prose. For
+a product's home page, something like:
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "YourApp",
+  "applicationCategory": "BusinessApplication",
+  "offers": { "@type": "Offer", "price": "9", "priceCurrency": "USD" }
+}
+</script>
+```
+
+## Finally, tell them where everything is
+
+Two small files at the root of your site:
+
+- **`robots.txt`** says what crawlers may fetch. Check yours doesn't block
+  anything you want found, and point it at your sitemap:
+
+  ```text
+  User-agent: *
+  Allow: /
+
+  Sitemap: https://yourapp.com/sitemap.xml
+  ```
+
+- **`sitemap.xml`** lists every public page. Put only real, public, canonical
+  pages in it: no login screens, no redirects, no pages from the other domain.
+
+Then, in Search Console, submit the sitemap under **Sitemaps**, and use **URL
+Inspection → Request indexing** on your most important pages. That doesn't make
+anything rank, but it gets the pages looked at by something that can now read
+them.
+
+## What to expect
+
+None of this is overnight. Google will re-crawl and re-index over days to weeks,
+and AI assistants learn about sites on their own schedules. What changes
+immediately is the thing you can check: view source on any public page shows its
+words, every shared link has its own preview, and the curl test prints a
+different title for every page. That's the part that was broken, and it's the
+part you control.

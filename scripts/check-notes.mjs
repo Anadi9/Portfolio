@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, globSync, statSync } from 'node:fs';
+import { collect, pathOf } from './lib/content.mjs';
 
 /**
  * Assertions against the built HTML, not against the dev server.
@@ -15,8 +16,13 @@ const check = (label, condition) => {
 
 const count = (html, needle) => (html.match(new RegExp(needle, 'g')) ?? []).length;
 
-const pages = globSync('dist/{drops,wisdom,dispatch}/*/index.html');
-check(`found 12 prerendered posts (found ${pages.length})`, pages.length === 12);
+const pages = globSync('dist/{drops,wisdom,dispatch,fixes}/*/index.html');
+check(`found 15 prerendered posts (found ${pages.length})`, pages.length === 15);
+
+// Posts published with `cover: false` (the fixes, so far) ship no cover band
+// and no OG card by design; the cover assertions below apply to the rest.
+const coverless = new Set(collect().filter((p) => p.cover === false).map((p) => `dist${pathOf(p)}/index.html`));
+check(`found 3 cover-less posts (found ${coverless.size})`, coverless.size === 3);
 
 let anchors = 0;
 for (const page of pages) {
@@ -43,6 +49,15 @@ for (const page of pages) {
   if (banner) {
     const kb = banner[1].length / 1024;
     check(`${page}: banner is ${kb.toFixed(1)}KB, over the 8KB budget`, kb < 8);
+  }
+
+  if (coverless.has(page)) {
+    check(`${page}: cover: false but a cover rendered`, count(html, 'class="pf-cover') === 0);
+    check(`${page}: fetches an image, but has no cover to fetch`, !/<img[^>]+src="(?!data:)/.test(html));
+    // The conversion block is the point of the stream, and it must be in the
+    // static HTML with its deep link, not added on hydration.
+    check(`${page}: no audit CTA in the prerendered HTML`, html.includes('href="/rescue/audit'));
+    continue;
   }
 
   // Exactly one cover, and it sits above the title while the plate closes the
@@ -94,7 +109,7 @@ const jpegSize = (buf) => {
 // checking that a post was not added without one, the failure mode the old
 // generator threw on, moved to the only place left that can still catch it.
 const ogCards = globSync('dist/og/**/*.jpg');
-check(`found 12 OG cards (found ${ogCards.length})`, ogCards.length === 12);
+check(`found 12 OG cards (found ${ogCards.length})`, ogCards.length === 12); // cover-less posts use /og.png
 for (const card of ogCards) {
   const buf = readFileSync(card);
   const size = jpegSize(buf);
@@ -110,6 +125,10 @@ for (const page of pages) {
   const html = readFileSync(page, 'utf8');
   const og = /<meta[^>]*property="og:image"[^>]*content="([^"]+)"/.exec(html);
   check(`${page}: has no og:image`, og !== null);
+  if (og && coverless.has(page)) {
+    check(`${page}: cover-less post should share /og.png, not ${og[1]}`, og[1].endsWith('/og.png'));
+    continue;
+  }
   if (og) {
     const file = `dist${og[1].replace('https://anadithakur.in', '')}`;
     check(`${page}: og:image ${og[1]} is not in dist`, existsSync(file) && statSync(file).isFile());
@@ -138,17 +157,23 @@ check('prompts page keeps its PDF link', prompts.includes('the-ai-prompt-playboo
 
 // The index still prerenders every card and every chip.
 const index = readFileSync('dist/notes/index.html', 'utf8');
-check('index prerenders 12 feed cards', count(index, 'pf-feed-card"') === 12);
-check('index prerenders 4 filter chips', count(index, 'aria-pressed') === 4);
-check(`index prerenders 12 feed thumbnails (found ${count(index, 'pf-feed-media')})`, count(index, 'pf-feed-media') === 12);
+check('index prerenders 15 feed cards', count(index, 'pf-feed-card"') === 15);
+check('index prerenders 5 filter chips', count(index, 'aria-pressed') === 5);
+check(`index prerenders 15 feed thumbnails (found ${count(index, 'pf-feed-media')})`, count(index, 'pf-feed-media') === 15);
 
 // The feeds list every published post and nothing else.
 const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
 const rss = readFileSync('dist/rss.xml', 'utf8');
-// 15 = 12 posts + `/` + `/notes` + `/teardown`. Bump this when a static route
-// is added to or removed from the sitemap in `generate-feeds.mjs`.
-check(`sitemap lists 15 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 15);
-check('sitemap lists /teardown', sitemap.includes('<loc>https://anadithakur.in/teardown</loc>'));
+// 20 = 15 posts + `/` + `/rescue/audit` + `/scan` + `/teardown` + `/notes`.
+// Bump this when a static route is added to or removed from the sitemap in
+// `generate-feeds.mjs`.
+check(`sitemap lists 20 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 20);
+for (const path of ['', '/rescue/audit', '/scan', '/teardown', '/notes']) {
+  check(`sitemap lists ${path || '/'}`, sitemap.includes(`<loc>https://anadithakur.in${path}</loc>`));
+}
+// A redirect and another host's page, neither of which belongs in this file.
+check('sitemap does not list /rescue', !sitemap.includes('<loc>https://anadithakur.in/rescue</loc>'));
+check('sitemap does not list /portfolio', !sitemap.includes('/portfolio</loc>'));
 
 // Decision 9: `/teardown` is meant to be found, so its intro and first
 // question must be in the static HTML, not behind a client-only render; a
@@ -157,7 +182,7 @@ check('sitemap lists /teardown', sitemap.includes('<loc>https://anadithakur.in/t
 const teardown = readFileSync('dist/teardown/index.html', 'utf8');
 check('/teardown prerenders its intro', teardown.includes('thirteen questions'));
 check('/teardown prerenders question 1', teardown.includes('without using the words'));
-check(`rss lists 12 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 12);
+check(`rss lists 15 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 15);
 check('robots.txt declares the sitemap', readFileSync('dist/robots.txt', 'utf8').includes('Sitemap:'));
 for (const page of pages) {
   const url = 'https://anadithakur.in/' + page.replace('dist/', '').replace('/index.html', '');

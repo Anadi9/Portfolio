@@ -42,14 +42,19 @@ if (!posts.length) {
 
 /* --- sitemap ------------------------------------------------------------- */
 
-// `/`, `/notes` and `/teardown` are the three non-post routes worth listing.
-// `/404` and the SPA catch-all are not pages anyone should be sent to from search.
+// The non-post routes worth listing. `/` is the Vibe Code Rescue offer, and
+// `/rescue/audit` and `/scan` are its two free entry points, so all three are
+// meant to be found. Left out on purpose: `/rescue` (a 301 to `/` in
+// `vercel.json`, and a sitemap should never list a redirect), `/portfolio`
+// (canonical at portfolio.anadithakur.in, a different host this sitemap can't
+// speak for), `/work-with-me` (shared by link, nothing to rank for), the
+// teardown result pages (`noindex`), `/404` and the SPA catch-all.
 const pages = [
   { url: ORIGIN, modified: posts[0].modified, priority: '1.0' },
-  { url: `${ORIGIN}/notes`, modified: posts[0].modified, priority: '0.9' },
-  // `/teardown` is the one sales-adjacent route meant to be found. `/work-with-me`
-  // stays out: it is shared by link on purpose and has nothing to rank for.
+  { url: `${ORIGIN}/rescue/audit`, modified: posts[0].modified, priority: '0.9' },
+  { url: `${ORIGIN}/scan`, modified: posts[0].modified, priority: '0.9' },
   { url: `${ORIGIN}/teardown`, modified: posts[0].modified, priority: '0.9' },
+  { url: `${ORIGIN}/notes`, modified: posts[0].modified, priority: '0.9' },
   ...posts.map((p) => ({ url: p.url, modified: p.modified, priority: '0.8' })),
 ];
 
@@ -79,7 +84,7 @@ const rss = `<?xml version="1.0" encoding="UTF-8"?>
   <channel>
     <title>Notes · Anadi Thakur</title>
     <link>${ORIGIN}/notes</link>
-    <description>Templates, build notes and AI dispatches. Whatever the piece promises is on the page in full: no signup, no gate.</description>
+    <description>Templates, build notes, AI dispatches and fixes for apps built with AI. Whatever the piece promises is on the page in full: no signup, no gate.</description>
     <language>en</language>
     <lastBuildDate>${rfc822(posts[0].date)}</lastBuildDate>
     <atom:link href="${ORIGIN}/rss.xml" rel="self" type="application/rss+xml" />

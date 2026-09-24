@@ -68,6 +68,7 @@ describe('banner-art: bannerWord', () => {
   it('gives the other streams one word, not their two-word label', () => {
     expect(bannerWord({ stream: 'wisdom' })).toBe('WISDOM');
     expect(bannerWord({ stream: 'dispatch' })).toBe('DISPATCH');
+    expect(bannerWord({ stream: 'fix' })).toBe('FIXES');
   });
 
   it('throws on an unknown stream rather than rendering an empty plate', () => {

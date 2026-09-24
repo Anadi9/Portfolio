@@ -61,6 +61,9 @@ if (!posts.length) {
 
 let written = 0;
 for (const post of posts) {
+  // `cover: false` posts ship without a cover or OG card by design; see
+  // `hasCover` in src/data/notes.ts.
+  if (post.cover === false) continue;
   const path = pathOf(post);
   const master = join(SRC, post.dir, `${post.slug}.png`);
   if (!existsSync(master)) {

@@ -1,6 +1,7 @@
 import { Link } from 'vite-react-ssg';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
-import { coverFor, readingMinutes, streamLabel, type Post } from '@/data/notes';
+import banners from '@/generated/banners.json';
+import { coverFor, hasCover, readingMinutes, streamLabel, type Post } from '@/data/notes';
 import { formatChip, payloadOf } from './streamPayload';
 
 const fmtDate = (iso: string) =>
@@ -22,6 +23,22 @@ const Chip = ({ children }: { children: React.ReactNode }) => (
     {children}
   </span>
 );
+
+/** The banner plate, upscaled hard-edged into the thumbnail slot. */
+const PlateThumb = ({ path }: { path: string }) => {
+  const entry = (banners as Record<string, { page: string }>)[path];
+  if (!entry) return null;
+  return (
+    <img
+      src={entry.page}
+      alt=""
+      aria-hidden="true"
+      width={360}
+      height={60}
+      style={{ imageRendering: 'pixelated' }}
+    />
+  );
+};
 
 /**
  * One row of the feed.
@@ -125,18 +142,24 @@ const FeedCard = ({ post }: { post: Post }) => {
 
         {/* The cover, cropped by the same scrim the post page uses. Lazy and
             low priority: twelve of these sit below one another on the index and
-            none of them is what the reader came for. */}
+            none of them is what the reader came for. A post with no cover
+            shows its pixel plate instead, which is drawn from its own path and
+            already inlined, so the slot is never empty and never a 404. */}
         <div className="pf-feed-media">
-          <img
-            {...coverFor(post.path)}
-            sizes="(min-width: 880px) 300px, 100vw"
-            alt=""
-            aria-hidden="true"
-            width={480}
-            height={253}
-            loading="lazy"
-            decoding="async"
-          />
+          {hasCover(post) ? (
+            <img
+              {...coverFor(post.path)}
+              sizes="(min-width: 880px) 300px, 100vw"
+              alt=""
+              aria-hidden="true"
+              width={480}
+              height={253}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <PlateThumb path={post.path} />
+          )}
         </div>
         </div>
       </Link>

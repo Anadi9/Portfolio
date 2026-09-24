@@ -1,4 +1,4 @@
-import { coverFor, type Post } from '@/data/notes';
+import { coverFor, hasCover, type Post } from '@/data/notes';
 
 /**
  * The cover band above the title.
@@ -15,8 +15,12 @@ import { coverFor, type Post } from '@/data/notes';
  * Eager and high priority, with the intrinsic size on the tag. It is the first
  * paint above the fold on every post, and the one image on the page worth
  * spending the request on before anything else.
+ *
+ * Nothing at all for a post with `cover: false`: no master was ever captured
+ * for it, and a band pointing at three missing files is worse than no band.
  */
 const Cover = ({ post }: { post: Post }) => {
+  if (!hasCover(post)) return null;
   const { src, srcSet } = coverFor(post.path);
 
   return (

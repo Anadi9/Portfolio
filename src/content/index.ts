@@ -82,8 +82,9 @@ export const pinnedPosts = (): Post[] =>
  * months late. A dispatch is dated by construction, so offering one as the next
  * read is offering last week's news to someone who arrived from search, which
  * is why it ranks last even though it is often the newest thing on the site.
+ * A fix is as evergreen as a wisdom post, and ranks with it.
  */
-const FOLLOW_ON_RANK: Record<Stream, number> = { drop: 0, wisdom: 1, dispatch: 2 };
+const FOLLOW_ON_RANK: Record<Stream, number> = { drop: 0, wisdom: 1, fix: 1, dispatch: 2 };
 
 /**
  * The two posts offered at the foot of `post`.

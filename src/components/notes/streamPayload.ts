@@ -1,4 +1,4 @@
-import { streamLabel, type DispatchPost, type DropPost, type Post, type WisdomPost } from '@/data/notes';
+import { streamLabel, type DispatchPost, type DropPost, type FixPost, type Post, type WisdomPost } from '@/data/notes';
 
 /**
  * What a post is willing to prove about itself before you click it.
@@ -8,7 +8,8 @@ import { streamLabel, type DispatchPost, type DropPost, type Post, type WisdomPo
  * prose. Every stream already carries something far more specific in its
  * frontmatter and it was all invisible until the page loaded: a drop knows what
  * artifact it hands over, a wisdom post knows what its argument costs you, a
- * dispatch knows its lead item. That is the thing worth putting on the card.
+ * dispatch knows its lead item, a fix knows its repair. That is the thing worth
+ * putting on the card.
  */
 export type Payload = {
   /** The small stamp: a drop's DM keyword, otherwise the stream name. */
@@ -40,6 +41,10 @@ export const payloadOf = (post: Post): Payload => {
         line: p.items[0]?.headline ?? p.dateline,
         more: rest > 0 ? `+${rest} MORE` : undefined,
       };
+    }
+    case 'fix': {
+      const p = post as FixPost;
+      return { stamp: streamLabel.fix, tag: 'THE FIX', line: p.fix };
     }
   }
 };

@@ -71,6 +71,7 @@ export const bannerWord = ({ stream, keyword }) => {
   }
   if (stream === 'wisdom') return 'WISDOM';
   if (stream === 'dispatch') return 'DISPATCH';
+  if (stream === 'fix') return 'FIXES';
   throw new Error(`banner: unknown stream \`${stream}\`.`);
 };
 

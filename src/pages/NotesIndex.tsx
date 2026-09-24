@@ -11,7 +11,7 @@ import { useDisclosureOpen } from '@/components/notes/useRail';
 type Filter = 'all' | Stream;
 
 const DESCRIPTION =
-  'Free, ungated resources, build notes and AI dispatches from Anadi Thakur: automation templates, system-design worksheets and the reasoning behind them.';
+  'Free, ungated notes from Anadi Thakur: automation templates, build notes, AI dispatches, and plain-English fixes for apps built with Lovable, Bolt and Cursor.';
 
 /**
  * One reverse-chron feed with filter chips, not three columns.
@@ -79,7 +79,7 @@ const NotesIndex = () => {
                 type="search"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="n8n, prompts, architecture…"
+                placeholder="n8n, Supabase, Vercel…"
                 className="pf-prompt-search"
                 style={{ marginBottom: s[5] }}
               />
@@ -125,7 +125,7 @@ const NotesIndex = () => {
           Notes
         </h1>
         <p style={{ margin: px(s[6], 0, s[9]), maxWidth: 620, font: `400 19px/1.55 ${display}`, color: '#3a3a3a' }}>
-          Templates, build notes and AI dispatches. Whatever the piece promises is on the page in full: no signup, no
+          Templates, build notes, AI dispatches and fixes for apps built with AI. Whatever the piece promises is on the page in full: no signup, no
           gate, nothing held back for later.
         </p>
 
@@ -137,7 +137,7 @@ const NotesIndex = () => {
         {shown.length === 0 ? (
           <p style={{ margin: px(s[10], 0), font: `400 17px/1.6 ${display}`, color: c.dim }}>
             {q.trim()
-              ? `Nothing matches “${q.trim()}”. Try a tool or a topic: n8n, Slack, prompts, architecture.`
+              ? `Nothing matches “${q.trim()}”. Try a tool or a topic: n8n, Supabase, Vercel, prompts.`
               : 'Nothing in this stream yet. The other chips have the rest.'}
           </p>
         ) : (

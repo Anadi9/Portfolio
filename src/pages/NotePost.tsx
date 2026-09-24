@@ -1,7 +1,8 @@
 import DropLayout from '@/components/notes/DropLayout';
 import WisdomLayout from '@/components/notes/WisdomLayout';
 import DispatchLayout from '@/components/notes/DispatchLayout';
-import type { DispatchPost, DropPost, Post, WisdomPost } from '@/data/notes';
+import FixLayout from '@/components/notes/FixLayout';
+import type { DispatchPost, DropPost, FixPost, Post, WisdomPost } from '@/data/notes';
 
 /**
  * Picks the layout off the frontmatter's stream discriminant.
@@ -18,6 +19,8 @@ const NotePost = ({ post }: { post: Post }) => {
       return <WisdomLayout post={post as WisdomPost} />;
     case 'dispatch':
       return <DispatchLayout post={post as DispatchPost} />;
+    case 'fix':
+      return <FixLayout post={post as FixPost} />;
   }
 };
 
