@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'vite-react-ssg';
-import { Seo } from '@/components/Seo';
+import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import Gate from '@/components/teardown/Gate';
 import Quiz from '@/components/teardown/Quiz';
@@ -13,7 +13,7 @@ import { report } from '@/lib/teardown/report';
 /**
  * `/teardown`: the free Wrapper Test.
  *
- * Unlike `/work-with-me`, this page is meant to be found: it carries full
+ * This page is meant to be found: it carries full
  * `Seo`, and the intro plus the first question render into the prerendered
  * HTML rather than sitting behind a Start click, so a crawler arriving here
  * gets the actual proposition instead of a button.
@@ -28,7 +28,21 @@ import { report } from '@/lib/teardown/report';
 
 const TITLE = 'The Wrapper Test: is your AI product real, or a wrapper?';
 const DESCRIPTION =
-  'A free 13-question diagnostic for AI features. Score your own product on defensibility, failure design, cost floor and evaluation, and get a nine-section written breakdown. No call, no signup to see your result.';
+  'A free 13-question test for AI products: score defensibility, failure design, cost floor and evals, and get a written breakdown. No call, no signup.';
+
+/** A free tool, so `WebApplication` at price 0, credited to the homepage's Person. */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'The Wrapper Test',
+  description: DESCRIPTION,
+  url: 'https://anadithakur.in/teardown',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Any (runs in the browser)',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  creator: { '@id': `${PORTFOLIO_ORIGIN}/#person` },
+};
 
 const section = {
   containerType: 'inline-size',
@@ -69,7 +83,7 @@ export default function Teardown() {
 
   return (
     <div style={{ background: c.ink, color: '#fff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Seo title={TITLE} description={DESCRIPTION} path="/teardown" type="website" />
+      <Seo title={TITLE} description={DESCRIPTION} path="/teardown" type="website" jsonLd={jsonLd} />
 
       <header
         style={{
@@ -93,8 +107,8 @@ export default function Teardown() {
           <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
             NOTES
           </Link>
-          <Link to="/work-with-me" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
-            WORK WITH ME
+          <Link to="/rescue/audit" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
+            FREE AUDIT
           </Link>
         </nav>
       </header>
@@ -119,9 +133,9 @@ export default function Teardown() {
             so nothing here is invented. Your result appears straight away; nothing is asked for to see it.
           </p>
           <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '58ch' }}>
-            This tells you <em>where</em> the problems are. It does not tell you how to fix them; that is
-            what the <Link to="/work-with-me" className="pf-underline" style={{ color: c.accent }}>recorded teardown</Link> is
-            for.
+            This tells you <em>where</em> the problems are. To have an engineer look at the app itself and
+            rank what to fix first, the <Link to="/rescue/audit" className="pf-underline" style={{ color: c.accent }}>production
+            audit</Link> is free.
           </p>
         </section>
 

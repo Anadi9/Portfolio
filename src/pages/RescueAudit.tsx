@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
-import { Seo } from '@/components/Seo';
+import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import {
   NOTES_MAX,
@@ -44,8 +44,23 @@ import { trackRescue } from '@/lib/rescue/track';
 
 const TITLE = 'Free production audit · Vibe Code Rescue';
 const DESCRIPTION =
-  'Send the link to your Lovable, Bolt, Cursor or v0 app. You get a plain-English report of what is broken, what is risky and what can wait, within 48 hours. Free, no call.';
+  'Send your Lovable, Bolt, Cursor or v0 app and get a plain-English report of what is broken, what is risky and what can wait. Free, within 48 hours.';
 const EMAIL = 'anadithakur99@gmail.com';
+
+/** The free first step of the homepage's paid service, so a `Service` at price 0
+ *  that points at it rather than a second copy of the whole offer. */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Free production audit for AI-built apps',
+  description: DESCRIPTION,
+  url: 'https://anadithakur.in/rescue/audit',
+  serviceType: 'Production readiness audit',
+  areaServed: { '@type': 'Place', name: 'Worldwide' },
+  provider: { '@id': `${PORTFOLIO_ORIGIN}/#person` },
+  isRelatedTo: { '@id': 'https://anadithakur.in/#service' },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
 
 const p = {
   bg: c.paper,
@@ -205,7 +220,7 @@ export default function RescueAudit() {
 
   return (
     <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Seo title={TITLE} description={DESCRIPTION} path="/rescue/audit" type="website" />
+      <Seo title={TITLE} description={DESCRIPTION} path="/rescue/audit" type="website" jsonLd={jsonLd} />
 
       <header
         data-rescue-header
@@ -466,7 +481,7 @@ export default function RescueAudit() {
                   <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: s[5] }}>
                     {[
                       ['Report', due ? `By ${due}. Fix now, Risky, Can wait, in plain English.` : `Within ${TURNAROUND_HOURS} hours. Fix now, Risky, Can wait, in plain English.`],
-                      ['Fixed quote', 'If something needs fixing, the report ends with one price for all of it. Most land between $800 and $1,500.'],
+                      ['Fixed quote', 'If something needs fixing, the report ends with one price for all of it, from $499 depending on scope.'],
                       ['Your call', "Nothing worth fixing? I'll say so. No follow-up sequence, no pressure."],
                     ].map(([title, text], i) => (
                       <li key={title} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: s[4] }}>

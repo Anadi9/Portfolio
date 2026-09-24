@@ -1,6 +1,7 @@
 import portrait from '@/assets/portrait.webp';
 import { c, display, gutter, heading, label, px, rule, s, stretch } from './tokens';
 import { site, strengths } from '@/data/portfolio';
+import { ORIGIN } from '@/components/Seo';
 
 const NAME = ['ANADI', 'THAKUR'];
 
@@ -44,7 +45,7 @@ const Hero = () => (
           data-status-dot="1"
           style={{ width: 8, height: 8, background: c.signal, display: 'block', animation: 'pf-blink 1.6s steps(1,end) infinite' }}
         />
-        OPEN TO SENIOR ROLES · IST (UTC+5:30)
+        TAKING PROJECTS · IST, OVERLAPS US MORNINGS
       </span>
     </div>
 
@@ -180,7 +181,7 @@ const Hero = () => (
         </div>
         <div style={{ display: 'flex', gap: s[7] }}>
           <a href="#contact" className="pf-underline" style={barLink}>CONTACT</a>
-          <a href={site.resume} target="_blank" rel="noreferrer" className="pf-underline" style={barLink}>RESUME ↓</a>
+          <a href={`${ORIGIN}/`} className="pf-underline" style={barLink}>FIX MY APP ↗</a>
         </div>
       </div>
 
@@ -188,9 +189,9 @@ const Hero = () => (
         <div data-hpad="1" style={{ padding: px(s[4], gutter), borderRight: `${rule.base}px solid ${c.ink}` }}>
           <div style={{ ...label(10, 500, 0.14), color: 'rgba(10,10,10,.6)', marginBottom: s[3] }}>POSITION</div>
           <div style={{ ...heading('d7', { weight: 800 }), color: c.ink }}>
-            AI full-stack engineer
+            I make AI-built apps
             <br />
-            with a UI specialty.
+            hold up in production.
           </div>
         </div>
 
@@ -206,8 +207,8 @@ const Hero = () => (
           }}
         >
           <p style={{ margin: 0, font: `400 15px/1.42 ${display}`, color: c.ink, textWrap: 'pretty' }}>
-            I take a product from the model call to the last 8px of padding: enterprise platforms for ZEISS, React
-            Native apps, and LLM pipelines that do real work instead of demos.
+            4+ years shipping production React and Node, ZEISS included. Now I take apps built with Lovable, Bolt,
+            Cursor and v0 and fix what breaks: auth, data, deploys, speed.
           </p>
           <div style={{ display: 'flex', gap: s[3] }}>
             <a
@@ -218,9 +219,7 @@ const Hero = () => (
               SEE THE WORK ↓
             </a>
             <a
-              href={site.resume}
-              target="_blank"
-              rel="noreferrer"
+              href={`${ORIGIN}/rescue/audit`}
               className="pf-ghost"
               style={{
                 padding: px(s[3], s[5]),
@@ -231,7 +230,7 @@ const Hero = () => (
                 textDecoration: 'none',
               }}
             >
-              RESUME (PDF)
+              FREE AUDIT ↗
             </a>
           </div>
         </div>

@@ -221,7 +221,7 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
           {CLOSING}
         </p>
         <a
-          href="/work-with-me"
+          href="/rescue/audit"
           className="pf-nudge pf-nudge-lg"
           style={{
             display: 'inline-flex',
@@ -235,7 +235,7 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
             textDecoration: 'none',
           }}
         >
-          👀 GET THE $50 TEARDOWN<span>↗</span>
+          GET A FREE AUDIT<span>→</span>
         </a>
 
         <p style={{ margin: px(s[7], 0, 0), font: `400 13px/1.6 ${display}`, color: paper.dim, maxWidth: '66ch' }}>

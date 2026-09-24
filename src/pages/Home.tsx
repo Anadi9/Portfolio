@@ -5,9 +5,9 @@ import IntroLoader from '@/components/IntroLoader';
 import { Seo, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { site } from '@/data/portfolio';
 
-const TITLE = `${site.name} · ${site.role}`;
+const TITLE = `${site.name} · Full-stack engineer for AI-built apps`;
 const DESCRIPTION =
-  'AI full-stack engineer with a UI specialty. Enterprise platforms for ZEISS, React Native apps, and LLM pipelines that do real work instead of demos.';
+  'Full-stack engineer who makes apps built with Lovable, Bolt, Cursor and v0 hold up in production. 4+ years shipping React and Node, including the ZEISS Microscopy platform.';
 
 /**
  * The front page, and the only route the intro takes over.

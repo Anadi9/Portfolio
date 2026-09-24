@@ -1,5 +1,5 @@
 /**
- * `sitemap.xml` and `rss.xml`, written into `dist/` after the build.
+ * `sitemap.xml`, `rss.xml` and `llms.txt`, written into `dist/` after the build.
  *
  * Both read the corpus through `lib/content.mjs`, the same module the OG cards
  * use, so a draft can never be absent from the cards and present in the feed.
@@ -47,7 +47,7 @@ if (!posts.length) {
 // meant to be found. Left out on purpose: `/rescue` (a 301 to `/` in
 // `vercel.json`, and a sitemap should never list a redirect), `/portfolio`
 // (canonical at portfolio.anadithakur.in, a different host this sitemap can't
-// speak for), `/work-with-me` (shared by link, nothing to rank for), the
+// speak for), `/work-with-me` (a 301 to `/`), the
 // teardown result pages (`noindex`), the kit's thank-you page (`noindex`),
 // `/404` and the SPA catch-all.
 const pages = [
@@ -107,6 +107,37 @@ ${posts
 
 writeFileSync(join(OUT, 'rss.xml'), rss);
 
+/* --- llms.txt ------------------------------------------------------------ */
+
+// The llmstxt.org summary AI answer engines read before (or instead of) the
+// pages. The prices can't be imported from the TSX they live in, so they are
+// repeated here: change them in `Rescue.tsx` or `lib/kit/product.ts` and here too.
+const llms = `# Anadi Thakur · Vibe Code Rescue
+
+> Fixed-price production fixes for web apps built with Lovable, Bolt, Cursor and v0: security, database, auth, payments, deployment and performance. From $499, done in 7 days, with 7 days of follow-up fixes. Every engagement starts with a free audit.
+
+Run by Anadi Thakur, a full-stack engineer. Work is done remotely, worldwide. Contact: anadithakur99@gmail.com.
+
+## Services
+
+- [Vibe Code Rescue](${ORIGIN}/): the fixed-price production fix, from $499, done in 7 days. Add-ons include monthly production care at $249/month.
+- [Free production audit](${ORIGIN}/rescue/audit): send the app link and get a plain-English report of what is broken, what is risky and what can wait, within 48 hours. Free, no call.
+- [Free Supabase security check](${ORIGIN}/scan): checks in 30 seconds whether a Supabase project's tables are readable by anyone, using only the public anon key. Nothing is stored.
+- [The Wrapper Test](${ORIGIN}/teardown): a free 13-question diagnostic that scores an AI product on defensibility, failure design, cost floor and evaluation.
+- [The Production Kit](${ORIGIN}/products/production-kit): $19. CLAUDE.md, Cursor rules, Claude Code skills, launch and security checklists and Supabase SQL for AI-built apps.
+
+## Notes
+
+${posts.map((p) => `- [${p.title}](${p.url}): ${p.summary}`).join('\n')}
+
+## Optional
+
+- [Portfolio](https://portfolio.anadithakur.in/): past work and background.
+- [RSS feed](${ORIGIN}/rss.xml)
+`;
+
+writeFileSync(join(OUT, 'llms.txt'), llms);
+
 /* --- robots -------------------------------------------------------------- */
 
 // Only written if it isn't already served from `public/`, so a hand-authored
@@ -125,3 +156,4 @@ if (!robots.includes('Sitemap:')) {
 console.log(`[feeds] dist/sitemap.xml  ${pages.length} urls`);
 console.log(`[feeds] dist/rss.xml      ${posts.length} items`);
 console.log(`[feeds] dist/robots.txt   sitemap declared`);
+console.log(`[feeds] dist/llms.txt     ${posts.length} notes`);

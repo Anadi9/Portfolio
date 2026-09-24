@@ -34,8 +34,8 @@ describe('renderEmail: body', () => {
     }
   });
 
-  it('links to the paid teardown exactly once', () => {
-    const matches = html.match(/https:\/\/anadithakur\.in\/work-with-me/g) ?? [];
+  it('links to the free audit exactly once', () => {
+    const matches = html.match(/https:\/\/anadithakur\.in\/rescue\/audit/g) ?? [];
     expect(matches).toHaveLength(1);
   });
 

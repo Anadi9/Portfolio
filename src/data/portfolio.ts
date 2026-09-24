@@ -17,14 +17,14 @@ export const SIGNAL_HREF = 'https://antasignal.vercel.app/';
 
 export const site = {
   name: 'Anadi Thakur',
-  role: 'Senior UI / Full-Stack Engineer',
+  role: 'Full-Stack Engineer',
   email: 'anadithakur99@gmail.com',
   github: 'https://github.com/Anadi9',
   githubHandle: '/Anadi9',
   linkedin: 'https://www.linkedin.com/in/anadi-thakur-92163316b/',
   linkedinHandle: '/in/anadi-thakur-92163316b',
   resume: '/uploads/Anadi_Thakur_Resume.pdf',
-  years: '05',
+  years: '04',
   releases: '18',
   clients: ['ZEISS', 'ZENQUA', 'PRECIOUS', 'YUGAM', 'SHETHINK', 'ORIONS'],
 };
@@ -55,10 +55,10 @@ export const marqueeItems = [
 ];
 
 export const strengths = [
-  'SHIPPING FAST, ALONE',
-  'DESIGN SYSTEMS',
+  'AUTH & SESSIONS',
+  'SUPABASE & RLS',
+  'DEPLOYS THAT HOLD',
   'PERFORMANCE BUDGETS',
-  'LLM PLUMBING',
 ];
 
 export type Project = {
@@ -216,9 +216,9 @@ export const milestones: Milestone[] = [
   },
   {
     year: '26',
-    title: 'Looking for a team again',
-    body: 'Freelance taught me ownership. Now I want people to argue with about component APIs. Senior UI / full-stack, remote.',
-    meta: 'AVAILABLE NOW',
+    title: 'Vibe Code Rescue',
+    body: 'Taking apps built with Lovable, Bolt, Cursor and v0 from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
+    meta: 'TAKING PROJECTS NOW',
     tone: 'accent',
     status: true,
   },

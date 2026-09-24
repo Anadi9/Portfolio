@@ -1,6 +1,7 @@
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from './tokens';
 import { site } from '@/data/portfolio';
 import { ORIGIN } from '@/components/Seo';
+import { KIT, kitPrice } from '@/lib/kit/product';
 
 const [emailUser, emailHost] = site.email.split('@');
 
@@ -11,7 +12,7 @@ const cells = [
   { kind: 'RESUME', value: ['PDF ↓'], href: site.resume, external: true },
 ];
 
-const HEAD = ["Let's build", 'something'];
+const HEAD = ['Send me', 'your app'];
 
 /**
  * The way out to the client side of the domain. The portfolio is served from
@@ -27,9 +28,9 @@ const doors = [
     to: `${ORIGIN}/`,
   },
   {
-    kind: "I'M BUILDING AN AI FEATURE",
-    value: 'Find out whether it is a real product or a wrapper. Free 13-question test, 3 minutes.',
-    to: `${ORIGIN}/teardown`,
+    kind: "I'D RATHER FIX IT MYSELF",
+    value: `The Production Kit: the rules, checks and SQL I use on every rescue. ${kitPrice}, instant download.`,
+    to: `${ORIGIN}${KIT.path}`,
   },
 ];
 
@@ -122,8 +123,8 @@ const Contact = () => (
         </h2>
       </div>
       <p data-contact-copy="1" style={{ margin: `0 0 ${s[3]}px`, font: `400 16px/1.5 ${display}`, color: 'rgba(10,10,10,.78)', textWrap: 'pretty' }}>
-        Fastest route is email; I answer within a day, usually with questions. If you&apos;d rather read code first,
-        GitHub is right there.
+        Fastest route is the free audit: send the link and you get a ranked report in 48 hours. Email works too; I
+        answer within a day, usually with questions.
       </p>
     </div>
 

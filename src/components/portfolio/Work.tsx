@@ -274,7 +274,7 @@ const Work = () => (
           </h2>
         </div>
         <p style={{ margin: `0 0 ${s[2]}px`, font: `400 16px/1.5 ${display}`, color: c.dimOnInk, textWrap: 'pretty' }}>
-          Everything else is in the resume. These three cover the range: an AI product I built end to end, an
+          Everything else is on GitHub. These three cover the range: an AI product I built end to end, an
           enterprise platform with real constraints, and a realtime dashboard that had to not fall over.
         </p>
       </div>

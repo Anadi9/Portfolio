@@ -6,6 +6,7 @@ import { c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretc
 import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
+import { KIT, kitPrice } from '@/lib/kit/product';
 
 /**
  * `/`: Vibe Code Rescue, fixed-price production fixes for apps built with
@@ -26,7 +27,7 @@ import { trackRescue } from '@/lib/rescue/track';
  * `/scan`, the Wrapper Test at `/teardown`) are for visitors who aren't that
  * buyer yet, and are deliberately set as text links, not buttons.
  *
- * Like `/work-with-me`, this arrived as a standalone document with its own
+ * This arrived as a standalone document with its own
  * palette (a red and a blue for the error log) and its own stylesheet. It is
  * rendered through `portfolio/tokens` instead, on paper: the light ground
  * the Journey section and the Teardown report already use, with the gold moved
@@ -46,7 +47,7 @@ import { trackRescue } from '@/lib/rescue/track';
  * takes over on phones once the hero's own button has scrolled away.
  */
 
-const TITLE = 'Vibe Code Rescue · Anadi Thakur';
+const TITLE = 'Fix your Lovable, Bolt or Cursor app · Vibe Code Rescue';
 const ORIGIN_URL = 'https://anadithakur.in/';
 const DESCRIPTION =
   'I take apps built with Lovable, Bolt, Cursor and v0 and make them production-ready. Fixed price, done in 7 days. Free audit first.';
@@ -232,7 +233,7 @@ const addons = [
     tag: 'Mobile',
     title: 'Web app → iOS & Android app',
     body: 'Your web app as a store-ready iOS and Android build.',
-    price: '$800',
+    price: '$989',
     unit: null,
     note: 'Quoted with the audit.',
   },
@@ -267,7 +268,7 @@ const jsonLd = {
       url: ORIGIN_URL,
       image: `${ORIGIN_URL}og.png`,
       email: EMAIL,
-      priceRange: '$800–$1,500',
+      priceRange: 'From $499',
       areaServed: { '@type': 'Place', name: 'Worldwide' },
       serviceType: 'Production fixes for AI-built web apps',
       provider: PROVIDER,
@@ -275,7 +276,7 @@ const jsonLd = {
       makesOffer: {
         '@type': 'Offer',
         name: 'Vibe Code Rescue: fixed-price production fix',
-        priceSpecification: { '@type': 'PriceSpecification', minPrice: 800, priceCurrency: 'USD' },
+        priceSpecification: { '@type': 'PriceSpecification', minPrice: 499, priceCurrency: 'USD' },
         areaServed: { '@type': 'Place', name: 'Worldwide' },
       },
       hasOfferCatalog: {
@@ -308,6 +309,9 @@ const jsonLd = {
 
 /** Fires the CTA event. Only ever called from a click, so never in the prerender. */
 const clicked = (location: string) => () => trackRescue('audit_cta_click', { location });
+
+/** The same for the kit, the page's one paid-product link. */
+const kitClicked = (location: string) => () => trackRescue('kit_link_click', { location });
 
 /** The hero's error log. Rows flip from error to fixed one at a time after
  *  mount. The prerendered HTML is the unfixed state, which is also the state
@@ -494,6 +498,10 @@ const Symptoms = () => {
           Not ready to talk?{' '}
           <Link to="/scan" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
             Run the free Supabase security check →
+          </Link>{' '}
+          Or fix it yourself with{' '}
+          <Link to={KIT.path} onClick={kitClicked('tally')} className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
+            the {kitPrice} Production Kit →
           </Link>
         </p>
       </div>
@@ -587,6 +595,7 @@ const Rescue = () => {
             ['#h-how', 'HOW IT WORKS'],
             ['#h-price', 'PRICE'],
             ['#h-faq', 'FAQ'],
+            ['/notes', 'NOTES'],
           ].map(([href, text]) => (
             <a key={href} href={href} data-rescue-navlink className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
               {text}
@@ -702,7 +711,7 @@ const Rescue = () => {
         <section aria-labelledby="h-how" style={section} data-rescue-hpad>
           <p style={eyebrow}>HOW IT WORKS</p>
           <h2 id="h-how" style={h2}>
-            Two weeks, start to finish
+            Fixed in 7 days, then 7 days of support
           </h2>
           <div
             aria-hidden
@@ -812,8 +821,10 @@ const Rescue = () => {
               <h2 id="h-price" style={{ margin: px(s[3], 0, 0), ...label(11, 700, 0.14), color: p.dim }}>
                 FIXES FROM
               </h2>
-              <div style={{ ...heading('d1', { stretch: stretch.bleed }), color: p.ink }}>$800</div>
-              <p style={{ ...lead, color: p.ink, marginTop: s[4] }}>Most projects land between $800 and $1,500.</p>
+              <div style={{ ...heading('d1', { stretch: stretch.bleed }), color: p.ink }}>$499</div>
+              <p style={{ ...lead, color: p.ink, marginTop: s[4] }}>
+                The final price depends on the scope and the number of fixes the audit finds.
+              </p>
               <p style={{ ...body, maxWidth: '46ch' }}>
                 Every quote is fixed before work starts. If scope changes, we agree on it before I bill a cent.
               </p>
@@ -843,7 +854,13 @@ const Rescue = () => {
           <h2 id="h-addons" style={h2}>
             On top of the fix
           </h2>
-          <p style={{ ...body, marginTop: s[5] }}>Add any of these to a rescue, or ask for one on its own.</p>
+          <p style={{ ...body, marginTop: s[5] }}>
+            Add any of these to a rescue, or ask for one on its own. Rather do the visibility work yourself?{' '}
+            <Link to={KIT.path} onClick={kitClicked('addons')} className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
+              The {kitPrice} Production Kit
+            </Link>{' '}
+            has the rules and checks I use.
+          </p>
           <div
             data-rescue-split
             style={{ ...split('repeat(3, minmax(0, 1fr))'), gap: s[8], marginTop: s[9] }}
@@ -1015,6 +1032,12 @@ const Rescue = () => {
       >
         <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
         <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
+          <Link to={KIT.path} onClick={kitClicked('footer')} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
+            PRODUCTION KIT
+          </Link>
+          <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
+            NOTES
+          </Link>
           <a href={PORTFOLIO_ORIGIN} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
             ABOUT ME ↗
           </a>

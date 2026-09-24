@@ -26,7 +26,7 @@ export const routes: RouteRecord[] = [
     // a page it would unmount the moment the new page arrived, which is exactly
     // when the bar has to finish. Children carry absolute paths: the
     // prerenderer joins a relative child onto its parent prefix, and with `/`
-    // as the parent that produces `work-with-me` rather than `/work-with-me`.
+    // as the parent that produces `scan` rather than `/scan`.
     path: '/',
     element: <RouteTransition />,
     children: [
@@ -44,17 +44,9 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/Home').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Home.tsx',
       },
-      // Deliberately absent from every nav. It is shared by link, not browsed to,
-      // but it still has to prerender, or the link someone opens from a DM resolves
-      // to an empty root div.
-      {
-        path: '/work-with-me',
-        lazy: () => import('./pages/WorkWithMe').then((m) => ({ Component: m.default })),
-        entry: 'src/pages/WorkWithMe.tsx',
-      },
-      // Unlike `/work-with-me`, this one is meant to be found: it is the entry
-      // point above the paid offers, so it carries full `Seo` and prerenders its
-      // intro and first question rather than a Start button.
+      // A free tool that ends at the audit. It is meant to be found, so it
+      // carries full `Seo` and prerenders its intro and first question rather
+      // than a Start button.
       {
         path: '/teardown',
         lazy: () => import('./pages/Teardown').then((m) => ({ Component: m.default })),

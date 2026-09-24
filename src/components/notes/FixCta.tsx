@@ -2,6 +2,7 @@ import { Link } from 'vite-react-ssg';
 import { track } from '@vercel/analytics';
 import { c, display, label, px, rule, s } from '@/components/portfolio/tokens';
 import type { FixPost } from '@/data/notes';
+import { KIT, kitPrice } from '@/lib/kit/product';
 import { SCAN_PATH, auditHref, symptomLine } from './fixLinks';
 
 /**
@@ -9,7 +10,7 @@ import { SCAN_PATH, auditHref, symptomLine } from './fixLinks';
  * prerender; the guard and the catch are there anyway, because a blocked
  * analytics script must never be the reason a link doesn't work.
  */
-const clicked = (slug: string, cta: 'audit' | 'scan') => () => {
+const clicked = (slug: string, cta: 'audit' | 'scan' | 'kit') => () => {
   if (typeof window === 'undefined') return;
   try {
     track('fix_cta_click', { slug, cta });
@@ -26,6 +27,7 @@ const clicked = (slug: string, cta: 'audit' | 'scan') => () => {
  * page you just read describes your app, here is the free audit, with this
  * symptom already ticked. Supabase posts get a second, lighter door to `/scan`,
  * which answers the "is mine exposed?" question in a minute without a form.
+ * Below both sits the do-it-yourself option: the Production Kit, as text.
  */
 const FixCta = ({ post }: { post: FixPost }) => {
   const line = symptomLine(post.symptom);
@@ -84,6 +86,14 @@ const FixCta = ({ post }: { post: FixPost }) => {
           </a>
         )}
       </div>
+
+      <p style={{ margin: px(s[6], 0, 0), font: `400 15px/1.6 ${display}`, color: c.dimOnInk }}>
+        Rather fix it yourself?{' '}
+        <Link to={KIT.path} onClick={clicked(post.slug, 'kit')} style={{ color: c.bright, fontWeight: 600 }}>
+          The {kitPrice} Production Kit
+        </Link>{' '}
+        has the rules and checks I use on every rescue.
+      </p>
     </aside>
   );
 };

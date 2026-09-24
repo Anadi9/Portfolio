@@ -217,7 +217,7 @@ const Rail = () => (
         textAlign: 'center',
       }}
     >
-      HIRE ME →
+      WORK WITH ME →
     </a>
 
     {/*

@@ -2,9 +2,10 @@ import { useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { track } from '@vercel/analytics';
-import { Seo } from '@/components/Seo';
+import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import { parseScanInput } from '@/lib/scan/validate';
+import { KIT, kitPrice } from '@/lib/kit/product';
 import type { Finding, ScanReport, Severity } from '@/lib/scan/report';
 
 /**
@@ -27,7 +28,23 @@ import type { Finding, ScanReport, Severity } from '@/lib/scan/report';
 
 const TITLE = 'Free Supabase security check · Vibe Code Rescue';
 const DESCRIPTION =
-  'Find out in 30 seconds whether your Supabase tables are readable by anyone on the internet. Paste your project URL and public anon key. Nothing is stored, no row data is read back.';
+  'Check in 30 seconds whether anyone on the internet can read your Supabase tables. Paste your project URL and public anon key. Nothing is stored.';
+
+/** A free tool, so `WebApplication` at price 0, tied to the same Person and
+ *  service `@id`s the homepage declares so the graph reads as one entity. */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Supabase security check',
+  description: DESCRIPTION,
+  url: 'https://anadithakur.in/scan',
+  applicationCategory: 'SecurityApplication',
+  operatingSystem: 'Any (runs in the browser)',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  creator: { '@id': `${PORTFOLIO_ORIGIN}/#person` },
+  isPartOf: { '@id': 'https://anadithakur.in/#service' },
+};
 
 const AUDIT = '/rescue/audit?s=1';
 const AUDIT_PLAIN = '/rescue/audit';
@@ -260,6 +277,18 @@ function Results({ report, onReset }: { report: ScanReport; onReset: () => void 
           <Link to={AUDIT} onClick={onCta} className="pf-nudge pf-nudge-lg" style={{ ...cta, background: c.accent, color: c.ink, justifySelf: 'start' }}>
             GET THESE FIXED — FREE AUDIT<span aria-hidden>→</span>
           </Link>
+          <p style={{ ...body, fontSize: 14, color: c.dimOnInk }}>
+            Rather close them yourself?{' '}
+            <Link
+              to={KIT.path}
+              onClick={() => track('scan_kit_click', { critical: report.counts.critical })}
+              className="pf-underline"
+              style={{ color: c.bright, fontWeight: 600 }}
+            >
+              The {kitPrice} Production Kit
+            </Link>{' '}
+            has the RLS audit and example policies I use.
+          </p>
         </div>
       ) : (
         <div style={{ display: 'grid', gap: s[4], padding: px(s[7], s[7]), background: p.panel }}>
@@ -357,7 +386,7 @@ export default function Scan() {
 
   return (
     <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Seo title={TITLE} description={DESCRIPTION} path="/scan" type="website" />
+      <Seo title={TITLE} description={DESCRIPTION} path="/scan" type="website" jsonLd={jsonLd} />
 
       <header
         data-rescue-header

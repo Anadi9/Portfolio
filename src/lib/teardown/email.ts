@@ -172,9 +172,9 @@ ${model.sections.map(sectionBlock).join('\n')}
                       <p style="margin:0 0 16px;font:400 14px/1.6 ${SANS};color:#1a1a1a;">
                         ${esc(CLOSING)}
                       </p>
-                      <a href="${ORIGIN}/work-with-me"
+                      <a href="${ORIGIN}/rescue/audit"
                          style="display:inline-block;padding:14px 18px;background:${INK};color:${PAPER};font:700 11px/1 ${MONO};letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;">
-                        Get the $50 teardown
+                        Get a free audit
                       </a>
                     </td>
                   </tr>

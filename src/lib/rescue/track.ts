@@ -2,7 +2,8 @@ import { track } from '@vercel/analytics';
 
 /**
  * Conversion events for the rescue funnel: `audit_cta_click` on `/` (the
- * homepage, which is the rescue page) and `audit_submitted` on `/rescue/audit`.
+ * homepage, which is the rescue page), `kit_link_click` wherever the page
+ * points at the Production Kit, and `audit_submitted` on `/rescue/audit`.
  *
  * Kept out of `intake.ts`, which has to stay dependency-free for the serverless
  * function. Both callers only fire from event handlers, so this never runs in
@@ -11,6 +12,7 @@ import { track } from '@vercel/analytics';
  */
 export type RescueEvent =
   | { name: 'audit_cta_click'; props: { location: string } }
+  | { name: 'kit_link_click'; props: { location: string } }
   | { name: 'audit_submitted'; props: { tool: string; symptoms: number } };
 
 export function trackRescue<E extends RescueEvent>(name: E['name'], props: E['props']): void {

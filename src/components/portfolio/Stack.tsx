@@ -40,7 +40,7 @@ const Stack = () => (
             marginBottom: s[5],
           }}
         >
-          FOURTEEN THINGS, RANKED
+          TWENTY THINGS, RANKED
         </div>
         <h2 style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase' }}>
           {HEAD.map((line) => (
@@ -54,7 +54,7 @@ const Stack = () => (
       </div>
       <p data-stack-copy="1" style={{ margin: `0 0 ${s[1]}px`, font: `400 15px/1.5 ${display}`, color: c.dimOnInk, textWrap: 'pretty' }}>
         Daily means I&apos;d take a ticket on it tomorrow. Working means I&apos;d need an afternoon and the docs. No one
-        is fluent in fourteen things.
+        is fluent in twenty things.
       </p>
     </div>
 

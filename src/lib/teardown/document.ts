@@ -81,6 +81,6 @@ export const clause = (sectionId: number, findingIndex?: number) =>
 
 /** The one sentence that separates this document from the paid one. */
 export const CLOSING =
-  'That is what the answers show. What to change first, in what order, and what it costs to get wrong is the $50 recorded teardown.';
+  'That is what the answers show. To have an engineer look at the app itself and rank what to fix first, the production audit is free.';
 
 export const END_MARK = 'END OF REPORT';
