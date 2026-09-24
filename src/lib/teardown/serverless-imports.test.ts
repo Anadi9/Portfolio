@@ -22,6 +22,13 @@ const ROOT = join(import.meta.dirname, '../../..');
 /** Every module Node loads when the function cold-starts, function first. */
 const GRAPH = [
   'api/teardown-report.ts',
+  'api/rescue-audit.ts',
+  'src/lib/rescue/intake.ts',
+  'api/scan.ts',
+  'src/lib/scan/validate.ts',
+  'src/lib/scan/report.ts',
+  'src/lib/scan/scan.ts',
+  'src/lib/scan/rate-limit.ts',
   'src/lib/teardown/email.ts',
   'src/lib/teardown/document.ts',
   'src/lib/teardown/report.ts',
@@ -62,8 +69,8 @@ describe('serverless import graph: ESM resolvability', () => {
 describe('api/ directory: deployable files only', () => {
   const entries = readdirSync(join(ROOT, 'api'));
 
-  it('contains nothing but the one function entrypoint', () => {
-    expect(entries).toEqual(['teardown-report.ts']);
+  it('contains nothing but the function entrypoints', () => {
+    expect([...entries].sort()).toEqual(['rescue-audit.ts', 'scan.ts', 'teardown-report.ts']);
   });
 
   it('contains no test files', () => {
