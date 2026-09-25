@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { c, gutter, label, px, rule, s } from '@/components/portfolio/tokens';
 import { p } from './styles';
+import LegalLinks from '@/components/LegalLinks';
 
 /**
  * Header, footer and shared styles for the kit's two pages. Same paper ground,
@@ -71,6 +72,7 @@ export default function KitShell({ children }: { children: ReactNode }) {
             LINKEDIN ↗
           </a>
         </nav>
+        <LegalLinks />
       </footer>
     </div>
   );

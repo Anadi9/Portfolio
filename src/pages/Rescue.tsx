@@ -7,6 +7,7 @@ import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
 import { KIT, kitPrice } from '@/lib/kit/product';
+import LegalLinks from '@/components/LegalLinks';
 
 /**
  * `/`: Vibe Code Rescue, fixed-price production fixes for apps built with
@@ -1048,6 +1049,7 @@ const Rescue = () => {
             LINKEDIN ↗
           </a>
         </nav>
+        <LegalLinks />
       </footer>
 
       <StickyBar watch={heroCta} />

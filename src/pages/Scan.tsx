@@ -7,6 +7,7 @@ import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from 
 import { parseScanInput } from '@/lib/scan/validate';
 import { KIT, kitPrice } from '@/lib/kit/product';
 import type { Finding, ScanReport, Severity } from '@/lib/scan/report';
+import LegalLinks from '@/components/LegalLinks';
 
 /**
  * `/scan`: the free Supabase security check.
@@ -561,6 +562,7 @@ export default function Scan() {
             LINKEDIN ↗
           </a>
         </nav>
+        <LegalLinks />
       </footer>
     </div>
   );

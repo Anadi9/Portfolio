@@ -132,6 +132,13 @@ export const routes: RouteRecord[] = [
         getStaticPaths: async () => (await import('./content')).postsByStream('fix').map((p) => p.path),
       },
 
+      // The policy pages Stripe India asks for before it activates payments.
+      ...(['Support', 'Terms', 'Privacy', 'Refunds'] as const).map((name) => ({
+        path: `/${name.toLowerCase()}`,
+        lazy: () => import('./pages/Legal').then((m) => ({ Component: m[name] })),
+        entry: 'src/pages/Legal.tsx',
+      })),
+
       // ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE
       {
         path: '*',
