@@ -28,3 +28,9 @@ assets/covers
 *.njsproj
 *.sln
 *.sw?
+
+# Secrets and Vercel CLI state
+.env
+.env*.local
+.vercel
+.env*
