@@ -17,7 +17,7 @@ const check = (label, condition) => {
 const count = (html, needle) => (html.match(new RegExp(needle, 'g')) ?? []).length;
 
 const pages = globSync('dist/{drops,wisdom,dispatch,fixes}/*/index.html');
-check(`found 19 prerendered posts (found ${pages.length})`, pages.length === 19);
+check(`found 20 prerendered posts (found ${pages.length})`, pages.length === 20);
 
 // Posts published with `cover: false` ship no cover band and no OG card by
 // design; the cover assertions below apply to the rest. None do today: a post
@@ -110,7 +110,7 @@ const jpegSize = (buf) => {
 // checking that a post was not added without one, the failure mode the old
 // generator threw on, moved to the only place left that can still catch it.
 const ogCards = globSync('dist/og/**/*.jpg');
-check(`found 19 OG cards (found ${ogCards.length})`, ogCards.length === 19); // cover-less posts use /og.png
+check(`found 20 OG cards (found ${ogCards.length})`, ogCards.length === 20); // cover-less posts use /og.png
 for (const card of ogCards) {
   const buf = readFileSync(card);
   const size = jpegSize(buf);
@@ -158,18 +158,18 @@ check('prompts page keeps its PDF link', prompts.includes('the-ai-prompt-playboo
 
 // The index still prerenders every card and every chip.
 const index = readFileSync('dist/notes/index.html', 'utf8');
-check('index prerenders 19 feed cards', count(index, 'pf-feed-card"') === 19);
+check('index prerenders 20 feed cards', count(index, 'pf-feed-card"') === 20);
 check('index prerenders 5 filter chips', count(index, 'aria-pressed') === 5);
-check(`index prerenders 19 feed thumbnails (found ${count(index, 'pf-feed-media')})`, count(index, 'pf-feed-media') === 19);
+check(`index prerenders 20 feed thumbnails (found ${count(index, 'pf-feed-media')})`, count(index, 'pf-feed-media') === 20);
 
 // The feeds list every published post and nothing else.
 const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
 const rss = readFileSync('dist/rss.xml', 'utf8');
-// 25 = 19 posts + `/` + `/rescue/audit` + `/scan` + `/teardown` + `/notes` +
+// 26 = 20 posts + `/` + `/rescue/audit` + `/scan` + `/teardown` + `/notes` +
 // `/products/production-kit`.
 // Bump this when a static route is added to or removed from the sitemap in
 // `generate-feeds.mjs`.
-check(`sitemap lists 25 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 25);
+check(`sitemap lists 26 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 26);
 for (const path of ['', '/rescue/audit', '/scan', '/teardown', '/notes', '/products/production-kit']) {
   check(`sitemap lists ${path || '/'}`, sitemap.includes(`<loc>https://anadithakur.in${path}</loc>`));
 }
@@ -184,7 +184,7 @@ check('sitemap does not list /portfolio', !sitemap.includes('/portfolio</loc>'))
 const teardown = readFileSync('dist/teardown/index.html', 'utf8');
 check('/teardown prerenders its intro', teardown.includes('thirteen questions'));
 check('/teardown prerenders question 1', teardown.includes('without using the words'));
-check(`rss lists 19 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 19);
+check(`rss lists 20 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 20);
 check('robots.txt declares the sitemap', readFileSync('dist/robots.txt', 'utf8').includes('Sitemap:'));
 for (const page of pages) {
   const url = 'https://anadithakur.in/' + page.replace('dist/', '').replace('/index.html', '');

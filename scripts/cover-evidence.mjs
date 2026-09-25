@@ -53,4 +53,12 @@ export const evidence = {
     '[ ] Every environment variable exists on the host.',
     '[ ] Deep links survive a refresh.',
   ],
+  '/drops/context': [
+    '# PROJECT.md',
+    '## What I\'m building',
+    '## Who it\'s for',
+    '!## Rules to always follow',
+    '## Things to avoid',
+    '## Where my files live',
+  ],
 };
