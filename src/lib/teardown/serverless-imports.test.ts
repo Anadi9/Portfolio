@@ -41,6 +41,17 @@ const GRAPH = [
   'src/lib/kit/archive.ts',
   'src/lib/kit/email.ts',
   'src/lib/kit/product.ts',
+  'api/kit-price.ts',
+  'src/lib/kit/geo.ts',
+  'api/kit/[action].ts',
+  'src/lib/kit/handlers.ts',
+  'src/lib/kit/fulfil.ts',
+  'src/lib/kit/packs.ts',
+  'src/lib/kit/store.ts',
+  'src/lib/kit/tokens.ts',
+  'src/data/kit/index.ts',
+  'src/data/kit/types.ts',
+  'src/data/kit/releases/1.2.0.ts',
 ];
 
 /** Relative specifiers only: bare ones are resolved from node_modules, not by path. */
@@ -78,6 +89,8 @@ describe('api/ directory: deployable files only', () => {
 
   it('contains nothing but the function entrypoints', () => {
     expect([...entries].sort()).toEqual([
+      'kit',
+      'kit-price.ts',
       'production-kit-checkout.ts',
       'production-kit-download.ts',
       'rescue-audit.ts',
@@ -89,5 +102,9 @@ describe('api/ directory: deployable files only', () => {
 
   it('contains no test files', () => {
     expect(entries.filter((f) => /\.test\.[cm]?[jt]sx?$/.test(f))).toEqual([]);
+  });
+
+  it('has only the one dispatcher in api/kit', () => {
+    expect(readdirSync(join(ROOT, 'api', 'kit'))).toEqual(['[action].ts']);
   });
 });

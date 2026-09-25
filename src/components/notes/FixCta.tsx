@@ -2,7 +2,8 @@ import { Link } from 'vite-react-ssg';
 import { track } from '@vercel/analytics';
 import { c, display, label, px, rule, s } from '@/components/portfolio/tokens';
 import type { FixPost } from '@/data/notes';
-import { KIT, kitPrice } from '@/lib/kit/product';
+import { KIT } from '@/lib/kit/product';
+import { KitPrice } from '@/lib/kit/use-kit-price';
 import { SCAN_PATH, auditHref, symptomLine } from './fixLinks';
 
 /**
@@ -90,7 +91,7 @@ const FixCta = ({ post }: { post: FixPost }) => {
       <p style={{ margin: px(s[6], 0, 0), font: `400 15px/1.6 ${display}`, color: c.dimOnInk }}>
         Rather fix it yourself?{' '}
         <Link to={KIT.path} onClick={clicked(post.slug, 'kit')} style={{ color: c.bright, fontWeight: 600 }}>
-          The {kitPrice} Production Kit
+          The <KitPrice /> Production Kit
         </Link>{' '}
         has the rules and checks I use on every rescue.
       </p>

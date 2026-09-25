@@ -355,6 +355,9 @@ button:focus-visible,
 /* /rescue/audit: the radio and checkbox inputs are visually hidden inside their
    labels, so the focus ring has to be drawn on the label. */
 [data-audit-chip]:has(input:focus-visible) { outline: 2px solid #0a0a0a; outline-offset: 2px; }
+/* /products/production-kit: each pack card is a label around a real checkbox,
+   so the card carries the checkbox's focus ring. */
+[data-kit-pack]:has(input:focus-visible) { outline: 2px solid var(--mark); outline-offset: 3px; }
 [data-rescue-faq-sign]::before { content: '+'; }
 [data-rescue-faq][open] [data-rescue-faq-sign]::before { content: '\2212'; }
 
@@ -378,6 +381,8 @@ button:focus-visible,
   [data-rescue-area] { display: none; }
   [data-rescue-finding] { grid-template-columns: 1fr !important; gap: 10px !important; }
   [data-rescue-bar] { display: flex !important; }
+  /* The pack total and checkout button stay in reach while scrolling the cards. */
+  [data-kit-total] { position: sticky; bottom: 0; z-index: 5; }
   /* Room for the bar, so it never sits over the last links. */
   [data-rescue-footer] { padding-bottom: 104px !important; }
 }

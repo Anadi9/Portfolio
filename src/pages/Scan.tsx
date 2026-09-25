@@ -5,7 +5,8 @@ import { track } from '@vercel/analytics';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import { parseScanInput } from '@/lib/scan/validate';
-import { KIT, kitPrice } from '@/lib/kit/product';
+import { KIT } from '@/lib/kit/product';
+import { PackPrice } from '@/lib/kit/use-kit-price';
 import type { Finding, ScanReport, Severity } from '@/lib/scan/report';
 import LegalLinks from '@/components/LegalLinks';
 
@@ -281,14 +282,14 @@ function Results({ report, onReset }: { report: ScanReport; onReset: () => void 
           <p style={{ ...body, fontSize: 14, color: c.dimOnInk }}>
             Rather close them yourself?{' '}
             <Link
-              to={KIT.path}
-              onClick={() => track('scan_kit_click', { critical: report.counts.critical })}
+              to={`${KIT.path}?pack=data-security#picker`}
+              onClick={() => track('scan_kit_click', { critical: report.counts.critical, pack: 'data-security' })}
               className="pf-underline"
               style={{ color: c.bright, fontWeight: 600 }}
             >
-              The {kitPrice} Production Kit
+              Lock Down Your Data (<PackPrice id="data-security" />)
             </Link>{' '}
-            has the RLS audit and example policies I use.
+            has the RLS audit and the attack tests I use.
           </p>
         </div>
       ) : (
@@ -296,7 +297,15 @@ function Results({ report, onReset }: { report: ScanReport; onReset: () => void 
           <span style={{ ...label(10, 700, 0.16), color: p.body }}>WHAT THIS DOESN’T COVER</span>
           <p style={{ ...body, color: p.ink }}>
             Your database is closed to strangers, which puts you ahead of most AI-built apps. The other places they break are
-            auth flows, deploys and performance. If any of those keep you up, the free audit looks at all of it.
+            auth flows, deploys and performance. If any of those keep you up, the free audit looks at all of it.{' '}
+            <Link
+              to={`${KIT.path}#picker`}
+              onClick={() => track('scan_kit_click', { critical: 0, pack: 'none' })}
+              className="pf-underline"
+              style={{ color: p.ink, fontWeight: 600 }}
+            >
+              The Production Kit has a pack for each.
+            </Link>
           </p>
           <Link to={AUDIT_PLAIN} onClick={onCta} className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink, justifySelf: 'start' }}>
             FREE PRODUCTION AUDIT →

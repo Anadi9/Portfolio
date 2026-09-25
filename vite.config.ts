@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import remarkPostData from "./src/lib/remark-post-data.mjs";
 import path from "path";
+import { vercelApiDev } from "./scripts/vite-api-dev";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -30,6 +31,8 @@ export default defineConfig(({ mode }) => ({
       rehypePlugins: [rehypeSlug],
     }) },
     react(),
+    // `/api/*` in dev; see the plugin for what it does and doesn't emulate.
+    vercelApiDev(),
   ].filter(Boolean),
   resolve: {
     alias: {

@@ -6,7 +6,8 @@ import { c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretc
 import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
-import { KIT, kitPrice } from '@/lib/kit/product';
+import { KIT } from '@/lib/kit/product';
+import { KitPrice } from '@/lib/kit/use-kit-price';
 import LegalLinks from '@/components/LegalLinks';
 
 /**
@@ -502,7 +503,7 @@ const Symptoms = () => {
           </Link>{' '}
           Or fix it yourself with{' '}
           <Link to={KIT.path} onClick={kitClicked('tally')} className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
-            the {kitPrice} Production Kit →
+            the <KitPrice /> Production Kit →
           </Link>
         </p>
       </div>
@@ -858,7 +859,7 @@ const Rescue = () => {
           <p style={{ ...body, marginTop: s[5] }}>
             Add any of these to a rescue, or ask for one on its own. Rather do the visibility work yourself?{' '}
             <Link to={KIT.path} onClick={kitClicked('addons')} className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
-              The {kitPrice} Production Kit
+              The <KitPrice /> Production Kit
             </Link>{' '}
             has the rules and checks I use.
           </p>

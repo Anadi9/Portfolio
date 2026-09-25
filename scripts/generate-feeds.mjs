@@ -110,8 +110,21 @@ writeFileSync(join(OUT, 'rss.xml'), rss);
 /* --- llms.txt ------------------------------------------------------------ */
 
 // The llmstxt.org summary AI answer engines read before (or instead of) the
-// pages. The prices can't be imported from the TSX they live in, so they are
-// repeated here: change them in `Rescue.tsx` or `lib/kit/product.ts` and here too.
+// pages. The rescue prices can't be imported from the TSX they live in, so they
+// are repeated here: change them in `Rescue.tsx` and here too. The kit's prices
+// are Stripe's, as `scripts/fetch-kit-prices.mjs` wrote them before the build.
+const kitPrices = (() => {
+  try {
+    const p = JSON.parse(readFileSync(join(root, 'src', 'generated', 'kit-prices.json'), 'utf8'));
+    if (p.source !== 'stripe' || p.usd.full === undefined) return '';
+    const packs = Object.entries(p.usd).filter(([id]) => id !== 'full').map(([, amount]) => amount);
+    const usd = (minor) => `$${minor % 100 ? (minor / 100).toFixed(2) : minor / 100}`;
+    return packs.length ? ` Five packs from ${usd(Math.min(...packs))}, or the full kit for ${usd(p.usd.full)}.` : ` ${usd(p.usd.full)}.`;
+  } catch {
+    return '';
+  }
+})();
+
 const llms = `# Anadi Thakur · Vibe Code Rescue
 
 > Fixed-price production fixes for web apps built with Lovable, Bolt, Cursor and v0: security, database, auth, payments, deployment and performance. From $499, done in 7 days, with 7 days of follow-up fixes. Every engagement starts with a free audit.
@@ -124,7 +137,7 @@ Run by Anadi Thakur, a full-stack engineer. Work is done remotely, worldwide. Co
 - [Free production audit](${ORIGIN}/rescue/audit): send the app link and get a plain-English report of what is broken, what is risky and what can wait, within 48 hours. Free, no call.
 - [Free Supabase security check](${ORIGIN}/scan): checks in 30 seconds whether a Supabase project's tables are readable by anyone, using only the public anon key. Nothing is stored.
 - [The Wrapper Test](${ORIGIN}/teardown): a free 13-question diagnostic that scores an AI product on defensibility, failure design, cost floor and evaluation.
-- [The Production Kit](${ORIGIN}/products/production-kit): $19. CLAUDE.md, Cursor rules, Claude Code skills, launch and security checklists and Supabase SQL for AI-built apps.
+- [The Production Kit](${ORIGIN}/products/production-kit): CLAUDE.md, Cursor rules, Claude Code skills, templates, launch and security checklists and Supabase SQL for AI-built apps, sold as packs by problem (database security, auth, launch, AI discipline, Lovable and Bolt).${kitPrices}
 
 ## Notes
 

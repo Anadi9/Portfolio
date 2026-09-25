@@ -4,7 +4,7 @@ import { unzipSync } from 'fflate';
 import { describe, expect, it } from 'vitest';
 import { buildKitArchive } from './archive';
 import { renderKitEmail } from './email';
-import { downloadUrl, kitPrice } from './product';
+import { currencyFor, downloadUrl, formatMoney } from './product';
 import { isPaidKitSession, isSessionId, verifyStripeSignature } from './stripe';
 
 const SECRET = 'whsec_test';
@@ -50,6 +50,17 @@ describe('session checks', () => {
   });
 });
 
+describe('currencyFor', () => {
+  it('charges rupees in India and dollars everywhere else, including when the country is unknown', () => {
+    expect(currencyFor('IN')).toBe('inr');
+    expect(currencyFor('in')).toBe('inr');
+    expect(currencyFor('US')).toBe('usd');
+    expect(currencyFor('GB')).toBe('usd');
+    expect(currencyFor(undefined)).toBe('usd');
+    expect(currencyFor('')).toBe('usd');
+  });
+});
+
 describe('buildKitArchive', () => {
   const zip = unzipSync(buildKitArchive(join(import.meta.dirname, '../../../products/production-kit')));
   const names = Object.keys(zip);
@@ -67,8 +78,11 @@ describe('buildKitArchive', () => {
 });
 
 describe('copy', () => {
-  it('formats the price without trailing zeros', () => {
-    expect(kitPrice).toBe('$19');
+  it('formats money without trailing zeros, grouped for its currency', () => {
+    expect(formatMoney('usd', 1900)).toBe('$19');
+    expect(formatMoney('usd', 450)).toBe('$4.50');
+    expect(formatMoney('inr', 159900)).toBe('₹1,599');
+    expect(formatMoney('inr', 12345600)).toBe('₹1,23,456');
   });
 
   it('puts the download link in both parts of the email', () => {
