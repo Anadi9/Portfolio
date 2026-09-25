@@ -33,10 +33,15 @@ export const routes: RouteRecord[] = [
       // The domain sells one thing: the rescue offer is the front page. The
       // portfolio moved to `/portfolio`, which `vercel.json` serves as the root
       // of portfolio.anadithakur.in and 301s to from the main host, so the
-      // path itself is never the URL anyone sees.
+      // path itself is never the URL anyone sees. That also means the browser
+      // sits on `/` while holding the portfolio's HTML, so on that host the
+      // index route has to hydrate as the portfolio, not the rescue page.
       {
         index: true,
-        lazy: () => import('./pages/Rescue').then((m) => ({ Component: m.default })),
+        lazy: () =>
+          typeof window !== 'undefined' && window.location.hostname === 'portfolio.anadithakur.in'
+            ? import('./pages/Home').then((m) => ({ Component: m.default }))
+            : import('./pages/Rescue').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Rescue.tsx',
       },
       {

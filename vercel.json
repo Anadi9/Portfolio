@@ -26,12 +26,7 @@
     }
   ],
   "rewrites": [
-    { "source": "/kit/downloads/:token", "destination": "/kit/downloads/_" },
-    {
-      "source": "/",
-      "has": [{ "type": "host", "value": "portfolio.anadithakur.in" }],
-      "destination": "/portfolio"
-    }
+    { "source": "/kit/downloads/:token", "destination": "/kit/downloads/_" }
   ],
   "headers": [
     {
