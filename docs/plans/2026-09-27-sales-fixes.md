@@ -81,7 +81,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 
 ## Free Production Kit
 
-- [ ] **12. Serve the full kit as a static file.** Copy
+- [x] **12. Serve the full kit as a static file.** Copy
   `~/Downloads/production-kit/release/dist/1.2.0/production-kit-full-v1.2.0.zip`
   to `public/downloads/`, after checking its sha256 against the 1.2.0 manifest.
   *Done when:* `npm run preview` serves it with status 200 and the same sha256.
@@ -111,6 +111,9 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 
 ## Waiting for Anadi (the loop never does these)
 
+**Do not merge or deploy before the LICENSE is replaced (task 15).** From task 12 on, this
+branch publishes the zip, and the LICENSE inside it forbids giving the kit away.
+
 - Testimonials, case studies, a Loom audit walkthrough.
 - The kit LICENSE change (task 15).
 - Sending the buyers email (task 16).
@@ -130,3 +133,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 2026-09-27 · 9 · pass (judge: PASS; no overflow at 320/390/1440, desktop unchanged) · see commit
 2026-09-27 · 10 · pass (judge: PASS; validation order now matches the form, +2 tests) · see commit
 2026-09-27 · 11 · pass (judge: PASS; header 59px ≤ --pf-header-h, WORK hidden under 380px, footer still links the portfolio) · see commit
+2026-09-27 · 12 · pass (judge: PASS; preview 200, sha256 matches manifest; zip still has the buyer LICENSE, see warning above) · see commit

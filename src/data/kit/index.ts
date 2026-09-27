@@ -38,6 +38,19 @@ export const packForLookupKey = (key: string | null | undefined): PackId | undef
 /** A pack as the latest release describes it. */
 export const pack = (id: PackId): Pack => LATEST.packs.find((p) => p.id === id)!;
 
+/**
+ * The full kit as a free, public download.
+ *
+ * The latest release's full-kit zip, copied as-is into `public/downloads/` so
+ * it is a static file with no account, token or checkout in front of it.
+ * `free.test.ts` fails if the file there stops matching this manifest, so a new
+ * release can't ship with a stale zip.
+ */
+export const FREE_KIT = (() => {
+  const full = pack('full');
+  return { version: LATEST.version, zip: full.zip, href: `/downloads/${full.zip}`, bytes: full.bytes, sha256: full.sha256 };
+})();
+
 /** Every release that contains this pack, newest first. */
 export const releasesOf = (id: PackId): { version: string; pack: Pack }[] =>
   RELEASES.flatMap((r) => {
