@@ -23,7 +23,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 
 ## Home page (`src/pages/Rescue.tsx`)
 
-- [ ] **1. Take the kit out of the buying path.** Remove the kit sentence from the
+- [x] **1. Take the kit out of the buying path.** Remove the kit sentence from the
   tally panel and from the add-ons intro. The footer keeps a "Free Production Kit" link.
   *Done when:* above the footer, the home page has no link to the kit.
 
@@ -119,3 +119,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 ## Log
 
 <!-- One line per round: date · task · result · commit -->
+2026-09-27 · 1 · pass (judge: PASS; lint has 3 errors that predate this branch, none new) · see commit

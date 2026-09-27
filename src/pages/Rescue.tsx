@@ -7,7 +7,6 @@ import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
 import { KIT } from '@/lib/kit/product';
-import { KitPrice } from '@/lib/kit/use-kit-price';
 import LegalLinks from '@/components/LegalLinks';
 
 /**
@@ -312,7 +311,8 @@ const jsonLd = {
 /** Fires the CTA event. Only ever called from a click, so never in the prerender. */
 const clicked = (location: string) => () => trackRescue('audit_cta_click', { location });
 
-/** The same for the kit, the page's one paid-product link. */
+/** The same for the kit. It is linked from the footer only: a visitor who has
+ *  just ticked their symptoms is a rescue lead, not a do-it-yourself sale. */
 const kitClicked = (location: string) => () => trackRescue('kit_link_click', { location });
 
 /** The hero's error log. Rows flip from error to fixed one at a time after
@@ -500,10 +500,6 @@ const Symptoms = () => {
           Not ready to talk?{' '}
           <Link to="/scan" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
             Run the free Supabase security check →
-          </Link>{' '}
-          Or fix it yourself with{' '}
-          <Link to={KIT.path} onClick={kitClicked('tally')} className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
-            the <KitPrice /> Production Kit →
           </Link>
         </p>
       </div>
@@ -857,11 +853,7 @@ const Rescue = () => {
             On top of the fix
           </h2>
           <p style={{ ...body, marginTop: s[5] }}>
-            Add any of these to a rescue, or ask for one on its own. Rather do the visibility work yourself?{' '}
-            <Link to={KIT.path} onClick={kitClicked('addons')} className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
-              The <KitPrice /> Production Kit
-            </Link>{' '}
-            has the rules and checks I use.
+            Add any of these to a rescue, or ask for one on its own.
           </p>
           <div
             data-rescue-split
