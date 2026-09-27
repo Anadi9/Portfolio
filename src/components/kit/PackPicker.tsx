@@ -126,7 +126,7 @@ export default function PackPicker({
             className="pf-nudge pf-nudge-lg"
             style={{ ...cta, opacity: empty || sum === null || status.kind === 'loading' ? 0.5 : 1, cursor: empty ? 'not-allowed' : 'pointer' }}
           >
-            {status.kind === 'loading' ? 'OPENING CHECKOUT…' : 'CHECKOUT'}
+            {status.kind === 'loading' ? 'Opening checkout…' : 'Checkout'}
             <span aria-hidden>→</span>
           </button>
         </div>

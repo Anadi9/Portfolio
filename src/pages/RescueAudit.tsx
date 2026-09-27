@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
-import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
+import { buttonType, c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import {
   NOTES_MAX,
   SYMPTOMS,
@@ -98,7 +98,7 @@ const cta: CSSProperties = {
   background: c.ink,
   color: c.accent,
   border: 0,
-  ...label(11, 700, 0.12),
+  ...buttonType(),
   textDecoration: 'none',
   cursor: 'pointer',
 };
@@ -456,7 +456,7 @@ export default function RescueAudit() {
 
                 <div style={{ display: 'grid', gap: s[4], justifyItems: 'start' }}>
                   <button type="submit" disabled={status.kind === 'sending'} className="pf-nudge pf-nudge-lg" style={{ ...cta, opacity: status.kind === 'sending' ? 0.6 : 1 }}>
-                    {status.kind === 'sending' ? 'SENDING…' : 'SEND FOR AUDIT'}
+                    {status.kind === 'sending' ? 'Sending…' : 'Send for audit'}
                     <span aria-hidden>→</span>
                   </button>
                   <p style={hint}>

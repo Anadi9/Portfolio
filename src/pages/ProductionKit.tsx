@@ -244,7 +244,7 @@ export default function ProductionKit() {
                 className="pf-nudge pf-nudge-lg"
                 style={cta}
               >
-                PICK YOUR PACKS<span aria-hidden>↓</span>
+                Pick your packs<span aria-hidden>↓</span>
               </a>
               <p style={hint}>
                 Not sure what’s wrong?{' '}
@@ -425,7 +425,7 @@ export default function ProductionKit() {
               className="pf-nudge pf-nudge-lg"
               style={{ ...cta, justifySelf: 'start' }}
             >
-              PICK YOUR PACKS<span aria-hidden>↑</span>
+              Pick your packs<span aria-hidden>↑</span>
             </a>
           </div>
           <div style={{ display: 'grid', gap: s[5], padding: px(s[9], s[7]), background: c.plate, color: c.paper, alignContent: 'start' }}>

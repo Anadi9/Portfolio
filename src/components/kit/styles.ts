@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { c, display, label, px, s } from '@/components/portfolio/tokens';
+import { buttonType, c, display, label, px, s } from '@/components/portfolio/tokens';
 
 /** Shared by the kit's two pages; see `KitShell`. */
 export const p = {
@@ -24,7 +24,7 @@ export const cta: CSSProperties = {
   background: c.ink,
   color: c.accent,
   border: 0,
-  ...label(11, 700, 0.12),
+  ...buttonType(),
   textDecoration: 'none',
   cursor: 'pointer',
 };

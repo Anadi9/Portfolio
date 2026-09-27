@@ -131,6 +131,16 @@ export const heading = (
 };
 
 /**
+ * Button type: the words on a primary call to action. Set in the display face
+ * at reading size and sentence case, because a CTA is read, not scanned like a
+ * label. The mono caps in `label` stay for eyebrows, nav and metadata.
+ */
+export const buttonType = (size = 16): CSSProperties => ({
+  font: `600 ${size}px/1.2 ${display}`,
+  letterSpacing: '-0.005em',
+});
+
+/**
  * Mono label: the small caps-and-tracking type used everywhere.
  *
  * Floored at 10px. The design had drifted to 8px and 9px in the rail and the

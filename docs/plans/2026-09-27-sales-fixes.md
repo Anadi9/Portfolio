@@ -57,7 +57,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   *Done when:* the page's visible text, outside the error-log terminal, has
   none of: RLS, env variables, JSON-LD, SSR, Core Web Vitals, AEM, schemas, endpoints.
 
-- [ ] **8. Readable buttons.** Main CTAs on the home, audit and kit pages: 15px+,
+- [x] **8. Readable buttons.** Main CTAs on the home, audit and kit pages: 15px+,
   normal case instead of spaced capitals.
   *Done when:* every primary CTA is ≥15px and not uppercase; nav can stay as is.
 
@@ -126,3 +126,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 2026-09-27 · 5 · pass (judge: PASS; strip reads `site` from src/data/portfolio.ts) · see commit
 2026-09-27 · 6 · pass (judge: PASS; byline under the pitch, same portrait file as the engineer section) · see commit
 2026-09-27 · 7 · pass on retry (judge FAIL: bio and visibility copy overclaimed; fixed, then PASS) · see commit
+2026-09-27 · 8 · pass (judge: PASS; all primary CTAs measured 16px, sentence case, incl. sticky bar) · see commit

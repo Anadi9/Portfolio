@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, RefObject } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
-import { c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
+import { buttonType, c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
 import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
@@ -103,7 +103,7 @@ const cta: CSSProperties = {
   padding: px(0, s[6]),
   background: c.ink,
   color: c.accent,
-  ...label(11, 700, 0.12),
+  ...buttonType(),
   textDecoration: 'none',
 };
 
@@ -516,7 +516,7 @@ const Symptoms = () => {
           className="pf-nudge"
           style={{ ...cta, background: c.accent, color: c.ink }}
         >
-          GET A FREE AUDIT<span aria-hidden>→</span>
+          Get a free audit<span aria-hidden>→</span>
         </Link>
         <p style={{ ...body, fontSize: 14, color: c.dimOnInk }}>
           Not ready to talk?{' '}
@@ -581,7 +581,7 @@ const StickyBar = ({ watch }: { watch: RefObject<HTMLElement | null> }) => {
         <span style={{ font: `600 14px/1.2 ${display}` }}>Production audit</span>
       </div>
       <Link to={AUDIT} onClick={clicked('sticky_bar')} tabIndex={show ? undefined : -1} style={cta}>
-        GET AUDIT<span aria-hidden>→</span>
+        Get audit<span aria-hidden>→</span>
       </Link>
     </div>
   );
@@ -622,7 +622,7 @@ const Rescue = () => {
             </a>
           ))}
           <Link to={AUDIT} onClick={clicked('header')} className="pf-nudge" style={{ ...cta, minHeight: 44, padding: px(0, s[5]) }}>
-            FREE AUDIT<span aria-hidden>→</span>
+            Free audit<span aria-hidden>→</span>
           </Link>
         </nav>
       </header>
@@ -656,7 +656,7 @@ const Rescue = () => {
               </a>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6] }}>
                 <Link ref={heroCta} to={AUDIT} onClick={clicked('hero')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]) }}>
-                  GET A FREE AUDIT<span aria-hidden>→</span>
+                  Get a free audit<span aria-hidden>→</span>
                 </Link>
                 <a href="#h-proof" className="pf-underline" style={textLink}>
                   SEE A SAMPLE REPORT ↓
@@ -943,7 +943,7 @@ const Rescue = () => {
                 ))}
               </ul>
               <Link to={AUDIT} onClick={clicked('price')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56 }}>
-                START WITH THE FREE AUDIT<span aria-hidden>→</span>
+                Start with the free audit<span aria-hidden>→</span>
               </Link>
             </div>
           </div>
@@ -1094,7 +1094,7 @@ const Rescue = () => {
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6], marginTop: s[10] }}>
             <Link to={AUDIT} onClick={clicked('final')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: c.accent, color: c.ink }}>
-              GET MY FREE AUDIT<span aria-hidden>→</span>
+              Get my free audit<span aria-hidden>→</span>
             </Link>
             <a href={`mailto:${EMAIL}`} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
               OR EMAIL {EMAIL.toUpperCase()}

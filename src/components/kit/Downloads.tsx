@@ -28,7 +28,7 @@ export function PackDownload({ token, id, name, versions }: { token: string; id:
     <li style={{ display: 'grid', gap: s[3], padding: px(s[5], 0), borderBottom: `${rule.hair}px solid ${p.rule}` }}>
       <span style={{ font: `700 18px/1.3 ${display}`, color: p.ink }}>{name}</span>
       <a href={downloadHref(token, id, latest.version)} onClick={() => track('kit_download', { pack: id })} className="pf-nudge pf-nudge-lg" style={{ ...cta, justifySelf: 'start' }}>
-        DOWNLOAD VERSION {latest.version} (.ZIP, {kb(latest.bytes)})<span aria-hidden>↓</span>
+        Download version {latest.version} (.zip, {kb(latest.bytes)})<span aria-hidden>↓</span>
       </a>
       {older.length > 0 && (
         <p style={hint}>
@@ -77,7 +77,7 @@ export function UpgradeBox({ token, offer, onGranted }: { token: string; offer: 
           : `The full kit, for its price minus what you’ve already paid for packs.`}
       </p>
       <button type="button" onClick={go} disabled={state.kind === 'loading'} className="pf-nudge pf-nudge-lg" style={{ ...cta, opacity: state.kind === 'loading' ? 0.6 : 1 }}>
-        {state.kind === 'loading' ? 'ONE MOMENT…' : offer.due === 0 ? 'GET THE FULL KIT FREE' : `UPGRADE TO EVERYTHING FOR ${offer.label}`}
+        {state.kind === 'loading' ? 'One moment…' : offer.due === 0 ? 'Get the full kit free' : `Upgrade to everything for ${offer.label}`}
         <span aria-hidden>→</span>
       </button>
       {state.kind === 'failed' && (
