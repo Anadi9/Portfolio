@@ -1127,7 +1127,7 @@ const Rescue = () => {
         <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
         <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
           <Link to={KIT.path} onClick={kitClicked('footer')} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            PRODUCTION KIT
+            FREE PRODUCTION KIT
           </Link>
           <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
             NOTES

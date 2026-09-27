@@ -2,7 +2,6 @@ import { c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretc
 import { site } from '@/data/portfolio';
 import { ORIGIN } from '@/components/Seo';
 import { KIT } from '@/lib/kit/product';
-import { KitPrice } from '@/lib/kit/use-kit-price';
 
 const [emailUser, emailHost] = site.email.split('@');
 
@@ -32,7 +31,7 @@ const doors = [
     kind: "I'D RATHER FIX IT MYSELF",
     value: (
       <>
-        The Production Kit: the rules, checks and SQL I use on every rescue. <KitPrice />, instant download.
+        The Production Kit: the rules, checks and SQL I use on every rescue. Free, instant download.
       </>
     ),
     to: `${ORIGIN}${KIT.path}`,

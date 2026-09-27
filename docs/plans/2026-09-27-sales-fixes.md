@@ -93,7 +93,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   made it". The closing "Rather have it fixed? Free audit" band stays.
   *Done when:* no page links to Stripe checkout; the button downloads the zip; tests pass.
 
-- [ ] **14. "Free" everywhere else.** Every `<KitPrice />` mention and
+- [x] **14. "Free" everywhere else.** Every `<KitPrice />` mention and
   "₹/$ Production Kit" on the site says "free". `/scan` links still land on the kit page.
   *Done when:* no kit price appears anywhere in the built site.
 
@@ -135,3 +135,4 @@ branch publishes the zip, and the LICENSE inside it forbids giving the kit away.
 2026-09-27 · 11 · pass (judge: PASS; header 59px ≤ --pf-header-h, WORK hidden under 380px, footer still links the portfolio) · see commit
 2026-09-27 · 12 · pass (judge: PASS; preview 200, sha256 matches manifest; zip still has the buyer LICENSE, see warning above) · see commit
 2026-09-27 · 13 · pass (judge: PASS; download click verified by sha256; buyer pages' paid upgrade → free note; PackPicker deleted; price helpers left unused → clean up in 14) · see commit
+2026-09-27 · 14 · pass (judge: PASS; no kit price on 10 pages or llms.txt; use-kit-price deleted; Stripe price fetch taken out of the build, script kept) · see commit
