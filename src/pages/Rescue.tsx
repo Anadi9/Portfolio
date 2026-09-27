@@ -8,6 +8,7 @@ import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
 import { KIT } from '@/lib/kit/product';
 import LegalLinks from '@/components/LegalLinks';
+import { site } from '@/data/portfolio';
 
 /**
  * `/`: Vibe Code Rescue, fixed-price production fixes for apps built with
@@ -669,6 +670,40 @@ const Rescue = () => {
             <ErrorLog />
           </div>
         </section>
+
+        {/* Proof, read from the portfolio's own data so the two sites can't disagree. */}
+        <div
+          aria-label="Track record"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: px(s[5], s[10]),
+            padding: px(s[6], gutter),
+            borderTop: `${rule.hair}px solid ${p.rule}`,
+          }}
+          data-rescue-hpad
+        >
+          {[
+            [`${Number(site.years)}+`, 'YEARS SHIPPING'],
+            [site.releases, 'PRODUCTION RELEASES'],
+          ].map(([num, text]) => (
+            <div key={text} style={{ display: 'flex', alignItems: 'baseline', gap: s[3] }}>
+              <span style={{ ...heading('d6'), color: p.ink }}>{num}</span>
+              <span style={{ ...label(10, 700, 0.14), color: p.dim }}>{text}</span>
+            </div>
+          ))}
+          <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: px(s[2], s[4]) }}>
+            <span style={{ ...label(10, 700, 0.16), color: p.dim }}>SHIPPED FOR</span>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexWrap: 'wrap', gap: px(s[2], s[5]) }}>
+              {site.clients.map((client) => (
+                <li key={client} style={{ ...label(12, 700, 0.12), color: p.ink }}>
+                  {client}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
         <div
           style={{
