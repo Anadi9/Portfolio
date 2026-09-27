@@ -47,7 +47,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   the portfolio's data, don't retype them.
   *Done when:* the strip shows those facts and every one of them traces to existing portfolio data.
 
-- [ ] **6. A face above the fold.** Small portrait plus "Anadi Thakur · full-stack
+- [x] **6. A face above the fold.** Small portrait plus "Anadi Thakur · full-stack
   engineer" in the hero.
   *Done when:* the portrait is visible in the first screen at 1440×900 and 390×844.
 
@@ -124,3 +124,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 2026-09-27 · 3 · pass (judge: PASS; its note on uneven mobile rows fixed after, rechecked by screenshot) · see commit
 2026-09-27 · 4 · pass (judge: PASS; FAQ answers built from the same tiers and guarantee constants) · see commit
 2026-09-27 · 5 · pass (judge: PASS; strip reads `site` from src/data/portfolio.ts) · see commit
+2026-09-27 · 6 · pass (judge: PASS; byline under the pitch, same portrait file as the engineer section) · see commit

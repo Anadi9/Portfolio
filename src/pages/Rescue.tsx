@@ -639,6 +639,21 @@ const Rescue = () => {
                 I take apps built with Lovable, Bolt, Cursor and v0 and make them production-ready: auth, database,
                 deployment, performance. Fixed price. Done in 7 days.
               </p>
+              {/* The "I" above has a face. Same file as the engineer section, so no second download. */}
+              <a href="#h-who" style={{ display: 'flex', alignItems: 'center', gap: s[4], textDecoration: 'none', color: p.ink, justifySelf: 'start' }}>
+                <img
+                  src={portrait}
+                  alt=""
+                  width={52}
+                  height={52}
+                  fetchPriority="high"
+                  style={{ width: 52, height: 52, objectFit: 'cover', objectPosition: 'center 20%', display: 'block', border: `${rule.base}px solid ${c.ink}`, background: p.panel }}
+                />
+                <span style={{ display: 'grid', gap: s[1] }}>
+                  <span style={{ font: `600 16px/1.2 ${display}` }}>{site.name}</span>
+                  <span style={{ font: `400 14px/1.3 ${display}`, color: p.body }}>Full-stack engineer</span>
+                </span>
+              </a>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6] }}>
                 <Link ref={heroCta} to={AUDIT} onClick={clicked('hero')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]) }}>
                   GET A FREE AUDIT<span aria-hidden>→</span>
