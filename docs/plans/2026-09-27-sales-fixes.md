@@ -66,7 +66,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 
 ## Audit form (`src/pages/RescueAudit.tsx`, `src/lib/rescue/intake.ts`)
 
-- [ ] **10. Email second, softer promise, offer a call.** Email field right after the
+- [x] **10. Email second, softer promise, offer a call.** Email field right after the
   app link. "No follow-up sequence, no pressure" → "One follow-up, then I leave
   you alone." Step 03 and the confirmation email add: "When the report arrives,
   reply if you'd like a 15-minute call to go through it."
@@ -128,3 +128,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 2026-09-27 · 7 · pass on retry (judge FAIL: bio and visibility copy overclaimed; fixed, then PASS) · see commit
 2026-09-27 · 8 · pass (judge: PASS; all primary CTAs measured 16px, sentence case, incl. sticky bar) · see commit
 2026-09-27 · 9 · pass (judge: PASS; no overflow at 320/390/1440, desktop unchanged) · see commit
+2026-09-27 · 10 · pass (judge: PASS; validation order now matches the form, +2 tests) · see commit
