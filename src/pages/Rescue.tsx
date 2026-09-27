@@ -144,19 +144,19 @@ const fixes = [
     tag: 'Database',
     title: 'Database and security',
     body: "Close what's open before someone finds it.",
-    items: ['Supabase RLS policies', 'Exposed API keys', 'Open endpoints', 'Messy schemas'],
+    items: ['Data strangers can read or change', 'Secret keys anyone can find', 'Actions that work without logging in', 'A messy database setup'],
   },
   {
     tag: 'Deployment',
     title: 'Deployment',
     body: "A setup that doesn't break when you push.",
-    items: ['Env variables', 'Build errors', 'Domains', 'Safe, repeatable pushes'],
+    items: ['Settings that work locally but not live', 'Builds that fail on deploy', 'Your own domain', "Updates that don't break the live app"],
   },
   {
     tag: 'Stability',
     title: 'Performance and stability',
     body: 'Stop the code that keeps breaking.',
-    items: ['Slow pages', 'Crashing components', 'Fix-one-break-two loops', 'Regressions after prompts'],
+    items: ['Slow pages', 'Screens that crash', 'Fix-one-break-two loops', 'Old bugs coming back after prompts'],
   },
 ];
 
@@ -183,10 +183,10 @@ const steps = [
 /** Illustrative findings, set under a SAMPLE label. The rank names are the
  *  audit's own three buckets from step 01. */
 const findings = [
-  { rank: 'Fix now', solid: true, line: 'RLS is off on the users table. Any visitor can read every row.', area: 'Database' },
-  { rank: 'Fix now', solid: true, line: 'A secret Supabase key ships in the client bundle.', area: 'Security' },
-  { rank: 'Risky', solid: false, line: "Sessions aren't refreshed, so users get logged out on reload.", area: 'Auth' },
-  { rank: 'Can wait', solid: false, line: 'The dashboard fetches every record on load.', area: 'Performance' },
+  { rank: 'Fix now', solid: true, line: 'Anyone can download your full user list, without logging in.', area: 'Database' },
+  { rank: 'Fix now', solid: true, line: "A secret key is visible to anyone who opens your app's code.", area: 'Security' },
+  { rank: 'Risky', solid: false, line: 'Users get logged out every time they refresh the page.', area: 'Auth' },
+  { rank: 'Can wait', solid: false, line: 'The dashboard loads every record at once, so it slows down as you grow.', area: 'Performance' },
 ];
 
 /** The price section's three sizes of job, and the service JSON-LD's offers.
@@ -258,7 +258,7 @@ const addons = [
   {
     tag: 'Visibility',
     title: 'Search & AI visibility fix',
-    body: 'Prerendering or SSR, meta tags, JSON-LD, a sitemap and Search Console, so Google and AI answer engines see real pages.',
+    body: 'Apps built with Lovable or Bolt can look like an empty page to Google and AI tools. I make your pages readable to them, with proper titles, descriptions and a sitemap, and set up Search Console so you can watch them get found.',
     price: '$199',
     unit: null,
   },
@@ -1006,20 +1006,17 @@ const Rescue = () => {
               </h2>
               <p style={body}>
                 I&apos;m Anadi, a full-stack engineer. I&apos;ve spent 4+ years shipping production React, Next.js,
-                React Native and Node apps, including the ZEISS Microscopy product platform, an enterprise build on AEM.
+                React Native and Node apps, including the ZEISS Microscopy product platform.
               </p>
               <p style={body}>
-                I run PostgreSQL and Supabase in production, deploy on Vercel and Netlify with CI/CD, and work on
-                performance, Core Web Vitals and technical SEO. I also put the Claude API into production: I built{' '}
+                I run databases in production, set up automatic deploys, and work on speed and on getting apps found on
+                Google. I also put AI into production: I made{' '}
                 <a href="https://antasignal.vercel.app/" className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
                   Signal
                 </a>
-                , an AI lead-scoring pipeline, on my own.
+                , an AI lead-scoring app, on my own.
               </p>
               <p style={body}>I use AI tools every day too. That&apos;s exactly why I know where they fall short.</p>
-              <p style={{ ...label(10, 700, 0.14), lineHeight: 1.7, color: p.dim, margin: 0 }}>
-                REACT · NEXT.JS · REACT NATIVE · NODE.JS · SUPABASE · POSTGRESQL · VERCEL · CLAUDE API
-              </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[6] }}>
                 <a href={GITHUB} className="pf-underline" style={textLink}>
                   GITHUB ↗

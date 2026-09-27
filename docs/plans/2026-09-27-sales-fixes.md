@@ -51,7 +51,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   engineer" in the hero.
   *Done when:* the portrait is visible in the first screen at 1440×900 and 390×844.
 
-- [ ] **7. Plain words instead of jargon.** Rewrite body copy and the sample report
+- [x] **7. Plain words instead of jargon.** Rewrite body copy and the sample report
   so they say what happens to the user ("anyone can download your user list").
   Remove the capitals tech-stack line (it stays on the portfolio).
   *Done when:* the page's visible text, outside the error-log terminal, has
@@ -125,3 +125,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 2026-09-27 · 4 · pass (judge: PASS; FAQ answers built from the same tiers and guarantee constants) · see commit
 2026-09-27 · 5 · pass (judge: PASS; strip reads `site` from src/data/portfolio.ts) · see commit
 2026-09-27 · 6 · pass (judge: PASS; byline under the pitch, same portrait file as the engineer section) · see commit
+2026-09-27 · 7 · pass on retry (judge FAIL: bio and visibility copy overclaimed; fixed, then PASS) · see commit
