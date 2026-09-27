@@ -36,7 +36,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   Full rescue from $2,500 (all four areas). Keep "every quote is fixed first".
   *Done when:* all three tiers render, readable at 390px, JSON-LD still valid.
 
-- [ ] **4. Guarantee and two FAQs.** Under the price: "Fixed price. If I don't fix
+- [x] **4. Guarantee and two FAQs.** Under the price: "Fixed price. If I don't fix
   something in the quote, you don't pay for it." Add FAQs "What does it
   usually cost?" (the tiers) and "What if you can't fix it?" (the guarantee).
   *Done when:* guarantee visible in the price section; both FAQs in the page and FAQPage JSON-LD.
@@ -122,3 +122,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 2026-09-27 · 1 · pass (judge: PASS; lint has 3 errors that predate this branch, none new) · see commit
 2026-09-27 · 2 · pass (judge: PASS; two add-ons, care first) · see commit
 2026-09-27 · 3 · pass (judge: PASS; its note on uneven mobile rows fixed after, rechecked by screenshot) · see commit
+2026-09-27 · 4 · pass (judge: PASS; FAQ answers built from the same tiers and guarantee constants) · see commit

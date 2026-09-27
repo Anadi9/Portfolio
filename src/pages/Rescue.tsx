@@ -200,6 +200,9 @@ const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
 const tierPrice = ({ min, max }: { min: number; max?: number }) =>
   max === undefined ? `From ${usd(min)}` : min === max ? usd(min) : `${usd(min)}–${max.toLocaleString('en-US')}`;
 
+/** The service's promise. Said once under the price and again in the FAQ. */
+const GUARANTEE = "Fixed price. If I don't fix something in the quote, you don't pay for it.";
+
 const included = [
   'A free audit report first',
   'One fixed price, agreed up front',
@@ -209,6 +212,16 @@ const included = [
 ];
 
 const faqs = [
+  {
+    q: 'What does it usually cost?',
+    a: `Most jobs are one of three sizes: ${tiers
+      .map((t) => `${t.name.toLowerCase()}, ${tierPrice(t).replace('From', 'from')}`)
+      .join('; ')}. The audit tells you which, and the quote is fixed before I start.`,
+  },
+  {
+    q: "What if you can't fix it?",
+    a: `${GUARANTEE} The quote lists every fix, so it's always clear what you owe.`,
+  },
   {
     q: 'Do you rebuild everything from scratch?',
     a: "No. I fix what's there and only rewrite what's actually broken. Your app stays your app.",
@@ -851,6 +864,19 @@ const Rescue = () => {
               <p style={{ ...body, maxWidth: '46ch' }}>
                 The audit tells you which one you need. Every quote is fixed before work starts. If scope changes, we
                 agree on it before I bill a cent.
+              </p>
+              <p
+                style={{
+                  margin: px(s[2], 0, 0),
+                  padding: px(s[4], s[5]),
+                  borderLeft: `${rule.edge}px solid ${p.gold}`,
+                  background: p.picked,
+                  font: `600 17px/1.4 ${display}`,
+                  color: p.ink,
+                  maxWidth: '46ch',
+                }}
+              >
+                {GUARANTEE}
               </p>
             </div>
             <div style={{ display: 'grid', gap: s[6], padding: px(s[8], s[8], s[7]), border: `${rule.base}px solid ${c.ink}` }}>
