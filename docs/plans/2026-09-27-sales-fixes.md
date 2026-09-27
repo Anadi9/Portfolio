@@ -97,7 +97,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   "₹/$ Production Kit" on the site says "free". `/scan` links still land on the kit page.
   *Done when:* no kit price appears anywhere in the built site.
 
-- [ ] **15. License for a free kit.** [?] The LICENSE in the zip is written for
+- [?] **15. License for a free kit.** The LICENSE in the zip is written for
   buyers and forbids posting the kit publicly. Draft a new LICENSE (free to use
   and share with credit, no reselling) into `docs/drafts/kit-license.md`. Changing
   the zip itself waits for Anadi's OK.
@@ -136,3 +136,4 @@ branch publishes the zip, and the LICENSE inside it forbids giving the kit away.
 2026-09-27 · 12 · pass (judge: PASS; preview 200, sha256 matches manifest; zip still has the buyer LICENSE, see warning above) · see commit
 2026-09-27 · 13 · pass (judge: PASS; download click verified by sha256; buyer pages' paid upgrade → free note; PackPicker deleted; price helpers left unused → clean up in 14) · see commit
 2026-09-27 · 14 · pass (judge: PASS; no kit price on 10 pages or llms.txt; use-kit-price deleted; Stripe price fetch taken out of the build, script kept) · see commit
+2026-09-27 · 15 · draft written, waiting for Anadi (judge FAIL: selling ban caught client work, table incomplete, packs unmentioned; fixed, then PASS) · see commit
