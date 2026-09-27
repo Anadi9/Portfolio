@@ -74,7 +74,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 
 ## Notes
 
-- [ ] **11. Point Notes at the buyer.** "Start here" shows the three Fixes posts on
+- [x] **11. Point Notes at the buyer.** "Start here" shows the three Fixes posts on
   Supabase RLS, broken sign-up/login and works-locally-breaks-on-Vercel.
   The Notes header gets a "Free audit" link.
   *Done when:* those three cards render and the header link goes to `/rescue/audit`.
@@ -129,3 +129,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 2026-09-27 · 8 · pass (judge: PASS; all primary CTAs measured 16px, sentence case, incl. sticky bar) · see commit
 2026-09-27 · 9 · pass (judge: PASS; no overflow at 320/390/1440, desktop unchanged) · see commit
 2026-09-27 · 10 · pass (judge: PASS; validation order now matches the form, +2 tests) · see commit
+2026-09-27 · 11 · pass (judge: PASS; header 59px ≤ --pf-header-h, WORK hidden under 380px, footer still links the portfolio) · see commit

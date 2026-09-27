@@ -644,3 +644,9 @@ details[open] > .pf-copy-more {
     display: none;
   }
 }
+
+/* The notes header: on the narrowest phones WORK gives way to the audit link,
+   which is the one that has to fit. The portfolio stays linked from the footer. */
+@media (max-width: 379px) {
+  .pf-notes-work { display: none; }
+}

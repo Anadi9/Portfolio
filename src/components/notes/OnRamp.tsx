@@ -64,10 +64,9 @@ const MiniCard = ({ post, index }: { post: Post; index?: number }) => {
 /**
  * Three pinned entry points, above the feed.
  *
- * A reverse-chron list answers "what is newest", and nobody arriving from a
- * reel is asking that. They're asking which one to open first, and twelve rows
- * of equal weight refuse to answer. These three do, in the order the work
- * actually happens: decide, then prompt, then automate.
+ * A reverse-chron list answers "what is newest", and nobody arriving with a
+ * broken app is asking that. They're asking which one to open first, and a
+ * feed of equal rows refuses to answer. These three do (see `PINNED`).
  */
 export const StartHere = ({ posts }: { posts: Post[] }) => {
   if (posts.length === 0) return null;
@@ -84,7 +83,7 @@ export const StartHere = ({ posts }: { posts: Post[] }) => {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[4], alignItems: 'baseline', marginBottom: s[6] }}>
         <h2 style={{ margin: 0, ...label(11, 700, 0.16), color: c.ink }}>START HERE</h2>
         <p style={{ margin: 0, font: `400 14px/1.5 ${display}`, color: '#4a4238' }}>
-          New here? These three, in this order.
+          Built it with AI and it&apos;s breaking? Start with these three.
         </p>
       </div>
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
-import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { buttonType, c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { trackRescue } from '@/lib/rescue/track';
 import { MEASURE } from './prose';
 import { BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { NextUp } from './OnRamp';
@@ -62,9 +63,18 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
         </Link>
         {/* The portfolio lives on its own subdomain now; `/` is the rescue
             offer, so `/#work` would land on a page with no #work in it. */}
-        <a href={PORTFOLIO_ORIGIN} style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
+        <a href={PORTFOLIO_ORIGIN} className="pf-notes-work" style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
           WORK
         </a>
+        {/* The one way from a note into the rescue. Kept small enough that the
+            header stays inside --pf-header-h. */}
+        <Link
+          to="/rescue/audit"
+          onClick={() => trackRescue('audit_cta_click', { location: 'notes_header' })}
+          style={{ ...buttonType(13), padding: px(4, s[3]), background: c.ink, color: c.accent, textDecoration: 'none', whiteSpace: 'nowrap' }}
+        >
+          Free audit →
+        </Link>
       </nav>
     </header>
 
