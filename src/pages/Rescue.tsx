@@ -219,32 +219,22 @@ const faqs = [
   },
 ];
 
-/** Sold on top of a rescue, or on their own. Prices are starting points; the
- *  app conversion is quoted with the audit because its size depends on the app. */
+/** Sold on top of a rescue, or on their own. Production care leads: it is what
+ *  a rescue turns into once the handover week is over. Prices are starting points. */
 const addons = [
+  {
+    tag: 'Monthly',
+    title: 'Production care',
+    body: 'After the handover: code review of every change you ship, monitoring, and small fixes.',
+    price: '$249',
+    unit: '/month',
+  },
   {
     tag: 'Visibility',
     title: 'Search & AI visibility fix',
     body: 'Prerendering or SSR, meta tags, JSON-LD, a sitemap and Search Console, so Google and AI answer engines see real pages.',
     price: '$199',
     unit: null,
-    note: null,
-  },
-  {
-    tag: 'Mobile',
-    title: 'Web app → iOS & Android app',
-    body: 'Your web app as a store-ready iOS and Android build.',
-    price: '$989',
-    unit: null,
-    note: 'Quoted with the audit.',
-  },
-  {
-    tag: 'Monthly',
-    title: 'Production care',
-    body: 'Code review of every change you ship, monitoring, and small fixes.',
-    price: '$249',
-    unit: '/month',
-    note: null,
   },
 ];
 
@@ -857,7 +847,7 @@ const Rescue = () => {
           </p>
           <div
             data-rescue-split
-            style={{ ...split('repeat(3, minmax(0, 1fr))'), gap: s[8], marginTop: s[9] }}
+            style={{ ...split('repeat(2, minmax(0, 1fr))'), gap: s[8], marginTop: s[9] }}
           >
             {addons.map((a, i) => (
               <div
@@ -875,7 +865,6 @@ const Rescue = () => {
                     {a.price}
                     {a.unit && <span style={{ ...label(11, 700, 0.12), color: p.dim }}> {a.unit.toUpperCase()}</span>}
                   </span>
-                  {a.note && <span style={{ font: `500 14px/1.4 ${display}`, color: p.body }}>{a.note}</span>}
                 </div>
               </div>
             ))}

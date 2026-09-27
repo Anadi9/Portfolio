@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   tally panel and from the add-ons intro. The footer keeps a "Free Production Kit" link.
   *Done when:* above the footer, the home page has no link to the kit.
 
-- [ ] **2. Drop the iOS & Android add-on.** Two add-ons remain; Production care
+- [x] **2. Drop the iOS & Android add-on.** Two add-ons remain; Production care
   first, framed as what comes after the handover.
   *Done when:* no "$989" or "iOS" on the page or in its JSON-LD.
 
@@ -120,3 +120,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 
 <!-- One line per round: date · task · result · commit -->
 2026-09-27 · 1 · pass (judge: PASS; lint has 3 errors that predate this branch, none new) · see commit
+2026-09-27 · 2 · pass (judge: PASS; two add-ons, care first) · see commit
