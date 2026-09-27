@@ -188,6 +188,18 @@ const findings = [
   { rank: 'Can wait', solid: false, line: 'The dashboard fetches every record on load.', area: 'Performance' },
 ];
 
+/** The price section's three sizes of job, and the service JSON-LD's offers.
+ *  `max` is absent where the tier is open-ended. */
+const tiers = [
+  { name: 'Single fix', scope: 'One area: sign-up and login, database security, deploys or speed.', min: 499, max: 499 },
+  { name: 'Launch rescue', scope: 'Two or three areas. The usual state of an app about to launch.', min: 1200, max: 1800 },
+  { name: 'Full rescue', scope: 'All four areas, before real users arrive.', min: 2500, max: undefined },
+] as const;
+
+const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
+const tierPrice = ({ min, max }: { min: number; max?: number }) =>
+  max === undefined ? `From ${usd(min)}` : min === max ? usd(min) : `${usd(min)}–${max.toLocaleString('en-US')}`;
+
 const included = [
   'A free audit report first',
   'One fixed price, agreed up front',
@@ -264,12 +276,18 @@ const jsonLd = {
       serviceType: 'Production fixes for AI-built web apps',
       provider: PROVIDER,
       founder: PROVIDER,
-      makesOffer: {
+      makesOffer: tiers.map((t) => ({
         '@type': 'Offer',
-        name: 'Vibe Code Rescue: fixed-price production fix',
-        priceSpecification: { '@type': 'PriceSpecification', minPrice: 499, priceCurrency: 'USD' },
+        name: `Vibe Code Rescue: ${t.name}`,
+        description: t.scope,
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          minPrice: t.min,
+          ...(t.max === undefined ? {} : { maxPrice: t.max }),
+          priceCurrency: 'USD',
+        },
         areaServed: { '@type': 'Place', name: 'Worldwide' },
-      },
+      })),
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: 'Add-ons',
@@ -803,18 +821,36 @@ const Rescue = () => {
         </section>
 
         <section aria-labelledby="h-price" style={section} data-rescue-hpad>
-          <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'center' }}>
+          <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: s[4] }}>
               <p style={eyebrow}>THE PRICE</p>
-              <h2 id="h-price" style={{ margin: px(s[3], 0, 0), ...label(11, 700, 0.14), color: p.dim }}>
-                FIXES FROM
+              <h2 id="h-price" style={{ ...h2, margin: 0 }}>
+                What a fix costs
               </h2>
-              <div style={{ ...heading('d1', { stretch: stretch.bleed }), color: p.ink }}>$499</div>
-              <p style={{ ...lead, color: p.ink, marginTop: s[4] }}>
-                The final price depends on the scope and the number of fixes the audit finds.
-              </p>
+              <ul style={{ listStyle: 'none', margin: px(s[5], 0, 0), padding: 0, borderBottom: `${rule.hair}px solid ${p.rule}` }}>
+                {tiers.map((t) => (
+                  <li
+                    key={t.name}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'minmax(0, 1fr) auto',
+                      alignItems: 'baseline',
+                      gap: s[5],
+                      padding: px(s[5], 0),
+                      borderTop: `${rule.hair}px solid ${p.rule}`,
+                    }}
+                  >
+                    <div style={{ display: 'grid', gap: s[1] }}>
+                      <span style={{ font: `600 17px/1.3 ${display}`, color: p.ink }}>{t.name}</span>
+                      <span style={{ ...body, fontSize: 14 }}>{t.scope}</span>
+                    </div>
+                    <span style={{ ...heading('d6'), color: p.ink, whiteSpace: 'nowrap' }}>{tierPrice(t)}</span>
+                  </li>
+                ))}
+              </ul>
               <p style={{ ...body, maxWidth: '46ch' }}>
-                Every quote is fixed before work starts. If scope changes, we agree on it before I bill a cent.
+                The audit tells you which one you need. Every quote is fixed before work starts. If scope changes, we
+                agree on it before I bill a cent.
               </p>
             </div>
             <div style={{ display: 'grid', gap: s[6], padding: px(s[8], s[8], s[7]), border: `${rule.base}px solid ${c.ink}` }}>

@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   first, framed as what comes after the handover.
   *Done when:* no "$989" or "iOS" on the page or in its JSON-LD.
 
-- [ ] **3. Three price tiers.** Replace the lone "$499 FIXES FROM" with:
+- [x] **3. Three price tiers.** Replace the lone "$499 FIXES FROM" with:
   Single fix $499 (one area) · Launch rescue $1,200–1,800 (2–3 areas) ·
   Full rescue from $2,500 (all four areas). Keep "every quote is fixed first".
   *Done when:* all three tiers render, readable at 390px, JSON-LD still valid.
@@ -121,3 +121,4 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 <!-- One line per round: date · task · result · commit -->
 2026-09-27 · 1 · pass (judge: PASS; lint has 3 errors that predate this branch, none new) · see commit
 2026-09-27 · 2 · pass (judge: PASS; two add-ons, care first) · see commit
+2026-09-27 · 3 · pass (judge: PASS; its note on uneven mobile rows fixed after, rechecked by screenshot) · see commit
