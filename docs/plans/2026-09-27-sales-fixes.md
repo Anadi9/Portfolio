@@ -86,7 +86,7 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
   to `public/downloads/`, after checking its sha256 against the 1.2.0 manifest.
   *Done when:* `npm run preview` serves it with status 200 and the same sha256.
 
-- [ ] **13. Kit page becomes a free download.** Replace the pack picker with one
+- [x] **13. Kit page becomes a free download.** Replace the pack picker with one
   "Download the kit, free" button (tracked). Hero speaks to founders building
   their app with AI. Remove price, refund, upgrade and "which pack" FAQs; the
   license FAQ follows task 15. JSON-LD offer price 0. Portrait next to "Who
@@ -134,3 +134,4 @@ branch publishes the zip, and the LICENSE inside it forbids giving the kit away.
 2026-09-27 · 10 · pass (judge: PASS; validation order now matches the form, +2 tests) · see commit
 2026-09-27 · 11 · pass (judge: PASS; header 59px ≤ --pf-header-h, WORK hidden under 380px, footer still links the portfolio) · see commit
 2026-09-27 · 12 · pass (judge: PASS; preview 200, sha256 matches manifest; zip still has the buyer LICENSE, see warning above) · see commit
+2026-09-27 · 13 · pass (judge: PASS; download click verified by sha256; buyer pages' paid upgrade → free note; PackPicker deleted; price helpers left unused → clean up in 14) · see commit
