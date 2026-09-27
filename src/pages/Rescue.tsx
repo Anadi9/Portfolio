@@ -382,16 +382,18 @@ const ErrorLog = () => {
           {fixed} / {errors.length} FIXED
         </span>
       </div>
-      <div style={{ padding: px(s[5], s[6], s[5]), overflowX: 'auto' }}>
+      {/* Lines wrap rather than scroll: on a phone a clipped error reads as a broken page. */}
+      <div style={{ padding: px(s[5], s[6], s[5]) }}>
         {errors.map((msg, i) => {
           const isFixed = i < fixed;
           return (
-            <div key={msg} style={{ display: 'grid', gridTemplateColumns: '5.5em 1fr', whiteSpace: 'nowrap' }}>
+            <div key={msg} style={{ display: 'grid', gridTemplateColumns: '5.5em minmax(0, 1fr)' }}>
               <span style={{ fontWeight: 500, color: isFixed ? c.accent : c.mark, transition: fade }}>
                 {isFixed ? 'fixed' : 'error'}
               </span>
               <span
                 style={{
+                  overflowWrap: 'anywhere',
                   color: isFixed ? c.dimOnInk : '#fff',
                   textDecoration: 'line-through',
                   textDecorationColor: isFixed ? c.accent : 'transparent',
