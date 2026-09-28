@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PHOTO_MAX_BYTES, parsePhoto, parseReview, renderReviewEmail, stars } from './intake';
+import { PHOTO_MAX_BYTES, parsePhoto, parseReview, renderReviewEmail, stars, toPublicReview } from './intake';
 
 const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
@@ -62,5 +62,18 @@ describe('renderReviewEmail', () => {
     expect(subject).toBe(`New review: ${stars(5)} from <b>x</b>`);
     expect(html).not.toContain('<script>');
     expect(html).toContain('&lt;b&gt;x&lt;/b&gt;');
+  });
+});
+
+describe('toPublicReview', () => {
+  const row = { id: 'a', rating: 4, review: 'Good', name: 'P', title: 'CTO', company: null, photo_path: 'x y.jpg' };
+  it('turns a photo path into its public bucket URL', () => {
+    expect(toPublicReview(row, 'https://abc.supabase.co/')).toEqual({
+      id: 'a', rating: 4, review: 'Good', name: 'P', title: 'CTO', company: null,
+      photoUrl: 'https://abc.supabase.co/storage/v1/object/public/review-photos/x%20y.jpg',
+    });
+  });
+  it('leaves no photo as null', () => {
+    expect(toPublicReview({ ...row, photo_path: null }, 'https://abc.supabase.co').photoUrl).toBeNull();
   });
 });

@@ -112,3 +112,29 @@ ${photoUrl ? `<p><img src="${esc(photoUrl)}" alt="" width="96" height="96" style
 </div>`,
   };
 }
+
+/** What `GET /api/review` returns per approved review: nothing a reviewer didn't agree to show. */
+export type PublicReview = {
+  id: string;
+  rating: number;
+  review: string;
+  name: string;
+  title: string;
+  company: string | null;
+  photoUrl: string | null;
+};
+
+export type ReviewRow = Omit<PublicReview, 'photoUrl'> & { photo_path: string | null };
+
+export const PHOTO_BUCKET = 'review-photos';
+
+/** `supabaseUrl` is the project URL; the bucket is public, so the photo URL is fixed by its path. */
+export function toPublicReview(row: ReviewRow, supabaseUrl: string): PublicReview {
+  const { photo_path, ...rest } = row;
+  return {
+    ...rest,
+    photoUrl: photo_path
+      ? `${supabaseUrl.replace(/\/+$/, '')}/storage/v1/object/public/${PHOTO_BUCKET}/${encodeURIComponent(photo_path)}`
+      : null,
+  };
+}

@@ -9,6 +9,7 @@ import { trackRescue } from '@/lib/rescue/track';
 import { KIT } from '@/lib/kit/product';
 import { KitPrice } from '@/lib/kit/use-kit-price';
 import LegalLinks from '@/components/LegalLinks';
+import Testimonials from '@/components/Testimonials';
 
 /**
  * `/`: Vibe Code Rescue, fixed-price production fixes for apps built with
@@ -815,6 +816,8 @@ const Rescue = () => {
             </div>
           </div>
         </section>
+
+        <Testimonials hpadAttr={{ 'data-rescue-hpad': '' }} />
 
         <section aria-labelledby="h-price" style={section} data-rescue-hpad>
           <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'center' }}>

@@ -1,12 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import { PHOTO_TYPES, parseReview, renderReviewEmail } from '../src/lib/review/intake.js';
+import { PHOTO_BUCKET, PHOTO_TYPES, parseReview, renderReviewEmail, toPublicReview, type ReviewRow } from '../src/lib/review/intake.js';
 
 /**
- * POST /api/review
+ * GET /api/review: the approved reviews, newest first, for `<Testimonials />`.
+ * Cached at the CDN for a minute, so approving a row shows up within one
+ * without every page view reaching Supabase.
  *
- * The `/review` form. The row in `reviews` is the review itself, so it must
+ * POST /api/review: the `/review` form. The row in `reviews` is the review itself, so it must
  * land or the visitor is told it failed. The photo goes first, so the row can
  * name it; a row that then fails to insert leaves an orphaned photo, which is
  * harmless. The email to Anadi goes last and a failure there is logged, not
@@ -20,19 +22,34 @@ import { PHOTO_TYPES, parseReview, renderReviewEmail } from '../src/lib/review/i
 
 const FROM = 'Anadi Thakur <rescue@anadithakur.in>';
 const INBOX_FALLBACK = 'anadithakur99@gmail.com';
-const PHOTO_BUCKET = 'review-photos';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ error: 'method not allowed' });
   }
 
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SECRET_KEY;
   if (!url || !key) {
-    console.warn('[review] Supabase not configured: review not saved');
+    console.warn('[review] Supabase not configured');
     return res.status(501).json({ error: 'storage not configured' });
+  }
+
+  if (req.method === 'GET') {
+    const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { data, error } = await db
+      .from('reviews')
+      .select('id, rating, review, name, title, company, photo_path')
+      .eq('approved', true)
+      .order('created_at', { ascending: false })
+      .limit(100);
+    if (error) {
+      console.error('[review] list failed', error);
+      return res.status(502).json({ error: 'list failed' });
+    }
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=600');
+    return res.status(200).json({ reviews: (data as ReviewRow[]).map((r) => toPublicReview(r, url)) });
   }
 
   const body = typeof req.body === 'string' ? safeParse(req.body) : req.body;

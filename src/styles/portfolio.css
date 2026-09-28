@@ -251,7 +251,7 @@ button:focus-visible,
   [data-nav] { flex: none !important; white-space: nowrap !important; padding: 9px 12px !important; }
   [data-rail-cta] { flex: none !important; padding: 12px 18px !important; white-space: nowrap !important; }
   [data-hpad] { padding-left: 28px !important; padding-right: 28px !important; flex-wrap: wrap !important; row-gap: 8px !important; }
-  #journey, #stack, #contact { padding-left: 28px !important; padding-right: 28px !important; }
+  #journey, #testimonials, #stack, #contact { padding-left: 28px !important; padding-right: 28px !important; }
   [data-hero-cols] { grid-template-columns: 1fr !important; }
   [data-hero-cols] > div { border-right: 0 !important; }
   [data-hero-cols] > div + div { border-top: 2px solid var(--ink) !important; }
@@ -320,7 +320,7 @@ button:focus-visible,
   [data-nav] { padding: 8px 10px !important; font-size: 10px !important; }
   [data-rail-cta] { padding: 10px 14px !important; font-size: 11px !important; }
   [data-hpad] { padding-left: 18px !important; padding-right: 18px !important; }
-  #journey, #stack, #contact { padding-left: 18px !important; padding-right: 18px !important; }
+  #journey, #testimonials, #stack, #contact { padding-left: 18px !important; padding-right: 18px !important; }
   [data-hoffset] { left: 18px !important; right: 18px !important; }
   /* Clear the role line below it. At bottom:20 the two stacked on top of each
      other, because [data-hoffset] sits at bottom:40 and is ~14px tall. */

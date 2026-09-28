@@ -19,7 +19,7 @@
       "permanent": true
     },
     {
-      "source": "/:path((?!assets/|portfolio$)(?!.*\\.).+)",
+      "source": "/:path((?!assets/|api/|portfolio$)(?!.*\\.).+)",
       "has": [{ "type": "host", "value": "portfolio.anadithakur.in" }],
       "destination": "https://anadithakur.in/:path",
       "permanent": true

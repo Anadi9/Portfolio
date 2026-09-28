@@ -5,6 +5,7 @@ import Work, { Marquee } from '@/components/portfolio/Work';
 import Journey from '@/components/portfolio/Journey';
 import Stack from '@/components/portfolio/Stack';
 import Contact from '@/components/portfolio/Contact';
+import Testimonials from '@/components/Testimonials';
 import Overlays from '@/components/portfolio/Overlays';
 import { usePortfolioMotion } from '@/hooks/use-portfolio-motion';
 import { c } from '@/components/portfolio/tokens';
@@ -26,6 +27,7 @@ const Index = ({ ready = true }: { ready?: boolean }) => {
         <Marquee />
         <Work />
         <Journey />
+        <Testimonials />
         <Stack />
         <Contact />
       </main>
