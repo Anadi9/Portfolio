@@ -8,8 +8,8 @@ const HEAD = ['The stack,', 'honestly rated'];
  *
  * Motion contract for `usePortfolioMotion`: the heading rides in `[data-stack-line]`
  * masks, the top rule draws on `[data-stack-rule]`, and each `[data-stack-col]`
- * prints downward carrying its meter, percentage and item rows. Hover sweeps
- * `[data-stack-fill]` up from the baseline and inverts the column.
+ * prints downward carrying its item rows. Hover sweeps `[data-stack-fill]` up
+ * from the baseline and inverts the column.
  */
 const Stack = () => (
   <section
@@ -97,28 +97,6 @@ const Stack = () => (
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div data-stack-heading="1" style={{ ...label(10, 700, 0.16), color: col.strong ? c.mark : c.dim, marginBottom: s[4] }}>
               {col.heading}
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: s[3], marginBottom: s[5] }}>
-              <span data-stack-track="1" style={{ position: 'relative', flex: 1, height: rule.edge, background: c.rule, display: 'block' }}>
-                <span
-                  data-stack-meter={col.level}
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: col.strong ? c.mark : c.dimOnInk,
-                    transform: `scaleX(${col.level})`,
-                    transformOrigin: 'left center',
-                    display: 'block',
-                  }}
-                />
-              </span>
-              <span
-                data-stack-pct={col.level}
-                style={{ ...label(10, 700, 0.06), color: col.strong ? c.bright : c.dim, minWidth: '4ch', textAlign: 'right' }}
-              >
-                {Math.round(col.level * 100)}%
-              </span>
             </div>
 
             <div style={{ font: `500 13px/2 ${mono}` }}>

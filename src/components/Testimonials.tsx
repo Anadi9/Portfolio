@@ -12,12 +12,14 @@ import type { PublicReview } from '@/lib/review/intake';
  * until reviews arrive, and if there are none or the request fails, the
  * section does not render at all, so a page never shows an empty "reviews"
  * heading.
+ *
+ * No star ratings or average: these are colleagues and clients vouching for
+ * the person, and a 5.0 over a handful of hand-collected reviews reads as
+ * inflated. Quotes run in full rather than clamping, since a clamp's ellipsis
+ * after a full stop looks like the review was cut.
  */
 
 const FIRST = 6;
-/** Past this, a card clamps to `CLAMP_LINES` and offers to expand. */
-const LONG = 320;
-const CLAMP_LINES = 7;
 
 const p = { ink: c.ink, body: '#4a4a4a', dim: c.dim, gold: c.markOnPaper, rule: 'rgba(10,10,10,.14)' } as const;
 
@@ -30,16 +32,6 @@ const textButton: CSSProperties = {
   cursor: 'pointer',
   justifySelf: 'start',
 };
-
-const Stars = ({ n, size = 16 }: { n: number; size?: number }) => (
-  <span role="img" aria-label={`${n} out of 5 stars`} style={{ display: 'inline-flex', gap: 2 }}>
-    {[1, 2, 3, 4, 5].map((i) => (
-      <svg key={i} aria-hidden width={size} height={size} viewBox="0 0 24 24" fill={i <= n ? c.mark : 'none'} stroke={i <= n ? c.markOnPaper : c.accentEdge} strokeWidth={1.6} strokeLinejoin="round">
-        <path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" />
-      </svg>
-    ))}
-  </span>
-);
 
 const initials = (name: string) =>
   name
@@ -58,42 +50,28 @@ const Avatar = ({ r }: { r: PublicReview }) =>
     </span>
   );
 
-const Card = ({ r }: { r: PublicReview }) => {
-  const long = r.review.length > LONG;
-  const [open, setOpen] = useState(false);
-  const clamped = long && !open;
-  return (
-    <figure style={{ margin: 0, display: 'grid', gridTemplateRows: 'auto 1fr auto', gap: s[5], padding: px(s[7], s[6]), background: '#fff', border: `${rule.base}px solid ${c.ink}`, minWidth: 0 }}>
-      <Stars n={r.rating} />
-      <div style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <blockquote
-          style={{
-            margin: 0,
-            font: `400 16px/1.55 ${display}`,
-            color: p.ink,
-            whiteSpace: 'pre-line',
-            textWrap: 'pretty',
-            ...(clamped ? { display: '-webkit-box', WebkitLineClamp: CLAMP_LINES, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {}),
-          }}
-        >
-          {r.review}
-        </blockquote>
-        {long && (
-          <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="pf-underline" style={{ ...textButton, color: p.dim }}>
-            {open ? 'SHOW LESS' : 'READ MORE'}
-          </button>
-        )}
-      </div>
-      <figcaption style={{ display: 'flex', alignItems: 'center', gap: s[4], paddingTop: s[5], borderTop: `${rule.hair}px solid ${p.rule}` }}>
-        <Avatar r={r} />
-        <span style={{ display: 'grid', gap: 2, minWidth: 0 }}>
-          <span style={{ font: `600 15px/1.3 ${display}`, color: p.ink }}>{r.name}</span>
-          <span style={{ font: `400 13px/1.4 ${display}`, color: p.dim }}>{[r.title, r.company].filter(Boolean).join(' · ')}</span>
-        </span>
-      </figcaption>
-    </figure>
-  );
-};
+const Card = ({ r }: { r: PublicReview }) => (
+  <figure style={{ margin: 0, display: 'grid', gridTemplateRows: '1fr auto', gap: s[5], padding: px(s[7], s[6]), background: '#fff', border: `${rule.base}px solid ${c.ink}`, minWidth: 0 }}>
+    <blockquote
+      style={{
+        margin: 0,
+        font: `400 16px/1.55 ${display}`,
+        color: p.ink,
+        whiteSpace: 'pre-line',
+        textWrap: 'pretty',
+      }}
+    >
+      {r.review}
+    </blockquote>
+    <figcaption style={{ display: 'flex', alignItems: 'center', gap: s[4], paddingTop: s[5], borderTop: `${rule.hair}px solid ${p.rule}` }}>
+      <Avatar r={r} />
+      <span style={{ display: 'grid', gap: 2, minWidth: 0 }}>
+        <span style={{ font: `600 15px/1.3 ${display}`, color: p.ink }}>{r.name}</span>
+        <span style={{ font: `400 13px/1.4 ${display}`, color: p.dim }}>{[r.title, r.company].filter(Boolean).join(' · ')}</span>
+      </span>
+    </figcaption>
+  </figure>
+);
 
 export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<string, string> }) {
   const [reviews, setReviews] = useState<PublicReview[] | null>(null);
@@ -112,7 +90,6 @@ export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<stri
 
   if (!reviews?.length) return null;
 
-  const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
   const shown = all ? reviews : reviews.slice(0, FIRST);
 
   return (
@@ -127,13 +104,6 @@ export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<stri
           <h2 id="h-testimonials" style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' }}>
             From people I&apos;ve <span style={{ color: p.gold }}>worked with</span>
           </h2>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: s[3] }}>
-          <Stars n={Math.round(avg)} size={20} />
-          <span style={{ font: `600 15px/1 ${display}`, color: p.ink }}>{avg.toFixed(1)}</span>
-          <span style={{ font: `400 14px/1 ${display}`, color: p.dim }}>
-            from {reviews.length} review{reviews.length === 1 ? '' : 's'}
-          </span>
         </div>
       </div>
 

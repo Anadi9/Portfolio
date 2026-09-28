@@ -49,11 +49,6 @@ export const nav: NavItem[] = [
   { id: 'contact', label: 'CONTACT' },
 ];
 
-export const marqueeItems = [
-  'REACT', 'TYPESCRIPT', 'NEXT.JS', 'NODE.JS', 'FASTAPI', 'CLAUDE API',
-  'GROQ', 'REACT NATIVE', 'POSTGRES', 'AEM', 'DOCKER', 'GCP',
-];
-
 export const strengths = [
   'AUTH & SESSIONS',
   'SUPABASE & RLS',
@@ -218,9 +213,8 @@ export const milestones: Milestone[] = [
     year: '26',
     title: 'Vibe Code Rescue',
     body: 'Taking apps built with Lovable, Bolt, Cursor and v0 from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
-    meta: 'TAKING PROJECTS NOW',
+    meta: 'INDEPENDENT · FIXED PRICE',
     tone: 'accent',
-    status: true,
   },
 ];
 
@@ -229,8 +223,6 @@ export type StackColumn = {
   items: string[];
   /** Daily-driver columns get the accent treatment. */
   strong: boolean;
-  /** The honest rating, 0–1. Drives the meter that draws under the heading. */
-  level: number;
 };
 
 export const stack: StackColumn[] = [
@@ -238,24 +230,20 @@ export const stack: StackColumn[] = [
     heading: 'FRONTEND · DAILY',
     items: ['React', 'TypeScript', 'React Native', 'Tailwind · MUI', 'Redux · Zustand'],
     strong: true,
-    level: 0.95,
   },
   {
     heading: 'BACKEND · DAILY',
     items: ['Node.js · Express', 'FastAPI', 'PostgreSQL', 'MongoDB', 'REST · GraphQL'],
     strong: true,
-    level: 0.85,
   },
   {
     heading: 'AI / LLM · DAILY',
     items: ['Claude API', 'Groq SDK', 'LLaMA 3.3', 'Prompt design', 'Eval loops'],
     strong: true,
-    level: 0.8,
   },
   {
     heading: 'WORKING KNOWLEDGE',
     items: ['GCP · Azure', 'Docker', 'AEM · Strapi', 'Firebase', 'Figma'],
     strong: false,
-    level: 0.55,
   },
 ];

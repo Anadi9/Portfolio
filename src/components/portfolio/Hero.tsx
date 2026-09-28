@@ -130,36 +130,6 @@ const Hero = () => (
         ↳ {site.role.toUpperCase()}
       </div>
 
-      <div
-        aria-hidden
-        data-hero-badge="1"
-        style={{
-          position: 'absolute',
-          top: s[6],
-          right: s[6],
-          width: 78,
-          height: 78,
-          borderRadius: '50%',
-          border: `${rule.hair}px dashed ${c.signalOnInk}`,
-          // Deep enough for the on-ink status green to actually read: the
-          // badge floats over the bright part of the portrait, and at .45 the
-          // disc came out mid-grey and took the green down with it.
-          background: 'rgba(10,10,10,.72)',
-          display: 'grid',
-          placeItems: 'center',
-          textAlign: 'center',
-          zIndex: 2,
-          animation: 'pf-spin 16s linear infinite',
-        }}
-      >
-        <span style={{ ...label(10, 700, 0.05), lineHeight: 1.2, color: c.signalOnInk, textTransform: 'uppercase' }}>
-          Open
-          <br />
-          For
-          <br />
-          Work
-        </span>
-      </div>
     </div>
 
     <div data-hero-info="1" style={{ position: 'relative', zIndex: 3, background: c.accent }}>

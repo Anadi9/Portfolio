@@ -1,5 +1,5 @@
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from './tokens';
-import { milestones } from '@/data/portfolio';
+import { milestones, site } from '@/data/portfolio';
 
 /**
  * Career timeline.
@@ -38,7 +38,7 @@ const Journey = () => (
         THE ROUTE HERE
       </div>
       <h2 style={{ margin: 0, ...heading('d3'), color: c.ink, textTransform: 'uppercase' }}>
-        Six years,
+        {site.years}+ years,
         <br />
         no straight line
       </h2>

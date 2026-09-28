@@ -1,10 +1,8 @@
 import { c, display, gutter, heading, label, mono, px, rule, s } from './tokens';
-import { marqueeItems, projects, site } from '@/data/portfolio';
+import { projects, site } from '@/data/portfolio';
 
 /** The one project with a long version attached. */
 const featured = projects.find((p) => p.study);
-
-const MARQUEE = `${marqueeItems.join(' ✱ ')} ✱ `;
 
 const techTag: React.CSSProperties = {
   padding: px(s[1], s[3]),
@@ -24,27 +22,6 @@ const plateStyle: React.CSSProperties = {
   color: '#fff',
   transition: 'border-color .3s',
 };
-
-/** Scrolling stack band that separates the hero from the work reel. */
-export const Marquee = () => (
-  <div style={{ background: c.ink, overflow: 'hidden', borderBottom: `${rule.edge}px solid ${c.ink}` }}>
-    <div
-      data-marquee="1"
-      style={{
-        display: 'flex',
-        width: '200%',
-        animation: 'pf-tick 30s linear infinite',
-        ...label(13, 500, 0.18),
-        color: '#fff',
-        padding: px(s[4], 0),
-        whiteSpace: 'nowrap',
-      }}
-    >
-      <span style={{ flex: 'none', width: '50%' }}>{MARQUEE}</span>
-      <span style={{ flex: 'none', width: '50%' }}>{MARQUEE}</span>
-    </div>
-  </div>
-);
 
 /**
  * The long version of the featured project, printed under the reel.

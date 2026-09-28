@@ -936,31 +936,6 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
       }
       if (reduced) return;
 
-      /* 6: the marquee accelerates and skews with scroll velocity */
-      const marquee = q<HTMLElement>('[data-marquee]');
-      if (marquee) {
-        marquee.style.animation = 'none';
-        const loop = gsap.to(marquee, { xPercent: -50, duration: 26, ease: 'none', repeat: -1 });
-        const skew = gsap.quickTo(marquee, 'skewX', { duration: 0.5, ease: 'power3' });
-        let settle: number | undefined;
-        triggers.push(
-          ScrollTrigger.create({
-            onUpdate: (self) => {
-              const v = self.getVelocity();
-              const ts = gsap.utils.clamp(1, 7, 1 + Math.abs(v) / 650);
-              loop.timeScale(v < 0 ? -ts : ts);
-              skew(gsap.utils.clamp(-9, 9, -v / 420));
-              window.clearTimeout(settle);
-              settle = window.setTimeout(() => {
-                loop.timeScale(1);
-                skew(0);
-              }, 220);
-            },
-          }),
-        );
-        disposers.push(() => window.clearTimeout(settle));
-      }
-
       /* 7: hard full-bleed wipes between sections */
       qa<HTMLElement>('[data-swipe]').forEach((el) => {
         const target = document.getElementById(el.getAttribute('data-swipe') ?? '');
@@ -1047,7 +1022,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
       }
 
       /* 9: the stack prints: heading cuts up, the rule draws, then each column
-         wipes down carrying its meter, its rating and its rows. Hovering a
+         wipes down carrying its rows. Hovering a
          column floods it and inverts the type. */
       const stackSection = q<HTMLElement>('#stack');
       const stackCols = qa<HTMLElement>('[data-stack-col]');
@@ -1062,9 +1037,6 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
           strong: col.getAttribute('data-strong') === '1',
           fill: col.querySelector<HTMLElement>('[data-stack-fill]'),
           heading: col.querySelector<HTMLElement>('[data-stack-heading]'),
-          track: col.querySelector<HTMLElement>('[data-stack-track]'),
-          meter: col.querySelector<HTMLElement>('[data-stack-meter]'),
-          pct: col.querySelector<HTMLElement>('[data-stack-pct]'),
           items: Array.from(col.querySelectorAll<HTMLElement>('[data-stack-item]')),
         }));
 
@@ -1074,8 +1046,6 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
         gsap.set(stackCols, { clipPath: 'inset(0% 0% 100% 0%)' });
         colParts.forEach((p) => {
           gsap.set(p.items, { yPercent: 120, opacity: 0 });
-          gsap.set(p.meter, { scaleX: 0 });
-          if (p.pct) p.pct.textContent = '0%';
         });
 
         const stackIn = gsap.timeline({
@@ -1092,24 +1062,7 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
 
         colParts.forEach((p, i) => {
           const at = 0.62 + i * 0.1;
-          const level = parseFloat(p.meter?.getAttribute('data-stack-meter') ?? '0');
           stackIn.to(p.items, { yPercent: 0, opacity: 1, duration: 0.5, ease: 'expo.out', stagger: 0.055 }, at);
-          stackIn.to(p.meter, { scaleX: level, duration: 0.8, ease: 'power3.inOut' }, at);
-          if (p.pct) {
-            const o = { v: 0 };
-            stackIn.to(
-              o,
-              {
-                v: level * 100,
-                duration: 0.8,
-                ease: 'steps(14)',
-                onUpdate: () => {
-                  if (p.pct) p.pct.textContent = `${Math.round(o.v)}%`;
-                },
-              },
-              at,
-            );
-          }
         });
 
         colParts.forEach((p) => {
@@ -1117,9 +1070,6 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
             gsap.to(p.fill, { scaleY: 1, duration: 0.42, ease: 'power4.out', transformOrigin: 'bottom center' });
             gsap.to(p.heading, { color: c.ink, duration: 0.3, ease: 'power2.out' });
             gsap.to(p.items, { color: c.ink, x: 7, duration: 0.4, ease: 'power3.out', stagger: 0.035 });
-            gsap.to(p.track, { backgroundColor: 'rgba(10,10,10,.22)', duration: 0.3 });
-            gsap.to(p.meter, { backgroundColor: c.ink, duration: 0.3 });
-            gsap.to(p.pct, { color: c.ink, duration: 0.3 });
           };
           const leave = () => {
             gsap.to(p.fill, { scaleY: 0, duration: 0.38, ease: 'power4.in', transformOrigin: 'top center' });
@@ -1131,9 +1081,6 @@ export function usePortfolioMotion(rootRef: React.RefObject<HTMLElement>, ready 
               ease: 'power3.out',
               stagger: { each: 0.035, from: 'end' },
             });
-            gsap.to(p.track, { backgroundColor: c.rule, duration: 0.3 });
-            gsap.to(p.meter, { backgroundColor: p.strong ? c.mark : c.dimOnInk, duration: 0.3 });
-            gsap.to(p.pct, { color: p.strong ? c.bright : c.dim, duration: 0.3 });
           };
           bindActive(p.col, enter, leave);
         });

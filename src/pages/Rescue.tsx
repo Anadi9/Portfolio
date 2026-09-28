@@ -170,25 +170,21 @@ const freeTools = [
 
 const fixes = [
   {
-    tag: 'Auth',
     title: 'Auth and user flows',
     body: 'The things that have to just work.',
     items: ['Signup and login', 'Sessions that persist', 'Password reset', 'Roles and permissions'],
   },
   {
-    tag: 'Database',
     title: 'Database and security',
     body: "Close what's open before someone finds it.",
     items: ['Data strangers can read or change', 'Secret keys anyone can find', 'Actions that work without logging in', 'A messy database setup'],
   },
   {
-    tag: 'Deployment',
     title: 'Deployment',
     body: "A setup that doesn't break when you push.",
     items: ['Settings that work locally but not live', 'Builds that fail on deploy', 'Your own domain', "Updates that don't break the live app"],
   },
   {
-    tag: 'Stability',
     title: 'Performance and stability',
     body: 'Stop the code that keeps breaking.',
     items: ['Slow pages', 'Screens that crash', 'Fix-one-break-two loops', 'Old bugs coming back after prompts'],
@@ -284,14 +280,12 @@ const faqs = [
  *  a rescue turns into once the handover week is over. Prices are starting points. */
 const addons = [
   {
-    tag: 'Monthly',
     title: 'Production care',
     body: 'After the handover: code review of every change you ship, monitoring, and small fixes.',
     price: '$249',
     unit: '/month',
   },
   {
-    tag: 'Visibility',
     title: 'Search & AI visibility fix',
     body: 'Apps built with Lovable or Bolt can look like an empty page to Google and AI tools. I make your pages readable to them, with proper titles, descriptions and a sitemap, and set up Search Console so you can watch them get found.',
     price: '$199',
@@ -371,22 +365,30 @@ const clicked = (location: string) => () => trackRescue('audit_cta_click', { loc
 /** The same for the kit, from the free-tools section and the footer. */
 const kitClicked = (location: string) => () => trackRescue('kit_link_click', { location });
 
-/** The hero's error log. Rows flip from error to fixed one at a time after
- *  mount. The prerendered HTML is the unfixed state, which is also the state
- *  the argument starts from; reduced motion jumps straight to the end. */
+/** How many of the log's errors get fixed before it comes to rest. It stops
+ *  short of all of them on purpose: a log that ends fully struck through and
+ *  "ready" hides the problem the page is selling against, and that end frame
+ *  is the one nearly every visitor reads. */
+const FIXED_AT_REST = 3;
+
+/** The hero's error log. After a beat on the unfixed state, rows flip from
+ *  error to fixed one at a time and stop at `FIXED_AT_REST`. The prerendered
+ *  HTML is the unfixed state, which is also the state the argument starts
+ *  from; reduced motion jumps straight to the resting state. */
 const ErrorLog = () => {
   const [fixed, setFixed] = useState(0);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setFixed(errors.length);
+      setFixed(FIXED_AT_REST);
       return;
     }
-    const timers = errors.map((_, i) => window.setTimeout(() => setFixed(i + 1), 900 + i * 650));
+    const timers = errors
+      .slice(0, FIXED_AT_REST)
+      .map((_, i) => window.setTimeout(() => setFixed(i + 1), 1800 + i * 700));
     return () => timers.forEach(window.clearTimeout);
   }, []);
 
-  const done = fixed === errors.length;
   const fade = 'color 0.4s ease, text-decoration-color 0.4s ease';
 
   return (
@@ -412,7 +414,7 @@ const ErrorLog = () => {
         }}
       >
         <span>~/your-app · production check</span>
-        <span style={{ color: done ? c.accent : c.mark, transition: fade }}>
+        <span style={{ color: c.mark }}>
           {fixed} / {errors.length} FIXED
         </span>
       </div>
@@ -444,16 +446,14 @@ const ErrorLog = () => {
             style={{
               height: '100%',
               width: `${(fixed / errors.length) * 100}%`,
-              background: done ? c.accent : c.mark,
-              transition: 'width 0.5s ease, background 0.4s ease',
+              background: c.mark,
+              transition: 'width 0.5s ease',
             }}
           />
         </div>
         <div style={{ marginTop: s[3], color: c.dimOnInk }}>
           production:{' '}
-          <b style={{ fontWeight: 500, color: done ? c.accent : c.mark, transition: fade }}>
-            {done ? 'ready' : 'not ready'}
-          </b>
+          <b style={{ fontWeight: 500, color: c.mark }}>not ready</b>
         </div>
       </div>
     </div>
@@ -761,23 +761,19 @@ const Rescue = () => {
             display: 'flex',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: px(s[4], s[10]),
             padding: px(s[5], gutter),
             borderTop: `${rule.hair}px solid ${p.rule}`,
           }}
           data-rescue-hpad
         >
-          <span style={{ ...label(10, 700, 0.16), color: p.dim }}>APPS I RESCUE</span>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexWrap: 'wrap', gap: px(s[2], s[9]) }}>
-            {builders.map((b) => (
-              <li key={b} style={{ ...heading('d7', { weight: 800 }), textTransform: 'uppercase' }}>
-                {b}
-              </li>
-            ))}
-          </ul>
-          <span style={{ ...body, fontSize: 14, marginLeft: 'auto', maxWidth: '36ch' }}>
-            Anything that ends up as React or Next.js plus a database.
-          </span>
+          {/* Plain text, not a row of display-weight names: set at logo size
+              under the client list, the builders read as a second strip of
+              clients or partners. */}
+          <p style={{ ...body, fontSize: 14, maxWidth: 'none' }}>
+            <span style={{ ...label(10, 700, 0.16), color: p.dim, marginRight: s[4] }}>APPS I RESCUE</span>
+            Built with {builders.slice(0, -1).join(', ')} or {builders[builders.length - 1]}: anything that ends up as React or
+            Next.js plus a database.
+          </p>
         </div>
 
         <section aria-labelledby="h-familiar" style={section} data-rescue-hpad>
@@ -792,11 +788,8 @@ const Rescue = () => {
             What I fix
           </h2>
           <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[8], marginTop: s[9] }}>
-            {fixes.map((fix, i) => (
+            {fixes.map((fix) => (
               <div key={fix.title} style={{ display: 'grid', gap: s[4], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${c.ink}` }}>
-                <span style={{ ...label(10, 700, 0.14), color: p.gold }}>
-                  0{i + 1} · {fix.tag.toUpperCase()}
-                </span>
                 <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase', color: p.ink }}>{fix.title}</h3>
                 <p style={body}>{fix.body}</p>
                 <ul style={{ listStyle: 'none', margin: 0, padding: 0, font: `500 14px/1.4 ${display}` }}>
@@ -983,7 +976,7 @@ const Rescue = () => {
         </section>
 
         <section aria-labelledby="h-addons" style={section} data-rescue-hpad>
-          <h2 id="h-addons" style={h2}>
+          <h2 id="h-addons" style={{ ...h2, ...heading('d5') }}>
             On top of the fix
           </h2>
           <p style={{ ...body, marginTop: s[5] }}>
@@ -993,14 +986,11 @@ const Rescue = () => {
             data-rescue-split
             style={{ ...split('repeat(2, minmax(0, 1fr))'), gap: s[8], marginTop: s[9] }}
           >
-            {addons.map((a, i) => (
+            {addons.map((a) => (
               <div
                 key={a.title}
                 style={{ display: 'grid', gap: s[4], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${c.ink}` }}
               >
-                <span style={{ ...label(10, 700, 0.14), color: p.gold }}>
-                  0{i + 1} · {a.tag.toUpperCase()}
-                </span>
                 <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase', color: p.ink }}>{a.title}</h3>
                 <p style={body}>{a.body}</p>
                 <div style={{ display: 'grid', gap: s[1], paddingTop: s[3], borderTop: `${rule.hair}px solid ${p.rule}` }}>
@@ -1111,7 +1101,7 @@ const Rescue = () => {
         <section aria-labelledby="h-faq" style={{ ...section, background: p.panel }} data-rescue-hpad>
           <div data-rescue-split style={{ ...split('4fr 8fr'), alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: s[5] }}>
-              <h2 id="h-faq" style={{ ...h2, ...heading('d5'), margin: 0, textTransform: 'uppercase' }}>
+              <h2 id="h-faq" style={{ ...h2, ...heading('d6'), margin: 0, textTransform: 'uppercase' }}>
                 Before you send the link
               </h2>
               <p style={body}>

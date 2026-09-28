@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import Rail from '@/components/portfolio/Rail';
 import Hero from '@/components/portfolio/Hero';
-import Work, { Marquee } from '@/components/portfolio/Work';
+import Work from '@/components/portfolio/Work';
 import Journey from '@/components/portfolio/Journey';
 import Stack from '@/components/portfolio/Stack';
 import Contact from '@/components/portfolio/Contact';
@@ -24,7 +24,6 @@ const Index = ({ ready = true }: { ready?: boolean }) => {
       <Rail />
       <main style={{ flex: 1, minWidth: 0 }}>
         <Hero />
-        <Marquee />
         <Work />
         <Journey />
         <Testimonials />
