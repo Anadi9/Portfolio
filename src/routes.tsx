@@ -75,6 +75,12 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/RescueAudit').then((m) => ({ Component: m.default })),
         entry: 'src/pages/RescueAudit.tsx',
       },
+      // The link sent to people Anadi has worked with. Not indexed.
+      {
+        path: '/review',
+        lazy: () => import('./pages/Review').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Review.tsx',
+      },
       // The free Supabase security check: a lead magnet for the rescue offer.
       // Its findings CTA deep-links into `/rescue/audit?s=1`.
       {

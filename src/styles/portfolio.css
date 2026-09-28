@@ -358,6 +358,7 @@ button:focus-visible,
 /* /products/production-kit: each pack card is a label around a real checkbox,
    so the card carries the checkbox's focus ring. */
 [data-kit-pack]:has(input:focus-visible) { outline: 2px solid var(--mark); outline-offset: 3px; }
+[data-review-star]:has(input:focus-visible) { outline: 2px solid var(--mark); outline-offset: 2px; }
 [data-rescue-faq-sign]::before { content: '+'; }
 [data-rescue-faq][open] [data-rescue-faq-sign]::before { content: '\2212'; }
 
@@ -379,6 +380,7 @@ button:focus-visible,
   [data-rescue-four] { grid-template-columns: minmax(0, 1fr) !important; }
   [data-rescue-track] { display: none !important; }
   [data-rescue-area] { display: none; }
+  [data-review-pair] { grid-template-columns: minmax(0, 1fr) !important; }
   [data-rescue-finding] { grid-template-columns: 1fr !important; gap: 10px !important; }
   [data-rescue-bar] { display: flex !important; }
   /* The pack total and checkout button stay in reach while scrolling the cards. */
