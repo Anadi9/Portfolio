@@ -111,10 +111,8 @@ Marks: `[ ]` to do · `[x]` done · `[!]` blocked · `[?]` waiting for Anadi.
 
 ## Waiting for Anadi (the loop never does these)
 
-**Before deploying, upload the 1.2.1 zips to the private bucket:**
-`node scripts/kit-upload.mjs ~/Downloads/production-kit/release/dist/1.2.1`.
-Earlier buyers' downloads pages list 1.2.1 from this branch on, so without the
-upload their newest download links break.
+The 1.2.1 zips are in the private bucket (uploaded 2026-09-28), so earlier buyers'
+downloads pages work once this branch is deployed.
 
 - Testimonials, case studies, a Loom audit walkthrough.
 - Sending the buyers email (task 16).
@@ -141,3 +139,4 @@ upload their newest download links break.
 2026-09-27 · 16 · pass (judge: PASS; api/, vercel.json, supabase/ unchanged vs main; kit tests unchanged, 67 pass; email drafted, credit = what each buyer paid, flat $19 left as Anadi's call) · see commit
 2026-09-27 · loop stopped: no [ ] tasks left after 16 rounds; task 15 waits for Anadi
 2026-09-28 · 15 · done: Anadi approved the draft (public reposting with credit, credit to the kit page, paid packs keep the buyer license); kit rebuilt as 1.2.1 and wired in · see commit
+2026-09-28 · uploaded the six 1.2.1 zips to the private bucket, sha256 checked · see commit
