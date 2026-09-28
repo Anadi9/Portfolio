@@ -64,7 +64,6 @@ const p = {
   error: '#B3261E',
 } as const;
 
-const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: p.gold, margin: 0 };
 const body: CSSProperties = { margin: 0, font: `400 15px/1.55 ${display}`, color: p.body, textWrap: 'pretty', maxWidth: '62ch' };
 const fieldLabel: CSSProperties = { ...label(11, 700, 0.14), color: p.ink };
 const hint: CSSProperties = { margin: 0, font: `400 13px/1.45 ${display}`, color: p.dim };
@@ -215,7 +214,6 @@ function Results({ report, onReset }: { report: ScanReport; onReset: () => void 
   return (
     <div style={{ display: 'grid', gap: s[8] }}>
       <div style={{ display: 'grid', gap: s[4] }}>
-        <p style={eyebrow}>RESULTS · {report.project}.supabase.co</p>
         <h2 tabIndex={-1} id="scan-results-title" style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch', outline: 'none' }}>
           {report.counts.critical > 0 ? (
             <>
@@ -233,7 +231,7 @@ function Results({ report, onReset }: { report: ScanReport; onReset: () => void 
           )}
         </h2>
         <p style={body}>
-          Checked {report.tables.checked} of {report.tables.found} {report.tables.found === 1 ? 'table' : 'tables'} the public API lists
+          Checked <strong style={{ color: p.ink }}>{report.project}.supabase.co</strong>: {report.tables.checked} of {report.tables.found} {report.tables.found === 1 ? 'table' : 'tables'} the public API lists
           {report.buckets !== null ? `, and ${report.buckets} storage ${report.buckets === 1 ? 'bucket' : 'buckets'}` : ''}.
           {report.tables.truncated && ' The first 40, alphabetically: the rest weren’t checked.'} Nothing about this check was saved.
         </p>
@@ -423,14 +421,13 @@ export default function Scan() {
             <div style={{ display: 'grid', gap: s[10], minWidth: 0 }}>
               <form onSubmit={onSubmit} noValidate style={{ display: 'grid', gap: s[8] }} aria-busy={scanning}>
                 <div style={{ display: 'grid', gap: s[5] }}>
-                  <p style={eyebrow}>FREE SUPABASE SECURITY CHECK · 30 SECONDS</p>
                   <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
                     Is your database <span style={{ color: p.gold }}>open to the internet?</span>
                   </h1>
                   <p style={{ ...body, font: `400 17px/1.5 ${display}`, maxWidth: '52ch' }}>
                     Apps built with Lovable, Bolt, Cursor and v0 often ship with Row Level Security off, which means anyone
                     can download your users table. Paste two things from your Supabase dashboard and find out whether yours
-                    is one of them.
+                    is one of them. It&apos;s free and takes 30 seconds.
                   </p>
                 </div>
 

@@ -1,4 +1,4 @@
-import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { BANDS, type VerdictBand } from '@/lib/teardown/score';
 
@@ -19,7 +19,7 @@ import { BANDS, type VerdictBand } from '@/lib/teardown/score';
 export default function Ladder({ score, verdict }: { score: number; verdict: VerdictBand }) {
   return (
     <div style={{ marginTop: s[10], borderTop: `${rule.base}px solid ${c.rule}`, paddingTop: s[6] }}>
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>HOW THIS IS SCORED</p>
+      <h3 style={{ margin: 0, font: `600 17px/1.3 ${display}`, color: '#fff' }}>How this is scored</h3>
       <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '54ch' }}>
         {QUESTIONS.length} questions, each answer weighted 0 to 3, against these four fixed bands.
       </p>

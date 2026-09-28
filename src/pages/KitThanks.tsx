@@ -3,7 +3,7 @@ import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
 import { FreeKitNote, MailLink, PackDownload, type Offer } from '@/components/kit/Downloads';
-import { body, eyebrow, hint, p } from '@/components/kit/styles';
+import { body, hint, p } from '@/components/kit/styles';
 import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/portfolio/tokens';
 import type { PackId } from '@/data/kit';
 import { KIT } from '@/lib/kit/product';
@@ -64,7 +64,6 @@ export default function KitThanks() {
       <Seo title={`Thanks · ${KIT.name}`} description="Your download." path={KIT.packsThanksPath} type="website" robots="noindex, nofollow" />
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <div style={{ display: 'grid', gap: s[7], maxWidth: 720 }}>
-          <p style={eyebrow}>{state.status === 'ready' ? 'PAYMENT RECEIVED' : 'YOUR ORDER'}</p>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
             {state.status === 'ready' ? (
               <>

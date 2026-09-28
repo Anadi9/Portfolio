@@ -113,15 +113,14 @@ export default function TeardownResult() {
       <main style={{ flex: 1 }}>
         <section aria-label="A shared result" style={{ ...section, borderTop: 'none' }}>
           {answers ? (
-            // `Verdict` prints its own eyebrow and heading in the shared voice,
+            // `Verdict` prints its own heading and score line in the shared voice,
             // so the score-only branch below is the only one that writes them.
             <Verdict result={scoreOf(answers)} mine={false} />
           ) : (
             <>
-              <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>WRAPPER TEST RESULT</p>
               <h1
                 style={{
-                  margin: px(s[5], 0, 0),
+                  margin: 0,
                   ...heading('d3'),
                   textTransform: 'uppercase',
                   color: c.accent,
@@ -133,6 +132,7 @@ export default function TeardownResult() {
               <p style={{ margin: px(s[4], 0, 0), font: `700 20px/1 ${mono}`, color: '#fff' }}>
                 {pathScore}
                 <span style={{ color: c.dimOnInk }}>/100</span>
+                <span style={{ font: `400 15px/1 ${display}`, color: c.dimOnInk }}> on the wrapper test</span>
               </p>
               <Ladder score={pathScore} verdict={verdict} />
             </>

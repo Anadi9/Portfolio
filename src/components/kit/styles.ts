@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { buttonType, c, display, label, px, s } from '@/components/portfolio/tokens';
+import { buttonType, c, display, px, s } from '@/components/portfolio/tokens';
 
 /** Shared by the kit's two pages; see `KitShell`. */
 export const p = {
@@ -11,7 +11,6 @@ export const p = {
   error: '#B3261E',
 } as const;
 
-export const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: p.gold, margin: 0 };
 export const body: CSSProperties = { margin: 0, font: `400 16px/1.6 ${display}`, color: p.body, textWrap: 'pretty', maxWidth: '62ch' };
 export const hint: CSSProperties = { margin: 0, font: `400 13px/1.45 ${display}`, color: p.dim };
 export const cta: CSSProperties = {

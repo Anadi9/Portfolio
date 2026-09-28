@@ -42,7 +42,6 @@ const FixCta = ({ post }: { post: FixPost }) => {
         border: `${rule.base}px solid ${c.ink}`,
       }}
     >
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: px(0, 0, s[4]) }}>FREE AUDIT</p>
       <p style={{ margin: px(0, 0, s[4]), font: `700 24px/1.25 ${display}`, letterSpacing: '-0.02em', color: c.bright }}>
         {line ? `“${line}” Sound like your app?` : 'Sound like your app?'}
       </p>

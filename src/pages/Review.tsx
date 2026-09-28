@@ -30,7 +30,6 @@ const p = {
   error: '#B3261E',
 } as const;
 
-const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: p.gold, margin: 0 };
 const body: CSSProperties = { margin: 0, font: `400 17px/1.5 ${display}`, color: p.body, textWrap: 'pretty', maxWidth: '52ch' };
 const fieldLabel: CSSProperties = { ...label(11, 700, 0.14), color: p.ink };
 const hint: CSSProperties = { margin: 0, font: `400 13px/1.45 ${display}`, color: p.dim };
@@ -200,7 +199,6 @@ export default function Review() {
           <div style={{ maxWidth: 640, display: 'grid', gap: s[8] }}>
             {status === 'sent' ? (
               <div style={{ display: 'grid', gap: s[6] }} aria-live="polite">
-                <p style={eyebrow}>REVIEW RECEIVED</p>
                 <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
                   Thank you, <span style={{ color: p.gold }}>{form.name.trim().split(' ')[0]}.</span>
                 </h1>
@@ -209,12 +207,12 @@ export default function Review() {
             ) : (
               <form onSubmit={onSubmit} noValidate style={{ display: 'grid', gap: s[8], minWidth: 0 }}>
                 <div style={{ display: 'grid', gap: s[5] }}>
-                  <p style={eyebrow}>A REVIEW · TWO MINUTES</p>
                   <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
                     How was it <span style={{ color: p.gold }}>working with me?</span>
                   </h1>
                   <p style={body}>
                     Honest is more useful than glowing. What we worked on, what it was like, and what changed because of it.
+                    It takes about two minutes.
                   </p>
                 </div>
 

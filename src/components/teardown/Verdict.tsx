@@ -63,30 +63,19 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
   const Heading = mine ? 'h2' : 'h1';
 
   // Three slots over nine sections: the cut can land inside a tie, and a level
-  // run has no thinnest section at all. The eyebrow says which of those this
-  // is, so the list never claims a ranking the scores do not support.
+  // run has no thinnest section at all. The list title says which of those
+  // this is, so the list never claims a ranking the scores do not support.
   const { ranked, tied, tiedScore } = result.thinnest;
-  const eyebrow =
-    ranked.length === 3 ? 'THINNEST THREE' : ranked.length > 0 ? 'THINNEST SECTIONS' : 'NO THINNEST SECTION';
+  const listTitle =
+    ranked.length === 3 ? 'Your thinnest three sections' : ranked.length > 0 ? 'Your thinnest sections' : 'No section is thinner than the rest';
 
   return (
     <div>
-      {/*
-        The shared page cannot tell the sharer from the recipient: it is
-        prerendered, carries no identity, and `?a=` is only packed answers.
-        So the eyebrow asserts nothing about who is reading — it says what the
-        thing is, which stays true whether the taker is previewing their own
-        link or a stranger has just opened it.
-      */}
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>
-        {mine ? 'YOUR RESULT' : 'WRAPPER TEST RESULT'}
-      </p>
-
       <Heading
         ref={headingRef}
         tabIndex={mine ? -1 : undefined}
         style={{
-          margin: px(s[5], 0, 0),
+          margin: 0,
           ...heading('d3'),
           textTransform: 'uppercase',
           color: c.accent,
@@ -99,6 +88,14 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
       <p style={{ margin: px(s[4], 0, 0), font: `700 20px/1 ${mono}`, color: '#fff' }}>
         {result.score}
         <span style={{ color: c.dimOnInk }}>/100</span>
+        {/*
+          The shared page cannot tell the sharer from the recipient: it is
+          prerendered, carries no identity, and `?a=` is only packed answers.
+          So this asserts nothing about who is reading — it says what the
+          thing is, which stays true whether the taker is previewing their own
+          link or a stranger has just opened it.
+        */}
+        <span style={{ font: `400 15px/1 ${display}`, color: c.dimOnInk }}> on the wrapper test</span>
       </p>
 
       {result.undecidedCount > 0 && (
@@ -124,7 +121,7 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
       </div>
 
       <div style={{ marginTop: s[10], borderTop: `${rule.base}px solid ${c.rule}`, paddingTop: s[6] }}>
-        <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>{eyebrow}</p>
+        <h3 style={{ margin: 0, font: `600 17px/1.3 ${display}`, color: '#fff' }}>{listTitle}</h3>
 
         {ranked.length > 0 && (
           <ol style={{ margin: px(s[5], 0, 0), padding: 0, listStyle: 'none', display: 'grid', gap: s[3] }}>

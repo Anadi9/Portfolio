@@ -115,8 +115,7 @@ export default function Teardown() {
 
       <main style={{ flex: 1 }}>
         <section style={{ ...section, borderTop: 'none' }}>
-          <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>FREE · {TOTAL} QUESTIONS · 3 MINUTES</p>
-          <h1 style={{ margin: px(s[5], 0, 0), ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch' }}>
+          <h1 style={{ margin: 0, ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch' }}>
             The <span style={{ color: c.mark }}>wrapper</span> test 🧪
           </h1>
           <p
@@ -130,7 +129,8 @@ export default function Teardown() {
           >
             Answer thirteen questions about your own AI feature and see where it is thin: defensibility,
             failure design, cost floor, evaluation. It scores your answers, not a guess about your product,
-            so nothing here is invented. Your result appears straight away; nothing is asked for to see it.
+            so nothing here is invented. It&rsquo;s free and takes about three minutes; your result appears straight
+            away and nothing is asked for to see it.
           </p>
           <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '58ch' }}>
             This tells you <em>where</em> the problems are. To have an engineer look at the app itself and

@@ -4,7 +4,7 @@ import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
 import { FreeKitNote, MailLink, PackDownload, type Offer } from '@/components/kit/Downloads';
-import { body, eyebrow, hint, p } from '@/components/kit/styles';
+import { body, hint, p } from '@/components/kit/styles';
 import { display, gutter, heading, px, s, sectionY } from '@/components/portfolio/tokens';
 import type { PackId } from '@/data/kit';
 import { KIT } from '@/lib/kit/product';
@@ -54,8 +54,8 @@ export default function KitDownloads() {
       <Seo title={`Your downloads · ${KIT.name}`} description="Your downloads." path={KIT.downloadsPath} type="website" robots="noindex, nofollow" />
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <div style={{ display: 'grid', gap: s[7], maxWidth: 720 }}>
-          <p style={eyebrow}>{state.kind === 'ready' ? `BOUGHT WITH ${state.library.email.toUpperCase()}` : 'YOUR DOWNLOADS'}</p>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>Your downloads.</h1>
+          {state.kind === 'ready' && <p style={hint}>Bought with {state.library.email}</p>}
 
           <div aria-live="polite">
             {state.kind === 'loading' && <p style={body}>Loading your downloads…</p>}

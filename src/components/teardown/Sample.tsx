@@ -25,7 +25,7 @@ export default function Sample({ score }: { score: number }) {
 
   return (
     <div>
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>ONE OF THE QUESTIONS</p>
+      <h3 style={{ margin: 0, font: `600 17px/1.3 ${display}`, color: '#fff' }}>One of the questions</h3>
       <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '54ch' }}>
         Number {number} of {QUESTIONS.length}, worded exactly as the test asks it. The number beside each
         answer is what it scores.

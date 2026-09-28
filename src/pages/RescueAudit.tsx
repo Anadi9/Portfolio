@@ -75,7 +75,6 @@ const p = {
   error: '#B3261E',
 } as const;
 
-const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: p.gold, margin: 0 };
 const body: CSSProperties = { margin: 0, font: `400 15px/1.55 ${display}`, color: p.body, textWrap: 'pretty', maxWidth: '62ch' };
 const fieldLabel: CSSProperties = { ...label(11, 700, 0.14), color: p.ink };
 const hint: CSSProperties = { margin: 0, font: `400 13px/1.45 ${display}`, color: p.dim };
@@ -247,7 +246,6 @@ export default function RescueAudit() {
         <section data-rescue-hpad style={{ containerType: 'inline-size', padding: px(s[10], gutter, sectionY.bottom) }}>
           {status.kind === 'sent' ? (
             <div style={{ display: 'grid', gap: s[6], maxWidth: '60ch' }} aria-live="polite">
-              <p style={eyebrow}>REQUEST RECEIVED</p>
               <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
                 Your report lands by <span style={{ color: p.gold }}>{formatDue(status.due)}.</span>
               </h1>
@@ -275,13 +273,13 @@ export default function RescueAudit() {
             <div data-rescue-split style={{ display: 'grid', gridTemplateColumns: '7fr 4fr', gap: s[10], alignItems: 'start' }}>
               <form onSubmit={onSubmit} noValidate style={{ display: 'grid', gap: s[8], minWidth: 0 }}>
                 <div style={{ display: 'grid', gap: s[5] }}>
-                  <p style={eyebrow}>FREE PRODUCTION AUDIT · {TURNAROUND_HOURS} HOURS</p>
                   <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
                     Send me your app. <span style={{ color: p.gold }}>I&apos;ll tell you what breaks.</span>
                   </h1>
                   <p style={{ ...body, font: `400 17px/1.5 ${display}`, maxWidth: '50ch' }}>
                     I look at your live app myself, not a scanner, and send a plain-English report ranked Fix now, Risky
-                    and Can wait. It takes about two minutes to fill in.
+                    and Can wait. It&apos;s free, back within {TURNAROUND_HOURS} hours, and takes about two minutes to fill
+                    in.
                   </p>
                 </div>
 

@@ -21,7 +21,6 @@ const CLAMP_LINES = 7;
 
 const p = { ink: c.ink, body: '#4a4a4a', dim: c.dim, gold: c.markOnPaper, rule: 'rgba(10,10,10,.14)' } as const;
 
-const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: p.gold, margin: 0 };
 const textButton: CSSProperties = {
   background: 'none',
   border: 0,
@@ -125,7 +124,6 @@ export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<stri
     >
       <div data-testimonials-head style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'end', justifyContent: 'space-between', gap: s[6], marginBottom: s[9] }}>
         <div style={{ display: 'grid', gap: s[5] }}>
-          <p style={eyebrow}>REVIEWS · {reviews.length}</p>
           <h2 id="h-testimonials" style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' }}>
             From people I&apos;ve <span style={{ color: p.gold }}>worked with</span>
           </h2>

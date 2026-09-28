@@ -33,8 +33,7 @@ export default function Gate({ onSubmit }: { onSubmit: (email: string, honeypot:
       }}
       style={{ maxWidth: '52ch' }}
     >
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>THE WRITTEN BREAKDOWN</p>
-      <h3 style={{ margin: px(s[5], 0, 0), ...heading('d5'), textTransform: 'uppercase', color: '#fff' }}>
+      <h3 style={{ margin: 0, ...heading('d5'), textTransform: 'uppercase', color: '#fff' }}>
         All nine sections
       </h3>
       <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk }}>

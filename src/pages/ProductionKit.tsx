@@ -4,7 +4,7 @@ import { Link } from 'vite-react-ssg';
 import { track } from '@vercel/analytics';
 import { Seo, ORIGIN } from '@/components/Seo';
 import KitShell, { Check } from '@/components/kit/KitShell';
-import { body, cta, eyebrow, hint, p } from '@/components/kit/styles';
+import { body, cta, hint, p } from '@/components/kit/styles';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import portrait from '@/assets/portrait.webp';
 import { FREE_KIT, LATEST, PACK_IDS, pack } from '@/data/kit';
@@ -129,15 +129,12 @@ function Code({ children }: { children: ReactNode }) {
   return <code style={{ font: `500 0.9em/1 ${mono}`, color: p.ink }}>{children}</code>;
 }
 
-const Section = ({ id, anchor, kicker, title, children }: { id: string; anchor?: string; kicker: string; title: ReactNode; children: ReactNode }) => (
+const Section = ({ id, anchor, title, children }: { id: string; anchor?: string; title: ReactNode; children: ReactNode }) => (
   <section id={anchor} aria-labelledby={id} data-rescue-hpad style={{ containerType: 'inline-size', padding: px(s[11], gutter, 0), scrollMarginTop: s[6] }}>
     <div data-rescue-split style={{ display: 'grid', gridTemplateColumns: '4fr 7fr', gap: s[10], alignItems: 'start', borderTop: `${rule.edge}px solid ${c.ink}`, paddingTop: s[8] }}>
-      <div style={{ display: 'grid', gap: s[3] }}>
-        <p style={eyebrow}>{kicker}</p>
-        <h2 id={id} style={{ margin: 0, ...heading('d5'), textTransform: 'uppercase', maxWidth: '14ch' }}>
-          {title}
-        </h2>
-      </div>
+      <h2 id={id} style={{ margin: 0, ...heading('d5'), textTransform: 'uppercase', maxWidth: '14ch' }}>
+        {title}
+      </h2>
       <div style={{ minWidth: 0 }}>{children}</div>
     </div>
   </section>
@@ -183,12 +180,11 @@ export default function ProductionKit() {
       <section data-rescue-hpad style={{ containerType: 'inline-size', padding: px(s[10], gutter, 0) }}>
         <div data-rescue-split style={{ display: 'grid', gridTemplateColumns: '7fr 4fr', gap: s[10], alignItems: 'start' }}>
           <div style={{ display: 'grid', gap: s[7], minWidth: 0 }}>
-            <p style={eyebrow}>THE PRODUCTION KIT · FREE · FOR CLAUDE CODE, CURSOR, LOVABLE AND BOLT</p>
             <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '17ch' }}>
               Make your AI tool write code that <span style={{ color: p.gold }}>survives real users.</span>
             </h1>
             <p style={{ ...body, font: `400 18px/1.5 ${display}`, maxWidth: '52ch' }}>
-              Building your app with an AI tool? These are the rules, skills and checklists a senior engineer would give it,
+              Building your app with Claude Code, Cursor, Lovable or Bolt? These are the rules, skills and checklists a senior engineer would give it,
               for React / Next.js + Supabase apps, so your AI follows them and you can check the result yourself.
             </p>
             <div style={{ display: 'grid', gap: s[3], justifyItems: 'start' }}>
@@ -228,7 +224,7 @@ export default function ProductionKit() {
         </div>
       </section>
 
-      <Section id="kit-problems" kicker="WHAT IT’S FOR" title="The problems it covers.">
+      <Section id="kit-problems" title="The problems it covers.">
         <div style={{ display: 'grid', gap: s[6] }}>
           <p style={body}>You built your app with an AI coding tool. It works on your machine. Then real users arrive. The kit has a part for each of these:</p>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${s[13] * 2}px), 1fr))`, gap: s[4] }}>
@@ -245,7 +241,7 @@ export default function ProductionKit() {
         </div>
       </Section>
 
-      <Section id="kit-proof" kicker="PROOF" title="What the RLS audit found on a demo app.">
+      <Section id="kit-proof" title="What the RLS audit found on a demo app.">
         <div style={{ display: 'grid', gap: s[5] }}>
           <p style={body}>
             From the sample report in the kit: the RLS audit run on a deliberately insecure task app with two made-up users, Asha
@@ -282,7 +278,7 @@ export default function ProductionKit() {
         </div>
       </Section>
 
-      <Section id="kit-inside" kicker="WHAT’S INSIDE" title="Rules, skills, templates, checklists.">
+      <Section id="kit-inside" title="Rules, skills, templates, checklists.">
         <div style={{ display: 'grid', gap: s[8] }}>
           <p style={body}>Version {LATEST.version}, all of it in one download.</p>
           {INSIDE.map((group) => (
@@ -303,7 +299,7 @@ export default function ProductionKit() {
         </div>
       </Section>
 
-      <Section id="kit-who-made" kicker="WHO MADE IT" title="Anadi Thakur.">
+      <Section id="kit-who-made" title="Made by Anadi Thakur.">
         <div style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr)', gap: s[6], alignItems: 'start' }}>
           <img
             src={portrait}
@@ -322,7 +318,7 @@ export default function ProductionKit() {
         </div>
       </Section>
 
-      <Section id="kit-faq" kicker="FAQ" title="Before you download.">
+      <Section id="kit-faq" title="Before you download.">
         <div style={{ borderTop: `${rule.hair}px solid ${p.rule}` }}>
           {FAQ.map((f) => (
             <details key={f.q} style={{ borderBottom: `${rule.hair}px solid ${p.rule}`, padding: px(s[5], 0) }}>
@@ -336,12 +332,14 @@ export default function ProductionKit() {
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <div data-rescue-split style={{ display: 'grid', gridTemplateColumns: '7fr 4fr', gap: s[6], alignItems: 'stretch' }}>
           <div style={{ display: 'grid', gap: s[6], padding: px(s[9], s[8]), background: c.accent, alignContent: 'start' }}>
-            <p style={{ ...eyebrow, color: p.body }}>FREE · NO SIGN-UP · VERSION {FREE_KIT.version}</p>
             <p style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' }}>Give your AI tool the rules.</p>
-            <Download where="footer" />
+            <div style={{ display: 'grid', gap: s[3], justifyItems: 'start' }}>
+              <Download where="footer" />
+              <p style={{ ...hint, color: p.body }}>Version {FREE_KIT.version} · No sign-up</p>
+            </div>
           </div>
           <div style={{ display: 'grid', gap: s[5], padding: px(s[9], s[7]), background: c.plate, color: c.paper, alignContent: 'start' }}>
-            <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>RATHER HAVE IT FIXED?</span>
+            <p style={{ margin: 0, font: `600 17px/1.3 ${display}`, color: c.paper }}>Rather have it fixed?</p>
             <p style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.bright }}>
               Get a free audit of your app: security, auth, deploys and performance, with a fixed price for the fix.
             </p>

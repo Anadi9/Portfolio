@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
-import { body, eyebrow, hint, p } from '@/components/kit/styles';
+import { body, hint, p } from '@/components/kit/styles';
 import { gutter, heading, px, s, sectionY } from '@/components/portfolio/tokens';
 import { BUSINESS, LEGAL_PATHS } from '@/data/legal';
 import { KIT } from '@/lib/kit/product';
@@ -26,8 +26,8 @@ function Page({ title, path, description, children }: { title: string; path: str
       <Seo title={`${title} · Anadi Thakur`} description={description} path={path} type="website" />
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <article style={{ display: 'grid', gap: s[7], maxWidth: 720 }}>
-          <p style={eyebrow}>LAST UPDATED {BUSINESS.updated.toUpperCase()}</p>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>{title}</h1>
+          <p style={hint}>Last updated {BUSINESS.updated}</p>
           {children}
           <nav aria-label="Policies" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap', ...hint }}>
             <Link to={LEGAL_PATHS.support} style={a}>Support</Link>

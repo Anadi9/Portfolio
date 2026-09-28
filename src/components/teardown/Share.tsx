@@ -42,8 +42,7 @@ export default function Share({ answers }: { answers: number[] }) {
 
   return (
     <div>
-      <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: 0 }}>SHARE THIS RESULT</p>
-      <h2 style={{ margin: px(s[5], 0, 0), ...heading('d5'), color: '#fff', maxWidth: '30ch' }}>
+      <h2 style={{ margin: 0, ...heading('d5'), color: '#fff', maxWidth: '30ch' }}>
         Send the verdict to whoever owns the roadmap.
       </h2>
       <p style={{ margin: px(s[4], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '54ch' }}>

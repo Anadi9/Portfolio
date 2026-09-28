@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
-import { body, cta, eyebrow, hint, p } from '@/components/kit/styles';
+import { body, cta, hint, p } from '@/components/kit/styles';
 import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/portfolio/tokens';
 import { KIT } from '@/lib/kit/product';
 
@@ -29,7 +29,6 @@ export default function ProductionKitThanks() {
       <Seo title={`Thanks · ${KIT.name}`} description="Your download." path={KIT.thanksPath} type="website" robots="noindex, follow" />
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <div style={{ display: 'grid', gap: s[7], maxWidth: 720 }}>
-          <p style={eyebrow}>PAYMENT RECEIVED</p>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
             Thanks. <span style={{ color: p.gold }}>Here’s your kit.</span>
           </h1>

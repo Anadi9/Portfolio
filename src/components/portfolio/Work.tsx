@@ -397,7 +397,6 @@ const Work = () => (
             padding: px(s[7], s[6]),
           }}
         >
-          <div style={{ ...label(11, 700, 0.16), color: c.mark }}>END OF THE REEL</div>
           <div style={{ ...heading('d4'), textTransform: 'uppercase' }}>
             There's more,
             <br />

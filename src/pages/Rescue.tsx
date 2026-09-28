@@ -26,9 +26,10 @@ import { site } from '@/data/portfolio';
  *
  * Everything after the offer is aimed at one action, the free audit. Each CTA
  * reports `audit_cta_click` with where it sat, so the placements can be judged
- * against each other. The two quiet exits near the end (the Supabase check at
- * `/scan`, the Wrapper Test at `/teardown`) are for visitors who aren't that
- * buyer yet, and are deliberately set as text links, not buttons.
+ * against each other. For visitors who aren't that buyer yet, the free-tools
+ * section just above the FAQ lays out everything that costs nothing (the audit,
+ * the Supabase check at `/scan`, the Wrapper Test at `/teardown`, the kit),
+ * and the header links to it.
  *
  * This arrived as a standalone document with its own
  * palette (a red and a blue for the error log) and its own stylesheet. It is
@@ -81,9 +82,7 @@ const section: CSSProperties = {
   padding: px(sectionY.top, gutter, sectionY.bottom),
 };
 
-const eyebrow: CSSProperties = { ...label(10, 700, 0.16), color: p.gold, margin: 0 };
-
-const h2: CSSProperties = { margin: px(s[5], 0, 0), ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' };
+const h2: CSSProperties = { margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' };
 
 const body: CSSProperties = {
   margin: 0,
@@ -132,6 +131,41 @@ const errors = [
 ];
 
 const builders = ['Lovable', 'Bolt', 'Cursor', 'v0', 'Replit'];
+
+/** Everything on the domain that costs nothing. The audit leads; the other
+ *  three are for visitors who aren't ready to send a link yet. */
+const freeTools = [
+  {
+    tag: '48 hours',
+    title: 'Production audit',
+    body: 'Send your app and get a plain-English report of what is broken, what is risky and what can wait.',
+    action: 'Get a free audit',
+    to: AUDIT,
+    onClick: () => trackRescue('audit_cta_click', { location: 'free_tools' }),
+  },
+  {
+    tag: '30 seconds',
+    title: 'Supabase security check',
+    body: 'Find out whether anyone on the internet can read your Supabase tables. Nothing is stored.',
+    action: 'Run the check',
+    to: '/scan',
+  },
+  {
+    tag: '3 minutes',
+    title: 'The Wrapper Test',
+    body: 'Thirteen questions that score your AI product on defensibility, failure design, cost and evals.',
+    action: 'Take the test',
+    to: '/teardown',
+  },
+  {
+    tag: 'Download',
+    title: 'The Production Kit',
+    body: 'Rules, skills and checklists that make Claude Code, Cursor, Lovable and Bolt write code that holds up.',
+    action: 'Get the kit',
+    to: KIT.path,
+    onClick: () => trackRescue('kit_link_click', { location: 'free_tools' }),
+  },
+];
 
 
 const fixes = [
@@ -334,8 +368,7 @@ const jsonLd = {
 /** Fires the CTA event. Only ever called from a click, so never in the prerender. */
 const clicked = (location: string) => () => trackRescue('audit_cta_click', { location });
 
-/** The same for the kit. It is linked from the footer only: a visitor who has
- *  just ticked their symptoms is a rescue lead, not a do-it-yourself sale. */
+/** The same for the kit, from the free-tools section and the footer. */
 const kitClicked = (location: string) => () => trackRescue('kit_link_click', { location });
 
 /** The hero's error log. Rows flip from error to fixed one at a time after
@@ -617,6 +650,7 @@ const Rescue = () => {
             ['#h-fix', 'WHAT I FIX'],
             ['#h-how', 'HOW IT WORKS'],
             ['#h-price', 'PRICE'],
+            ['#h-free', 'FREE TOOLS'],
             ['#h-faq', 'FAQ'],
             ['/notes', 'NOTES'],
           ].map(([href, text]) => (
@@ -634,7 +668,6 @@ const Rescue = () => {
         <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
           <div data-rescue-split style={{ ...split('7fr 5fr'), alignItems: 'end' }}>
             <div style={{ display: 'grid', gap: s[6], alignContent: 'start' }}>
-              <p style={eyebrow}>VIBE CODE RESCUE · FIXED PRICE · 7 DAYS</p>
               <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '14ch' }}>
                 Works in the demo. <span style={{ color: p.gold }}>Breaks in production.</span>
               </h1>
@@ -748,15 +781,13 @@ const Rescue = () => {
         </div>
 
         <section aria-labelledby="h-familiar" style={section} data-rescue-hpad>
-          <p style={eyebrow}>THE SYMPTOMS · TICK WHAT APPLIES</p>
           <h2 id="h-familiar" style={h2}>
-            Sound familiar?
+            Which of these sound familiar?
           </h2>
           <Symptoms />
         </section>
 
         <section aria-labelledby="h-fix" style={section} data-rescue-hpad>
-          <p style={eyebrow}>THE SCOPE</p>
           <h2 id="h-fix" style={h2}>
             What I fix
           </h2>
@@ -781,7 +812,6 @@ const Rescue = () => {
         </section>
 
         <section aria-labelledby="h-how" style={section} data-rescue-hpad>
-          <p style={eyebrow}>HOW IT WORKS</p>
           <h2 id="h-how" style={h2}>
             Fixed in 7 days, then 7 days of support
           </h2>
@@ -817,7 +847,6 @@ const Rescue = () => {
         </section>
 
         <section aria-labelledby="h-proof" style={section} data-rescue-hpad>
-          <p style={eyebrow}>WHAT YOU GET</p>
           <h2 id="h-proof" style={h2}>
             The audit, before you pay
           </h2>
@@ -891,7 +920,6 @@ const Rescue = () => {
         <section aria-labelledby="h-price" style={section} data-rescue-hpad>
           <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: s[4] }}>
-              <p style={eyebrow}>THE PRICE</p>
               <h2 id="h-price" style={{ ...h2, margin: 0 }}>
                 What a fix costs
               </h2>
@@ -955,7 +983,6 @@ const Rescue = () => {
         </section>
 
         <section aria-labelledby="h-addons" style={section} data-rescue-hpad>
-          <p style={eyebrow}>ADD-ONS</p>
           <h2 id="h-addons" style={h2}>
             On top of the fix
           </h2>
@@ -1005,7 +1032,6 @@ const Rescue = () => {
               }}
             />
             <div style={{ display: 'grid', gap: s[5], alignContent: 'start' }}>
-              <p style={eyebrow}>THE ENGINEER</p>
               <h2 id="h-who" style={{ ...h2, ...heading('d5'), margin: 0, textTransform: 'uppercase' }}>
                 Who&apos;s fixing it
               </h2>
@@ -1048,10 +1074,43 @@ const Rescue = () => {
           </div>
         </section>
 
+        <section aria-labelledby="h-free" style={section} data-rescue-hpad>
+          <h2 id="h-free" style={h2}>
+            Free, before anything else
+          </h2>
+          <p style={{ ...body, marginTop: s[5] }}>No call and no card. Start with whichever fits where you are.</p>
+          <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[5], marginTop: s[9] }}>
+            {freeTools.map((tool) => (
+              <Link
+                key={tool.title}
+                to={tool.to}
+                onClick={tool.onClick}
+                className="pf-nudge"
+                style={{
+                  display: 'grid',
+                  gridTemplateRows: 'auto auto 1fr auto',
+                  gap: s[4],
+                  padding: px(s[7], s[6]),
+                  background: p.panel,
+                  border: `${rule.base}px solid ${c.ink}`,
+                  color: p.ink,
+                  textDecoration: 'none',
+                }}
+              >
+                <span style={{ ...label(10, 700, 0.14), color: p.body }}>FREE · {tool.tag.toUpperCase()}</span>
+                <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase' }}>{tool.title}</h3>
+                <p style={body}>{tool.body}</p>
+                <span style={{ ...textLink, paddingTop: s[3], borderTop: `${rule.hair}px solid ${p.rule}` }}>
+                  {tool.action.toUpperCase()} <span aria-hidden>→</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         <section aria-labelledby="h-faq" style={{ ...section, background: p.panel }} data-rescue-hpad>
           <div data-rescue-split style={{ ...split('4fr 8fr'), alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: s[5] }}>
-              <p style={{ ...eyebrow, color: p.body }}>QUESTIONS</p>
               <h2 id="h-faq" style={{ ...h2, ...heading('d5'), margin: 0, textTransform: 'uppercase' }}>
                 Before you send the link
               </h2>
