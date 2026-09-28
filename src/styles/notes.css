@@ -69,6 +69,34 @@
   }
 }
 
+/* A /work card. Same manners as the feed row: a warm tint on hover, the ink
+   palette on keyboard focus. */
+.pf-work-card {
+  --wc-ink: #0a0a0a;
+  --wc-body: #3a3a3a;
+  --wc-dim: #6b6b6b;
+  --wc-mark: #8a6a2a;
+  --wc-edge: rgba(10, 10, 10, 0.45);
+
+  background: #ffffff;
+  transition: background 0.22s ease;
+}
+
+.pf-work-card:focus-visible {
+  background: #0a0a0a;
+  --wc-ink: #f2f2f2;
+  --wc-body: #c4c4c4;
+  --wc-dim: #9a9a9a;
+  --wc-mark: #c9a24b;
+  --wc-edge: rgba(228, 222, 208, 0.5);
+}
+
+@media (hover: hover) {
+  .pf-work-card:hover {
+    background-image: linear-gradient(rgba(10, 10, 10, 0.04), rgba(10, 10, 10, 0.04));
+  }
+}
+
 /* Long tradeoffs and long headlines both wrap to four lines on a phone, which
    turns the feed back into twelve paragraphs. Two lines, then trust the click. */
 .pf-clamp-2,

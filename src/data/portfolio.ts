@@ -95,17 +95,17 @@ export const projects: Project[] = [
   {
     index: '01',
     kind: 'FEATURED',
-    tech: ['NEXT.JS', 'FASTAPI', 'CLAUDE API', 'SUPABASE'],
+    tech: ['NEXT.JS', 'FASTAPI', 'GROQ · LLAMA 3.3', 'SUPABASE'],
     title: ['Signal', 'AI Lead Radar'],
     blurb:
-      "Scrape → score → outreach. A 0–100 model with a stated reason for the score, and a Claude-written first email you'd actually be willing to send.",
+      "Scrape → score → outreach. A 0–100 score with a written reason behind it, and a first email drafted from that evidence for you to review.",
     shot: signalShot,
     shotLabel: 'SIGNAL · AI LEAD RADAR',
     href: SIGNAL_HREF || undefined,
     study: {
       product: 'ANTA Lead Radar',
       role: 'Solo: product, pipeline, interface',
-      span: '2025, running daily',
+      span: 'Jun – Jul 2026',
       problem:
         'Lead tools hand you a list and a confidence percentage nobody can interrogate. You either trust the number or you throw the list away, and everyone throws the list away.',
       moves: [
@@ -125,7 +125,7 @@ export const projects: Project[] = [
           n: '03',
           head: 'It writes a draft, not a send',
           body:
-            'Claude fills a review queue: subject, body, two variants to choose between. Moving a lead to contacted is a human pressing a button. The automation is worth having precisely because it stops one step short.',
+            'Llama 3.3 on Groq fills a review queue with cold emails, LinkedIn notes and follow-ups. Sending, and moving a lead to contacted, is a human pressing a button. The automation is worth having precisely because it stops one step short.',
         },
       ],
       results: [
@@ -140,13 +140,13 @@ export const projects: Project[] = [
   {
     index: '02',
     kind: 'ENTERPRISE',
-    tech: ['REACT', 'AEM', 'DESIGN SYSTEM'],
+    tech: ['REACT', 'COMPONENT SYSTEM', 'DESIGN SYSTEM'],
     title: ['ZEISS', 'Microscopy'],
     blurb:
-      'A product platform for scientific light microscopes. Reusable components wired to AEM content APIs, so marketing ships copy without waiting on a deploy.',
+      'A product platform for scientific light microscopes. A reusable React component system wired to content APIs, so marketing ships copy without waiting on a deploy.',
     shot: zeissShot,
     shotLabel: 'ZEISS PRODUCT PAGE',
-    href: 'https://www.zeiss.com/microscopy/us/products/light-microscopes.html',
+    href: 'https://www.zeiss.com/microscopy/us/home.html',
   },
   {
     index: '03',
@@ -194,7 +194,7 @@ export const milestones: Milestone[] = [
     year: '23',
     title: 'Enterprise, and its constraints',
     body: 'Precious Infosystem, building for ZEISS. Component libraries that non-technical people could actually use. Accessibility stopped being optional.',
-    meta: 'PRECIOUS INFOSYSTEM · ZEISS · AEM',
+    meta: 'PRECIOUS INFOSYSTEM · ZEISS · REACT',
     tone: 'ink',
   },
   {
@@ -206,13 +206,13 @@ export const milestones: Milestone[] = [
   {
     year: '25',
     title: 'Out on my own, into LLMs',
-    body: 'Independent. Scoping, architecture, deployment, and building Signal, where Claude does the writing and I do the plumbing.',
-    meta: 'FREELANCE · CLAUDE · GROQ · FASTAPI',
+    body: 'Independent. Scoping, architecture and deployment, and my first production work with LLMs.',
+    meta: 'FREELANCE · LLMS · FASTAPI',
   },
   {
     year: '26',
     title: 'Vibe Code Rescue',
-    body: 'Taking apps built with Lovable, Bolt, Cursor and v0 from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
+    body: 'Built Signal, an AI lead radar. Now taking apps built with Lovable, Bolt, Cursor and v0 from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
     meta: 'INDEPENDENT · FIXED PRICE',
     tone: 'accent',
   },
@@ -243,7 +243,7 @@ export const stack: StackColumn[] = [
   },
   {
     heading: 'WORKING KNOWLEDGE',
-    items: ['GCP · Azure', 'Docker', 'AEM · Strapi', 'Firebase', 'Figma'],
+    items: ['GCP · Azure', 'Docker', 'Strapi', 'Firebase', 'Figma'],
     strong: false,
   },
 ];

@@ -61,11 +61,11 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
         <Link to="/notes" style={{ ...label(11, 700, 0.14), color: c.ink, textDecoration: 'none' }}>
           NOTES
         </Link>
-        {/* The portfolio lives on its own subdomain now; `/` is the rescue
-            offer, so `/#work` would land on a page with no #work in it. */}
-        <a href={PORTFOLIO_ORIGIN} className="pf-notes-work" style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
+        {/* The case studies. The portfolio itself lives on its own subdomain
+            and is linked from the footer. */}
+        <Link to="/work" className="pf-notes-work" style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
           WORK
-        </a>
+        </Link>
         {/* The one way from a note into the rescue. Kept small enough that the
             header stays inside --pf-header-h. */}
         <Link
