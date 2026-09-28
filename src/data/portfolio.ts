@@ -194,7 +194,7 @@ export const milestones: Milestone[] = [
     year: '23',
     title: 'Enterprise, and its constraints',
     body: 'Precious Infosystem, building for ZEISS. Component libraries that non-technical people could actually use. Accessibility stopped being optional.',
-    meta: 'PRECIOUS INFOSYSTEM · ZEISS · AEM',
+    meta: 'PRECIOUS INFOSYSTEM · ZEISS · REACT',
     tone: 'ink',
   },
   {
@@ -206,13 +206,13 @@ export const milestones: Milestone[] = [
   {
     year: '25',
     title: 'Out on my own, into LLMs',
-    body: 'Independent. Scoping, architecture, deployment, and building Signal, where the model does the writing and I do the plumbing.',
-    meta: 'FREELANCE · CLAUDE · GROQ · FASTAPI',
+    body: 'Independent. Scoping, architecture and deployment, and my first production work with LLMs.',
+    meta: 'FREELANCE · LLMS · FASTAPI',
   },
   {
     year: '26',
     title: 'Vibe Code Rescue',
-    body: 'Taking apps built with Lovable, Bolt, Cursor and v0 from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
+    body: 'Built Signal, an AI lead radar. Now taking apps built with Lovable, Bolt, Cursor and v0 from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
     meta: 'INDEPENDENT · FIXED PRICE',
     tone: 'accent',
   },
@@ -243,7 +243,7 @@ export const stack: StackColumn[] = [
   },
   {
     heading: 'WORKING KNOWLEDGE',
-    items: ['GCP · Azure', 'Docker', 'AEM · Strapi', 'Firebase', 'Figma'],
+    items: ['GCP · Azure', 'Docker', 'Strapi', 'Firebase', 'Figma'],
     strong: false,
   },
 ];
