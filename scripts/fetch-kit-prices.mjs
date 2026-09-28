@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Not run by `dev` or `build` any more: the kit is a free download and no page
+ * shows a price. Kept, with the server-side checkout, for if the kit is sold
+ * again; `kit.test.ts` still checks its lookup keys. To restore it, add it back
+ * to the `predev`, `prebuild` and `prebuild:dev` scripts in package.json.
+ *
  * Writes the kit's Stripe prices to `src/generated/kit-prices.json` before
  * `dev` and `build`, so the prerendered pages (and their JSON-LD offers) carry
  * the prices the checkout will charge. The page refreshes them from

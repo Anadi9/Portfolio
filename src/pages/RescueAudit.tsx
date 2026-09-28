@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
-import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
+import { buttonType, c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import {
+  CALL_OFFER,
   NOTES_MAX,
   SYMPTOMS,
   TOOLS,
@@ -98,7 +99,7 @@ const cta: CSSProperties = {
   background: c.ink,
   color: c.accent,
   border: 0,
-  ...label(11, 700, 0.12),
+  ...buttonType(),
   textDecoration: 'none',
   cursor: 'pointer',
 };
@@ -301,6 +302,21 @@ export default function RescueAudit() {
                   />
                 </Field>
 
+                <Field id="ra-email" title="WHERE TO SEND THE REPORT" error={errors.email}>
+                  <input
+                    id="ra-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="you@company.com"
+                    value={form.email}
+                    onChange={(e) => set('email', e.target.value)}
+                    aria-invalid={!!errors.email || undefined}
+                    aria-describedby={describedBy('email')}
+                    style={{ ...input, borderColor: errors.email ? p.error : c.ink }}
+                  />
+                </Field>
+
                 <fieldset style={{ border: 0, margin: 0, padding: 0, display: 'grid', gap: s[3] }} aria-describedby={describedBy('tool')}>
                   <legend style={{ ...fieldLabel, padding: 0, marginBottom: s[3] }}>BUILT WITH</legend>
                   <div id="ra-tool" tabIndex={-1} style={{ display: 'flex', flexWrap: 'wrap', gap: s[2], outline: 'none' }}>
@@ -427,21 +443,6 @@ export default function RescueAudit() {
                   />
                 </Field>
 
-                <Field id="ra-email" title="WHERE TO SEND THE REPORT" error={errors.email}>
-                  <input
-                    id="ra-email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    placeholder="you@company.com"
-                    value={form.email}
-                    onChange={(e) => set('email', e.target.value)}
-                    aria-invalid={!!errors.email || undefined}
-                    aria-describedby={describedBy('email')}
-                    style={{ ...input, borderColor: errors.email ? p.error : c.ink }}
-                  />
-                </Field>
-
                 {/* Honeypot. Off-screen rather than `display:none`, as on the teardown gate. */}
                 <input
                   type="text"
@@ -456,11 +457,11 @@ export default function RescueAudit() {
 
                 <div style={{ display: 'grid', gap: s[4], justifyItems: 'start' }}>
                   <button type="submit" disabled={status.kind === 'sending'} className="pf-nudge pf-nudge-lg" style={{ ...cta, opacity: status.kind === 'sending' ? 0.6 : 1 }}>
-                    {status.kind === 'sending' ? 'SENDING…' : 'SEND FOR AUDIT'}
+                    {status.kind === 'sending' ? 'Sending…' : 'Send for audit'}
                     <span aria-hidden>→</span>
                   </button>
                   <p style={hint}>
-                    Free. No call. Report by {due ?? `${TURNAROUND_HOURS} hours from now`}. I only use your email for this
+                    Free. No call needed. Report by {due ?? `${TURNAROUND_HOURS} hours from now`}. I only use your email for this
                     audit.
                   </p>
                   {status.kind === 'failed' && (
@@ -482,7 +483,7 @@ export default function RescueAudit() {
                     {[
                       ['Report', due ? `By ${due}. Fix now, Risky, Can wait, in plain English.` : `Within ${TURNAROUND_HOURS} hours. Fix now, Risky, Can wait, in plain English.`],
                       ['Fixed quote', 'If something needs fixing, the report ends with one price for all of it, from $499 depending on scope.'],
-                      ['Your call', "Nothing worth fixing? I'll say so. No follow-up sequence, no pressure."],
+                      ['Your call', `Nothing worth fixing? I'll say so. ${CALL_OFFER} One follow-up, then I leave you alone.`],
                     ].map(([title, text], i) => (
                       <li key={title} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: s[4] }}>
                         <span style={{ ...label(11, 700, 0.12), color: c.mark }}>0{i + 1}</span>

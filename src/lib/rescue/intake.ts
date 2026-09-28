@@ -32,6 +32,9 @@ export const SYMPTOMS = [
 export const TOOLS = ['Lovable', 'Bolt', 'Cursor', 'v0', 'Replit', 'Something else'] as const;
 export type Tool = (typeof TOOLS)[number];
 
+/** The one follow-up the audit offers, quoted identically on the form and in the receipt. */
+export const CALL_OFFER = "When the report arrives, reply if you'd like a 15-minute call to go through it.";
+
 /** The turnaround the homepage quotes. */
 export const TURNAROUND_HOURS = 48;
 
@@ -87,10 +90,10 @@ export function parseIntake(body: unknown): Parsed {
   const appUrl = typeof b.appUrl === 'string' ? normalizeUrl(b.appUrl) : null;
   if (!appUrl) return { ok: false, field: 'appUrl', error: 'Add the link to your live app.' };
 
-  let repoUrl: string | null = null;
-  if (typeof b.repoUrl === 'string' && b.repoUrl.trim()) {
-    repoUrl = normalizeUrl(b.repoUrl);
-    if (!repoUrl) return { ok: false, field: 'repoUrl', error: "That repo link doesn't look right." };
+  // The rest run in the form's order, so the field focused on an error is the topmost wrong one.
+  const email = typeof b.email === 'string' ? b.email.trim() : '';
+  if (email.length > 254 || !EMAIL.test(email)) {
+    return { ok: false, field: 'email', error: "That doesn't look like an email address." };
   }
 
   const tool = TOOLS.find((t) => t === b.tool);
@@ -108,9 +111,10 @@ export function parseIntake(body: unknown): Parsed {
   const notes = typeof b.notes === 'string' ? b.notes.trim() : '';
   if (notes.length > NOTES_MAX) return { ok: false, field: 'notes', error: `Keep it under ${NOTES_MAX} characters.` };
 
-  const email = typeof b.email === 'string' ? b.email.trim() : '';
-  if (email.length > 254 || !EMAIL.test(email)) {
-    return { ok: false, field: 'email', error: "That doesn't look like an email address." };
+  let repoUrl: string | null = null;
+  if (typeof b.repoUrl === 'string' && b.repoUrl.trim()) {
+    repoUrl = normalizeUrl(b.repoUrl);
+    if (!repoUrl) return { ok: false, field: 'repoUrl', error: "That repo link doesn't look right." };
   }
 
   return { ok: true, intake: { appUrl, repoUrl, tool, symptoms, notes, email } };
@@ -186,6 +190,7 @@ export function renderConfirmEmail(intake: Intake, due: Date): { subject: string
 <li><strong>Can wait</strong>: what's fine for launch</li>
 </ul>
 <p>If there's something worth fixing, the report ends with one fixed price for it. If there isn't, I'll tell you that too, and you owe nothing either way.</p>
+<p>${CALL_OFFER}</p>
 ${
   intake.repoUrl
     ? '<p>If the repo is private, add <strong>Anadi9</strong> on GitHub as a read-only collaborator. You can remove access the moment we are done.</p>'

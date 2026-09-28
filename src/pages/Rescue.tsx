@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, RefObject } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
-import { c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
+import { buttonType, c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
 import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
 import { KIT } from '@/lib/kit/product';
-import { KitPrice } from '@/lib/kit/use-kit-price';
 import LegalLinks from '@/components/LegalLinks';
 import Testimonials from '@/components/Testimonials';
+import { site } from '@/data/portfolio';
 
 /**
  * `/`: Vibe Code Rescue, fixed-price production fixes for apps built with
@@ -104,7 +104,7 @@ const cta: CSSProperties = {
   padding: px(0, s[6]),
   background: c.ink,
   color: c.accent,
-  ...label(11, 700, 0.12),
+  ...buttonType(),
   textDecoration: 'none',
 };
 
@@ -145,19 +145,19 @@ const fixes = [
     tag: 'Database',
     title: 'Database and security',
     body: "Close what's open before someone finds it.",
-    items: ['Supabase RLS policies', 'Exposed API keys', 'Open endpoints', 'Messy schemas'],
+    items: ['Data strangers can read or change', 'Secret keys anyone can find', 'Actions that work without logging in', 'A messy database setup'],
   },
   {
     tag: 'Deployment',
     title: 'Deployment',
     body: "A setup that doesn't break when you push.",
-    items: ['Env variables', 'Build errors', 'Domains', 'Safe, repeatable pushes'],
+    items: ['Settings that work locally but not live', 'Builds that fail on deploy', 'Your own domain', "Updates that don't break the live app"],
   },
   {
     tag: 'Stability',
     title: 'Performance and stability',
     body: 'Stop the code that keeps breaking.',
-    items: ['Slow pages', 'Crashing components', 'Fix-one-break-two loops', 'Regressions after prompts'],
+    items: ['Slow pages', 'Screens that crash', 'Fix-one-break-two loops', 'Old bugs coming back after prompts'],
   },
 ];
 
@@ -184,11 +184,26 @@ const steps = [
 /** Illustrative findings, set under a SAMPLE label. The rank names are the
  *  audit's own three buckets from step 01. */
 const findings = [
-  { rank: 'Fix now', solid: true, line: 'RLS is off on the users table. Any visitor can read every row.', area: 'Database' },
-  { rank: 'Fix now', solid: true, line: 'A secret Supabase key ships in the client bundle.', area: 'Security' },
-  { rank: 'Risky', solid: false, line: "Sessions aren't refreshed, so users get logged out on reload.", area: 'Auth' },
-  { rank: 'Can wait', solid: false, line: 'The dashboard fetches every record on load.', area: 'Performance' },
+  { rank: 'Fix now', solid: true, line: 'Anyone can download your full user list, without logging in.', area: 'Database' },
+  { rank: 'Fix now', solid: true, line: "A secret key is visible to anyone who opens your app's code.", area: 'Security' },
+  { rank: 'Risky', solid: false, line: 'Users get logged out every time they refresh the page.', area: 'Auth' },
+  { rank: 'Can wait', solid: false, line: 'The dashboard loads every record at once, so it slows down as you grow.', area: 'Performance' },
 ];
+
+/** The price section's three sizes of job, and the service JSON-LD's offers.
+ *  `max` is absent where the tier is open-ended. */
+const tiers = [
+  { name: 'Single fix', scope: 'One area: sign-up and login, database security, deploys or speed.', min: 499, max: 499 },
+  { name: 'Launch rescue', scope: 'Two or three areas. The usual state of an app about to launch.', min: 1200, max: 1800 },
+  { name: 'Full rescue', scope: 'All four areas, before real users arrive.', min: 2500, max: undefined },
+] as const;
+
+const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
+const tierPrice = ({ min, max }: { min: number; max?: number }) =>
+  max === undefined ? `From ${usd(min)}` : min === max ? usd(min) : `${usd(min)}–${max.toLocaleString('en-US')}`;
+
+/** The service's promise. Said once under the price and again in the FAQ. */
+const GUARANTEE = "Fixed price. If I don't fix something in the quote, you don't pay for it.";
 
 const included = [
   'A free audit report first',
@@ -199,6 +214,16 @@ const included = [
 ];
 
 const faqs = [
+  {
+    q: 'What does it usually cost?',
+    a: `Most jobs are one of three sizes: ${tiers
+      .map((t) => `${t.name.toLowerCase()}, ${tierPrice(t).replace('From', 'from')}`)
+      .join('; ')}. The audit tells you which, and the quote is fixed before I start.`,
+  },
+  {
+    q: "What if you can't fix it?",
+    a: `${GUARANTEE} The quote lists every fix, so it's always clear what you owe.`,
+  },
   {
     q: 'Do you rebuild everything from scratch?',
     a: "No. I fix what's there and only rewrite what's actually broken. Your app stays your app.",
@@ -221,32 +246,22 @@ const faqs = [
   },
 ];
 
-/** Sold on top of a rescue, or on their own. Prices are starting points; the
- *  app conversion is quoted with the audit because its size depends on the app. */
+/** Sold on top of a rescue, or on their own. Production care leads: it is what
+ *  a rescue turns into once the handover week is over. Prices are starting points. */
 const addons = [
-  {
-    tag: 'Visibility',
-    title: 'Search & AI visibility fix',
-    body: 'Prerendering or SSR, meta tags, JSON-LD, a sitemap and Search Console, so Google and AI answer engines see real pages.',
-    price: '$199',
-    unit: null,
-    note: null,
-  },
-  {
-    tag: 'Mobile',
-    title: 'Web app → iOS & Android app',
-    body: 'Your web app as a store-ready iOS and Android build.',
-    price: '$989',
-    unit: null,
-    note: 'Quoted with the audit.',
-  },
   {
     tag: 'Monthly',
     title: 'Production care',
-    body: 'Code review of every change you ship, monitoring, and small fixes.',
+    body: 'After the handover: code review of every change you ship, monitoring, and small fixes.',
     price: '$249',
     unit: '/month',
-    note: null,
+  },
+  {
+    tag: 'Visibility',
+    title: 'Search & AI visibility fix',
+    body: 'Apps built with Lovable or Bolt can look like an empty page to Google and AI tools. I make your pages readable to them, with proper titles, descriptions and a sitemap, and set up Search Console so you can watch them get found.',
+    price: '$199',
+    unit: null,
   },
 ];
 
@@ -276,12 +291,18 @@ const jsonLd = {
       serviceType: 'Production fixes for AI-built web apps',
       provider: PROVIDER,
       founder: PROVIDER,
-      makesOffer: {
+      makesOffer: tiers.map((t) => ({
         '@type': 'Offer',
-        name: 'Vibe Code Rescue: fixed-price production fix',
-        priceSpecification: { '@type': 'PriceSpecification', minPrice: 499, priceCurrency: 'USD' },
+        name: `Vibe Code Rescue: ${t.name}`,
+        description: t.scope,
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          minPrice: t.min,
+          ...(t.max === undefined ? {} : { maxPrice: t.max }),
+          priceCurrency: 'USD',
+        },
         areaServed: { '@type': 'Place', name: 'Worldwide' },
-      },
+      })),
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: 'Add-ons',
@@ -313,7 +334,8 @@ const jsonLd = {
 /** Fires the CTA event. Only ever called from a click, so never in the prerender. */
 const clicked = (location: string) => () => trackRescue('audit_cta_click', { location });
 
-/** The same for the kit, the page's one paid-product link. */
+/** The same for the kit. It is linked from the footer only: a visitor who has
+ *  just ticked their symptoms is a rescue lead, not a do-it-yourself sale. */
 const kitClicked = (location: string) => () => trackRescue('kit_link_click', { location });
 
 /** The hero's error log. Rows flip from error to fixed one at a time after
@@ -361,16 +383,18 @@ const ErrorLog = () => {
           {fixed} / {errors.length} FIXED
         </span>
       </div>
-      <div style={{ padding: px(s[5], s[6], s[5]), overflowX: 'auto' }}>
+      {/* Lines wrap rather than scroll: on a phone a clipped error reads as a broken page. */}
+      <div style={{ padding: px(s[5], s[6], s[5]) }}>
         {errors.map((msg, i) => {
           const isFixed = i < fixed;
           return (
-            <div key={msg} style={{ display: 'grid', gridTemplateColumns: '5.5em 1fr', whiteSpace: 'nowrap' }}>
+            <div key={msg} style={{ display: 'grid', gridTemplateColumns: '5.5em minmax(0, 1fr)' }}>
               <span style={{ fontWeight: 500, color: isFixed ? c.accent : c.mark, transition: fade }}>
                 {isFixed ? 'fixed' : 'error'}
               </span>
               <span
                 style={{
+                  overflowWrap: 'anywhere',
                   color: isFixed ? c.dimOnInk : '#fff',
                   textDecoration: 'line-through',
                   textDecorationColor: isFixed ? c.accent : 'transparent',
@@ -495,16 +519,12 @@ const Symptoms = () => {
           className="pf-nudge"
           style={{ ...cta, background: c.accent, color: c.ink }}
         >
-          GET A FREE AUDIT<span aria-hidden>→</span>
+          Get a free audit<span aria-hidden>→</span>
         </Link>
         <p style={{ ...body, fontSize: 14, color: c.dimOnInk }}>
           Not ready to talk?{' '}
           <Link to="/scan" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
             Run the free Supabase security check →
-          </Link>{' '}
-          Or fix it yourself with{' '}
-          <Link to={KIT.path} onClick={kitClicked('tally')} className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
-            the <KitPrice /> Production Kit →
           </Link>
         </p>
       </div>
@@ -564,7 +584,7 @@ const StickyBar = ({ watch }: { watch: RefObject<HTMLElement | null> }) => {
         <span style={{ font: `600 14px/1.2 ${display}` }}>Production audit</span>
       </div>
       <Link to={AUDIT} onClick={clicked('sticky_bar')} tabIndex={show ? undefined : -1} style={cta}>
-        GET AUDIT<span aria-hidden>→</span>
+        Get audit<span aria-hidden>→</span>
       </Link>
     </div>
   );
@@ -605,7 +625,7 @@ const Rescue = () => {
             </a>
           ))}
           <Link to={AUDIT} onClick={clicked('header')} className="pf-nudge" style={{ ...cta, minHeight: 44, padding: px(0, s[5]) }}>
-            FREE AUDIT<span aria-hidden>→</span>
+            Free audit<span aria-hidden>→</span>
           </Link>
         </nav>
       </header>
@@ -622,9 +642,24 @@ const Rescue = () => {
                 I take apps built with Lovable, Bolt, Cursor and v0 and make them production-ready: auth, database,
                 deployment, performance. Fixed price. Done in 7 days.
               </p>
+              {/* The "I" above has a face. Same file as the engineer section, so no second download. */}
+              <a href="#h-who" style={{ display: 'flex', alignItems: 'center', gap: s[4], textDecoration: 'none', color: p.ink, justifySelf: 'start' }}>
+                <img
+                  src={portrait}
+                  alt=""
+                  width={52}
+                  height={52}
+                  fetchPriority="high"
+                  style={{ width: 52, height: 52, objectFit: 'cover', objectPosition: 'center 20%', display: 'block', border: `${rule.base}px solid ${c.ink}`, background: p.panel }}
+                />
+                <span style={{ display: 'grid', gap: s[1] }}>
+                  <span style={{ font: `600 16px/1.2 ${display}` }}>{site.name}</span>
+                  <span style={{ font: `400 14px/1.3 ${display}`, color: p.body }}>Full-stack engineer</span>
+                </span>
+              </a>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6] }}>
                 <Link ref={heroCta} to={AUDIT} onClick={clicked('hero')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]) }}>
-                  GET A FREE AUDIT<span aria-hidden>→</span>
+                  Get a free audit<span aria-hidden>→</span>
                 </Link>
                 <a href="#h-proof" className="pf-underline" style={textLink}>
                   SEE A SAMPLE REPORT ↓
@@ -653,6 +688,40 @@ const Rescue = () => {
             <ErrorLog />
           </div>
         </section>
+
+        {/* Proof, read from the portfolio's own data so the two sites can't disagree. */}
+        <div
+          aria-label="Track record"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: px(s[5], s[10]),
+            padding: px(s[6], gutter),
+            borderTop: `${rule.hair}px solid ${p.rule}`,
+          }}
+          data-rescue-hpad
+        >
+          {[
+            [`${Number(site.years)}+`, 'YEARS SHIPPING'],
+            [site.releases, 'PRODUCTION RELEASES'],
+          ].map(([num, text]) => (
+            <div key={text} style={{ display: 'flex', alignItems: 'baseline', gap: s[3] }}>
+              <span style={{ ...heading('d6'), color: p.ink }}>{num}</span>
+              <span style={{ ...label(10, 700, 0.14), color: p.dim }}>{text}</span>
+            </div>
+          ))}
+          <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: px(s[2], s[4]) }}>
+            <span style={{ ...label(10, 700, 0.16), color: p.dim }}>SHIPPED FOR</span>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexWrap: 'wrap', gap: px(s[2], s[5]) }}>
+              {site.clients.map((client) => (
+                <li key={client} style={{ ...label(12, 700, 0.12), color: p.ink }}>
+                  {client}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
         <div
           style={{
@@ -820,18 +889,49 @@ const Rescue = () => {
         <Testimonials hpadAttr={{ 'data-rescue-hpad': '' }} />
 
         <section aria-labelledby="h-price" style={section} data-rescue-hpad>
-          <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'center' }}>
+          <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: s[4] }}>
               <p style={eyebrow}>THE PRICE</p>
-              <h2 id="h-price" style={{ margin: px(s[3], 0, 0), ...label(11, 700, 0.14), color: p.dim }}>
-                FIXES FROM
+              <h2 id="h-price" style={{ ...h2, margin: 0 }}>
+                What a fix costs
               </h2>
-              <div style={{ ...heading('d1', { stretch: stretch.bleed }), color: p.ink }}>$499</div>
-              <p style={{ ...lead, color: p.ink, marginTop: s[4] }}>
-                The final price depends on the scope and the number of fixes the audit finds.
-              </p>
+              <ul style={{ listStyle: 'none', margin: px(s[5], 0, 0), padding: 0, borderBottom: `${rule.hair}px solid ${p.rule}` }}>
+                {tiers.map((t) => (
+                  <li
+                    key={t.name}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'minmax(0, 1fr) auto',
+                      alignItems: 'baseline',
+                      gap: s[5],
+                      padding: px(s[5], 0),
+                      borderTop: `${rule.hair}px solid ${p.rule}`,
+                    }}
+                  >
+                    <div style={{ display: 'grid', gap: s[1] }}>
+                      <span style={{ font: `600 17px/1.3 ${display}`, color: p.ink }}>{t.name}</span>
+                      <span style={{ ...body, fontSize: 14 }}>{t.scope}</span>
+                    </div>
+                    <span style={{ ...heading('d6'), color: p.ink, whiteSpace: 'nowrap' }}>{tierPrice(t)}</span>
+                  </li>
+                ))}
+              </ul>
               <p style={{ ...body, maxWidth: '46ch' }}>
-                Every quote is fixed before work starts. If scope changes, we agree on it before I bill a cent.
+                The audit tells you which one you need. Every quote is fixed before work starts. If scope changes, we
+                agree on it before I bill a cent.
+              </p>
+              <p
+                style={{
+                  margin: px(s[2], 0, 0),
+                  padding: px(s[4], s[5]),
+                  borderLeft: `${rule.edge}px solid ${p.gold}`,
+                  background: p.picked,
+                  font: `600 17px/1.4 ${display}`,
+                  color: p.ink,
+                  maxWidth: '46ch',
+                }}
+              >
+                {GUARANTEE}
               </p>
             </div>
             <div style={{ display: 'grid', gap: s[6], padding: px(s[8], s[8], s[7]), border: `${rule.base}px solid ${c.ink}` }}>
@@ -848,7 +948,7 @@ const Rescue = () => {
                 ))}
               </ul>
               <Link to={AUDIT} onClick={clicked('price')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56 }}>
-                START WITH THE FREE AUDIT<span aria-hidden>→</span>
+                Start with the free audit<span aria-hidden>→</span>
               </Link>
             </div>
           </div>
@@ -860,15 +960,11 @@ const Rescue = () => {
             On top of the fix
           </h2>
           <p style={{ ...body, marginTop: s[5] }}>
-            Add any of these to a rescue, or ask for one on its own. Rather do the visibility work yourself?{' '}
-            <Link to={KIT.path} onClick={kitClicked('addons')} className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
-              The <KitPrice /> Production Kit
-            </Link>{' '}
-            has the rules and checks I use.
+            Add any of these to a rescue, or ask for one on its own.
           </p>
           <div
             data-rescue-split
-            style={{ ...split('repeat(3, minmax(0, 1fr))'), gap: s[8], marginTop: s[9] }}
+            style={{ ...split('repeat(2, minmax(0, 1fr))'), gap: s[8], marginTop: s[9] }}
           >
             {addons.map((a, i) => (
               <div
@@ -886,7 +982,6 @@ const Rescue = () => {
                     {a.price}
                     {a.unit && <span style={{ ...label(11, 700, 0.12), color: p.dim }}> {a.unit.toUpperCase()}</span>}
                   </span>
-                  {a.note && <span style={{ font: `500 14px/1.4 ${display}`, color: p.body }}>{a.note}</span>}
                 </div>
               </div>
             ))}
@@ -916,20 +1011,17 @@ const Rescue = () => {
               </h2>
               <p style={body}>
                 I&apos;m Anadi, a full-stack engineer. I&apos;ve spent 4+ years shipping production React, Next.js,
-                React Native and Node apps, including the ZEISS Microscopy product platform, an enterprise build on AEM.
+                React Native and Node apps, including the ZEISS Microscopy product platform.
               </p>
               <p style={body}>
-                I run PostgreSQL and Supabase in production, deploy on Vercel and Netlify with CI/CD, and work on
-                performance, Core Web Vitals and technical SEO. I also put the Claude API into production: I built{' '}
+                I run databases in production, set up automatic deploys, and work on speed and on getting apps found on
+                Google. I also put AI into production: I made{' '}
                 <a href="https://antasignal.vercel.app/" className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
                   Signal
                 </a>
-                , an AI lead-scoring pipeline, on my own.
+                , an AI lead-scoring app, on my own.
               </p>
               <p style={body}>I use AI tools every day too. That&apos;s exactly why I know where they fall short.</p>
-              <p style={{ ...label(10, 700, 0.14), lineHeight: 1.7, color: p.dim, margin: 0 }}>
-                REACT · NEXT.JS · REACT NATIVE · NODE.JS · SUPABASE · POSTGRESQL · VERCEL · CLAUDE API
-              </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[6] }}>
                 <a href={GITHUB} className="pf-underline" style={textLink}>
                   GITHUB ↗
@@ -1007,7 +1099,7 @@ const Rescue = () => {
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6], marginTop: s[10] }}>
             <Link to={AUDIT} onClick={clicked('final')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: c.accent, color: c.ink }}>
-              GET MY FREE AUDIT<span aria-hidden>→</span>
+              Get my free audit<span aria-hidden>→</span>
             </Link>
             <a href={`mailto:${EMAIL}`} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
               OR EMAIL {EMAIL.toUpperCase()}
@@ -1038,7 +1130,7 @@ const Rescue = () => {
         <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
         <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
           <Link to={KIT.path} onClick={kitClicked('footer')} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            PRODUCTION KIT
+            FREE PRODUCTION KIT
           </Link>
           <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
             NOTES

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CALL_OFFER,
   SYMPTOMS,
   dueBy,
   formatDue,
@@ -89,6 +90,11 @@ describe('parseIntake', () => {
   it('survives a null body', () => {
     expect(parseIntake(null).ok).toBe(false);
   });
+
+  it('reports the email before the repo, in the order the form shows them', () => {
+    const r = parseIntake({ ...valid(), email: 'nope', repoUrl: 'not a url' });
+    expect(r).toMatchObject({ ok: false, field: 'email' });
+  });
 });
 
 describe('deadline', () => {
@@ -130,5 +136,10 @@ describe('emails', () => {
     const { subject, html } = renderConfirmEmail(intake, due);
     expect(subject).toContain('Fri 25 Sep, 3pm EST');
     expect(html).toContain('reply with the repo link');
+  });
+
+  it('offers the optional call, word for word as the form does', () => {
+    const { html } = renderConfirmEmail(intake, due);
+    expect(html).toContain(CALL_OFFER);
   });
 });

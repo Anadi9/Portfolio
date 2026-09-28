@@ -4,35 +4,38 @@ import { Link } from 'vite-react-ssg';
 import { track } from '@vercel/analytics';
 import { Seo, ORIGIN } from '@/components/Seo';
 import KitShell, { Check } from '@/components/kit/KitShell';
-import PackPicker from '@/components/kit/PackPicker';
 import { body, cta, eyebrow, hint, p } from '@/components/kit/styles';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/portfolio/tokens';
-import { LATEST, PACK_IDS, pack, type PackId } from '@/data/kit';
-import { parsePageParams, toggle } from '@/lib/kit/packs';
-import { CURRENCIES, KIT, formatMoney } from '@/lib/kit/product';
-import { BUILD_PRICES, usePriceTable } from '@/lib/kit/use-kit-price';
+import portrait from '@/assets/portrait.webp';
+import { FREE_KIT, LATEST, PACK_IDS, pack } from '@/data/kit';
+import { parsePageParams } from '@/lib/kit/packs';
+import { KIT } from '@/lib/kit/product';
 
 /**
- * `/products/production-kit`: the kit, sold as five packs or the whole thing.
+ * `/products/production-kit`: the kit, as a free download.
  *
- * Order: what's wrong (hero, then one card per pack's problem), proof (the
- * sample RLS audit's before/after tests), the picker, what's inside, who made
- * it, FAQ, and the free audit for anyone who'd rather have it fixed.
+ * It used to be sold as five packs or the whole thing. It is free now, for
+ * founders building their app with an AI tool: the people most likely to want a
+ * rescue later. So the page is one download, no account, and the free audit
+ * for anyone who'd rather have it fixed.
  *
- * The selection lives in the URL (`?packs=auth,launch`), so a shared link, the
- * back button and a cancelled checkout all come back to the same picks.
- * `?pack=<id>` ticks one pack and scrolls to the picker (the free check links
- * here that way); `?upgrade=1` explains the upgrade (the kit's README links
- * here that way). Pack names, problems and file lists come from the release
- * manifest in `src/data/kit`; prices from Stripe (see `use-kit-price`).
+ * Order: the offer (hero with the download), the problems it covers (the
+ * packs' problems, from the release manifest), proof (the sample RLS audit's
+ * before/after tests), what's inside, who made it, FAQ, and the download again
+ * beside the audit.
+ *
+ * Old links still land well: `?pack=<id>` from the free check just opens the
+ * page, and `?upgrade=1` (the kit's README) says the full kit is now free. The
+ * paid packs, checkout and buyers' downloads pages are untouched server-side.
  */
 
-const TITLE = 'The Production Kit: rules and checks for AI-built apps';
+const TITLE = 'The Production Kit: free rules and checks for AI-built apps';
 const DESCRIPTION =
-  'Rules, skills and checklists that make Claude Code, Cursor, Lovable and Bolt write code that survives real users. Buy one pack or the full kit.';
+  'Free rules, skills and checklists that make Claude Code, Cursor, Lovable and Bolt write code that survives real users. One download, no sign-up.';
 
 const SCAN = '/scan';
-const PACKS = PACK_IDS.filter((id) => id !== 'full');
+const PROBLEMS = PACK_IDS.filter((id) => id !== 'full');
+const SIZE = `${Math.max(1, Math.round(FREE_KIT.bytes / 1024))} KB`;
 
 /** From `examples/rls-audit-sample-report.md` in the kit: the rows that show a hole closing, and one that shows nothing broke. */
 const PROOF: [test: string, before: string, after: string][] = [
@@ -85,12 +88,12 @@ const INSIDE: { title: string; items: ReactNode[] }[] = [
 
 const FAQ: { q: string; a: ReactNode }[] = [
   {
-    q: 'Which pack do I need?',
-    a: <>The one whose problem you have. Not sure? <Link to={SCAN} style={{ color: p.ink }}>Run the free Supabase check</Link>: if it finds open tables, Lock Down Your Data fixes them. Got more than one problem? The picker tells you when the full kit costs less than your picks.</>,
+    q: 'Is it really free?',
+    a: <>Yes. One download, no sign-up, no email. The people who use it are the people I build for, and if you&apos;d rather have it fixed for you, <Link to="/rescue/audit" style={{ color: p.ink }}>the audit</Link> is free too.</>,
   },
   {
     q: 'I’m not technical. Can I use this?',
-    a: 'Yes, if you can copy files into your project or paste text into your tool’s settings. The skills tell the AI what to do; the checklists tell you what to click and what you should see. If you build with Lovable or Bolt, start with the Lovable & Bolt Pack: it’s all copy and paste.',
+    a: 'Yes, if you can copy files into your project or paste text into your tool’s settings. The skills tell the AI what to do; the checklists tell you what to click and what you should see. If you build with Lovable or Bolt, start with the Lovable and Bolt files: they’re all copy and paste.',
   },
   {
     q: 'Which tools does it work with?',
@@ -98,7 +101,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
   },
   {
     q: 'Will it fix my existing app?',
-    a: 'The rules apply to new work. The skills and checklists are for auditing and fixing what’s already there: run the RLS audit and pre-deploy check first.',
+    a: <>The rules apply to new work. The skills and checklists are for auditing and fixing what’s already there: run the RLS audit and pre-deploy check first. Not sure where to start? <Link to={SCAN} style={{ color: p.ink }}>Run the free Supabase check</Link>.</>,
   },
   {
     q: 'Is the SQL safe to run?',
@@ -109,20 +112,12 @@ const FAQ: { q: string; a: ReactNode }[] = [
     a: 'React or Next.js with Supabase, deployed on Vercel or similar. The deployment, change discipline and SEO parts work with any backend; the database and auth parts are written for Supabase.',
   },
   {
-    q: 'Can I use it for client work, or share it with my team?',
-    a: 'Yes. You can use it in any number of projects you own or build for clients, and share it with your own team or company. You can’t resell it, give it away, or post the files publicly outside a project that uses them. The LICENSE file in the download has the full terms.',
-  },
-  {
-    q: 'Can I start with one pack and get the rest later?',
-    a: 'Yes. Your downloads page has an upgrade to the full kit for its price minus what you’ve already paid for packs.',
+    q: 'Can I use it for client work, or share it?',
+    a: 'Yes to both. Use it in any number of projects, including client work, and share it with anyone for free, as long as you keep its LICENSE file and credit the source. The one thing you can’t do is sell it. The LICENSE file in the download has the full terms.',
   },
   {
     q: 'Do I get updates?',
-    a: 'The version you buy is yours to keep. There’s no promise of future updates. If I publish a new version, it shows up on your downloads page, and CHANGELOG.md lists what changed.',
-  },
-  {
-    q: 'Can I get a refund?',
-    a: <>If it doesn’t help, email me within 14 days of buying and I’ll refund you in full: <a href="mailto:anadithakur99@gmail.com?subject=Production%20Kit%20refund" style={{ color: p.ink }}>anadithakur99@gmail.com</a>.</>,
+    a: 'This page always has the latest version. When I publish a new one, it replaces the download here, and CHANGELOG.md lists what changed.',
   },
   {
     q: 'Is it a guarantee, or a course?',
@@ -148,61 +143,24 @@ const Section = ({ id, anchor, kicker, title, children }: { id: string; anchor?:
   </section>
 );
 
-const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/** Scroll to the picker and, if a pack was named, put keyboard focus on its checkbox. */
-function goToPicker(id?: PackId) {
-  document.getElementById('picker')?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
-  if (id) document.getElementById(`kit-pack-${id}`)?.focus({ preventScroll: true });
-}
-
-/** The page URL for a selection, keeping any other query params and the hash. */
-function urlFor(selected: PackId[]) {
-  const q = new URLSearchParams(window.location.search);
-  q.delete('pack');
-  q.delete('packs');
-  const rest = q.toString();
-  const query = [selected.length ? `packs=${selected.join(',')}` : '', rest].filter(Boolean).join('&');
-  return `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`;
-}
-
-/** Offers for the JSON-LD: every pack, in every currency Stripe has a price for, as of the build. */
-const OFFERS = PACK_IDS.flatMap((id) =>
-  CURRENCIES.flatMap((currency) => {
-    const amount = BUILD_PRICES[currency][id];
-    return amount === undefined
-      ? []
-      : [{ '@type': 'Offer', name: pack(id).name, price: (amount / 100).toFixed(2), priceCurrency: currency.toUpperCase(), availability: 'https://schema.org/InStock', url: `${ORIGIN}${KIT.path}?pack=${id}` }];
-  }),
+/** The one call to action, set twice: in the hero and in the closing band. */
+const Download = ({ where }: { where: string }) => (
+  <a
+    href={FREE_KIT.href}
+    download
+    onClick={() => track('kit_free_download', { where })}
+    className="pf-nudge pf-nudge-lg"
+    style={{ ...cta, justifySelf: 'start' }}
+  >
+    Download the kit, free<span aria-hidden>↓</span>
+  </a>
 );
 
 export default function ProductionKit() {
-  const [selected, setSelected] = useState<PackId[]>([]);
   const [upgradeNote, setUpgradeNote] = useState(false);
-  const [ready, setReady] = useState(false);
-  const { currency, table, source } = usePriceTable();
-  const money = (id: PackId) => (table[id] === undefined ? '' : formatMoney(currency, table[id]!));
-  const cheapest = Math.min(...PACK_IDS.map((id) => table[id] ?? Infinity));
 
-  // The URL is read after mount: the prerendered HTML is the empty picker, so hydration matches.
-  useEffect(() => {
-    const params = parsePageParams(window.location.search);
-    setSelected(params.selected);
-    setUpgradeNote(params.upgrade);
-    setReady(true);
-    if (params.focus) requestAnimationFrame(() => goToPicker(params.selected[0]));
-  }, []);
-
-  // Replace, not push: ticking boxes shouldn't fill the back button's history.
-  useEffect(() => {
-    if (ready) window.history.replaceState(window.history.state, '', urlFor(selected));
-  }, [selected, ready]);
-
-  const choose = (id: PackId) => {
-    track('pack_selected', { pack: id, from: 'pain_card' });
-    setSelected((cur) => toggle(cur, id, true));
-    goToPicker(id);
-  };
+  // Read after mount: the prerendered HTML has no note, so hydration matches.
+  useEffect(() => setUpgradeNote(parsePageParams(window.location.search).upgrade), []);
 
   return (
     <KitShell>
@@ -218,46 +176,41 @@ export default function ProductionKit() {
           description: DESCRIPTION,
           url: `${ORIGIN}${KIT.path}`,
           brand: { '@type': 'Person', name: 'Anadi Thakur' },
-          offers: OFFERS,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: `${ORIGIN}${KIT.path}` },
         }}
       />
 
       <section data-rescue-hpad style={{ containerType: 'inline-size', padding: px(s[10], gutter, 0) }}>
         <div data-rescue-split style={{ display: 'grid', gridTemplateColumns: '7fr 4fr', gap: s[10], alignItems: 'start' }}>
           <div style={{ display: 'grid', gap: s[7], minWidth: 0 }}>
-            <p style={eyebrow}>THE PRODUCTION KIT · FOR CLAUDE CODE, CURSOR, LOVABLE AND BOLT</p>
+            <p style={eyebrow}>THE PRODUCTION KIT · FREE · FOR CLAUDE CODE, CURSOR, LOVABLE AND BOLT</p>
             <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '17ch' }}>
               Make your AI tool write code that <span style={{ color: p.gold }}>survives real users.</span>
             </h1>
             <p style={{ ...body, font: `400 18px/1.5 ${display}`, maxWidth: '52ch' }}>
-              Rules, skills and checklists for React / Next.js + Supabase apps, so your AI coding tool follows what a senior
-              engineer would tell it, and you can check the result yourself. Buy the pack for the problem you have, or all of it.
+              Building your app with an AI tool? These are the rules, skills and checklists a senior engineer would give it,
+              for React / Next.js + Supabase apps, so your AI follows them and you can check the result yourself.
             </p>
             <div style={{ display: 'grid', gap: s[3], justifyItems: 'start' }}>
-              <a
-                href="#picker"
-                onClick={(e) => {
-                  e.preventDefault();
-                  track('kit_buy_click', { where: 'hero' });
-                  goToPicker();
-                }}
-                className="pf-nudge pf-nudge-lg"
-                style={cta}
-              >
-                PICK YOUR PACKS<span aria-hidden>↓</span>
-              </a>
+              <Download where="hero" />
               <p style={hint}>
-                Not sure what’s wrong?{' '}
+                Version {FREE_KIT.version} · .zip · {SIZE} · No sign-up. Not sure what’s wrong with your app?{' '}
                 <Link to={SCAN} onClick={() => track('kit_scan_click', { where: 'hero' })} style={{ color: p.ink }}>
                   Run the free Supabase check
                 </Link>
-                . It takes 30 seconds.
+                .
               </p>
+              {upgradeNote && (
+                <p role="note" style={{ ...body, fontSize: 15, padding: px(s[4], s[5]), background: c.accent, color: p.ink }}>
+                  Bought a pack earlier? The full kit is now free for everyone, and this download is it. Your downloads page
+                  still works.
+                </p>
+              )}
             </div>
           </div>
 
           <aside style={{ display: 'grid', gap: s[5], padding: px(s[8], s[7]), background: c.plate, color: c.paper }}>
-            <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>IN THE FULL KIT</span>
+            <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>IN THE KIT</span>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: s[4] }}>
               {['CLAUDE.md + Cursor rules', 'Lovable / Bolt project knowledge and prompts', '7 Claude Code skills', 'Auth, Supabase and Stripe templates', 'Launch + security checklists', 'RLS report, example policies and a sample audit'].map((t) => (
                 <li key={t} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: s[3], alignItems: 'start' }}>
@@ -275,30 +228,16 @@ export default function ProductionKit() {
         </div>
       </section>
 
-      <Section id="kit-problems" kicker="WHAT’S GOING WRONG" title="Start with the problem you have.">
+      <Section id="kit-problems" kicker="WHAT IT’S FOR" title="The problems it covers.">
         <div style={{ display: 'grid', gap: s[6] }}>
-          <p style={body}>You built your app with an AI coding tool. It works on your machine. Then real users arrive. Which of these sounds like you?</p>
+          <p style={body}>You built your app with an AI coding tool. It works on your machine. Then real users arrive. The kit has a part for each of these:</p>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${s[13] * 2}px), 1fr))`, gap: s[4] }}>
-            {PACKS.map((id) => {
+            {PROBLEMS.map((id) => {
               const info = pack(id);
               return (
-                <li key={id} style={{ display: 'grid', gap: s[3], alignContent: 'space-between', padding: px(s[5], s[5]), border: `${rule.hair}px solid ${p.rule}` }}>
-                  <div style={{ display: 'grid', gap: s[2] }}>
-                    <h3 style={{ margin: 0, font: `600 17px/1.35 ${display}`, color: p.ink }}>{info.problem}</h3>
-                    <p style={{ ...body, fontSize: 14 }}>{info.tagline}</p>
-                  </div>
-                  <a
-                    href={`?pack=${id}#picker`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      choose(id);
-                    }}
-                    className="pf-underline"
-                    style={{ ...label(11, 700, 0.12), color: p.ink, justifySelf: 'start', lineHeight: 1.5 }}
-                  >
-                    {info.name.toUpperCase()}
-                    {money(id) && ` · ${money(id)}`} →
-                  </a>
+                <li key={id} style={{ display: 'grid', gap: s[2], alignContent: 'start', padding: px(s[5], s[5]), border: `${rule.hair}px solid ${p.rule}` }}>
+                  <h3 style={{ margin: 0, font: `600 17px/1.35 ${display}`, color: p.ink }}>{info.problem}</h3>
+                  <p style={{ ...body, fontSize: 14 }}>{info.tagline}</p>
                 </li>
               );
             })}
@@ -339,39 +278,13 @@ export default function ProductionKit() {
               </tbody>
             </table>
           </div>
-          <p style={hint}>The full report, the demo schema, the fix and the tests are in Lock Down Your Data and in the full kit.</p>
-        </div>
-      </Section>
-
-      <Section id="kit-pick" anchor="picker" kicker="PICK YOUR PACKS" title="Buy only what you need.">
-        <div style={{ display: 'grid', gap: s[6] }}>
-          {upgradeNote && (
-            <div role="note" style={{ display: 'grid', gap: s[3], padding: px(s[5], s[5]), background: c.accent }}>
-              <span style={{ ...label(10, 700, 0.16), color: p.body }}>ALREADY BOUGHT A PACK?</span>
-              <p style={{ ...body, color: p.ink }}>
-                Open the downloads link in your purchase email. It has an upgrade button that charges the full kit’s price minus
-                what you’ve already paid for packs. Lost the email?{' '}
-                <a href="mailto:anadithakur99@gmail.com?subject=Production%20Kit%20upgrade" style={{ color: p.ink }}>
-                  Email me
-                </a>
-                .
-              </p>
-            </div>
-          )}
-          <PackPicker
-            selected={selected}
-            onToggle={(id, on) => setSelected((cur) => toggle(cur, id, on))}
-            onSwitchToFull={() => setSelected(['full'])}
-            currency={currency}
-            table={table}
-            devPrices={source === 'manifest'}
-          />
+          <p style={hint}>The full report, the demo schema, the fix and the tests are in the kit.</p>
         </div>
       </Section>
 
       <Section id="kit-inside" kicker="WHAT’S INSIDE" title="Rules, skills, templates, checklists.">
         <div style={{ display: 'grid', gap: s[8] }}>
-          <p style={body}>This is the full kit, version {LATEST.version}. Each pack has the part of it for one problem; the file list is on each card above.</p>
+          <p style={body}>Version {LATEST.version}, all of it in one download.</p>
           {INSIDE.map((group) => (
             <div key={group.title} style={{ display: 'grid', gap: s[4] }}>
               <h3 style={{ margin: 0, ...label(11, 700, 0.14), color: p.ink }}>{group.title.toUpperCase()}</h3>
@@ -391,15 +304,25 @@ export default function ProductionKit() {
       </Section>
 
       <Section id="kit-who-made" kicker="WHO MADE IT" title="Anadi Thakur.">
-        <p style={body}>
-          A senior full-stack engineer with 4+ years building React, Next.js, React Native and Node apps, running
-          Supabase/Postgres in production, deploying on Vercel, and working on performance and technical SEO. These days a lot
-          of that work is fixing apps built with Lovable, Bolt, Cursor and v0. This kit is the set of rules and checks used in
-          that work, written so your AI tool can follow them.
-        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr)', gap: s[6], alignItems: 'start' }}>
+          <img
+            src={portrait}
+            alt=""
+            width={96}
+            height={120}
+            loading="lazy"
+            style={{ width: 96, height: 120, objectFit: 'cover', display: 'block', border: `${rule.base}px solid ${c.accentEdge}`, background: c.accent }}
+          />
+          <p style={body}>
+            A senior full-stack engineer with 4+ years building React, Next.js, React Native and Node apps, running
+            Supabase/Postgres in production, deploying on Vercel, and working on performance and technical SEO. These days a lot
+            of that work is fixing apps built with Lovable, Bolt, Cursor and v0. This kit is the set of rules and checks used in
+            that work, written so your AI tool can follow them.
+          </p>
+        </div>
       </Section>
 
-      <Section id="kit-faq" kicker="FAQ" title="Before you buy.">
+      <Section id="kit-faq" kicker="FAQ" title="Before you download.">
         <div style={{ borderTop: `${rule.hair}px solid ${p.rule}` }}>
           {FAQ.map((f) => (
             <details key={f.q} style={{ borderBottom: `${rule.hair}px solid ${p.rule}`, padding: px(s[5], 0) }}>
@@ -413,20 +336,9 @@ export default function ProductionKit() {
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <div data-rescue-split style={{ display: 'grid', gridTemplateColumns: '7fr 4fr', gap: s[6], alignItems: 'stretch' }}>
           <div style={{ display: 'grid', gap: s[6], padding: px(s[9], s[8]), background: c.accent, alignContent: 'start' }}>
-            <p style={{ ...eyebrow, color: p.body }}>{Number.isFinite(cheapest) ? `FROM ${formatMoney(currency, cheapest)} · ONE-TIME` : 'ONE-TIME'}</p>
+            <p style={{ ...eyebrow, color: p.body }}>FREE · NO SIGN-UP · VERSION {FREE_KIT.version}</p>
             <p style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' }}>Give your AI tool the rules.</p>
-            <a
-              href="#picker"
-              onClick={(e) => {
-                e.preventDefault();
-                track('kit_buy_click', { where: 'footer' });
-                goToPicker();
-              }}
-              className="pf-nudge pf-nudge-lg"
-              style={{ ...cta, justifySelf: 'start' }}
-            >
-              PICK YOUR PACKS<span aria-hidden>↑</span>
-            </a>
+            <Download where="footer" />
           </div>
           <div style={{ display: 'grid', gap: s[5], padding: px(s[9], s[7]), background: c.plate, color: c.paper, alignContent: 'start' }}>
             <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>RATHER HAVE IT FIXED?</span>

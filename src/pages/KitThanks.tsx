@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
-import { MailLink, PackDownload, UpgradeBox, type Offer } from '@/components/kit/Downloads';
+import { FreeKitNote, MailLink, PackDownload, type Offer } from '@/components/kit/Downloads';
 import { body, eyebrow, hint, p } from '@/components/kit/styles';
 import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/portfolio/tokens';
 import type { PackId } from '@/data/kit';
@@ -123,7 +123,7 @@ export default function KitThanks() {
                 </a>
                 . The same link is in your email.
               </p>
-              {state.upgrade && <UpgradeBox token={state.token} offer={state.upgrade} onGranted={() => window.location.assign(`${KIT.downloadsPath}/${state.token}`)} />}
+              {state.upgrade && <FreeKitNote where="thanks" />}
               <div style={{ display: 'grid', gap: s[4], padding: px(s[7], s[7]), background: c.plate }}>
                 <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>WHERE TO START</span>
                 <p style={{ ...body, color: c.bright }}>

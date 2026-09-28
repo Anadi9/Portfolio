@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
-import { MailLink, PackDownload, UpgradeBox, type Offer } from '@/components/kit/Downloads';
+import { FreeKitNote, MailLink, PackDownload, type Offer } from '@/components/kit/Downloads';
 import { body, eyebrow, hint, p } from '@/components/kit/styles';
 import { display, gutter, heading, px, s, sectionY } from '@/components/portfolio/tokens';
 import type { PackId } from '@/data/kit';
@@ -85,7 +85,7 @@ export default function KitDownloads() {
                 ))}
               </ul>
               <p style={hint}>Keep this page’s link. If I publish a new version of something you own, it shows up here.</p>
-              {state.library.upgrade && <UpgradeBox token={token} offer={state.library.upgrade} onGranted={load} />}
+              {state.library.upgrade && <FreeKitNote where="downloads" />}
             </>
           )}
 

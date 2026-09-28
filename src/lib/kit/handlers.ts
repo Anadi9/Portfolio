@@ -61,6 +61,15 @@ const fullPriceFrom = (key: string) => {
   return async (currency: KitCurrency) => (await (catalog ??= fetchCatalog(key))).prices[currency].full;
 };
 
+/**
+ * The kit is free (2026-09-27), so nothing on these routes may take money:
+ * checkout and upgrade answer 410. Their code stays for if the kit is sold
+ * again; flip this and bring back the pack picker.
+ */
+const SALES_OPEN = false;
+const salesClosed = (res: VercelResponse) =>
+  res.status(410).json({ error: 'The Production Kit is free now. Download it from the kit page.' });
+
 const offerJson = (o: UpgradeOffer | null) => o && { due: o.due, currency: o.currency, label: o.label };
 
 /** GET /api/kit/prices: what the page shows. Cached at the edge for an hour; the checkout never uses this cache. */
@@ -81,6 +90,7 @@ const prices: Handler = async (req, res) => {
 /** POST /api/kit/checkout `{ packIds }` → `{ url }` of a Stripe Checkout Session. */
 const checkout: Handler = async (req, res) => {
   if (!only('POST', req, res)) return;
+  if (!SALES_OPEN) return salesClosed(res);
   if (!limits.checkout.allow(clientIp(req.headers))) {
     res.setHeader('Retry-After', '60');
     return res.status(429).json({ error: 'Too many tries from here. Give it a minute.' });
@@ -227,6 +237,7 @@ const download: Handler = async (req, res) => {
 const upgrade: Handler = async (req, res) => {
   if (!only('POST', req, res)) return;
   res.setHeader('Cache-Control', 'private, no-store');
+  if (!SALES_OPEN) return salesClosed(res);
   const body = jsonBody(req) as { token?: unknown } | null;
   const token = body?.token;
   if (!isToken(token)) return res.status(400).json({ error: 'Send { "token": "…" } from your downloads link.' });

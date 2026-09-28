@@ -205,12 +205,17 @@ export const ogImageFor = (path: string) => `/og${path}.jpg`;
 /**
  * The three posts the START HERE strip pins above the feed.
  *
- * Twelve equally-weighted rows is a choice-paralysis problem for someone who
- * arrived from a reel with no idea which one they want. These are ordered as an
- * on-ramp (decide, then prompt, then automate) not by date or by traffic.
- * Paths, not slugs, so a pin can cross streams later without changing shape.
+ * Twenty equally-weighted rows is a choice-paralysis problem for someone who
+ * arrived with no idea which one they want. These are the three Fixes posts
+ * that match the rescue's buyer: a founder whose AI-built app is breaking.
+ * Ordered by how much damage the problem does: open data, then sign-up and
+ * login, then deploys. Paths, not slugs, so a pin can cross streams.
  */
-export const PINNED: readonly string[] = ['/drops/system', '/drops/prompts', '/drops/swipe'];
+export const PINNED: readonly string[] = [
+  '/fixes/lovable-supabase-rls',
+  '/fixes/supabase-auth-signup-login-broken',
+  '/fixes/works-locally-breaks-on-vercel',
+];
 
 /** Inverse of `streamPath`, for resolving a URL back to its stream. */
 export const pathToStream: Record<string, Stream> = {

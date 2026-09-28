@@ -2,7 +2,7 @@ import { track } from '@vercel/analytics';
 
 /**
  * Conversion events for the rescue funnel: `audit_cta_click` on `/` (the
- * homepage, which is the rescue page), `kit_link_click` wherever the page
+ * homepage, which is the rescue page) and in the notes header, `kit_link_click` wherever the page
  * points at the Production Kit, and `audit_submitted` on `/rescue/audit`.
  *
  * Kept out of `intake.ts`, which has to stay dependency-free for the serverless
