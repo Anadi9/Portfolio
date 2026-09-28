@@ -74,28 +74,10 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllEnvs());
 
 describe('POST /api/kit/checkout', () => {
-  it('rejects an unknown pack id with 400 and a clear message', async () => {
-    const r = await call('checkout', { method: 'POST', body: { packIds: ['auth', 'premium'] } });
-    expect(r.status).toBe(400);
-    expect(r.body).toEqual({ error: 'There is no pack called "premium".' });
-  });
-
-  it('rejects an empty selection with 400', async () => {
-    expect((await call('checkout', { method: 'POST', body: { packIds: [] } })).status).toBe(400);
-  });
-
-  it('charges only the full kit when it is picked with packs, in the visitor’s currency', async () => {
-    const r = await call('checkout', { method: 'POST', body: { packIds: ['auth', 'full', 'launch'] }, headers: { host: 'anadithakur.in', 'x-vercel-ip-country': 'US' } });
-    expect(r.status).toBe(200);
-    expect(createPacksCheckout).toHaveBeenCalledWith('sk_test_fake', expect.objectContaining({ packIds: ['full'], currency: 'usd' }));
-  });
-
-  it('never takes an amount from the browser', async () => {
-    const r = await call('checkout', { method: 'POST', body: { packIds: ['auth'], amount: 1, price: 'price_cheap' } });
-    expect(r.status).toBe(200);
-    const [, opts] = createPacksCheckout.mock.calls[0] as unknown as [string, Record<string, unknown>];
-    expect(opts).not.toHaveProperty('amount');
-    expect(opts.priceIds).toMatchObject({ auth: 'price_auth' });
+  it('is closed now the kit is free: 410, and no Stripe session is made', async () => {
+    const r = await call('checkout', { method: 'POST', body: { packIds: ['full'] } });
+    expect(r.status).toBe(410);
+    expect(createPacksCheckout).not.toHaveBeenCalled();
   });
 
   it('refuses GET', async () => {
@@ -147,30 +129,13 @@ describe('GET /api/kit/library', () => {
 });
 
 describe('POST /api/kit/upgrade', () => {
-  it('after two packs, charges the full kit minus what was paid, worked out on the server', async () => {
+  it('is closed now the kit is free: 410, no charge and no order written', async () => {
     const token = await buyer('a@example.com', [{ pack_id: 'data-security', amount: 900 }, { pack_id: 'auth', amount: 700 }]);
-    const r = await call('upgrade', { method: 'POST', body: { token, amount: 1 }, headers: { host: 'anadithakur.in' } });
-    expect(r.body).toEqual({ url: 'https://checkout.stripe.test/upgrade' });
-    expect(createUpgradeCheckout).toHaveBeenCalledWith('sk_test_fake', expect.objectContaining({ amount: 300, currency: 'usd', product: 'prod_full', email: 'a@example.com' }));
-  });
-
-  it('after all five packs, grants the full kit without a payment', async () => {
-    const token = await buyer('a@example.com', [
-      { pack_id: 'data-security', amount: 900 },
-      { pack_id: 'auth', amount: 700 },
-      { pack_id: 'launch', amount: 700 },
-    ]);
-    await mem.store.saveOrder({ stripe_session_id: 'cs_test_second000000', stripe_payment_intent: 'pi_2', email: 'a@example.com', amount_total: 1200, currency: 'usd', kind: 'purchase', items: [{ pack_id: 'ai-discipline', amount: 700 }, { pack_id: 'lovable-bolt', amount: 500 }] });
     const r = await call('upgrade', { method: 'POST', body: { token } });
-    expect(r.body).toEqual({ granted: true });
+    expect(r.status).toBe(410);
     expect(createUpgradeCheckout).not.toHaveBeenCalled();
     const lib = await call('library', { query: { token } });
-    expect(lib.body).toMatchObject({ packs: [{ id: 'full' }] });
-  });
-
-  it('refuses someone who already owns everything', async () => {
-    const token = await buyer('a@example.com', [{ pack_id: 'full', amount: 1900 }]);
-    expect((await call('upgrade', { method: 'POST', body: { token } })).status).toBe(409);
+    expect(lib.body).toMatchObject({ packs: [{ id: 'data-security' }, { id: 'auth' }] });
   });
 });
 

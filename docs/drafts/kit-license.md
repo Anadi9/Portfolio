@@ -84,9 +84,10 @@ Questions about licensing: https://anadithakur.in
    rather they land on the home page.
 3. **The paid packs.** The kit's build (`release/build-packs.mjs`) copies the
    same LICENSE into every pack zip, so a 1.2.1 rebuild gives the paid packs
-   this free license too. The site no longer links to checkout, but the
-   checkout endpoint still exists server-side. If no one can buy packs any
-   more, that's fine: every zip says the same true thing. If you ever sell
+   this free license too. The site no longer links to checkout, and
+   `/api/kit/checkout` and `/api/kit/upgrade` now answer 410 (`SALES_OPEN` in
+   `src/lib/kit/handlers.ts`). No one can buy packs any more, so that's fine:
+   every zip says the same true thing. If you ever sell
    packs again, give those zips a buyer license at that point.
 
 ## How to apply, once approved
