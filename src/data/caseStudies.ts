@@ -85,55 +85,6 @@ export const studies: Study[] = [
   /* --- personal --------------------------------------------------------- */
 
   {
-    slug: 'rescue-teardown',
-    kind: 'personal',
-    platform: 'Web',
-    status: 'pending',
-    pending: [
-      'Which app to audit: an open-source Lovable/Bolt template or one of your own old projects.',
-      'That its license allows publishing the audit.',
-      'Run the audit and fill each area below with before/after evidence.',
-      'Where the checklist email capture goes (Resend audience, like the Wrapper Test, or elsewhere).',
-    ],
-    name: 'Rescue Teardown',
-    title: 'Auditing a real AI-built app before it meets real users',
-    seoTitle: 'Rescue Teardown: auditing an AI-built app',
-    description:
-      'A public audit of a real Lovable/Bolt app: row-level security, exposed keys, auth, validation, deploys, states, performance and SEO, with the fixes and before/after evidence.',
-    result: '[Add the one-line outcome once the audit is done]',
-    role: 'Solo: audit and fixes',
-    timeline: '[Add dates]',
-    platformLabel: 'Web',
-    stack: ['React', 'Next.js', 'Supabase', 'Vercel'],
-    link: undefined,
-    problem: [
-      'Apps built with Lovable, Bolt, Cursor and v0 work in the demo and break in production. The failures are the same few every time: tables anyone can read, a service key in the client bundle, sign-up emails that never confirm, deep links that 404 on Vercel.',
-      'The founders who hit them usually find out from a user, not a test.',
-    ],
-    learned: ['[Add what this particular app needed that the checklist did not already cover]'],
-    built: [
-      'An audit of [Add app name and link] against the same checklist the Production Kit ships, then the fixes, each shown with the evidence before and after.',
-    ],
-    decisions: [
-      { head: 'Supabase RLS coverage', body: '[Add finding, fix and before/after]' },
-      { head: 'Key exposure', body: '[Add: service_role in the client bundle, VITE_ variables]' },
-      { head: 'Auth redirect URLs and email confirmation', body: '[Add finding and fix]' },
-      { head: 'Server-side validation', body: '[Add finding and fix]' },
-      { head: 'SPA deep-link 404s on Vercel', body: '[Add finding and fix]' },
-      { head: 'Loading, error and empty states', body: '[Add finding and fix]' },
-      { head: 'Performance: LCP, bundle size, lazy routes', body: '[Add measured before/after]' },
-      { head: 'SEO of client-rendered pages', body: '[Add finding and fix, proven with curl]' },
-    ],
-    results: ['[Add measured results only]'],
-    lessons: ['[Add what the audit taught]'],
-    cta: {
-      lead: 'The checklist this audit ran is free.',
-      label: 'Get the Production Kit',
-      href: '/products/production-kit',
-    },
-  },
-
-  {
     slug: 'wrapper-test',
     kind: 'personal',
     platform: 'AI',

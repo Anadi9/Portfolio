@@ -24,7 +24,7 @@ what it waits on. Publishing one = answer its questions, fill the
 - [x] 4. Personal: The Production Kit (P4), live. CTA is the free download
   (the kit went free on 2026-09-27; the brief's $19 is out of date).
 - [x] 5. Personal: Signal (P2), live, told without any outreach results.
-- [x] 6. Personal: Rescue Teardown (P1), written as a pending scaffold.
+- [x] 6. ~~Personal: Rescue Teardown (P1)~~ removed at Anadi's request (2026-09-28).
 - [x] 7. Client: ZEISS, IoT Industry, Sonee Sports, written as pending.
 - [x] 8. Client: XPAND, LA-PTE, AppWalker, written as pending.
 - [x] 9. Portfolio Work section links to `/work`.
@@ -41,12 +41,6 @@ what it waits on. Publishing one = answer its questions, fill the
 
 ## Waiting for Anadi
 
-- [?] **Rescue Teardown (P1):** which app to audit, and that its license allows
-  publishing the audit. Then the audit itself has to be run; the page has the
-  eight audit areas ready to fill.
-- [?] **Checklist email capture:** where it goes (Resend audience like the
-  Wrapper Test, or somewhere else). The P1 CTA currently points at the free kit
-  and the free audit, with no capture form.
 - [?] **Employer per client project:** ZEISS (ZenQua vs Precious Infosystem;
   the portfolio's journey says Precious), IoT Industry, Sonee Sports, XPAND,
   LA-PTE, AppWalker.
@@ -74,3 +68,4 @@ what it waits on. Publishing one = answer its questions, fill the
 ## Log
 
 - 2026-09-28: tasks 1–10 built in one round. See commit on `case-studies`.
+- 2026-09-28: Rescue Teardown case study removed.
