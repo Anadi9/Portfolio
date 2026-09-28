@@ -146,7 +146,7 @@ export const projects: Project[] = [
       'A product platform for scientific light microscopes. A reusable React component system wired to content APIs, so marketing ships copy without waiting on a deploy.',
     shot: zeissShot,
     shotLabel: 'ZEISS PRODUCT PAGE',
-    href: 'https://www.zeiss.com/microscopy/us/products/light-microscopes.html',
+    href: 'https://www.zeiss.com/microscopy/us/home.html',
   },
   {
     index: '03',

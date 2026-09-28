@@ -286,7 +286,7 @@ export const studies: Study[] = [
     role: '[Add role]',
     platformLabel: 'Web',
     stack: ['React', 'Component library', 'Content APIs', 'ZEISS global design system'],
-    link: { href: 'https://www.zeiss.com/microscopy/us/products/light-microscopes.html', label: 'ZEISS light microscopes' },
+    link: { href: 'https://www.zeiss.com/microscopy/us/home.html', label: 'ZEISS Microscopy' },
     problem: [
       'ZEISS sells many lines of scientific light microscope, each with its own product pages. Building each page by hand meant the same parts were rebuilt with small differences, and every copy change waited on a developer.',
     ],
@@ -434,44 +434,6 @@ export const studies: Study[] = [
       },
     ],
     results: ['One React Native codebase ships the store, checkout and loyalty rewards to both Android and iOS.'],
-    cta: CLIENT_CTA,
-  },
-
-  {
-    slug: 'xpand',
-    kind: 'client',
-    platform: 'Mobile',
-    status: 'pending',
-    pending: [
-      'Your role on the project.',
-      'App Store and Play Store links.',
-    ],
-    name: 'XPAND',
-    title: 'An ed-tech app that looks right on every phone it runs on',
-    seoTitle: 'XPAND: a React Native ed-tech app',
-    description:
-      'A cross-platform ed-tech app for Android and iOS in React Native and Redux, rendering educational content from REST APIs with state that holds across screens and sessions.',
-    result: 'Educational content on iOS and Android, with progress that holds across sessions.',
-    client: 'XPAND',
-    role: '[Add role]',
-    platformLabel: 'Android & iOS',
-    stack: ['React Native', 'Redux', 'REST APIs'],
-    link: undefined,
-    problem: [
-      'Learners use whatever phone they have. An ed-tech app has to lay out the same lesson properly on each of them, and remember where the learner left off.',
-    ],
-    built: ['The cross-platform UI, the REST integration that renders educational content, and the Redux store behind it.'],
-    decisions: [
-      {
-        head: 'Handle device differences in the layout layer',
-        body: 'iOS and Android lay things out differently. Solving it once in shared layout components kept the screens themselves free of platform checks.',
-      },
-      {
-        head: 'Redux for state across screens and sessions',
-        body: 'A learner’s place in a course has to survive navigation and restarts, so it lives in one store rather than in each screen.',
-      },
-    ],
-    results: ['One codebase serves iOS and Android, and a learner’s place in a course survives navigation and restarts.'],
     cta: CLIENT_CTA,
   },
 

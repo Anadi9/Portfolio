@@ -26,7 +26,7 @@ what it waits on. Publishing one = answer its questions, fill the
 - [x] 5. Personal: Signal (P2), live, told without any outreach results.
 - [x] 6. ~~Personal: Rescue Teardown (P1)~~ removed at Anadi's request (2026-09-28).
 - [x] 7. Client: ZEISS, IoT Industry, Sonee Sports, written as pending.
-- [x] 8. Client: XPAND, LA-PTE, AppWalker, written as pending.
+- [x] 8. Client: LA-PTE, AppWalker, written as pending. (XPAND removed 2026-09-29.)
 - [x] 9. Portfolio Work section links to `/work`.
 - [x] 10. lint, test, build; check prerendered HTML heads.
 
@@ -54,11 +54,10 @@ for the mobile apps, flip `status` to `live`.
 
 | Study | Role | Store links | Other |
 |---|---|---|---|
-| ZEISS Microscopy | [ ] | n/a | |
-| IoT Industry | [ ] | n/a | |
+| ZEISS Microscopy | [ ] | n/a | link set: zeiss.com/microscopy/us/home.html |
+| IoT Industry | [ ] | n/a | link set: ioti.io |
 | AppWalker | [ ] | n/a | |
 | Sonee Sports | [ ] | [ ] App Store · [ ] Play Store | |
-| XPAND | [ ] | [ ] App Store · [ ] Play Store | |
 | LA-PTE | [ ] | [ ] App Store · [ ] Play Store | [ ] what you built, 1–2 decisions |
 
 ## Log
@@ -66,3 +65,4 @@ for the mobile apps, flip `status` to `live`.
 - 2026-09-28: tasks 1–10 built in one round. See commit on `case-studies`.
 - 2026-09-28: Rescue Teardown case study removed.
 - 2026-09-28: Anadi's decisions applied (above); Signal rewritten from its repo.
+- 2026-09-29: XPAND removed; ZEISS link points at the Microscopy home page.
