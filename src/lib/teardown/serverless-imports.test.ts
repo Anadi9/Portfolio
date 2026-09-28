@@ -51,6 +51,7 @@ const GRAPH = [
   'src/lib/kit/tokens.ts',
   'src/data/kit/index.ts',
   'src/data/kit/types.ts',
+  'src/data/kit/releases/1.2.1.ts',
   'src/data/kit/releases/1.2.0.ts',
 ];
 

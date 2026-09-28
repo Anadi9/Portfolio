@@ -1,8 +1,10 @@
 # Draft: LICENSE for the free Production Kit
 
-Status: **draft, waiting for Anadi's OK.** Nothing below is live. The zip in
-`public/downloads/` still carries the old buyer license until this is approved
-and the kit is rebuilt (see "How to apply" at the end).
+Status: **approved by Anadi on 2026-09-28 and applied in kit 1.2.1.** His
+decisions: public reposting with credit is allowed (decision 1 as drafted), the
+credit links to the kit page (decision 2 as drafted), and the paid pack zips
+keep the old buyer license (decision 3), which the kit's build now copies in
+from `release/LICENSE-pack`.
 
 This is a plain-English license written for this kit, not legal advice. If the
 kit ever matters commercially, have a lawyer read it.

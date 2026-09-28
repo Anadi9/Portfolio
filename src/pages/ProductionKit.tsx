@@ -112,8 +112,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
     a: 'React or Next.js with Supabase, deployed on Vercel or similar. The deployment, change discipline and SEO parts work with any backend; the database and auth parts are written for Supabase.',
   },
   {
-    q: 'Can I use it for client work?',
-    a: 'Yes, in any number of projects you own or build for clients. The LICENSE file in the download has the full terms.',
+    q: 'Can I use it for client work, or share it?',
+    a: 'Yes to both. Use it in any number of projects, including client work, and share it with anyone for free, as long as you keep its LICENSE file and credit the source. The one thing you can’t do is sell it. The LICENSE file in the download has the full terms.',
   },
   {
     q: 'Do I get updates?',

@@ -1,3 +1,4 @@
+import r1_2_1 from './releases/1.2.1.js';
 import r1_2_0 from './releases/1.2.0.js';
 import type { Pack, PackId, Release } from './types.js';
 
@@ -13,7 +14,7 @@ export type { Pack, PackId, Release } from './types.js';
  * Prices are not here. The manifest's `priceUsdCents` is a suggestion; what the
  * page shows and the checkout charges comes from Stripe, found by lookup key.
  */
-export const RELEASES: readonly Release[] = [r1_2_0];
+export const RELEASES: readonly Release[] = [r1_2_1, r1_2_0];
 
 export const LATEST = RELEASES[0];
 

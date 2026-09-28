@@ -4,6 +4,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { KitStore } from './store';
 import { memoryStore } from './testing';
+import { LATEST, RELEASES } from '@/data/kit';
 
 /**
  * The `/api/kit/*` routes and the webhook's front door, with Stripe and the
@@ -107,7 +108,7 @@ describe('GET /api/kit/download', () => {
     const token = await buyer('a@example.com', [{ pack_id: 'auth', amount: 700 }]);
     const r = await call('download', { query: { token, pack: 'auth' } });
     expect(r.status).toBe(302);
-    expect(r.headers.location).toBe('https://storage.test/kit/1.2.0/production-kit-auth-v1.2.0.zip?expires=60');
+    expect(r.headers.location).toBe(`https://storage.test/kit/${LATEST.version}/production-kit-auth-v${LATEST.version}.zip?expires=60`);
     expect(r.headers['referrer-policy']).toBe('no-referrer');
   });
 
@@ -141,7 +142,7 @@ describe('GET /api/kit/library', () => {
     const token = await buyer('a@example.com', [{ pack_id: 'auth', amount: 700 }]);
     await mem.store.saveOrder({ stripe_session_id: null, stripe_payment_intent: null, email: 'a@example.com', amount_total: 1200, currency: 'usd', kind: 'upgrade', items: [{ pack_id: 'full', amount: 1200 }] });
     const r = await call('library', { query: { token } });
-    expect(r.body).toMatchObject({ email: 'a•••@example.com', packs: [{ id: 'full', versions: [{ version: '1.2.0' }] }], upgrade: null });
+    expect(r.body).toMatchObject({ email: 'a•••@example.com', packs: [{ id: 'full', versions: RELEASES.map((r) => ({ version: r.version })) }], upgrade: null });
   });
 });
 
