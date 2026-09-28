@@ -1,5 +1,6 @@
 import { c, display, gutter, heading, label, mono, px, rule, s } from './tokens';
 import { projects, site } from '@/data/portfolio';
+import { ORIGIN } from '@/components/Seo';
 
 /** The one project with a long version attached. */
 const featured = projects.find((p) => p.study);
@@ -382,6 +383,24 @@ const Work = () => (
             photogenic
           </div>
           <div style={{ display: 'grid', gap: s[3] }}>
+            {/* Absolute: this section renders on portfolio.anadithakur.in, and
+                /work lives on the main host. */}
+            <a
+              href={`${ORIGIN}/work`}
+              className="pf-nudge pf-nudge-lg"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: px(s[4], s[5]),
+                background: c.accent,
+                color: c.ink,
+                ...label(11, 700, 0.12),
+                textDecoration: 'none',
+              }}
+            >
+              ALL CASE STUDIES<span>→</span>
+            </a>
             <a
               href={site.github}
               target="_blank"

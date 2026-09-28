@@ -158,6 +158,24 @@ export const routes: RouteRecord[] = [
         getStaticPaths: async () => (await import('./content')).postsByStream('fix').map((p) => p.path),
       },
 
+      // Case studies. Live ones prerender; pending ones exist only under
+      // `npm run dev` (see `data/caseStudies.ts`), so the path list reads the
+      // same `visibleStudies` the page does.
+      {
+        path: '/work',
+        lazy: () => import('./pages/WorkIndex').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/WorkIndex.tsx',
+      },
+      {
+        path: '/work/:slug',
+        lazy: () => import('./pages/WorkStudy'),
+        entry: 'src/pages/WorkStudy.tsx',
+        getStaticPaths: async () => {
+          const { visibleStudies, studyPath } = await import('./data/caseStudies');
+          return visibleStudies.map(studyPath);
+        },
+      },
+
       // The policy pages Stripe India asks for before it activates payments.
       ...(['Support', 'Terms', 'Privacy', 'Refunds'] as const).map((name) => ({
         path: `/${name.toLowerCase()}`,

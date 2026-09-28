@@ -9,11 +9,22 @@
  * repo, and committing a generated file that can drift from its source is how
  * you end up serving a sitemap listing a post you deleted.
  */
-import { writeFileSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ORIGIN, collect, root, streamPath } from './lib/content.mjs';
 
 const OUT = join(root, 'dist');
+
+/** `/work` plus one path per prerendered `dist/work/<slug>/index.html`. */
+const workPaths = () => {
+  const dir = join(OUT, 'work');
+  if (!existsSync(dir)) return [];
+  const slugs = readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && existsSync(join(dir, d.name, 'index.html')))
+    .map((d) => d.name)
+    .sort();
+  return ['/work', ...slugs.map((s) => `/work/${s}`)];
+};
 
 /** The five characters XML will not accept raw. */
 const esc = (s) =>
@@ -57,6 +68,10 @@ const pages = [
   { url: `${ORIGIN}/teardown`, modified: posts[0].modified, priority: '0.9' },
   { url: `${ORIGIN}/notes`, modified: posts[0].modified, priority: '0.9' },
   { url: `${ORIGIN}/products/production-kit`, modified: posts[0].modified, priority: '0.9' },
+  // Case studies: whatever the build prerendered under `dist/work`, which is
+  // exactly the live set. Reading the output rather than the TS data keeps a
+  // pending study out of the sitemap by construction.
+  ...workPaths().map((p) => ({ url: `${ORIGIN}${p}`, modified: posts[0].modified, priority: '0.8' })),
   ...posts.map((p) => ({ url: p.url, modified: p.modified, priority: '0.8' })),
 ];
 
