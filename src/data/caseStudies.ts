@@ -7,18 +7,16 @@ import { SIGNAL_HREF } from './portfolio';
  * The case studies behind `/work`.
  *
  * Two kinds, told two ways. A client project is work Anadi delivered while
- * employed: the end client is named as the client and the employer as where it
- * was delivered, and the page describes his part of it, not the company's. A
+ * employed: the end client is named, and the page describes his part of it, not the
+ * company's. Neither the employer nor dates are shown, by Anadi's choice. A
  * personal project is self-initiated, and its page is the arc of a real problem,
  * what had to be learned to solve it, what was built, and what it taught.
  *
  * `status` is the publishing gate. A `pending` study is written in full but
  * only renders under `npm run dev`, the same rule notes drafts follow, because
- * it is waiting on something only Anadi can confirm: an employer, permission to
- * name the client, a store link. `pending` lists exactly what, and any
+ * it is waiting on something only Anadi can confirm: his role, a store link. `pending` lists exactly what, and any
  * unconfirmed fact in the copy is an `[Add …]` placeholder rather than a guess.
- * Numbers appear only where they were measured or are facts about the shipped
- * thing; a pending study carries none.
+ * Client projects carry no metrics at all; results are described in words.
  */
 
 export type Kind = 'client' | 'personal';
@@ -45,12 +43,12 @@ export type Study = {
   /** One line under the card title: what came of it. */
   result: string;
 
-  /** Client projects only. */
+  /** Client projects only. The employer it was delivered at is deliberately not shown. */
   client?: string;
-  deliveredAt?: string;
 
   role: string;
-  timeline: string;
+  /** Personal projects only; client projects carry no dates. */
+  timeline?: string;
   platformLabel: string;
   stack: string[];
   link?: { href: string; label: string };
@@ -215,51 +213,55 @@ export const studies: Study[] = [
     title: 'A lead score you can argue with',
     seoTitle: 'Signal: lead scoring that shows its reasons',
     description:
-      'Signal scores leads 0–100 with the evidence beside the number, and drafts a first email from that evidence for a human to review. Built with Next.js, FastAPI, Claude and Supabase.',
-    result: 'Scores leads 0–100 with a stated reason, and drafts outreach for a human to approve.',
+      'Signal finds companies showing buying signals, scores them 0–100 with a written rationale, and drafts outreach for a person to review. Next.js, Express, FastAPI, Groq and Supabase.',
+    result: 'Scores leads 0–100 with a written rationale, and drafts outreach for a person to review.',
     role: 'Solo: product, pipeline, interface',
-    timeline: '2025',
+    timeline: 'Jun – Jul 2026',
     platformLabel: 'Web',
-    stack: ['Next.js', 'FastAPI', 'Claude API', 'Supabase'],
+    stack: ['Next.js 14', 'Node.js · Express', 'Python · FastAPI', 'Groq · Llama 3.3 70B', 'Supabase', 'Vercel · Render'],
     link: SIGNAL_HREF ? { href: SIGNAL_HREF, label: 'Open Signal (login required)' } : undefined,
     problem: [
       'Founders doing their own outbound lose hours on leads that were never a fit, then write each first email from scratch.',
       'Lead tools hand over a list and a confidence percentage nobody can question. You either trust the number or throw the list away.',
     ],
     learned: [
-      'The Claude API: getting a score and its reason back as structured output, and keeping the model to evidence it was given.',
-      'FastAPI for the pipeline, and how to keep a scraper-fed system honest when sources fail.',
-      'Scoring design: what a score has to carry for a person to act on it.',
+      'Python and FastAPI, to run scraping, enrichment and scoring as a service separate from the web app.',
+      'Where a language model belongs in a pipeline and where it doesn’t: Llama 3.3 on Groq writes the pain-point analysis and the drafts, and plain rules do the scoring.',
+      'Contact enrichment without spamming: finding a decision-maker through LinkedIn search results and the company’s own site, and checking an email address before trusting it.',
     ],
     built: [
-      'A pipeline that collects hiring signals from five sources (LinkedIn, job boards, Crunchbase, Google Maps and remote boards), scores each lead 0–100 with the evidence that produced the score, and drafts a first email from that evidence into a review queue.',
-      'A dashboard that moves a lead through seven stages, from new to client.',
+      'A Python signal engine that pulls companies from five sources (LinkedIn, job boards, Crunchbase, remote job boards and Google Maps), merges duplicates, finds a decision-maker, and scores each lead 0–100.',
+      'A Next.js dashboard and an Express API on top: leads, an outreach queue, scrape logs and a cron history, with each lead moving through seven stages from new to client. Scrapes, analysis and draft generation run on a daily schedule and can be triggered by hand.',
     ],
     decisions: [
       {
-        head: 'A score has to carry its reason',
-        body: 'The evidence sits beside the number, in the lead’s own words: “hiring a Buyer, Indirect on LinkedIn”. You argue with the signal, not the digit, and when you disagree you know which input to fix.',
+        head: 'Rules score, the model writes',
+        body: 'The 0–100 score comes from plain rules across company size, hiring urgency, operational complexity and growth signals, with a written rationale naming what matched. The same lead always gets the same score, and a wrong one can be traced to the rule that produced it. The language model is kept to writing.',
       },
       {
-        head: 'Evidence first, prose second',
-        body: 'The scrape keeps only what can be quoted back, and the draft is written from that and nothing else, so the opener names the job they posted instead of praising their commitment to excellence.',
+        head: 'Agreement between sources counts',
+        body: 'A company that turns up on two or three independent sources gets a bonus. One job post can be noise; the same company hiring on LinkedIn and listed on Crunchbase is a pattern.',
       },
       {
-        head: 'It writes a draft, not a send',
-        body: 'Claude fills a review queue with a subject, a body and two variants. Marking a lead contacted is a person pressing a button. The automation is worth having because it stops one step short.',
+        head: 'An unverified email is never used',
+        body: 'Pattern-guessed addresses like first.last@ are only returned once a verification service confirms them. Without verification, a guess is a spam risk, so it is dropped rather than shown.',
+      },
+      {
+        head: 'It drafts, a person sends',
+        body: 'Cold emails, LinkedIn notes and follow-ups are generated for leads above a score threshold and wait in a queue. Sending, and marking a lead contacted, is done by a person.',
       },
       {
         head: 'Failures stay visible',
-        body: 'Scrapers break. The run log shows each failure instead of retrying quietly, so a thin day of leads is explained rather than mysterious.',
+        body: 'Scrapers break. Every scrape and scheduled run is logged with its outcome, and a history view shows the ones that failed, instead of a pipeline that loses data quietly.',
       },
     ],
-    proof: { src: signalShot, alt: 'Signal’s lead table: companies with a 0–100 score and the hiring signal behind it.', note: 'Signal’s lead table.' },
+    proof: { src: signalShot, alt: 'Signal’s lead table: companies with a 0–100 score and the signal behind it.', note: 'Signal’s lead table.' },
     results: [
       'Signal has not been used for live outreach yet, so there are no reply rates or pipeline numbers to report.',
-      'What it does today: every lead carries a score and the evidence behind it, and every draft is written from that evidence and waits for a person to approve it.',
+      'What it does today: every lead carries a score and the rationale behind it, and every draft waits for a person to review it.',
     ],
     lessons: [
-      'It is slower per lead than tools that don’t explain themselves. That trade was made on purpose, and I would make it again.',
+      'It is slower per lead than tools that don’t explain themselves. That trade was made on purpose.',
     ],
     cta: { lead: 'Thinking about an AI system like this for your business?', label: 'Talk to ANTA', href: 'https://theanta.com' },
   },
@@ -272,9 +274,7 @@ export const studies: Study[] = [
     platform: 'Web',
     status: 'pending',
     pending: [
-      'Permission to name ZEISS as a client on a case study page.',
-      'Which employer delivered it: ZenQua or Precious Infosystem (the portfolio journey says Precious Infosystem).',
-      'Your role title and dates.',
+      'Your role on the project.',
     ],
     name: 'ZEISS Microscopy',
     title: 'One component system for every ZEISS light microscope line',
@@ -283,9 +283,7 @@ export const studies: Study[] = [
       'A React component system for the ZEISS light microscope product pages: reusable across upright, inverted and digital lines, wired to content APIs so copy ships without a deploy.',
     result: 'Reusable components across upright, inverted and digital product lines; content ships without a deploy.',
     client: 'ZEISS',
-    deliveredAt: '[Add employer]',
-    role: '[Add role, e.g. Frontend developer]',
-    timeline: '[Add dates]',
+    role: '[Add role]',
     platformLabel: 'Web',
     stack: ['React', 'Component library', 'Content APIs', 'ZEISS global design system'],
     link: { href: 'https://www.zeiss.com/microscopy/us/products/light-microscopes.html', label: 'ZEISS light microscopes' },
@@ -310,7 +308,7 @@ export const studies: Study[] = [
       },
     ],
     proof: { src: zeissShot, alt: 'A public ZEISS light microscope product page.', note: 'Public product page on zeiss.com.' },
-    results: ['[Add measured result, or describe the change in words once confirmed]'],
+    results: ['Content and spec changes ship as edits, not releases, and a new microscope line is built from components that already exist.'],
     cta: CLIENT_CTA,
   },
 
@@ -319,7 +317,9 @@ export const studies: Study[] = [
     kind: 'client',
     platform: 'Web',
     status: 'pending',
-    pending: ['Permission to name IoT Industry as a client.', 'Which employer delivered it.', 'Your role title and dates.'],
+    pending: [
+      'Your role on the project.',
+    ],
     name: 'IoT Industry',
     title: 'Live factory sensor data a manager can read at a glance',
     seoTitle: 'IoT Industry: a real-time factory dashboard',
@@ -327,9 +327,7 @@ export const studies: Study[] = [
       'A React dashboard for factory managers, fed by Node and Express APIs streaming real-time machine sensor data into reusable chart and table components.',
     result: 'Real-time machine data streamed into reusable charts and tables for factory managers.',
     client: 'IoT Industry',
-    deliveredAt: '[Add employer]',
     role: '[Add role]',
-    timeline: '[Add dates]',
     platformLabel: 'Web',
     stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Real-time data'],
     link: { href: 'https://ioti.io/', label: 'ioti.io' },
@@ -354,7 +352,7 @@ export const studies: Study[] = [
       },
     ],
     proof: { src: iotiShot, alt: 'The public IoT Industry site.', note: 'Public site at ioti.io.' },
-    results: ['[Add measured result, or describe the change in words once confirmed]'],
+    results: ['Factory managers see machine data as it arrives, in the same charts and tables across every machine type.'],
     cta: CLIENT_CTA,
   },
 
@@ -363,7 +361,9 @@ export const studies: Study[] = [
     kind: 'client',
     platform: 'Web',
     status: 'pending',
-    pending: ['Permission to name AppWalker as a client.', 'Which employer delivered it.', 'Your role title and dates.'],
+    pending: [
+      'Your role on the project.',
+    ],
     name: 'AppWalker',
     title: 'A recipe platform built to take new features without a rewrite',
     seoTitle: 'AppWalker: a React recipe-sharing platform',
@@ -371,9 +371,7 @@ export const studies: Study[] = [
       'The React frontend for a recipe-sharing and culinary community platform: recipe creation, step-by-step instructions and ingredient management, with an editor-friendly admin.',
     result: 'Recipe creation, step-by-step instructions and ingredient management in React.',
     client: 'AppWalker',
-    deliveredAt: '[Add employer]',
     role: '[Add role]',
-    timeline: '[Add dates]',
     platformLabel: 'Web',
     stack: ['React', 'Component architecture'],
     link: { href: 'https://appwalker-technology.com/', label: 'appwalker-technology.com' },
@@ -393,7 +391,7 @@ export const studies: Study[] = [
         body: 'Content is managed by people who don’t write code, so the admin was built around their tasks rather than the data model.',
       },
     ],
-    results: ['[Add measured result, or describe the change in words once confirmed]'],
+    results: ['Editors manage recipes without a developer, and new features slot into the existing component structure.'],
     cta: CLIENT_CTA,
   },
 
@@ -405,11 +403,8 @@ export const studies: Study[] = [
     platform: 'Mobile',
     status: 'pending',
     pending: [
-      'Permission to name Sonee Sports as a client.',
-      'Which employer delivered it.',
+      'Your role on the project.',
       'App Store and Play Store links.',
-      'Your role title and dates.',
-      'Whether the “+15% monthly sales” figure has a source you can share. It is not used until then.',
     ],
     name: 'Sonee Sports',
     title: 'A sports store and loyalty app, built from scratch for iOS and Android',
@@ -418,9 +413,7 @@ export const studies: Study[] = [
       'An e-commerce and loyalty rewards app for Android and iOS, built from scratch in React Native CLI: product listing, cart, checkout and performance work driven by analytics.',
     result: 'Product listing, cart, checkout and loyalty rewards on Android and iOS, from an empty repo.',
     client: 'Sonee Sports',
-    deliveredAt: '[Add employer]',
-    role: 'Built the React Native app [confirm title]',
-    timeline: '[Add dates]',
+    role: '[Add role]',
     platformLabel: 'Android & iOS',
     stack: ['React Native CLI', 'REST APIs', 'Analytics'],
     link: undefined,
@@ -432,10 +425,6 @@ export const studies: Study[] = [
     ],
     decisions: [
       {
-        head: 'React Native CLI rather than Expo',
-        body: '[Add the reason, e.g. native modules the payment or loyalty integration needed]',
-      },
-      {
         head: 'Performance work from analytics, not guesses',
         body: 'Profiling and code-level optimisations targeted the screens the analytics showed people actually used.',
       },
@@ -444,7 +433,7 @@ export const studies: Study[] = [
         body: 'The UI was built to stay consistent from small Android phones to large iPhones, so no screen size gets a broken checkout.',
       },
     ],
-    results: ['[Add measured result with its source, or describe the change in words]'],
+    results: ['One React Native codebase ships the store, checkout and loyalty rewards to both Android and iOS.'],
     cta: CLIENT_CTA,
   },
 
@@ -454,10 +443,8 @@ export const studies: Study[] = [
     platform: 'Mobile',
     status: 'pending',
     pending: [
-      'Permission to name XPAND as a client.',
-      'Which employer delivered it.',
+      'Your role on the project.',
       'App Store and Play Store links.',
-      'Your role title and dates.',
     ],
     name: 'XPAND',
     title: 'An ed-tech app that looks right on every phone it runs on',
@@ -466,9 +453,7 @@ export const studies: Study[] = [
       'A cross-platform ed-tech app for Android and iOS in React Native and Redux, rendering educational content from REST APIs with state that holds across screens and sessions.',
     result: 'Educational content on iOS and Android, with progress that holds across sessions.',
     client: 'XPAND',
-    deliveredAt: '[Add employer]',
     role: '[Add role]',
-    timeline: '[Add dates]',
     platformLabel: 'Android & iOS',
     stack: ['React Native', 'Redux', 'REST APIs'],
     link: undefined,
@@ -486,7 +471,7 @@ export const studies: Study[] = [
         body: 'A learner’s place in a course has to survive navigation and restarts, so it lives in one store rather than in each screen.',
       },
     ],
-    results: ['[Add measured result, or describe the change in words once confirmed]'],
+    results: ['One codebase serves iOS and Android, and a learner’s place in a course survives navigation and restarts.'],
     cta: CLIENT_CTA,
   },
 
@@ -496,11 +481,9 @@ export const studies: Study[] = [
     platform: 'Mobile',
     status: 'pending',
     pending: [
-      'Permission to name LA-PTE as a client.',
-      'Which employer delivered it.',
+      'Your role on the project.',
       'App Store and Play Store links.',
-      'Your role, what you built, and dates.',
-      'Whether any of the learner, download or engagement numbers have a source you can share. None are used until then.',
+      'What you built on the app, and one or two decisions worth explaining.',
     ],
     name: 'LA-PTE',
     title: 'PTE exam practice in a phone-sized app',
@@ -508,9 +491,7 @@ export const studies: Study[] = [
     description: 'A React Native app for Android and iOS that helps students prepare for the PTE Academic and PTE Core English exams.',
     result: 'PTE Academic and Core preparation on Android and iOS.',
     client: 'LA-PTE',
-    deliveredAt: '[Add employer]',
     role: '[Add role]',
-    timeline: '[Add dates]',
     platformLabel: 'Android & iOS',
     stack: ['React Native'],
     link: undefined,
@@ -519,7 +500,7 @@ export const studies: Study[] = [
     ],
     built: ['[Add what you built on the app]'],
     decisions: [{ head: '[Add a decision]', body: '[Add the reason]' }],
-    results: ['[Add measured result, or describe the change in words once confirmed]'],
+    results: ['One React Native codebase serves PTE practice on both Android and iOS.'],
     cta: CLIENT_CTA,
   },
 ];

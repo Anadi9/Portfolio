@@ -95,17 +95,17 @@ export const projects: Project[] = [
   {
     index: '01',
     kind: 'FEATURED',
-    tech: ['NEXT.JS', 'FASTAPI', 'CLAUDE API', 'SUPABASE'],
+    tech: ['NEXT.JS', 'FASTAPI', 'GROQ · LLAMA 3.3', 'SUPABASE'],
     title: ['Signal', 'AI Lead Radar'],
     blurb:
-      "Scrape → score → outreach. A 0–100 model with a stated reason for the score, and a Claude-written first email you'd actually be willing to send.",
+      "Scrape → score → outreach. A 0–100 score with a written reason behind it, and a first email drafted from that evidence for you to review.",
     shot: signalShot,
     shotLabel: 'SIGNAL · AI LEAD RADAR',
     href: SIGNAL_HREF || undefined,
     study: {
       product: 'ANTA Lead Radar',
       role: 'Solo: product, pipeline, interface',
-      span: '2025, running daily',
+      span: 'Jun – Jul 2026',
       problem:
         'Lead tools hand you a list and a confidence percentage nobody can interrogate. You either trust the number or you throw the list away, and everyone throws the list away.',
       moves: [
@@ -125,7 +125,7 @@ export const projects: Project[] = [
           n: '03',
           head: 'It writes a draft, not a send',
           body:
-            'Claude fills a review queue: subject, body, two variants to choose between. Moving a lead to contacted is a human pressing a button. The automation is worth having precisely because it stops one step short.',
+            'Llama 3.3 on Groq fills a review queue with cold emails, LinkedIn notes and follow-ups. Sending, and moving a lead to contacted, is a human pressing a button. The automation is worth having precisely because it stops one step short.',
         },
       ],
       results: [
@@ -140,10 +140,10 @@ export const projects: Project[] = [
   {
     index: '02',
     kind: 'ENTERPRISE',
-    tech: ['REACT', 'AEM', 'DESIGN SYSTEM'],
+    tech: ['REACT', 'COMPONENT SYSTEM', 'DESIGN SYSTEM'],
     title: ['ZEISS', 'Microscopy'],
     blurb:
-      'A product platform for scientific light microscopes. Reusable components wired to AEM content APIs, so marketing ships copy without waiting on a deploy.',
+      'A product platform for scientific light microscopes. A reusable React component system wired to content APIs, so marketing ships copy without waiting on a deploy.',
     shot: zeissShot,
     shotLabel: 'ZEISS PRODUCT PAGE',
     href: 'https://www.zeiss.com/microscopy/us/products/light-microscopes.html',
@@ -206,7 +206,7 @@ export const milestones: Milestone[] = [
   {
     year: '25',
     title: 'Out on my own, into LLMs',
-    body: 'Independent. Scoping, architecture, deployment, and building Signal, where Claude does the writing and I do the plumbing.',
+    body: 'Independent. Scoping, architecture, deployment, and building Signal, where the model does the writing and I do the plumbing.',
     meta: 'FREELANCE · CLAUDE · GROQ · FASTAPI',
   },
   {

@@ -32,40 +32,37 @@ what it waits on. Publishing one = answer its questions, fill the
 
 ## theanta.com
 
-- [?] 11. The theanta.com source repo (Vite + React + shadcn) is not on this
-  machine: `~/Desktop/anta-website` holds only planning docs and
-  `~/anta-landing` is a static HTML mock. Copy for the Signal flagship and the
-  "Founder's track record" block is drafted in
-  `docs/drafts/theanta-case-studies.md`, ready to drop in once the repo is
-  available.
+- Out of scope here. Anadi is doing ANTA's case studies separately in its own
+  repo. Draft copy stays in `docs/drafts/theanta-case-studies.md` for reuse.
+
+## Decided by Anadi (2026-09-28)
+
+- No employer and no dates on client projects; role only.
+- Every client can be named.
+- No metrics or numbers on client projects, ever.
+- Signal's source of truth is github.com/theanta/signal. The study and the
+  front-page card now match it: Groq (Llama 3.3 70B), not Claude; rule-based
+  scoring; Jun – Jul 2026; still no outreach results claimed.
+- ZEISS front-page card leads with the React component system, no AEM.
+- No case studies for Boardsi, Groovepacker, Royal Mindfulness, Sellerchamp,
+  or the earlier learning projects.
 
 ## Waiting for Anadi
 
-- [?] **Employer per client project:** ZEISS (ZenQua vs Precious Infosystem;
-  the portfolio's journey says Precious), IoT Industry, Sonee Sports, XPAND,
-  LA-PTE, AppWalker.
-- [?] **Permission to name each client**, ZEISS especially. (ZEISS and IoT
-  Industry are already named on the portfolio front page.)
-- [?] **Timelines** for every client project; ZenQua dates (Apr 2024 – Jun 2025
-  vs Apr 2024 – Aug 2026).
-- [?] **Store links** for Sonee Sports, XPAND, LA-PTE.
-- [?] **Metrics:** any verifiable source for Sonee Sports +15% sales or the
-  LA-PTE numbers. None are used until then.
-- [?] **Boardsi, Groovepacker, Royal Mindfulness, Sellerchamp:** include? role?
-  company? Nothing written for these.
-- [?] **Earlier projects (P5):** which were personal (video calling, React Flow
-  editor, StoryTeller, eCommerce). Nothing written for these.
-- [?] **Signal copy conflict:** the portfolio front page says Signal is
-  "2025, running daily" and lists five scraped sources; the brief describes an
-  Apollo → Clay → Claude → HubSpot → Lemlist design and says it has never run
-  live outreach. The case study uses only the published facts and says no
-  outreach has been sent. Confirm which pipeline is current, and whether
-  "running daily" should stay on the front page.
-- [?] **ZEISS stack line:** the portfolio card leads with AEM; the brief says
-  lead with the React component system. The case study does; the front-page
-  card is untouched until you say so.
+Each client study goes live when its row is filled: set `role`, add `link`
+for the mobile apps, flip `status` to `live`.
+
+| Study | Role | Store links | Other |
+|---|---|---|---|
+| ZEISS Microscopy | [ ] | n/a | |
+| IoT Industry | [ ] | n/a | |
+| AppWalker | [ ] | n/a | |
+| Sonee Sports | [ ] | [ ] App Store · [ ] Play Store | |
+| XPAND | [ ] | [ ] App Store · [ ] Play Store | |
+| LA-PTE | [ ] | [ ] App Store · [ ] Play Store | [ ] what you built, 1–2 decisions |
 
 ## Log
 
 - 2026-09-28: tasks 1–10 built in one round. See commit on `case-studies`.
 - 2026-09-28: Rescue Teardown case study removed.
+- 2026-09-28: Anadi's decisions applied (above); Signal rewritten from its repo.

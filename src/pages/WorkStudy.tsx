@@ -28,9 +28,8 @@ const Strip = ({ study }: { study: Study }) => {
   const rows: [string, ReactNode][] = [
     ['TYPE', kindLabel[study.kind]],
     ...(study.client ? ([['CLIENT', study.client]] as [string, ReactNode][]) : []),
-    ...(study.deliveredAt ? ([['DELIVERED AT', study.deliveredAt]] as [string, ReactNode][]) : []),
     ['ROLE', study.role],
-    ['TIMELINE', study.timeline],
+    ...(study.timeline ? ([['TIMELINE', study.timeline]] as [string, ReactNode][]) : []),
     ['PLATFORM', study.platformLabel],
     ['STACK', study.stack.join(' · ')],
     ...(study.link
