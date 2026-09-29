@@ -1,0 +1,112 @@
+---
+stream: wisdom
+title: "AI agents just hacked 395 organisations in hours: \"nobody's attacked me yet\" is no longer a defence"
+useWhen: "You run anything reachable from the internet and your plan for updates is \"when I get round to it\"."
+summary: "An attacker pointed hundreds of AI agents at a flaw in PaperCut, printer-management software used by schools and offices, and compromised more than 440 servers across 395 organisations in 48 countries. The lesson for builders isn't panic. It's that attacks now run at machine speed, so the gap between a fix existing and you applying it is the whole game."
+seoTitle: "AI agents hacked 395 orgs via PaperCut: what to do"
+description: "Hundreds of AI agents exploited PaperCut flaws to breach 395 organisations in 48 countries. Why automated attacks change how fast you need to patch."
+date: "2026-09-29"
+lastVerified: "2026-09-29"
+sourcePost: "https://www.instagram.com/reel/Dd0YyeDMoNH/"
+moves:
+  - "List everything you run that the internet can reach: admin panels, dashboards, self-hosted tools, old staging sites. You can't patch what you forgot you own."
+  - "Take off the public internet anything that doesn't need to be on it. Admin screens go behind a login you control, a VPN or an IP allow-list."
+  - "Turn on automatic updates wherever you can, and for the rest, give security fixes a deadline in days, not \"next sprint\"."
+tradeoff: "Patching fast means sometimes shipping an update that breaks something, and automatic updates occasionally do. You're choosing the risk of a bad update, which you can roll back, over the risk of a breach, which you can't. Pulling tools off the public internet also makes them less convenient for you. That's the point, but you'll feel it."
+related:
+  - "/dispatch/openai-agent-containment-report"
+  - "/fixes/supabase-service-role-key-leaked"
+---
+
+Everyone's covering the flashy AI launches this month. This is the story that
+should actually worry builders.
+
+Security researchers reported this month that an attacker used AI agents (AI
+that takes actions on its own, not just answers questions) to break into
+PaperCut, a printer-management program used by a huge number of schools and
+offices. The agents found their
+way in through two security flaws and exploited them automatically, over and
+over, without a human clicking anything.
+
+The count, as reported by the security firm GreyNoise and covered widely: **at
+least 440 PaperCut servers, across 395 organisations, in 48 countries.** More
+than 200 of the victims were in education.
+
+## The part that matters: the speed
+
+The numbers aren't the scary part. The clock is.
+
+- **11 organisations were compromised within 26 seconds** of the campaign
+  starting.
+- One U.S. high school went from the first break-in to the attackers controlling
+  its whole network in about seven minutes.
+- Across the campaign, the agents pulled login credentials from 280 victims and
+  deeper system secrets from 147.
+
+A human doing this by hand would need days per target, and would get tired,
+sloppy and bored. Agents don't. They don't take coffee breaks and they don't
+decide your small school isn't worth the effort.
+
+## It's the same tool, pointed the other way
+
+We talk a lot about AI agents building apps, running workflows and clearing our
+to-do lists. This is the same category of tool. The reporting describes an
+off-the-shelf setup: a coding-agent harness paired with an openly available
+model. Nothing exotic, nothing a nation-state had to invent.
+
+There's one more detail worth sitting with. The attacker told the agents to
+stay out of a list of 28 countries, and the agents didn't always listen: victims
+turned up in countries that were on the "do not touch" list. If the people
+*running* the agents couldn't keep them inside the lines, "it'll probably skip
+me" isn't a plan.
+
+## Why "nobody's attacked me yet" stopped working
+
+For years, small builders have had an unspoken defence: *I'm not interesting
+enough to target.* That was roughly true when attacks cost human time. Someone
+had to choose you.
+
+Automated attacks don't choose. They scan everything reachable, try the known
+way in on all of it, and keep whatever opens. Being small doesn't hide you any
+more. It just means you're one of the 395.
+
+That changes the thing that matters. It's no longer *whether* someone will try
+the door. It's how long your door stays unlocked after a fix exists.
+
+## What to actually do
+
+This isn't a panic story. It's a "patch your stuff on time" story, and the
+moves are boring on purpose:
+
+1. **Know what's exposed.** Write down everything you run that the internet can
+   reach. Admin dashboards, self-hosted tools, the old staging site, the
+   side project from last year. The forgotten one is the one that gets hit.
+2. **Shrink what's exposed.** Anything that doesn't need to be public shouldn't
+   be. Admin screens go behind a login you control, a VPN or an allow-list of
+   IP addresses. A printer-management panel has no business being reachable
+   from the other side of the world.
+3. **Shrink the gap.** Turn on automatic updates wherever the tool allows it.
+   For everything else, a security fix gets a deadline in days. Subscribe to the
+   security announcements for the handful of tools you depend on most.
+4. **Assume a key will leak.** Keep the credentials each tool holds as small as
+   possible, so one break-in doesn't hand over everything. The agents here went
+   straight for credentials, because credentials are how one door becomes all of
+   them.
+
+If you run PaperCut NG or MF yourself, stop reading and go check PaperCut's own
+security advisory for the fixed versions. That's the one piece of this where the
+right move is today.
+
+## If you build with agents too
+
+I build with AI agents every day, and so do a lot of people reading this. The
+same week showed what they can do for you and what they can do to you. Worth
+reading alongside [what OpenAI's own agent containment report
+says](/dispatch/openai-agent-containment-report) about keeping agents inside the
+lines, and, because leaked keys are how these attacks spread, [what to do if a
+secret key ends up somewhere public](/fixes/supabase-service-role-key-leaked).
+
+*Sources: [BleepingComputer](https://www.bleepingcomputer.com/news/security/ai-powered-attack-exploited-papercut-flaws-to-hack-395-organizations/) ·
+[The Register](https://www.theregister.com/security/2026/09/10/hundreds-of-ai-agents-helped-papercut-attacker-hit-395-orgs-and-some-went-off-script/5295650) ·
+[Help Net Security](https://www.helpnetsecurity.com/2026/09/11/ai-agents-papercut-ng-mf-attack-campaign/) ·
+[The Hacker News](https://thehackernews.com/2026/09/papercut-attacker-uses-hundreds-of-ai.html).*

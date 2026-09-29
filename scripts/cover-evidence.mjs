@@ -61,4 +61,22 @@ export const evidence = {
     '## Things to avoid',
     '## Where my files live',
   ],
+  '/drops/jargon': [
+    'Token          a chunk of text, roughly a word',
+    '!Context window how much the AI can remember at once',
+    'RAG            look it up before answering',
+    'Agent          AI that can take actions',
+  ],
+  '/wisdom/ai-model-drift': [
+    'model: "latest"',
+    '// same name, different behaviour next month',
+    '',
+    '!model: "<exact-version-id>"',
+  ],
+  '/wisdom/ai-agents-papercut-attack': [
+    'servers compromised    440+',
+    'organisations          395',
+    'countries              48',
+    '!first 11 breached in  26 seconds',
+  ],
 };
