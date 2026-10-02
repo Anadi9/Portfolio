@@ -79,4 +79,10 @@ export const evidence = {
     'countries              48',
     '!first 11 breached in  26 seconds',
   ],
+  '/drops/roadmap': [
+    'week 1  understand   days 1-7',
+    'week 2  automate     days 8-14',
+    'week 3  build        days 15-21',
+    '!week 4  ship         days 22-30',
+  ],
 };
