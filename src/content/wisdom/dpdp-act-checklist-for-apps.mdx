@@ -1,0 +1,126 @@
+---
+stream: wisdom
+title: "DPDP Act compliance checklist for apps: what to build before May 2027"
+useWhen: "Your app or website collects personal data from people in India, and you need to know what the DPDP Act means for the product, not just the privacy policy."
+summary: "India's Digital Personal Data Protection Act, 2023 and the DPDP Rules, 2025 ask products to change, not only paperwork. Most obligations apply from around 13 May 2027. In product terms you need a clear notice and specific consent per purpose, easy withdrawal, working access, correction and deletion, retention limits, reasonable security with a year of logs, a breach process that reports within 72 hours, and parental consent for under-18 users."
+seoTitle: "DPDP Act checklist for apps: build it by May 2027"
+description: "What India's DPDP Act asks your app to do: notice, per-purpose consent, deletion, retention, security, 72-hour breach reports and children's data, by May 2027."
+date: "2026-10-13"
+lastVerified: "2026-10-13"
+moves:
+  - "Map every place your product collects personal data, why, and which tools it's sent to. Every other item depends on this list."
+  - "Build consent and rights into the product: an itemised notice, per-purpose consent, withdrawal, and account deletion that really deletes."
+  - "Get security and breach-readiness in place: encryption, access control, a year of access logs, alerting, and a written 72-hour breach plan."
+tradeoff: "Doing this properly touches sign-up, settings, your database, backups and every vendor you send data to, so it's weeks of product work, not an afternoon. And your lawyer still has to decide what the notice and policy say. Starting early means you build it once, calmly, instead of bolting it on in April 2027."
+related:
+  - "/wisdom/dpdp-vs-gdpr-for-developers"
+  - "/wisdom/ai-built-app-production-checklist"
+---
+
+To comply with India's DPDP Act, your app needs to: show an itemised privacy
+notice, take separate consent for each purpose, let people withdraw consent,
+access, correct and delete their data, erase data you no longer need, protect it
+with reasonable security and a year of access logs, report breaches within 72
+hours, and get parental consent for users under 18. Most of this applies from
+around 13 May 2027.
+
+This page turns that into a build list. It describes what the law asks a
+product to do; it isn't legal advice, and your lawyer decides what your policy
+says.
+
+## When does the DPDP Act apply?
+
+The Digital Personal Data Protection Act was passed in 2023. The DPDP Rules that
+make it work were notified in November 2025, with a phased start:
+
+| When | What starts |
+| --- | --- |
+| November 2025 | The Data Protection Board is set up |
+| Around November 2026 | Consent Manager provisions, about 12 months after notification |
+| Around 13 May 2027 | The core obligations: notice, consent, security, breach reporting, user rights, retention |
+
+It applies to digital personal data processed in India, and to processing
+outside India when it's connected to offering goods or services to people in
+India.
+
+## The DPDP checklist, as product work
+
+### 1. Notice
+
+- [ ] Before or when you collect personal data, show a notice that stands on its
+  own (not buried in your terms).
+- [ ] It lists each piece of data and the purpose for each, in plain language.
+- [ ] It tells people how to withdraw consent and how to complain.
+
+### 2. Consent
+
+- [ ] Consent is a clear action (an unticked box they tick, a button they press).
+- [ ] Each purpose is consented to separately: "create my account" and "send me
+  offers" are two choices, not one.
+- [ ] You keep a record: who, when, which purposes, which version of the notice.
+
+### 3. Withdrawal
+
+- [ ] Withdrawing is as easy as consenting was, inside the product.
+- [ ] Withdrawal actually stops the processing for that purpose, including in the
+  tools you send data to.
+
+### 4. User rights
+
+- [ ] People can get a summary of the data you hold and who you shared it with.
+- [ ] They can correct and update it.
+- [ ] They can ask for erasure, and deletion reaches your database, your backups
+  on their normal cycle, and your vendors.
+- [ ] You publish a contact for privacy questions and answer within the time the
+  Rules set.
+
+### 5. Retention
+
+- [ ] Every kind of personal data has a retention period tied to its purpose.
+- [ ] Erasure runs on a schedule, not by hand, with notice before inactive
+  accounts are removed where the Rules require it.
+
+### 6. Security
+
+- [ ] Personal data is encrypted, masked or otherwise protected.
+- [ ] Access is limited to the people and services that need it.
+- [ ] Access logs are kept for at least a year.
+
+Failing to take reasonable security safeguards carries the Act's largest
+penalty, up to ₹250 crore, so this is not the item to leave for last.
+
+### 7. Breaches
+
+- [ ] You'd notice a breach: alerting on unusual access, not a customer email.
+- [ ] You can tell affected people without delay.
+- [ ] You can send the Data Protection Board a detailed report within 72 hours.
+
+### 8. Children
+
+- [ ] You know whether users under 18 can sign up.
+- [ ] If they can, you get verifiable consent from a parent first.
+- [ ] No tracking, behavioural monitoring or targeted ads aimed at children.
+
+### 9. Vendors
+
+- [ ] You have a list of every tool that receives personal data: analytics,
+  email, payments, support chat, AI APIs.
+- [ ] Each has a contract that covers what it may do with the data and how it
+  deletes it.
+
+## Where do apps usually fall short?
+
+The same four gaps come up again and again:
+
+1. **One checkbox for everything**, usually "I agree to the terms and privacy
+   policy". That's not specific consent.
+2. **Account deletion that only hides the account**, while the data stays in the
+   database, the email tool and the analytics platform.
+3. **No access logs**, so a breach can't be investigated, let alone reported in
+   72 hours.
+4. **Apps built fast with AI tools** that never had a privacy pass at all,
+   often with database rules that let anyone read user tables.
+
+The free [DPDP self-check](/dpdp/check) scores your app against this list in
+about three minutes. If you'd rather have the gaps found and built for you, the
+[DPDP readiness check](/dpdp) is free too.

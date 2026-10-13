@@ -72,15 +72,26 @@ Nothing is pushed or deployed from this loop.
     and the fix; weighted scoring and gap ranking in `score.ts` (5 tests).
   - Client-side only: no API, nothing stored. Live score in a sticky panel, ranked gaps with
     fixes, CTAs to `/audit?type=dpdp`. Every question prerendered for search.
-- [ ] **8. AEO answer-first content** (AI visibility and DPDP clusters)
+- [x] **8. AEO answer-first content**
+  - Four wisdom posts, each opening with a 40–60 word direct answer, question-style H2s,
+    tables where they help, `lastVerified` dates, and links into the tools and service pages:
+    `/wisdom/get-recommended-by-chatgpt`, `/wisdom/geo-vs-seo-vs-aeo`,
+    `/wisdom/dpdp-act-checklist-for-apps`, `/wisdom/dpdp-vs-gdpr-for-developers`.
+  - Covers and OG cards generated locally; `npm run check` bumped to 28 posts / 43 sitemap URLs.
+
+## Status
+
+All eight milestones done on `repositioning`. Final state: 479 tests passing, build and
+`npm run check` green (28 posts, 43 sitemap URLs, no dead anchors). Not pushed or deployed.
 
 ## Needs Anadi before launch
 
-- Verify the Shopify "AI orders grew 15×" stat and link the source, or cut it.
-- Verify the DPDP Rules phase-in dates that the "May 2027" line relies on.
 - Check AI Visibility prices against competitors.
 - Decide DPDP pricing (the `/dpdp` page currently says "fixed quote after the free check").
 - No booking link exists yet; the confirmation says "reply to book a 20-minute call". Add a Cal.com/Calendly link if you want one.
 - Have a lawyer skim the `/dpdp` FAQ answers before launch.
 - Record the 60-second intro video and the sample report image.
-- After deploy: submit the sitemap in Google Search Console and Bing Webmaster Tools.
+- Read the four new posts in your own voice; they were written to match the existing notes but are yours to edit.
+- Check the hub, service pages and tools at phone width (not screenshotted in this run).
+- Make sure `audit@anadithakur.in` can send from Resend (same verified domain as `rescue@`).
+- After deploy: run the AI Readiness Checker on anadithakur.in again, then submit the sitemap in Google Search Console and Bing Webmaster Tools.

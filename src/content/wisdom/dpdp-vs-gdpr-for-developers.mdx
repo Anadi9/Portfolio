@@ -1,0 +1,76 @@
+---
+stream: wisdom
+title: "DPDP vs GDPR for developers: what carries over and what you still have to build"
+useWhen: "Your product already follows GDPR and you're about to serve users in India, or you're Indian and wondering whether a GDPR template covers you."
+summary: "If your app already meets GDPR, most of the engineering carries over to India's DPDP Act: notices, consent records, access and deletion flows, security and vendor contracts. What doesn't carry over is where DPDP is stricter: every breach must be reported to the Board and affected users with no risk threshold, children are under 18 rather than 13 to 16, and processing rests almost entirely on consent, with far fewer other legal bases."
+seoTitle: "DPDP vs GDPR for developers: what's different"
+description: "GDPR-compliant? Most engineering carries over to India's DPDP Act. What doesn't: every breach is reportable, children are under 18, and consent does more work."
+date: "2026-10-13"
+lastVerified: "2026-10-13"
+moves:
+  - "Reuse your GDPR plumbing: consent records, data export, deletion, retention jobs and vendor agreements all carry over."
+  - "Change your breach process: under DPDP every personal data breach is reported to the Board and to affected users, not only the risky ones."
+  - "Raise your age gate to 18 for Indian users, with verifiable parental consent and no tracking or targeted ads for minors."
+tradeoff: "Running one global privacy model that meets the stricter rule of both laws is simpler to build and test, but it means India's stricter rules (age 18, report every breach) apply to everyone. Running two models keeps each market lighter but doubles the logic you have to keep correct. Most small teams should pick the single stricter model."
+related:
+  - "/wisdom/dpdp-act-checklist-for-apps"
+  - "/wisdom/ai-built-app-production-checklist"
+---
+
+If your app already complies with GDPR, most of the engineering carries over to
+India's DPDP Act: notices, consent records, access and deletion, retention and
+vendor contracts. Three things differ enough to need new work: DPDP has no risk
+threshold for breach reporting, it treats everyone under 18 as a child, and it
+relies on consent far more than GDPR's six legal bases do.
+
+This is a developer's comparison of what the product has to do. It isn't legal
+advice.
+
+## What carries over from GDPR to DPDP?
+
+The good news first. If you built these for GDPR, keep them:
+
+- **Notices and consent records.** An itemised notice, consent captured per
+  purpose, and a log of who agreed to what, when.
+- **Data subject requests.** Export, correction and deletion flows. DPDP calls
+  them rights of the Data Principal, but the product work is the same.
+- **Retention and erasure jobs.** Deleting data once its purpose is served.
+- **Security controls.** Encryption, access control and logging.
+- **Processor contracts.** Agreements with every vendor that handles personal
+  data for you.
+
+## Where is DPDP stricter than GDPR?
+
+| | GDPR | DPDP |
+| --- | --- | --- |
+| Breach reporting | To the regulator within 72 hours, unless the breach is unlikely to risk people's rights | Every personal data breach: affected people without delay, and the Data Protection Board with a detailed report within 72 hours |
+| Children | Under 16, which member states can lower to 13 | Under 18, with verifiable parental consent |
+| Tracking minors | No outright ban; extra care and age-appropriate design expected | Tracking, behavioural monitoring and targeted ads at children are prohibited |
+| Access logs | Not set by the law | Logs kept for at least a year under the Rules |
+| Maximum penalty | Up to 4% of global turnover or €20 million | Up to ₹250 crore, decided by the Board case by case |
+
+The breach row is the one that catches teams out. A GDPR process that triages
+"is this reportable?" needs a different default for Indian users: assume yes.
+
+## Where is DPDP narrower than GDPR?
+
+- **Legal bases.** GDPR has six, including legitimate interests, which a lot of
+  analytics and marketing rests on. DPDP rests almost everything on consent, with
+  a short list of "legitimate uses" (such as data a person volunteers for a
+  specific purpose, or legal and employment needs). If your GDPR setup leans on
+  legitimate interests, expect to ask for consent instead.
+- **Scope.** DPDP covers digital personal data, and personal data in non-digital
+  form only once it's digitised.
+
+## What should I build first?
+
+1. **Breach reporting with no threshold** for Indian users, and logging that
+   lets you write the 72-hour report.
+2. **An 18+ age gate** and a parental consent flow if minors can sign up.
+3. **A consent review** of everything you currently justify as legitimate
+   interest: analytics, marketing, personalisation.
+4. **Log retention** of at least a year if you keep less today.
+
+Then run the [DPDP checklist for apps](/wisdom/dpdp-act-checklist-for-apps) end to
+end, or score yourself in three minutes with the free [DPDP
+self-check](/dpdp/check).
