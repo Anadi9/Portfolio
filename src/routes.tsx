@@ -85,6 +85,12 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/TeardownResult.tsx',
         getStaticPaths: async () => (await import('./lib/teardown/share')).resultPaths(),
       },
+      // The free DPDP self-check: client-side only, a lead magnet for DPDP Readiness.
+      {
+        path: '/dpdp/check',
+        lazy: () => import('./pages/DpdpCheck').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/DpdpCheck.tsx',
+      },
       // The free AI Readiness Checker: a lead magnet for AI Visibility.
       {
         path: '/ai-readiness',

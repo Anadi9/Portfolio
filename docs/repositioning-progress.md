@@ -67,7 +67,11 @@ Nothing is pushed or deployed from this loop.
   - Result hands the URL to `/audit?type=ai&url=…`, which pre-fills it.
   - 48 new tests. Live runs: anadithakur.in scores 100; example.com 40; metadata IP and
     localhost refused; a bot-blocking site (403) gets a specific message.
-- [ ] **7. DPDP self-check quiz**
+- [x] **7. DPDP self-check** (`/dpdp/check`)
+  - 13 questions about product behaviour (`src/lib/dpdp/questions.ts`), each with the legal basis
+    and the fix; weighted scoring and gap ranking in `score.ts` (5 tests).
+  - Client-side only: no API, nothing stored. Live score in a sticky panel, ranked gaps with
+    fixes, CTAs to `/audit?type=dpdp`. Every question prerendered for search.
 - [ ] **8. AEO answer-first content** (AI visibility and DPDP clusters)
 
 ## Needs Anadi before launch
