@@ -17,7 +17,7 @@ export const BUSINESS_ID = `${ORIGIN}/#business`;
 
 /** One line, used verbatim wherever the business describes itself. Keep it identical everywhere. */
 export const BUSINESS_TAGLINE =
-  'AI visibility audits, DPDP readiness and production fixes for AI-built apps, by a full-stack engineer who builds the fixes himself.';
+  'AI visibility audits, DPDP readiness and production fixes for AI-built apps, by a full-stack engineer who builds every fix personally.';
 
 export const PERSON = {
   '@type': 'Person',

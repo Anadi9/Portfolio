@@ -16,7 +16,17 @@ Nothing is pushed or deployed from this loop.
   - `public/robots.txt`: AI crawlers allowed by name, `/api/` and `/kit/` disallowed, `Sitemap:` line.
   - Fixed the pre-existing failing test: `/drops/roadmap` search title and description were over length.
   - llms.txt rewrite moved to milestone 2, so it never lists a route that doesn't exist yet.
-- [ ] **2. Hub homepage at `/`, Rescue moved to `/rescue`** (+ llms.txt rewrite)
+- [x] **2. Hub homepage at `/`, Rescue moved to `/rescue`**
+  - `src/pages/Hub.tsx`: copy doc's homepage with three service cards, how-it-works, why-me,
+    free tools, FAQ (+ `FAQPage`), and the site's `WebSite`/`ProfessionalService`/`Person` graph.
+  - `src/components/site/kit.tsx`: shared header (service nav), footer, sections, FAQ and final band.
+  - `/rescue` serves Vibe Code Rescue (canonical `/rescue`, `Service` + breadcrumb JSON-LD);
+    the old `/rescue` → `/` redirect is gone. "Vibe Code Rescue" links now point at `/rescue`.
+  - llms.txt rewritten around the umbrella and three services; sitemap lists a page only once
+    the build has prerendered it.
+  - New `cta_click` analytics event (page, location, service).
+  - DPDP date verified: Rules notified Nov 2025, core obligations at 18 months (≈13 May 2027),
+    Consent Manager provisions at 12 months (≈Nov 2026).
 - [ ] **3. `/ai-visibility` and `/dpdp` service pages**
 - [ ] **4. Unified `/audit` form** (`type=ai|dpdp|app`; `/rescue/audit` → `/audit?type=app`)
 - [ ] **5. Intent-matched CTAs on notes, sitemap/llms generation, nav and internal links**

@@ -410,7 +410,7 @@ export default function Scan() {
           <span aria-hidden style={{ width: 22, height: 22, background: c.ink, display: 'block' }} />
           <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
         </Link>
-        <Link to="/" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
+        <Link to="/rescue" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
           ← VIBE CODE RESCUE
         </Link>
       </header>
@@ -557,7 +557,7 @@ export default function Scan() {
       >
         <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
         <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
-          <Link to="/" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
+          <Link to="/rescue" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
             VIBE CODE RESCUE
           </Link>
           <a href={GITHUB} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>

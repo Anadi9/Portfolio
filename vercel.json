@@ -4,7 +4,6 @@
     "api/production-kit-download.ts": { "includeFiles": "products/production-kit/**" }
   },
   "redirects": [
-    { "source": "/rescue", "destination": "/", "permanent": true },
     { "source": "/work-with-me", "destination": "/", "permanent": true },
     {
       "source": "/portfolio",

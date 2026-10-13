@@ -13,7 +13,8 @@ import { track } from '@vercel/analytics';
 export type RescueEvent =
   | { name: 'audit_cta_click'; props: { location: string } }
   | { name: 'kit_link_click'; props: { location: string } }
-  | { name: 'audit_submitted'; props: { tool: string; symptoms: number } };
+  | { name: 'audit_submitted'; props: { tool: string; symptoms: number } }
+  | { name: 'cta_click'; props: { page: string; location: string; service?: string } };
 
 export function trackRescue<E extends RescueEvent>(name: E['name'], props: E['props']): void {
   if (typeof window === 'undefined') return;

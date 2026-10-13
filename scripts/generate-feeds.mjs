@@ -53,27 +53,37 @@ if (!posts.length) {
 
 /* --- sitemap ------------------------------------------------------------- */
 
-// The non-post routes worth listing. `/` is the Vibe Code Rescue offer, and
-// `/rescue/audit` and `/scan` are its two free entry points, so all three are
-// meant to be found. Left out on purpose: `/rescue` (a 301 to `/` in
-// `vercel.json`, and a sitemap should never list a redirect), `/portfolio`
-// (canonical at portfolio.anadithakur.in, a different host this sitemap can't
-// speak for), `/work-with-me` (a 301 to `/`), the
-// teardown result pages (`noindex`), the kit's thank-you page (`noindex`),
-// `/404` and the SPA catch-all.
+// The non-post routes worth listing: the hub, the three service pages, the
+// one audit form and the free tools. Left out on purpose: `/rescue/audit` (a
+// 301 to `/audit?type=app`; a sitemap should never list a redirect),
+// `/portfolio` (canonical at portfolio.anadithakur.in, a different host this
+// sitemap can't speak for), `/work-with-me` (a 301 to `/`), the teardown
+// result pages (`noindex`), the kit's thank-you page (`noindex`), `/404` and
+// the SPA catch-all. A path is listed only once the build prerendered it, so a
+// route that doesn't exist yet can't leak in.
+const prerendered = (path) => existsSync(join(OUT, path === '/' ? 'index.html' : `${path.slice(1)}/index.html`)) || existsSync(join(OUT, `${path.slice(1)}.html`));
 const pages = [
-  { url: ORIGIN, modified: posts[0].modified, priority: '1.0' },
-  { url: `${ORIGIN}/rescue/audit`, modified: posts[0].modified, priority: '0.9' },
-  { url: `${ORIGIN}/scan`, modified: posts[0].modified, priority: '0.9' },
-  { url: `${ORIGIN}/teardown`, modified: posts[0].modified, priority: '0.9' },
-  { url: `${ORIGIN}/notes`, modified: posts[0].modified, priority: '0.9' },
-  { url: `${ORIGIN}/products/production-kit`, modified: posts[0].modified, priority: '0.9' },
+  { path: '/', priority: '1.0' },
+  { path: '/ai-visibility', priority: '1.0' },
+  { path: '/dpdp', priority: '1.0' },
+  { path: '/rescue', priority: '1.0' },
+  { path: '/audit', priority: '0.9' },
+  { path: '/ai-readiness', priority: '0.9' },
+  { path: '/dpdp/check', priority: '0.9' },
+  { path: '/scan', priority: '0.9' },
+  { path: '/teardown', priority: '0.9' },
+  { path: '/notes', priority: '0.9' },
+  { path: '/products/production-kit', priority: '0.9' },
+]
+  .filter((pg) => prerendered(pg.path))
+  .map((pg) => ({ url: pg.path === '/' ? ORIGIN : `${ORIGIN}${pg.path}`, modified: posts[0].modified, priority: pg.priority }));
+pages.push(
   // Case studies: whatever the build prerendered under `dist/work`, which is
   // exactly the live set. Reading the output rather than the TS data keeps a
   // pending study out of the sitemap by construction.
   ...workPaths().map((p) => ({ url: `${ORIGIN}${p}`, modified: posts[0].modified, priority: '0.8' })),
   ...posts.map((p) => ({ url: p.url, modified: p.modified, priority: '0.8' })),
-];
+);
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -125,21 +135,30 @@ writeFileSync(join(OUT, 'rss.xml'), rss);
 /* --- llms.txt ------------------------------------------------------------ */
 
 // The llmstxt.org summary AI answer engines read before (or instead of) the
-// pages. The rescue prices can't be imported from the TSX they live in, so they
-// are repeated here: change them in `Rescue.tsx` (`tiers`, `addons`) and here too.
-const llms = `# Anadi Thakur · Vibe Code Rescue
+// pages. Prices can't be imported from the TSX they live in, so they are
+// repeated here: change them in `Rescue.tsx`, `AiVisibility.tsx` or `Dpdp.tsx`
+// and here too. The first paragraph is the business's one-line description and
+// must match `BUSINESS_TAGLINE` in `src/lib/schema.ts` word for word.
+const llms = `# Anadi Thakur · Get your business ready for the AI era
 
-> Fixed-price production fixes for web apps built with Lovable, Bolt, Cursor and v0: security, database, auth, payments, deployment and performance. From $499, done in 7 days, with 7 days of follow-up fixes. Every engagement starts with a free audit.
+> AI visibility audits, DPDP readiness and production fixes for AI-built apps, by a full-stack engineer who builds every fix personally.
 
-Run by Anadi Thakur, a full-stack engineer. Work is done remotely, worldwide. Contact: anadithakur99@gmail.com.
+Anadi Thakur is a full-stack engineer based in India with 4+ years shipping production web and mobile apps (including the ZEISS Microscopy platform). Anadi works with Indian and US businesses, remotely, and is available 8am–12pm US Eastern. Every engagement starts with a free audit based only on what is publicly visible, delivered in 48 hours as a short video and a one-page report, followed by fixed-price fixes built by Anadi directly. Contact: anadithakur99@gmail.com.
 
 ## Services
 
-- [Vibe Code Rescue](${ORIGIN}/): the fixed-price production fix, done in 7 days: a single fix $499, a launch rescue $1,200–1,800, a full rescue from $2,500. If something in the quote isn't fixed, it isn't paid for. Add-ons include monthly production care at $249/month.
-- [Free production audit](${ORIGIN}/rescue/audit): send the app link and get a plain-English report of what is broken, what is risky and what can wait, within 48 hours. Free, no call.
+- [AI Visibility](${ORIGIN}/ai-visibility): checks whether ChatGPT, Gemini and Perplexity mention a business when customers ask for recommendations, who they recommend instead, and whether the site gives AI the information it needs (structured data, product details, clear pages); then builds the fixes and re-tests after 30 days. Free check (10 questions, readability score, top 3 fixes); deep audit ₹15,000 / $300; fixes from ₹40,000 / $1,000; monthly upkeep from ₹10,000 / $250.
+- [DPDP Readiness](${ORIGIN}/dpdp): implementation partner for India's Digital Personal Data Protection Act, 2023 and the DPDP Rules, 2025, whose core obligations apply from May 2027. Builds consent notices and consent capture, withdrawal, data access and deletion requests, retention and erasure, breach alerts and the audit trail into web and mobile apps, to what the client's lawyer specifies. Not a law firm.
+- [Vibe Code Rescue](${ORIGIN}/rescue): fixed-price production fixes for web apps built with Lovable, Bolt, Cursor and v0: security, database, auth, payments, deployment and performance. A single fix $499, a launch rescue $1,200–1,800, a full rescue from $2,500, done in 7 days with 7 days of follow-up fixes. If something in the quote isn't fixed, it isn't paid for. Monthly production care at $249/month.
+- [Free audit](${ORIGIN}/audit): one form for all three services. Public information only, no access needed, plain-English report in 48 hours, no sales call unless asked for.
+
+## Free tools
+
+- [AI Readiness Checker](${ORIGIN}/ai-readiness): paste a URL and see in seconds whether AI crawlers can read the site: robots.txt rules for AI bots, prerendered content, structured data, llms.txt, titles and descriptions.
+- [DPDP self-check](${ORIGIN}/dpdp/check): a short questionnaire that scores how ready an app is for the DPDP Act's obligations.
 - [Free Supabase security check](${ORIGIN}/scan): checks in 30 seconds whether a Supabase project's tables are readable by anyone, using only the public anon key. Nothing is stored.
 - [The Wrapper Test](${ORIGIN}/teardown): a free 13-question diagnostic that scores an AI product on defensibility, failure design, cost floor and evaluation.
-- [The Production Kit](${ORIGIN}/products/production-kit): CLAUDE.md, Cursor rules, Claude Code skills, templates, launch and security checklists and Supabase SQL for AI-built apps, covering database security, auth, launch, AI discipline, and Lovable and Bolt. Free, one download, no sign-up.
+- [The Production Kit](${ORIGIN}/products/production-kit): CLAUDE.md, Cursor rules, Claude Code skills, templates, launch and security checklists and Supabase SQL for AI-built apps. Free, one download, no sign-up.
 
 ## Notes
 
@@ -147,6 +166,7 @@ ${posts.map((p) => `- [${p.title}](${p.url}): ${p.summary}`).join('\n')}
 
 ## Optional
 
+- [Case studies](${ORIGIN}/work): before-and-after write-ups of shipped work.
 - [Portfolio](https://portfolio.anadithakur.in/): past work and background.
 - [RSS feed](${ORIGIN}/rss.xml)
 `;

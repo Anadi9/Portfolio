@@ -10,18 +10,17 @@ import { KIT } from '@/lib/kit/product';
 import LegalLinks from '@/components/LegalLinks';
 import Testimonials from '@/components/Testimonials';
 import { site } from '@/data/portfolio';
+import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
 
 /**
- * `/`: Vibe Code Rescue, fixed-price production fixes for apps built with
+ * `/rescue`: Vibe Code Rescue, fixed-price production fixes for apps built with
  * Lovable, Bolt, Cursor and v0.
  *
- * This is the homepage. The domain sells one thing, so the offer is the front
- * door: `routes.tsx` mounts it as the index route, `/rescue` 301s here from
- * `vercel.json`, and the portfolio that used to live at `/` is its own site at
- * `PORTFOLIO_ORIGIN`. Links that meant "back to the portfolio" are therefore
- * absolute `<a>`s, not router links, and the logo is just `/`. As the page a
- * search engine now meets first, it carries the site's service JSON-LD
- * (a `ProfessionalService` offered by the Person, plus the FAQ as `FAQPage`),
+ * This was the homepage until the hub at `/` replaced it; it is now one of the
+ * hub's three services. The portfolio is its own site at `PORTFOLIO_ORIGIN`,
+ * so links that mean "about me" are absolute `<a>`s, and the logo goes to the
+ * hub. The page carries this service's JSON-LD (a `Service` provided by the
+ * site-wide business entity, its offers, the FAQ as `FAQPage` and a breadcrumb),
  * built from the same arrays the page renders so the two cannot drift.
  *
  * Everything after the offer is aimed at one action, the free audit. Each CTA
@@ -52,7 +51,7 @@ import { site } from '@/data/portfolio';
  */
 
 const TITLE = 'Fix your Lovable, Bolt or Cursor app · Vibe Code Rescue';
-const ORIGIN_URL = 'https://anadithakur.in/';
+const ORIGIN_URL = 'https://anadithakur.in/rescue';
 const DESCRIPTION =
   'I take apps built with Lovable, Bolt, Cursor and v0 and make them production-ready. Fixed price, done in 7 days. Free audit first.';
 
@@ -293,71 +292,42 @@ const addons = [
   },
 ];
 
-/** `ProfessionalService` + `FAQPage`, from the arrays above. */
-const PROVIDER = {
-  '@type': 'Person',
-  '@id': `${PORTFOLIO_ORIGIN}/#person`,
-  name: 'Anadi Thakur',
-  jobTitle: 'Full-stack engineer',
-  url: PORTFOLIO_ORIGIN,
-  sameAs: [GITHUB, LINKEDIN],
-};
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'ProfessionalService',
-      '@id': `${ORIGIN_URL}#service`,
+/** `Service` + `FAQPage` + breadcrumb, from the arrays above. */
+const jsonLd = graph([
+  {
+    ...service({
+      path: '/rescue',
       name: 'Vibe Code Rescue',
       description: DESCRIPTION,
-      url: ORIGIN_URL,
-      image: `${ORIGIN_URL}og.png`,
-      email: EMAIL,
-      priceRange: 'From $499',
-      areaServed: { '@type': 'Place', name: 'Worldwide' },
       serviceType: 'Production fixes for AI-built web apps',
-      provider: PROVIDER,
-      founder: PROVIDER,
-      makesOffer: tiers.map((t) => ({
-        '@type': 'Offer',
+      areaServed: ['Worldwide'],
+      offers: tiers.map((t) => ({
         name: `Vibe Code Rescue: ${t.name}`,
         description: t.scope,
+        min: t.min,
+        max: t.max,
+        currency: 'USD' as const,
+      })),
+    }),
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Add-ons',
+      itemListElement: addons.map((a) => ({
+        '@type': 'Offer',
+        name: a.title,
+        description: a.body,
         priceSpecification: {
-          '@type': 'PriceSpecification',
-          minPrice: t.min,
-          ...(t.max === undefined ? {} : { maxPrice: t.max }),
+          '@type': a.unit ? 'UnitPriceSpecification' : 'PriceSpecification',
+          minPrice: Number(a.price.replace(/\D/g, '')),
           priceCurrency: 'USD',
+          ...(a.unit ? { unitText: 'MONTH' } : {}),
         },
-        areaServed: { '@type': 'Place', name: 'Worldwide' },
-      })),
-      hasOfferCatalog: {
-        '@type': 'OfferCatalog',
-        name: 'Add-ons',
-        itemListElement: addons.map((a) => ({
-          '@type': 'Offer',
-          name: a.title,
-          description: a.body,
-          priceSpecification: {
-            '@type': a.unit ? 'UnitPriceSpecification' : 'PriceSpecification',
-            minPrice: Number(a.price.replace(/\D/g, '')),
-            priceCurrency: 'USD',
-            ...(a.unit ? { unitText: 'MONTH' } : {}),
-          },
-        })),
-      },
-    },
-    {
-      '@type': 'FAQPage',
-      '@id': `${ORIGIN_URL}#faq`,
-      mainEntity: faqs.map((f) => ({
-        '@type': 'Question',
-        name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a },
       })),
     },
-  ],
-};
+  },
+  faqPage(faqs, `${ORIGIN_URL}#faq`),
+  breadcrumbs([{ name: 'Vibe Code Rescue', path: '/rescue' }], `${ORIGIN_URL}#breadcrumb`),
+]);
 
 /** Fires the CTA event. Only ever called from a click, so never in the prerender. */
 const clicked = (location: string) => () => trackRescue('audit_cta_click', { location });
@@ -628,7 +598,7 @@ const Rescue = () => {
 
   return (
     <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Seo title={TITLE} description={DESCRIPTION} path="/" type="website" jsonLd={jsonLd} />
+      <Seo title={TITLE} description={DESCRIPTION} path="/rescue" type="website" jsonLd={jsonLd} />
 
       <header
         style={{
