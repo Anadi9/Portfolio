@@ -27,7 +27,16 @@ Nothing is pushed or deployed from this loop.
   - New `cta_click` analytics event (page, location, service).
   - DPDP date verified: Rules notified Nov 2025, core obligations at 18 months (≈13 May 2027),
     Consent Manager provisions at 12 months (≈Nov 2026).
-- [ ] **3. `/ai-visibility` and `/dpdp` service pages**
+- [x] **3. `/ai-visibility` and `/dpdp` service pages**
+  - `src/pages/AiVisibility.tsx`: copy doc's page, fictional sample report, pricing table,
+    FAQ; `Service` with four offers, `FAQPage`, breadcrumb.
+  - Shopify 15× stat verified (Shopify's own number, Jan–Dec 2025, "small base" caveat added,
+    source linked). "Buy inside the AI chat" softened: in-chat checkout was largely shelved.
+  - `src/pages/Dpdp.tsx`: written fresh (the doc had no page copy) from the Act and Rules:
+    timeline, what gets built, process, who it's for, FAQ (dates, penalties, 72-hour breach
+    report, GDPR overlap), not-legal-advice line. No prices: fixed quote after the free check.
+  - Phone-width screenshots not taken (browser window wouldn't resize); pages reuse the
+    `/rescue` responsive hooks. Re-check before launch.
 - [ ] **4. Unified `/audit` form** (`type=ai|dpdp|app`; `/rescue/audit` → `/audit?type=app`)
 - [ ] **5. Intent-matched CTAs on notes, sitemap/llms generation, nav and internal links**
 - [ ] **6. AI Readiness Checker** (free tool)
@@ -39,5 +48,7 @@ Nothing is pushed or deployed from this loop.
 - Verify the Shopify "AI orders grew 15×" stat and link the source, or cut it.
 - Verify the DPDP Rules phase-in dates that the "May 2027" line relies on.
 - Check AI Visibility prices against competitors.
+- Decide DPDP pricing (the `/dpdp` page currently says "fixed quote after the free check").
+- Have a lawyer skim the `/dpdp` FAQ answers before launch.
 - Record the 60-second intro video and the sample report image.
 - After deploy: submit the sitemap in Google Search Console and Bing Webmaster Tools.

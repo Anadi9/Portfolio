@@ -50,6 +50,17 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/Rescue').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Rescue.tsx',
       },
+      // The two newer services. Both share the hub's kit (`components/site`).
+      {
+        path: '/ai-visibility',
+        lazy: () => import('./pages/AiVisibility').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/AiVisibility.tsx',
+      },
+      {
+        path: '/dpdp',
+        lazy: () => import('./pages/Dpdp').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Dpdp.tsx',
+      },
       {
         path: '/portfolio',
         lazy: () => import('./pages/Home').then((m) => ({ Component: m.default })),
