@@ -4,7 +4,8 @@ import { useLocation } from 'react-router-dom';
 import { buttonType, c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import NotesShell, { Column } from '@/components/notes/NotesShell';
 import { prose } from '@/components/notes/prose';
-import { Seo, ORIGIN } from '@/components/Seo';
+import { Seo, ORIGIN, PORTFOLIO_ORIGIN } from '@/components/Seo';
+import { BUSINESS_REF, PERSON_ID } from '@/lib/schema';
 import { kindLabel, studyPath, visibleStudies, type Study } from '@/data/caseStudies';
 import NotFound from './NotFound';
 
@@ -110,7 +111,8 @@ const StudyPage = ({ study }: { study: Study }) => {
           headline: study.title,
           description: study.description,
           url: `${ORIGIN}${path}`,
-          author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
+          author: { '@type': 'Person', '@id': PERSON_ID, name: 'Anadi Thakur', url: PORTFOLIO_ORIGIN },
+          publisher: BUSINESS_REF,
         }}
       />
       <Column>

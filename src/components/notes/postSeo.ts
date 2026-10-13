@@ -1,8 +1,9 @@
 import { BYLINE, ORIGIN, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { hasCover, ogImageFor, streamPath, type Post, type Stream } from '@/data/notes';
+import { BUSINESS_REF, PERSON_ID } from '@/lib/schema';
 
-/** Same `@id` as the Person node on `/rescue`, so every post's author resolves to one entity. */
-export const PERSON_ID = `${PORTFOLIO_ORIGIN}/#person`;
+export { PERSON_ID };
+
 
 const crumbLabel: Record<Stream, string> = {
   drop: 'Resource drops',
@@ -41,7 +42,7 @@ export const articleJsonLd = (post: Post, type: 'Article' | 'TechArticle' | 'New
         datePublished: post.date,
         dateModified: post.lastVerified ?? post.date,
         author,
-        publisher: author,
+        publisher: BUSINESS_REF,
         image: `${ORIGIN}${hasCover(post) ? ogImageFor(post.path) : '/og.png'}`,
       },
       {

@@ -3,7 +3,8 @@ import { c, display, heading, label, px, rule, s, stretch } from '@/components/p
 import NotesShell, { Column } from '@/components/notes/NotesShell';
 import FeedCard from '@/components/notes/FeedCard';
 import { StartHere } from '@/components/notes/OnRamp';
-import { Seo, ORIGIN, BYLINE } from '@/components/Seo';
+import { Seo, ORIGIN, BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
+import { BUSINESS_REF, PERSON_ID } from '@/lib/schema';
 import { pinnedPosts, posts } from '@/content';
 import { STREAMS, streamLabel, streamPath, type Post, type Stream } from '@/data/notes';
 import { useDisclosureOpen } from '@/components/notes/useRail';
@@ -62,7 +63,8 @@ const NotesIndex = ({ stream }: { stream?: Stream }) => {
           name: 'Notes · Anadi Thakur',
           description: DESCRIPTION,
           url: `${ORIGIN}${path}`,
-          author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
+          author: { '@type': 'Person', '@id': PERSON_ID, name: 'Anadi Thakur', url: PORTFOLIO_ORIGIN },
+          publisher: BUSINESS_REF,
         }}
       />
       <Column

@@ -1,7 +1,55 @@
+# Everything public is meant to be found, by search engines and AI answer
+# engines alike. The AI crawlers are named explicitly so that allowing them is
+# a decision on record, not an accident of the wildcard.
+
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
+Allow: /
+
+# OpenAI: search index, user-triggered fetches, training
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google Gemini and Apple Intelligence grounding
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta AI and DuckDuckGo AI answers (Copilot reads the Bing index above)
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: DuckAssistBot
 Allow: /
 
 User-agent: Twitterbot
@@ -12,3 +60,7 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /kit/
+
+Sitemap: https://anadithakur.in/sitemap.xml

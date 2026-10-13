@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'vite-react-ssg';
 import { c, display, heading, label, px, rule, s, stretch } from '@/components/portfolio/tokens';
 import NotesShell, { Column } from '@/components/notes/NotesShell';
-import { Seo, ORIGIN } from '@/components/Seo';
+import { Seo, ORIGIN, PORTFOLIO_ORIGIN } from '@/components/Seo';
+import { BUSINESS_REF, PERSON_ID } from '@/lib/schema';
 import { kindLabel, studyPath, visibleStudies, type Study } from '@/data/caseStudies';
 
 type Filter = 'all' | 'client' | 'personal' | 'mobile';
@@ -88,7 +89,8 @@ const WorkIndex = () => {
           name: TITLE,
           description: DESCRIPTION,
           url: `${ORIGIN}/work`,
-          author: { '@type': 'Person', name: 'Anadi Thakur', url: ORIGIN },
+          author: { '@type': 'Person', '@id': PERSON_ID, name: 'Anadi Thakur', url: PORTFOLIO_ORIGIN },
+          publisher: BUSINESS_REF,
         }}
       />
       <Column wide>
