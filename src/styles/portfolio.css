@@ -344,7 +344,7 @@ button:focus-visible,
    the two things inline styles can't express (the FAQ marker, the sticky bar's
    breakpoint). */
 [data-rescue-faq] > summary::-webkit-details-marker { display: none; }
-/* /rescue/audit: the radio and checkbox inputs are visually hidden inside their
+/* /audit: the radio and checkbox inputs are visually hidden inside their
    labels, so the focus ring has to be drawn on the label. */
 [data-audit-chip]:has(input:focus-visible) { outline: 2px solid #0a0a0a; outline-offset: 2px; }
 /* /products/production-kit: each pack card is a label around a real checkbox,

@@ -135,7 +135,7 @@ export default function KitThanks() {
 
           <p style={{ ...hint, font: `400 15px/1.55 ${display}` }}>
             Stuck, or found something wrong? Reply to the delivery email. Rather have it done for you?{' '}
-            <Link to="/rescue/audit" style={{ color: p.ink }}>
+            <Link to="/audit?type=app" style={{ color: p.ink }}>
               Get a free audit
             </Link>
             .

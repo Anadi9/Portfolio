@@ -16,14 +16,14 @@ import LegalLinks from '@/components/LegalLinks';
  * commonest serious problem in them is a table with Row Level Security off.
  * This page lets a founder see that for themselves in half a minute, using the
  * anon key that is already public in their frontend bundle, and hands anyone
- * with a finding to `/rescue/audit` with the database symptom pre-ticked.
+ * with a finding to `/audit?type=app` with the database symptom pre-ticked.
  *
  * The inputs are validated here with the same `parseScanInput` the function
  * runs. That matters for one case above all: a pasted `service_role` key is
  * refused in the browser and cleared from the field, so it never reaches the
  * network.
  *
- * Visual language is `/rescue/audit`'s: paper ground, ink plates, the same
+ * Visual language is `/audit?type=app`'s: paper ground, ink plates, the same
  * header and the same `data-rescue-*` responsive hooks in portfolio.css.
  */
 
@@ -47,8 +47,8 @@ const jsonLd = {
   isPartOf: { '@id': 'https://anadithakur.in/#service' },
 };
 
-const AUDIT = '/rescue/audit?s=1';
-const AUDIT_PLAIN = '/rescue/audit';
+const AUDIT = '/audit?type=app&s=1';
+const AUDIT_PLAIN = '/audit?type=app';
 const GITHUB = 'https://github.com/Anadi9';
 const LINKEDIN = 'https://www.linkedin.com/in/anadi-thakur-92163316b/';
 

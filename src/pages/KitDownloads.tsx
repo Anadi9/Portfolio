@@ -91,7 +91,7 @@ export default function KitDownloads() {
 
           <p style={{ ...hint, font: `400 15px/1.55 ${display}` }}>
             Unzip and start with README.md. Stuck? Reply to your delivery email. Rather have it done for you?{' '}
-            <Link to="/rescue/audit" style={{ color: p.ink }}>
+            <Link to="/audit?type=app" style={{ color: p.ink }}>
               Get a free audit
             </Link>
             .

@@ -76,7 +76,7 @@ export type Study = {
 const CLIENT_CTA = {
   lead: 'Have an app like this that needs to hold up in production?',
   label: 'Get a free audit',
-  href: '/rescue/audit',
+  href: '/audit?type=app',
 };
 
 export const studies: Study[] = [

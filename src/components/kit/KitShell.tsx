@@ -6,7 +6,7 @@ import LegalLinks from '@/components/LegalLinks';
 
 /**
  * Header, footer and shared styles for the kit's two pages. Same paper ground,
- * header and `data-rescue-*` responsive hooks as `/scan` and `/rescue/audit`, so
+ * header and `data-rescue-*` responsive hooks as `/scan` and `/audit?type=app`, so
  * moving between the free check, the kit and the audit reads as one site.
  */
 

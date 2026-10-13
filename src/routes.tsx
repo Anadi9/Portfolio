@@ -85,12 +85,11 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/TeardownResult.tsx',
         getStaticPaths: async () => (await import('./lib/teardown/share')).resultPaths(),
       },
-      // The intake for the free audit every CTA on the front page points at.
-      // `/rescue` itself is now `/` and 301s there from `vercel.json`.
+      // The one free-audit form. `/rescue/audit` 301s here as `?type=app`.
       {
-        path: '/rescue/audit',
-        lazy: () => import('./pages/RescueAudit').then((m) => ({ Component: m.default })),
-        entry: 'src/pages/RescueAudit.tsx',
+        path: '/audit',
+        lazy: () => import('./pages/Audit').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Audit.tsx',
       },
       // The link sent to people Anadi has worked with. Not indexed.
       {
@@ -99,7 +98,7 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/Review.tsx',
       },
       // The free Supabase security check: a lead magnet for the rescue offer.
-      // Its findings CTA deep-links into `/rescue/audit?s=1`.
+      // Its findings CTA deep-links into `/audit?type=app&s=1`.
       {
         path: '/scan',
         lazy: () => import('./pages/Scan').then((m) => ({ Component: m.default })),

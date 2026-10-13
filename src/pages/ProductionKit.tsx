@@ -89,7 +89,7 @@ const INSIDE: { title: string; items: ReactNode[] }[] = [
 const FAQ: { q: string; a: ReactNode }[] = [
   {
     q: 'Is it really free?',
-    a: <>Yes. One download, no sign-up, no email. The people who use it are the people I build for, and if you&apos;d rather have it fixed for you, <Link to="/rescue/audit" style={{ color: p.ink }}>the audit</Link> is free too.</>,
+    a: <>Yes. One download, no sign-up, no email. The people who use it are the people I build for, and if you&apos;d rather have it fixed for you, <Link to="/audit?type=app" style={{ color: p.ink }}>the audit</Link> is free too.</>,
   },
   {
     q: 'I’m not technical. Can I use this?',
@@ -343,7 +343,7 @@ export default function ProductionKit() {
             <p style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.bright }}>
               Get a free audit of your app: security, auth, deploys and performance, with a fixed price for the fix.
             </p>
-            <Link to="/rescue/audit" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.accent, justifySelf: 'start' }}>
+            <Link to="/audit?type=app" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.accent, justifySelf: 'start' }}>
               FREE AUDIT →
             </Link>
           </div>

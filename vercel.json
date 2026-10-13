@@ -5,6 +5,7 @@
   },
   "redirects": [
     { "source": "/work-with-me", "destination": "/", "permanent": true },
+    { "source": "/rescue/audit", "destination": "/audit?type=app", "permanent": true },
     {
       "source": "/portfolio",
       "has": [{ "type": "host", "value": "anadithakur.in" }],

@@ -37,7 +37,18 @@ Nothing is pushed or deployed from this loop.
     report, GDPR overlap), not-legal-advice line. No prices: fixed quote after the free check.
   - Phone-width screenshots not taken (browser window wouldn't resize); pages reuse the
     `/rescue` responsive hooks. Re-check before launch.
-- [ ] **4. Unified `/audit` form** (`type=ai|dpdp|app`; `/rescue/audit` → `/audit?type=app`)
+- [x] **4. Unified `/audit` form**
+  - `src/pages/Audit.tsx`: chooser (AI Visibility, DPDP, Both, App rescue, Not sure),
+    pre-selected from `?type=`; the choice is kept in the URL.
+  - AI/DPDP/Both/Not sure: the copy doc's fields → `api/audit.ts` + `src/lib/audit/intake.ts`
+    (validation shared by browser and server, escaped emails, WhatsApp optional, DPDP-minded
+    "used only to send your report" line + privacy link + erase-on-request in the receipt).
+  - App: the old `/rescue/audit` form, extracted to `src/components/audit/AppAuditForm.tsx`,
+    unchanged API (`/api/rescue-audit`). `/rescue/audit` 301s to `/audit?type=app`; `?s=` carries over.
+  - Every internal link moved to `/audit?type=app` (notes, Scan, Teardown, kit pages, emails).
+  - 17 new tests; `api/` allowlist and serverless import graph updated; `npm run check` updated
+    for the new sitemap (37 URLs).
+  - Sender is `audit@anadithakur.in` (same Resend domain as `rescue@`).
 - [ ] **5. Intent-matched CTAs on notes, sitemap/llms generation, nav and internal links**
 - [ ] **6. AI Readiness Checker** (free tool)
 - [ ] **7. DPDP self-check quiz**
@@ -49,6 +60,7 @@ Nothing is pushed or deployed from this loop.
 - Verify the DPDP Rules phase-in dates that the "May 2027" line relies on.
 - Check AI Visibility prices against competitors.
 - Decide DPDP pricing (the `/dpdp` page currently says "fixed quote after the free check").
+- No booking link exists yet; the confirmation says "reply to book a 20-minute call". Add a Cal.com/Calendly link if you want one.
 - Have a lawyer skim the `/dpdp` FAQ answers before launch.
 - Record the 60-second intro video and the sample report image.
 - After deploy: submit the sitemap in Google Search Console and Bing Webmaster Tools.

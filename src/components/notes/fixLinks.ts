@@ -12,7 +12,7 @@ import { SYMPTOMS } from '@/lib/rescue/intake';
  * An unknown or missing area falls back to the bare form rather than throwing:
  * a CTA with nothing pre-ticked still converts, a broken build does not.
  */
-export const AUDIT_PATH = '/rescue/audit';
+export const AUDIT_PATH = '/audit?type=app';
 export const SCAN_PATH = '/scan';
 
 export const symptomIndex = (area?: string): number | null => {
@@ -23,7 +23,7 @@ export const symptomIndex = (area?: string): number | null => {
 
 export const auditHref = (area?: string): string => {
   const i = symptomIndex(area);
-  return i === null ? AUDIT_PATH : `${AUDIT_PATH}?s=${i}`;
+  return i === null ? AUDIT_PATH : `${AUDIT_PATH}&s=${i}`;
 };
 
 /** The sentence the reader would have ticked, quoted back to them on the CTA. */

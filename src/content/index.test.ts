@@ -71,7 +71,7 @@ describe('fix stream', () => {
     for (const post of fixes) {
       expect(post.fix, `${post.path} has no \`fix\``).toBeTruthy();
       expect(symptomIndex(post.symptom), `${post.path}: symptom "${post.symptom}" is not in SYMPTOMS`).not.toBeNull();
-      expect(auditHref(post.symptom)).toMatch(/^\/rescue\/audit\?s=\d+$/);
+      expect(auditHref(post.symptom)).toMatch(/^\/audit\?type=app&s=\d+$/);
     }
   });
 
@@ -136,11 +136,11 @@ describe('search snippet', () => {
 
 describe('auditHref', () => {
   it('resolves an area to its current index, case-insensitively', () => {
-    expect(auditHref('database')).toBe(`/rescue/audit?s=${SYMPTOMS.findIndex((s) => s.area === 'Database')}`);
+    expect(auditHref('database')).toBe(`/audit?type=app&s=${SYMPTOMS.findIndex((s) => s.area === 'Database')}`);
   });
 
   it('falls back to the bare form for a missing or unknown area', () => {
-    expect(auditHref()).toBe('/rescue/audit');
-    expect(auditHref('Nonsense')).toBe('/rescue/audit');
+    expect(auditHref()).toBe('/audit?type=app');
+    expect(auditHref('Nonsense')).toBe('/audit?type=app');
   });
 });

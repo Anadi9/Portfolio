@@ -69,7 +69,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
         {/* The one way from a note into the rescue. Kept small enough that the
             header stays inside --pf-header-h. */}
         <Link
-          to="/rescue/audit"
+          to="/audit?type=app"
           onClick={() => trackRescue('audit_cta_click', { location: 'notes_header' })}
           style={{ ...buttonType(13), padding: px(4, s[3]), background: c.ink, color: c.accent, textDecoration: 'none', whiteSpace: 'nowrap' }}
         >

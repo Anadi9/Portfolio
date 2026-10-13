@@ -107,7 +107,7 @@ export default function Teardown() {
           <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
             NOTES
           </Link>
-          <Link to="/rescue/audit" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
+          <Link to="/audit?type=app" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
             FREE AUDIT
           </Link>
         </nav>
@@ -134,7 +134,7 @@ export default function Teardown() {
           </p>
           <p style={{ margin: px(s[5], 0, 0), font: `400 15px/1.55 ${display}`, color: c.dimOnInk, maxWidth: '58ch' }}>
             This tells you <em>where</em> the problems are. To have an engineer look at the app itself and
-            rank what to fix first, the <Link to="/rescue/audit" className="pf-underline" style={{ color: c.accent }}>production
+            rank what to fix first, the <Link to="/audit?type=app" className="pf-underline" style={{ color: c.accent }}>production
             audit</Link> is free.
           </p>
         </section>

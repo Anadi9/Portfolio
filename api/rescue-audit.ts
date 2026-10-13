@@ -5,7 +5,7 @@ import { dueBy, parseIntake, renderConfirmEmail, renderLeadEmail } from '../src/
 /**
  * POST /api/rescue-audit
  *
- * The `/rescue/audit` form. Unlike `/api/teardown-report`, the email here is not
+ * The app-audit form (`/audit?type=app`; formerly `/rescue/audit`). Unlike `/api/teardown-report`, the email here is not
  * a copy of something the reader already has: it is the request itself. So the
  * page awaits this call, and the order of the two sends matters. The lead to
  * Anadi goes first and must succeed, or the visitor is told it failed and given

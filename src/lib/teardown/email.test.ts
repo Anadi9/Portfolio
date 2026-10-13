@@ -35,7 +35,7 @@ describe('renderEmail: body', () => {
   });
 
   it('links to the free audit exactly once', () => {
-    const matches = html.match(/https:\/\/anadithakur\.in\/rescue\/audit/g) ?? [];
+    const matches = html.match(/https:\/\/anadithakur\.in\/audit\?type=app/g) ?? [];
     expect(matches).toHaveLength(1);
   });
 

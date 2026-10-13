@@ -221,7 +221,7 @@ export default function Report({ model, sendFailed }: { model: ReportModel; send
           {CLOSING}
         </p>
         <a
-          href="/rescue/audit"
+          href="/audit?type=app"
           className="pf-nudge pf-nudge-lg"
           style={{
             display: 'inline-flex',

@@ -104,7 +104,7 @@ export default function TeardownResult() {
           <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
             NOTES
           </Link>
-          <Link to="/rescue/audit" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
+          <Link to="/audit?type=app" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
             FREE AUDIT
           </Link>
         </nav>

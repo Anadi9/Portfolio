@@ -24,6 +24,8 @@ const GRAPH = [
   'api/teardown-report.ts',
   'api/rescue-audit.ts',
   'src/lib/rescue/intake.ts',
+  'api/audit.ts',
+  'src/lib/audit/intake.ts',
   'api/review.ts',
   'src/lib/review/intake.ts',
   'api/scan.ts',
@@ -92,6 +94,7 @@ describe('api/ directory: deployable files only', () => {
 
   it('contains nothing but the function entrypoints', () => {
     expect([...entries].sort()).toEqual([
+      'audit.ts',
       'kit',
       'kit-price.ts',
       'production-kit-checkout.ts',

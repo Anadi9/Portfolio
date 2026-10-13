@@ -55,7 +55,7 @@ const ORIGIN_URL = 'https://anadithakur.in/rescue';
 const DESCRIPTION =
   'I take apps built with Lovable, Bolt, Cursor and v0 and make them production-ready. Fixed price, done in 7 days. Free audit first.';
 
-const AUDIT = '/rescue/audit';
+const AUDIT = '/audit?type=app';
 const EMAIL = 'anadithakur99@gmail.com';
 const GITHUB = 'https://github.com/Anadi9';
 const LINKEDIN = 'https://www.linkedin.com/in/anadi-thakur-92163316b/';
@@ -437,7 +437,7 @@ const Symptoms = () => {
   const count = picked.filter(Boolean).length;
   // What was ticked here arrives pre-ticked on the audit form.
   const ticked = picked.flatMap((on, i) => (on ? [i] : []));
-  const auditHref = ticked.length ? `${AUDIT}?s=${ticked.join(',')}` : AUDIT;
+  const auditHref = ticked.length ? `${AUDIT}&s=${ticked.join(',')}` : AUDIT;
   const verdict =
     count === 0
       ? 'Tick any that apply to your app.'

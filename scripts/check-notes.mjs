@@ -57,7 +57,7 @@ for (const page of pages) {
     check(`${page}: fetches an image, but has no cover to fetch`, !/<img[^>]+src="(?!data:)/.test(html));
     // The conversion block is the point of the stream, and it must be in the
     // static HTML with its deep link, not added on hydration.
-    check(`${page}: no audit CTA in the prerendered HTML`, html.includes('href="/rescue/audit'));
+    check(`${page}: no audit CTA in the prerendered HTML`, html.includes('href="/audit?type=app'));
     continue;
   }
 
@@ -165,16 +165,17 @@ check(`index prerenders 24 feed thumbnails (found ${count(index, 'pf-feed-media'
 // The feeds list every published post and nothing else.
 const sitemap = readFileSync('dist/sitemap.xml', 'utf8');
 const rss = readFileSync('dist/rss.xml', 'utf8');
-// 26 = 20 posts + `/` + `/rescue/audit` + `/scan` + `/teardown` + `/notes` +
-// `/products/production-kit`.
+// The static pages below, plus the case studies and every published post.
 // Bump this when a static route is added to or removed from the sitemap in
 // `generate-feeds.mjs`.
-check(`sitemap lists 34 urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === 34);
-for (const path of ['', '/rescue/audit', '/scan', '/teardown', '/notes', '/products/production-kit']) {
+const STATIC_PAGES = ['', '/ai-visibility', '/dpdp', '/rescue', '/audit', '/scan', '/teardown', '/notes', '/products/production-kit'];
+const SITEMAP_URLS = 37;
+check(`sitemap lists ${SITEMAP_URLS} urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === SITEMAP_URLS);
+for (const path of STATIC_PAGES) {
   check(`sitemap lists ${path || '/'}`, sitemap.includes(`<loc>https://anadithakur.in${path}</loc>`));
 }
 // A redirect and another host's page, neither of which belongs in this file.
-check('sitemap does not list /rescue', !sitemap.includes('<loc>https://anadithakur.in/rescue</loc>'));
+check('sitemap does not list /rescue/audit', !sitemap.includes('<loc>https://anadithakur.in/rescue/audit</loc>'));
 check('sitemap does not list /portfolio', !sitemap.includes('/portfolio</loc>'));
 
 // Decision 9: `/teardown` is meant to be found, so its intro and first

@@ -189,7 +189,7 @@ const Hero = () => (
               SEE THE WORK ↓
             </a>
             <a
-              href={`${ORIGIN}/rescue/audit`}
+              href={`${ORIGIN}/audit?type=app`}
               className="pf-ghost"
               style={{
                 padding: px(s[3], s[5]),
