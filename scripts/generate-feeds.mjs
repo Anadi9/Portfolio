@@ -66,7 +66,7 @@ const pages = [
   { path: '/', priority: '1.0' },
   { path: '/ai-visibility', priority: '1.0' },
   { path: '/dpdp', priority: '1.0' },
-  { path: '/rescue', priority: '1.0' },
+  { path: '/production-ready', priority: '1.0' },
   { path: '/audit', priority: '0.9' },
   { path: '/ai-readiness', priority: '0.9' },
   { path: '/dpdp/check', priority: '0.9' },
@@ -149,7 +149,7 @@ Anadi Thakur is a full-stack engineer based in India with 4+ years shipping prod
 
 - [AI Visibility](${ORIGIN}/ai-visibility): checks whether ChatGPT, Gemini and Perplexity mention a business when customers ask for recommendations, who they recommend instead, and whether the site gives AI the information it needs (structured data, product details, clear pages); then builds the fixes and re-tests after 30 days. Free check (10 questions, readability score, top 3 fixes); deep audit ₹15,000 / $300; fixes from ₹40,000 / $1,000; monthly upkeep from ₹10,000 / $250.
 - [DPDP Readiness](${ORIGIN}/dpdp): implementation partner for India's Digital Personal Data Protection Act, 2023 and the DPDP Rules, 2025, whose core obligations apply from May 2027. Builds consent notices and consent capture, withdrawal, data access and deletion requests, retention and erasure, breach alerts and the audit trail into web and mobile apps, to what the client's lawyer specifies. Not a law firm.
-- [Vibe Code Rescue](${ORIGIN}/rescue): fixed-price production fixes for web apps built with Lovable, Bolt, Cursor and v0: security, database, auth, payments, deployment and performance. A single fix $499, a launch rescue $1,200–1,800, a full rescue from $2,500, done in 7 days with 7 days of follow-up fixes. If something in the quote isn't fixed, it isn't paid for. Monthly production care at $249/month.
+- [Production Readiness](${ORIGIN}/production-ready): fixed-price fixes that make a broken app or software ready for real users, hand-coded or built with Lovable, Bolt, Cursor and v0: security, database, auth, payments, deployment and performance. A single fix $499, a launch rescue $1,200–1,800, a full rescue from $2,500, done in 7 days with 7 days of follow-up fixes. If something in the quote isn't fixed, it isn't paid for. Monthly production care at $249/month.
 - [Free audit](${ORIGIN}/audit): one form for all three services. Public information only, no access needed, plain-English report in 48 hours, no sales call unless asked for.
 
 ## Free tools

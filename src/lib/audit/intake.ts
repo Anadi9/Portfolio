@@ -1,7 +1,7 @@
 /**
  * The free audit request for AI Visibility and DPDP readiness: what `/audit`
  * collects for those two services, what `api/audit.ts` accepts, and the two
- * emails it sends. App audits (Vibe Code Rescue) keep their own intake in
+ * emails it sends. App audits (Production Readiness) keep their own intake in
  * `lib/rescue/intake.ts`, because that form asks different questions (the
  * build tool, symptoms, a repo) and already works.
  *
@@ -29,7 +29,7 @@ export const TYPE_LABEL: Record<AuditType, string> = {
   ai: 'AI Visibility',
   dpdp: 'DPDP Readiness',
   both: 'AI Visibility + DPDP',
-  app: 'App rescue',
+  app: 'Production Readiness',
   unsure: 'Not sure, check everything',
 };
 

@@ -80,7 +80,7 @@ export function Support() {
   return (
     <Page title="Support & contact" path={LEGAL_PATHS.support} description="How to reach Anadi Thakur about an order, a download, a refund or the rescue service.">
       <P>
-        Questions about an order, a download that won’t open, a refund, or the Vibe Code Rescue service: email or call, and you’ll
+        Questions about an order, a download that won’t open, a refund, or the Production Readiness service: email or call, and you’ll
         get a reply within 2 business days, usually sooner.
       </P>
       <Section title="Contact">
@@ -111,7 +111,7 @@ export function Terms() {
         <List
           items={[
             <><strong>{KIT.name}</strong> and its packs: downloadable files (templates, prompts, checklists and code). A one-time purchase, not a subscription.</>,
-            <><strong>Vibe Code Rescue</strong>: development and audit services, scoped and priced in writing with you before any work starts. Those written terms apply alongside these.</>,
+            <><strong>Production Readiness</strong>: development and audit services, scoped and priced in writing with you before any work starts. Those written terms apply alongside these.</>,
             <>Free tools (the Supabase check, the teardown) and free articles, provided as they are.</>,
           ]}
         />
@@ -262,7 +262,7 @@ export function Refunds() {
           mistake, email me and I’ll refund you.
         </P>
         <P>
-          Vibe Code Rescue work can be cancelled at any time before work starts, with a full refund of anything paid. After work
+          Production Readiness work can be cancelled at any time before work starts, with a full refund of anything paid. After work
           starts, you pay only for the work done up to cancellation, as set out in the written scope we agreed, and the rest is
           refunded.
         </P>

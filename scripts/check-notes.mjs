@@ -168,7 +168,7 @@ const rss = readFileSync('dist/rss.xml', 'utf8');
 // The static pages below, plus the case studies and every published post.
 // Bump this when a static route is added to or removed from the sitemap in
 // `generate-feeds.mjs`.
-const STATIC_PAGES = ['', '/ai-visibility', '/dpdp', '/rescue', '/audit', '/ai-readiness', '/dpdp/check', '/scan', '/teardown', '/notes', '/products/production-kit'];
+const STATIC_PAGES = ['', '/ai-visibility', '/dpdp', '/production-ready', '/audit', '/ai-readiness', '/dpdp/check', '/scan', '/teardown', '/notes', '/products/production-kit'];
 const SITEMAP_URLS = 43;
 check(`sitemap lists ${SITEMAP_URLS} urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === SITEMAP_URLS);
 for (const path of STATIC_PAGES) {

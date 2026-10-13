@@ -159,9 +159,9 @@ const Hero = () => (
         <div data-hpad="1" style={{ padding: px(s[4], gutter), borderRight: `${rule.base}px solid ${c.ink}` }}>
           <div style={{ ...label(10, 500, 0.14), color: 'rgba(10,10,10,.6)', marginBottom: s[3] }}>POSITION</div>
           <div style={{ ...heading('d7', { weight: 800 }), color: c.ink }}>
-            I make AI-built apps
+            I make apps and software
             <br />
-            hold up in production.
+            ready for real users.
           </div>
         </div>
 

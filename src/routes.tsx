@@ -44,9 +44,10 @@ export const routes: RouteRecord[] = [
             : import('./pages/Hub').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Hub.tsx',
       },
-      // Vibe Code Rescue, the front page until the hub replaced it.
+      // Production Readiness (formerly Vibe Code Rescue at `/rescue`, which 301s
+      // here), the front page until the hub replaced it.
       {
-        path: '/rescue',
+        path: '/production-ready',
         lazy: () => import('./pages/Rescue').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Rescue.tsx',
       },

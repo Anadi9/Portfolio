@@ -17,7 +17,7 @@ import {
 import { trackRescue } from '@/lib/rescue/track';
 
 /**
- * The app-audit form (Vibe Code Rescue), as `/audit?type=app` shows it. It was
+ * The app-audit form (Production Readiness), as `/audit?type=app` shows it. It was
  * the whole `/rescue/audit` page until the unified `/audit` replaced it; that
  * path now 301s to `/audit?type=app`, and Vercel carries the query string
  * across, so a tally's `?s=0,3` still arrives pre-ticked.
@@ -215,8 +215,8 @@ export default function AppAuditForm() {
                   else, and I&apos;d rather audit the version your users are actually hitting.
                 </p>
               </div>
-              <Link to="/rescue" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink, justifySelf: 'start' }}>
-                ← BACK TO VIBE CODE RESCUE
+              <Link to="/production-ready" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink, justifySelf: 'start' }}>
+                ← BACK TO PRODUCTION READINESS
               </Link>
             </div>
           ) : (

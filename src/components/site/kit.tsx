@@ -10,9 +10,9 @@ import type { Faq } from '@/lib/schema';
 
 /**
  * The paper pages' shared parts: the hub at `/`, the two service pages and the
- * unified audit form. `/rescue` came first and still carries its own copies of
+ * unified audit form. `/production-ready` came first and still carries its own copies of
  * these (it predates the kit and has page-specific variants); the values here
- * are lifted from it unchanged, so the four pages and `/rescue` read as one site.
+ * are lifted from it unchanged, so the four pages and `/production-ready` read as one site.
  *
  * Responsive behaviour reuses the `data-rescue-*` hooks in portfolio.css: they
  * describe layout (split, four-up, gutter), not the rescue offer.
@@ -98,11 +98,11 @@ export const SERVICES = [
   },
   {
     key: 'app',
-    path: '/rescue',
-    nav: 'APP RESCUE',
-    name: 'Vibe Code Rescue',
+    path: '/production-ready',
+    nav: 'PRODUCTION READY',
+    name: 'Production Readiness',
     tag: 'Be production-ready',
-    title: 'Built it with Lovable, Bolt or Cursor? Make it hold up.',
+    title: 'App or software breaking? Make it ready for real users.',
     body: 'Auth, database security, payments, deployment and speed, fixed for a fixed price in 7 days, with 7 days of follow-up fixes.',
     action: 'Check my app',
   },

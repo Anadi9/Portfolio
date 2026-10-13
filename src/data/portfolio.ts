@@ -211,8 +211,8 @@ export const milestones: Milestone[] = [
   },
   {
     year: '26',
-    title: 'Vibe Code Rescue',
-    body: 'Built Signal, an AI lead radar. Now taking apps built with Lovable, Bolt, Cursor and v0 from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
+    title: 'Production Readiness',
+    body: 'Built Signal, an AI lead radar. Now taking broken apps and software, hand-coded or AI-built, from demo to production: auth, data, deploys, performance. Free audit first, then one fixed price.',
     meta: 'INDEPENDENT · FIXED PRICE',
     tone: 'accent',
   },

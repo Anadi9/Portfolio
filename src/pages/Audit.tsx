@@ -28,7 +28,7 @@ import {
  *
  * Service pages link here with `?type=ai|dpdp|app`, which pre-selects the
  * chooser (read after mount: the prerendered HTML has no query string). `app`
- * swaps in the Vibe Code Rescue form, which asks different questions and posts
+ * swaps in the Production Readiness form, which asks different questions and posts
  * to its own function; every other type uses the positioning doc's fields and
  * posts to `/api/audit`. `/rescue/audit` 301s to `?type=app`.
  *
@@ -61,7 +61,7 @@ const CHOICES: { type: AuditType; hint: string }[] = [
   { type: 'ai', hint: 'Does ChatGPT recommend you?' },
   { type: 'dpdp', hint: "Is your app ready for India's data law?" },
   { type: 'both', hint: 'AI visibility and DPDP together' },
-  { type: 'app', hint: 'Built with Lovable, Bolt or Cursor' },
+  { type: 'app', hint: 'App or software breaking' },
   { type: 'unsure', hint: "I'll check all three" },
 ];
 

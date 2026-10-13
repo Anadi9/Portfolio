@@ -1,5 +1,5 @@
 /**
- * The Vibe Code Rescue audit request: what the form collects, what the server
+ * The Production Readiness audit request: what the form collects, what the server
  * accepts, and the two emails it produces.
  *
  * The homepage (`/`, the rescue offer; `/rescue` 301s there) promises an audit
@@ -20,16 +20,16 @@
 
 export const SYMPTOMS = [
   { line: "Users sign up, then can't log in.", area: 'Auth' },
-  { line: 'Your Supabase tables are open to anyone who knows where to look.', area: 'Database' },
-  { line: 'It works locally but breaks on Vercel.', area: 'Deployment' },
-  { line: 'Every new prompt fixes one thing and breaks two others.', area: 'Stability' },
+  { line: 'Your database is open to anyone who knows where to look.', area: 'Database' },
+  { line: 'It works locally but breaks once it goes live.', area: 'Deployment' },
+  { line: 'Every fix breaks two other things.', area: 'Stability' },
   // Lovable and Bolt ship client-rendered SPAs: a crawler that doesn't run
   // JavaScript, which includes most AI answer engines, gets an empty <div>.
   { line: "Google and ChatGPT can't see it.", area: 'Visibility' },
   { line: "You're scared to show it to real customers.", area: 'The audit' },
 ] as const;
 
-export const TOOLS = ['Lovable', 'Bolt', 'Cursor', 'v0', 'Replit', 'Something else'] as const;
+export const TOOLS = ['Hand-coded', 'Lovable', 'Bolt', 'Cursor', 'v0', 'Replit', 'Something else'] as const;
 export type Tool = (typeof TOOLS)[number];
 
 /** The one follow-up the audit offers, quoted identically on the form and in the receipt. */
@@ -197,7 +197,7 @@ ${
     : "<p>You didn't share a repo, which is fine: I'll audit what's reachable from the live app. If you want a deeper look, reply with the repo link and add <strong>Anadi9</strong> on GitHub as a read-only collaborator.</p>"
 }
 <p>Anything else I should know? Just reply to this email.</p>
-<p>Anadi<br><span style="color:#6b6b6b">Vibe Code Rescue · anadithakur.in</span></p>`,
+<p>Anadi<br><span style="color:#6b6b6b">Production Readiness · anadithakur.in</span></p>`,
     ),
   };
 }

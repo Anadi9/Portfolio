@@ -27,7 +27,7 @@ import LegalLinks from '@/components/LegalLinks';
  * header and the same `data-rescue-*` responsive hooks in portfolio.css.
  */
 
-const TITLE = 'Free Supabase security check · Vibe Code Rescue';
+const TITLE = 'Free Supabase security check · Production Readiness';
 const DESCRIPTION =
   'Check in 30 seconds whether anyone on the internet can read your Supabase tables. Paste your project URL and public anon key. Nothing is stored.';
 
@@ -265,7 +265,7 @@ function Results({ report, onReset }: { report: ScanReport; onReset: () => void 
 
       {problems > 0 ? (
         <div style={{ display: 'grid', gap: s[5], padding: px(s[8], s[7]), background: c.plate, color: '#fff' }}>
-          <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>VIBE CODE RESCUE</span>
+          <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>PRODUCTION READINESS</span>
           <p style={{ margin: 0, ...heading('d5'), textTransform: 'uppercase', maxWidth: '20ch' }}>
             Want these closed <span style={{ color: c.mark }}>without breaking the app?</span>
           </p>
@@ -410,8 +410,8 @@ export default function Scan() {
           <span aria-hidden style={{ width: 22, height: 22, background: c.ink, display: 'block' }} />
           <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
         </Link>
-        <Link to="/rescue" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
-          ← VIBE CODE RESCUE
+        <Link to="/production-ready" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
+          ← PRODUCTION READINESS
         </Link>
       </header>
 
@@ -557,8 +557,8 @@ export default function Scan() {
       >
         <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
         <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
-          <Link to="/rescue" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            VIBE CODE RESCUE
+          <Link to="/production-ready" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
+            PRODUCTION READINESS
           </Link>
           <a href={GITHUB} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
             GITHUB ↗

@@ -13,8 +13,10 @@ import { site } from '@/data/portfolio';
 import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
 
 /**
- * `/rescue`: Vibe Code Rescue, fixed-price production fixes for apps built with
- * Lovable, Bolt, Cursor and v0.
+ * `/production-ready`: Production Readiness, fixed-price fixes that make a
+ * broken app or piece of software ready for real users, whatever built it.
+ * (It was Vibe Code Rescue at `/rescue`, for AI-built apps only; `/rescue`
+ * 301s here.)
  *
  * This was the homepage until the hub at `/` replaced it; it is now one of the
  * hub's three services. The portfolio is its own site at `PORTFOLIO_ORIGIN`,
@@ -50,10 +52,12 @@ import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
  * takes over on phones once the hero's own button has scrolled away.
  */
 
-const TITLE = 'Fix your Lovable, Bolt or Cursor app · Vibe Code Rescue';
-const ORIGIN_URL = 'https://anadithakur.in/rescue';
+const NAME = 'Production Readiness';
+const PATH = '/production-ready';
+const TITLE = `Fix your broken app or software · ${NAME}`;
+const ORIGIN_URL = `https://anadithakur.in${PATH}`;
 const DESCRIPTION =
-  'I take apps built with Lovable, Bolt, Cursor and v0 and make them production-ready. Fixed price, done in 7 days. Free audit first.';
+  "I fix broken apps and software so they're ready for real users. Any stack, hand-coded or AI-built. Fixed price, done in 7 days. Free audit first.";
 
 const AUDIT = '/audit?type=app';
 const EMAIL = 'anadithakur99@gmail.com';
@@ -186,7 +190,7 @@ const fixes = [
   {
     title: 'Performance and stability',
     body: 'Stop the code that keeps breaking.',
-    items: ['Slow pages', 'Screens that crash', 'Fix-one-break-two loops', 'Old bugs coming back after prompts'],
+    items: ['Slow pages', 'Screens that crash', 'Fix-one-break-two loops', 'Old bugs coming back after every change'],
   },
 ];
 
@@ -266,8 +270,8 @@ const faqs = [
     a: "Yes. I'm happy to sign an NDA, and you can revoke repo access the day we're done.",
   },
   {
-    q: 'What tools do you support?',
-    a: 'Lovable, Bolt, Cursor, v0, Replit — anything that ends up as React or Next.js plus a database.',
+    q: 'What kinds of apps do you fix?',
+    a: 'Web apps on React, Next.js or Node with a database, however they were made: written by you, by a freelancer or agency, or with Lovable, Bolt, Cursor, v0 or Replit.',
   },
   {
     q: 'What do you need from me to start?',
@@ -286,7 +290,7 @@ const addons = [
   },
   {
     title: 'Search & AI visibility fix',
-    body: 'Apps built with Lovable or Bolt can look like an empty page to Google and AI tools. I make your pages readable to them, with proper titles, descriptions and a sitemap, and set up Search Console so you can watch them get found.',
+    body: 'Apps that build every page in the browser, including most made with Lovable or Bolt, can look like an empty page to Google and AI tools. I make your pages readable to them, with proper titles, descriptions and a sitemap, and set up Search Console so you can watch them get found.',
     price: '$199',
     unit: null,
   },
@@ -296,13 +300,13 @@ const addons = [
 const jsonLd = graph([
   {
     ...service({
-      path: '/rescue',
-      name: 'Vibe Code Rescue',
+      path: PATH,
+      name: NAME,
       description: DESCRIPTION,
-      serviceType: 'Production fixes for AI-built web apps',
+      serviceType: 'Production fixes for web apps and software',
       areaServed: ['Worldwide'],
       offers: tiers.map((t) => ({
-        name: `Vibe Code Rescue: ${t.name}`,
+        name: `${NAME}: ${t.name}`,
         description: t.scope,
         min: t.min,
         max: t.max,
@@ -326,7 +330,7 @@ const jsonLd = graph([
     },
   },
   faqPage(faqs, `${ORIGIN_URL}#faq`),
-  breadcrumbs([{ name: 'Vibe Code Rescue', path: '/rescue' }], `${ORIGIN_URL}#breadcrumb`),
+  breadcrumbs([{ name: NAME, path: PATH }], `${ORIGIN_URL}#breadcrumb`),
 ]);
 
 /** Fires the CTA event. Only ever called from a click, so never in the prerender. */
@@ -494,8 +498,8 @@ const Symptoms = () => {
           ))}
         </ul>
         <p style={{ ...lead, marginTop: s[8], maxWidth: '52ch' }}>
-          AI tools are great at getting you to 80%. The last 20% is where apps actually break, and that part still
-          needs an engineer.
+          Getting to a working demo is the fast part. The last 20% is where apps actually break: real users, real
+          data, real traffic. That part needs an engineer.
         </p>
       </div>
       <div
@@ -598,7 +602,7 @@ const Rescue = () => {
 
   return (
     <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Seo title={TITLE} description={DESCRIPTION} path="/rescue" type="website" jsonLd={jsonLd} />
+      <Seo title={TITLE} description={DESCRIPTION} path={PATH} type="website" jsonLd={jsonLd} />
 
       <header
         style={{
@@ -638,12 +642,13 @@ const Rescue = () => {
         <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
           <div data-rescue-split style={{ ...split('7fr 5fr'), alignItems: 'end' }}>
             <div style={{ display: 'grid', gap: s[6], alignContent: 'start' }}>
-              <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '14ch' }}>
-                Works in the demo. <span style={{ color: p.gold }}>Breaks in production.</span>
+              <span style={{ ...label(11, 700, 0.16), color: p.gold }}>{NAME.toUpperCase()}</span>
+              <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
+                Fix your broken app. <span style={{ color: p.gold }}>Ready for real users.</span>
               </h1>
               <p style={{ ...lead, maxWidth: '44ch' }}>
-                I take apps built with Lovable, Bolt, Cursor and v0 and make them production-ready: auth, database,
-                deployment, performance. Fixed price. Done in 7 days.
+                Your app or software works in the demo and breaks in production. I fix the auth, database, deployment and
+                performance, whatever it&apos;s built with. Fixed price. Done in 7 days.
               </p>
               {/* The "I" above has a face. Same file as the engineer section, so no second download. */}
               <a href="#h-who" style={{ display: 'flex', alignItems: 'center', gap: s[4], textDecoration: 'none', color: p.ink, justifySelf: 'start' }}>
@@ -740,9 +745,9 @@ const Rescue = () => {
               under the client list, the builders read as a second strip of
               clients or partners. */}
           <p style={{ ...body, fontSize: 14, maxWidth: 'none' }}>
-            <span style={{ ...label(10, 700, 0.16), color: p.dim, marginRight: s[4] }}>APPS I RESCUE</span>
-            Built with {builders.slice(0, -1).join(', ')} or {builders[builders.length - 1]}: anything that ends up as React or
-            Next.js plus a database.
+            <span style={{ ...label(10, 700, 0.16), color: p.dim, marginRight: s[4] }}>APPS I FIX</span>
+            Hand-coded, agency-built, or made with {builders.slice(0, -1).join(', ')} or {builders[builders.length - 1]}:
+            anything running on React, Next.js or Node with a database.
           </p>
         </div>
 
@@ -826,7 +831,7 @@ const Rescue = () => {
                   lineHeight: 1.4,
                 }}
               >
-                <span>AUDIT REPORT · YOUR-APP.LOVABLE.APP</span>
+                <span>AUDIT REPORT · YOUR-APP.COM</span>
                 <span style={{ color: p.dim }}>SAMPLE</span>
               </div>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>

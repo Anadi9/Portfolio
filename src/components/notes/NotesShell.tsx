@@ -118,7 +118,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
           <Link to="/dpdp" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
             DPDP
           </Link>
-          <Link to="/rescue" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
+          <Link to="/production-ready" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
             APP RESCUE
           </Link>
           <a href="/rss.xml" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>

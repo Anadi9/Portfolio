@@ -27,7 +27,7 @@ import {
 
 /**
  * `/`: the hub. One promise ("get your business ready for the AI era") and
- * three ways in: AI visibility, DPDP readiness and Vibe Code Rescue. Each
+ * three ways in: AI visibility, DPDP readiness and production readiness. Each
  * service has its own page that does the selling; this page's job is to route
  * a visitor to the right one, or straight to the audit if they already know.
  *
@@ -37,9 +37,9 @@ import {
  */
 
 const PAGE = 'home';
-const TITLE = 'AI Visibility, DPDP & App Rescue · Anadi Thakur';
+const TITLE = 'AI Visibility, DPDP & Production Readiness · Anadi Thakur';
 const DESCRIPTION =
-  'Free audits that show if AI recommends your business, if your app is ready for India’s data law, and if your AI-built app holds up. Then I build the fixes.';
+  'Free audits that show if AI recommends your business, if your app is ready for India’s data law, and if your app is ready for real users. Then I build the fixes.';
 
 const steps = [
   {
@@ -86,7 +86,7 @@ const faqs: Faq[] = [
   },
   {
     q: 'What if I just need a developer?',
-    a: 'I also build and fix web apps, mobile apps and dashboards. If your app was built with Lovable, Bolt or Cursor, Vibe Code Rescue is the fixed-price way in; for anything else, ask for the free audit and describe the job.',
+    a: 'I also build and fix web apps, mobile apps and dashboards. If your app or software is breaking, Production Readiness is the fixed-price way in; for anything else, ask for the free audit and describe the job.',
   },
   {
     q: 'Do you work with US businesses?',
@@ -117,10 +117,10 @@ const jsonLd = graph(
       serviceType: 'Privacy compliance implementation',
     }),
     service({
-      path: '/rescue',
-      name: 'Vibe Code Rescue',
-      description: 'Fixed-price production fixes for apps built with Lovable, Bolt, Cursor and v0.',
-      serviceType: 'Production fixes for AI-built web apps',
+      path: '/production-ready',
+      name: 'Production Readiness',
+      description: 'Fixed-price fixes that make a broken app or software ready for real users, hand-coded or AI-built.',
+      serviceType: 'Production fixes for web apps and software',
     }),
     faqPage(faqs, 'https://anadithakur.in/#faq'),
   ],
@@ -185,7 +185,7 @@ const Hub = () => (
           </h1>
           <p style={{ ...lead, maxWidth: '48ch' }}>
             Be found when customers ask ChatGPT and Google AI. Be compliant with India&apos;s new data law. Make your
-            AI-built app hold up in production. I check where you stand for free, then build the fixes myself.
+            app ready for real users. I check where you stand for free, then build the fixes myself.
           </p>
           <div style={{ display: 'flex', alignItems: 'center', gap: s[4] }}>
             <img
