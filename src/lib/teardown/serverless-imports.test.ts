@@ -26,6 +26,10 @@ const GRAPH = [
   'src/lib/rescue/intake.ts',
   'api/audit.ts',
   'src/lib/audit/intake.ts',
+  'api/ai-readiness.ts',
+  'src/lib/readiness/check.ts',
+  'src/lib/readiness/analyze.ts',
+  'src/lib/readiness/url.ts',
   'api/review.ts',
   'src/lib/review/intake.ts',
   'api/scan.ts',
@@ -94,6 +98,7 @@ describe('api/ directory: deployable files only', () => {
 
   it('contains nothing but the function entrypoints', () => {
     expect([...entries].sort()).toEqual([
+      'ai-readiness.ts',
       'audit.ts',
       'kit',
       'kit-price.ts',

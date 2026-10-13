@@ -57,7 +57,16 @@ Nothing is pushed or deployed from this loop.
   - `/rescue` header gets "All services"; its closing band cross-sells AI Visibility.
   - Portfolio hero and meta description restated for the new positioning; its CTA → hub.
   - Sitemap/llms generation was done in milestone 2; verified again (37 URLs, `npm run check` OK).
-- [ ] **6. AI Readiness Checker** (free tool)
+- [x] **6. AI Readiness Checker** (`/ai-readiness`)
+  - `src/lib/readiness/analyze.ts` (pure): RFC 9309 robots.txt matching for 8 AI/search crawlers,
+    content-in-HTML word count, JSON-LD types, title/description/H1/canonical/og/noindex,
+    sitemap and llms.txt; weighted 0–100 score and top 3 fixes.
+  - `src/lib/readiness/url.ts` + `check.ts`: SSRF guard (no IP literals, private/loopback/
+    link-local/metadata ranges refused after DNS on every hop, manual redirects ≤3, 8s timeout,
+    2MB cap, nothing stored or logged). `api/ai-readiness.ts`: 6 checks/min per IP.
+  - Result hands the URL to `/audit?type=ai&url=…`, which pre-fills it.
+  - 48 new tests. Live runs: anadithakur.in scores 100; example.com 40; metadata IP and
+    localhost refused; a bot-blocking site (403) gets a specific message.
 - [ ] **7. DPDP self-check quiz**
 - [ ] **8. AEO answer-first content** (AI visibility and DPDP clusters)
 

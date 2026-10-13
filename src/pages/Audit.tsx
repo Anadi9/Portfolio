@@ -136,7 +136,12 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
   const [due, setDue] = useState<string | null>(null);
 
-  useEffect(() => setDue(formatDue(dueBy(new Date()))), []);
+  useEffect(() => {
+    setDue(formatDue(dueBy(new Date())));
+    // The AI Readiness Checker hands its URL over as `?url=`, so it isn't typed twice.
+    const handed = new URLSearchParams(window.location.search).get('url');
+    if (handed && handed.length <= 500) setForm((f) => ({ ...f, url: handed }));
+  }, []);
 
   const set = <K extends keyof Form>(key: K, value: Form[K]) => {
     setForm((f) => ({ ...f, [key]: value }));

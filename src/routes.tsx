@@ -85,6 +85,12 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/TeardownResult.tsx',
         getStaticPaths: async () => (await import('./lib/teardown/share')).resultPaths(),
       },
+      // The free AI Readiness Checker: a lead magnet for AI Visibility.
+      {
+        path: '/ai-readiness',
+        lazy: () => import('./pages/AiReadiness').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/AiReadiness.tsx',
+      },
       // The one free-audit form. `/rescue/audit` 301s here as `?type=app`.
       {
         path: '/audit',
