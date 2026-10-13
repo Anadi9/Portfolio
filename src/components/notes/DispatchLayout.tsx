@@ -1,6 +1,7 @@
 import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { hasCover, ogImageFor, type DispatchPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
+import ServicesCta from './ServicesCta';
 import { Seo } from '@/components/Seo';
 import { articleJsonLd, headOf } from './postSeo';
 import PostHeader from './PostHeader';
@@ -58,6 +59,7 @@ const DispatchLayout = ({ post }: { post: DispatchPost }) => {
         </ol>
 
         <Body components={prose} />
+        <ServicesCta slug={post.slug} />
       </Column>
     </NotesShell>
   );

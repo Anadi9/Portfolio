@@ -177,8 +177,8 @@ const Hero = () => (
           }}
         >
           <p style={{ margin: 0, font: `400 15px/1.42 ${display}`, color: c.ink, textWrap: 'pretty' }}>
-            4+ years shipping production React and Node, ZEISS included. Now I take apps built with Lovable, Bolt,
-            Cursor and v0 and fix what breaks: auth, data, deploys, speed.
+            4+ years shipping production React and Node, ZEISS included. Now I get businesses ready for the AI era:
+            found by ChatGPT, ready for India&apos;s DPDP law, and running on apps that hold up.
           </p>
           <div style={{ display: 'flex', gap: s[3] }}>
             <a
@@ -189,7 +189,7 @@ const Hero = () => (
               SEE THE WORK ↓
             </a>
             <a
-              href={`${ORIGIN}/audit?type=app`}
+              href={`${ORIGIN}/`}
               className="pf-ghost"
               style={{
                 padding: px(s[3], s[5]),
@@ -200,7 +200,7 @@ const Hero = () => (
                 textDecoration: 'none',
               }}
             >
-              FREE AUDIT ↗
+              SERVICES ↗
             </a>
           </div>
         </div>

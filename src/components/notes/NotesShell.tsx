@@ -66,10 +66,12 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
         <Link to="/work" className="pf-notes-work" style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
           WORK
         </Link>
-        {/* The one way from a note into the rescue. Kept small enough that the
-            header stays inside --pf-header-h. */}
+        {/* The one way from a note into a service. It goes to the audit
+            chooser, not straight to the app form: most readers of drops and
+            dispatches aren't app founders. Kept small enough that the header
+            stays inside --pf-header-h. */}
         <Link
-          to="/audit?type=app"
+          to="/audit"
           onClick={() => trackRescue('audit_cta_click', { location: 'notes_header' })}
           style={{ ...buttonType(13), padding: px(4, s[3]), background: c.ink, color: c.accent, textDecoration: 'none', whiteSpace: 'nowrap' }}
         >
@@ -109,7 +111,16 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
     >
       <div style={{ maxWidth: MEASURE, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: s[4], justifyContent: 'space-between' }}>
         <span style={{ ...label(10, 500, 0.14), color: c.dimOnInk }}>NOTES · {BYLINE}</span>
-        <span style={{ display: 'flex', gap: s[5] }}>
+        <span style={{ display: 'flex', flexWrap: 'wrap', gap: s[5] }}>
+          <Link to="/ai-visibility" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
+            AI VISIBILITY
+          </Link>
+          <Link to="/dpdp" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
+            DPDP
+          </Link>
+          <Link to="/rescue" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
+            APP RESCUE
+          </Link>
           <a href="/rss.xml" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
             RSS
           </a>

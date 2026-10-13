@@ -622,7 +622,7 @@ const Rescue = () => {
             ['#h-price', 'PRICE'],
             ['#h-free', 'FREE TOOLS'],
             ['#h-faq', 'FAQ'],
-            ['/notes', 'NOTES'],
+            ['/', 'ALL SERVICES'],
           ].map(([href, text]) => (
             <a key={href} href={href} data-rescue-navlink className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
               {text}
@@ -1125,6 +1125,10 @@ const Rescue = () => {
             </a>
           </div>
           <p style={{ ...body, color: c.dimOnInk, marginTop: s[10], fontSize: 14 }}>
+            Want customers to find it too?{' '}
+            <Link to="/ai-visibility" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
+              See whether ChatGPT recommends you →
+            </Link>{' '}
             Building an AI feature instead?{' '}
             <Link to="/teardown" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
               Take the 3-minute Wrapper Test →

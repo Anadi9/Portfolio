@@ -49,7 +49,14 @@ Nothing is pushed or deployed from this loop.
   - 17 new tests; `api/` allowlist and serverless import graph updated; `npm run check` updated
     for the new sitemap (37 URLs).
   - Sender is `audit@anadithakur.in` (same Resend domain as `rescue@`).
-- [ ] **5. Intent-matched CTAs on notes, sitemap/llms generation, nav and internal links**
+- [x] **5. Intent-matched CTAs on notes, sitemap/llms generation, nav and internal links**
+  - `ServicesCta` closes every drop, wisdom and dispatch post (three free checks).
+  - Fix posts keep the app-audit CTA; the "invisible to Google and ChatGPT" post adds
+    "Test what AI can see" → `/ai-readiness`.
+  - Notes header "Free audit" → `/audit` chooser; notes footer links the three services.
+  - `/rescue` header gets "All services"; its closing band cross-sells AI Visibility.
+  - Portfolio hero and meta description restated for the new positioning; its CTA → hub.
+  - Sitemap/llms generation was done in milestone 2; verified again (37 URLs, `npm run check` OK).
 - [ ] **6. AI Readiness Checker** (free tool)
 - [ ] **7. DPDP self-check quiz**
 - [ ] **8. AEO answer-first content** (AI visibility and DPDP clusters)

@@ -10,7 +10,7 @@ import { SCAN_PATH, auditHref, symptomLine } from './fixLinks';
  * prerender; the guard and the catch are there anyway, because a blocked
  * analytics script must never be the reason a link doesn't work.
  */
-const clicked = (slug: string, cta: 'audit' | 'scan' | 'kit') => () => {
+const clicked = (slug: string, cta: 'audit' | 'scan' | 'kit' | 'ai_readiness') => () => {
   if (typeof window === 'undefined') return;
   try {
     track('fix_cta_click', { slug, cta });
@@ -67,6 +67,25 @@ const FixCta = ({ post }: { post: FixPost }) => {
         >
           GET THE FREE AUDIT →
         </Link>
+
+        {/* An app nobody can find is also an AI visibility problem, so that
+            post gets the checker as its second door. */}
+        {post.symptom?.toLowerCase() === 'visibility' && (
+          <Link
+            to="/ai-readiness"
+            onClick={clicked(post.slug, 'ai_readiness')}
+            style={{
+              display: 'inline-block',
+              padding: px(s[4], s[6]),
+              color: c.accent,
+              border: `${rule.hair}px solid ${c.dimOnInk}`,
+              textDecoration: 'none',
+              ...label(12, 700, 0.12),
+            }}
+          >
+            TEST WHAT AI CAN SEE
+          </Link>
+        )}
 
         {post.scan && (
           <a

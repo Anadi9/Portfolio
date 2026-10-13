@@ -1,6 +1,7 @@
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { hasCover, ogImageFor, type WisdomPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
+import ServicesCta from './ServicesCta';
 import { Seo } from '@/components/Seo';
 import { articleJsonLd, headOf } from './postSeo';
 import PostHeader from './PostHeader';
@@ -79,6 +80,7 @@ const WisdomLayout = ({ post }: { post: WisdomPost }) => {
           <p style={{ ...label(10, 700, 0.16), color: c.mark, margin: px(0, 0, s[4]) }}>THE TRADEOFF</p>
           <p style={{ margin: 0, font: `400 18px/1.6 ${display}`, color: c.bright }}>{post.tradeoff}</p>
         </aside>
+        <ServicesCta slug={post.slug} />
       </Column>
     </NotesShell>
   );

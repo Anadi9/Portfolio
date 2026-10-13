@@ -1,6 +1,7 @@
 import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { hasCover, ogImageFor, type DropPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
+import ServicesCta from './ServicesCta';
 import { Seo } from '@/components/Seo';
 import { articleJsonLd, headOf } from './postSeo';
 import PostHeader from './PostHeader';
@@ -80,6 +81,7 @@ const DropLayout = ({ post }: { post: DropPost }) => {
             afternoon, that was the job. More of these land here as I build them.
           </p>
         </aside>
+        <ServicesCta slug={post.slug} />
       </Column>
     </NotesShell>
   );
