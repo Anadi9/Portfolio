@@ -1,6 +1,7 @@
+import type { CSSProperties } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
-import { c, display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
+import { display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
 import { breadcrumbs, faqPage, graph, service, type Faq } from '@/lib/schema';
 import {
   Cards,
@@ -15,6 +16,7 @@ import {
   body,
   cta,
   ctaClick,
+  k,
   lead,
   p,
   section,
@@ -138,14 +140,43 @@ const jsonLd = graph([
   breadcrumbs([{ name: 'DPDP Readiness', path: PATH }], `${URL}#breadcrumb`),
 ]);
 
+/**
+ * Theme preview for this page only: Cod Gray ink on a Chrome White ground,
+ * Carnation as the one loud accent (large type, the closing CTA, and a darker
+ * cut of it for small type), Wasabi for the ticks. Other paper pages keep the
+ * shipped palette through the fallbacks in `kit`.
+ */
+const theme = {
+  '--pp-bg': '#edf2d6',
+  '--pp-ink': '#111111',
+  '--pp-body': '#3b3f33',
+  '--pp-dim': '#666b58',
+  '--pp-gold': '#f55349',
+  '--pp-gold-text': '#c2362d',
+  '--pp-tick': '#7c932d',
+  '--pp-rule': 'rgba(17,17,17,.12)',
+  '--pp-panel': '#f6f8ea',
+  '--pp-picked': '#f6f8ea',
+  '--pp-card': '#f6f8ea',
+  '--pp-on-ink': '#edf2d6',
+  '--pp-mark': '#f55349',
+  '--pp-dim-on-ink': '#a2a690',
+  '--pp-rule-on-ink': 'rgba(237,242,214,.12)',
+  '--pp-rule-soft': '#7c932d',
+  '--pp-plate': '#181818',
+  '--pp-white': '#edf2d6',
+  '--pp-bright': '#d6dbc0',
+  '--pp-cta-alt': '#f55349',
+} as CSSProperties;
+
 const Dpdp = () => (
-  <PaperPage header={<SiteHeader page={PAGE} current="dpdp" />}>
+  <PaperPage header={<SiteHeader page={PAGE} current="dpdp" />} theme={theme}>
     <Seo title={TITLE} description={DESCRIPTION} path={PATH} type="website" jsonLd={jsonLd} />
 
     <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
       <div data-rescue-split style={{ ...split('7fr 5fr'), alignItems: 'end' }}>
         <div style={{ display: 'grid', gap: s[6], alignContent: 'start' }}>
-          <span style={{ ...label(11, 700, 0.14), color: p.gold }}>DPDP ACT 2023 · DPDP RULES 2025</span>
+          <span style={{ ...label(11, 700, 0.14), color: p.goldText }}>DPDP ACT 2023 · DPDP RULES 2025</span>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
             India&apos;s data law gets real in May 2027. <span style={{ color: p.gold }}>Is your app ready?</span>
           </h1>
@@ -163,11 +194,11 @@ const Dpdp = () => (
           </div>
           <TrustLine items={['Free', '48 hours', 'No access needed']} />
         </div>
-        <ol aria-label="DPDP timeline" style={{ listStyle: 'none', margin: 0, padding: px(s[7], s[7]), background: c.plate, color: '#fff', display: 'grid', gap: s[5] }}>
+        <ol aria-label="DPDP timeline" style={{ listStyle: 'none', margin: 0, padding: px(s[7], s[7]), background: k.plate, color: k.white, display: 'grid', gap: s[5] }}>
           {timeline.map((t, i) => (
             <li key={t.when} style={{ display: 'grid', gridTemplateColumns: '6.5em 1fr', gap: s[4], alignItems: 'baseline' }}>
-              <span style={{ ...label(11, 700, 0.12), color: i === timeline.length - 1 ? c.mark : c.dimOnInk }}>{t.when.toUpperCase()}</span>
-              <span style={{ font: `400 15px/1.5 ${display}`, color: i === timeline.length - 1 ? '#fff' : c.bright }}>{t.what}</span>
+              <span style={{ ...label(11, 700, 0.12), color: i === timeline.length - 1 ? k.mark : k.dimOnInk }}>{t.when.toUpperCase()}</span>
+              <span style={{ font: `400 15px/1.5 ${display}`, color: i === timeline.length - 1 ? k.white : k.bright }}>{t.what}</span>
             </li>
           ))}
         </ol>
@@ -249,7 +280,7 @@ const Dpdp = () => (
       small={
         <>
           Also want to know if ChatGPT recommends you?{' '}
-          <Link to="/ai-visibility" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
+          <Link to="/ai-visibility" className="pf-underline" style={{ color: k.bright, fontWeight: 600 }}>
             See AI Visibility →
           </Link>
         </>

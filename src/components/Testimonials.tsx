@@ -21,7 +21,14 @@ import type { PublicReview } from '@/lib/review/intake';
 
 const FIRST = 6;
 
-const p = { ink: c.ink, body: '#4a4a4a', dim: c.dim, gold: c.markOnPaper, rule: 'rgba(10,10,10,.14)' } as const;
+// CSS variables with the shipped values as fallbacks, so a paper page's `--pp-*` theme reaches this section too.
+const p = {
+  ink: `var(--pp-ink, ${c.ink})`,
+  body: 'var(--pp-body, #4a4a4a)',
+  dim: `var(--pp-dim, ${c.dim})`,
+  gold: `var(--pp-gold, ${c.markOnPaper})`,
+  rule: 'var(--pp-rule, rgba(10,10,10,.14))',
+} as const;
 
 const textButton: CSSProperties = {
   background: 'none',
@@ -43,15 +50,15 @@ const initials = (name: string) =>
 
 const Avatar = ({ r }: { r: PublicReview }) =>
   r.photoUrl ? (
-    <img src={r.photoUrl} alt="" width={48} height={48} loading="lazy" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: `${rule.hair}px solid ${c.ink}` }} />
+    <img src={r.photoUrl} alt="" width={48} height={48} loading="lazy" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: `${rule.hair}px solid ${p.ink}` }} />
   ) : (
-    <span aria-hidden style={{ width: 48, height: 48, borderRadius: '50%', flexShrink: 0, display: 'grid', placeItems: 'center', background: c.accent, ...label(12, 700, 0.06), color: p.ink }}>
+    <span aria-hidden style={{ width: 48, height: 48, borderRadius: '50%', flexShrink: 0, display: 'grid', placeItems: 'center', background: `var(--pp-panel, ${c.accent})`, ...label(12, 700, 0.06), color: p.ink }}>
       {initials(r.name)}
     </span>
   );
 
 const Card = ({ r }: { r: PublicReview }) => (
-  <figure style={{ margin: 0, display: 'grid', gridTemplateRows: '1fr auto', gap: s[5], padding: px(s[7], s[6]), background: '#fff', border: `${rule.base}px solid ${c.ink}`, minWidth: 0 }}>
+  <figure style={{ margin: 0, display: 'grid', gridTemplateRows: '1fr auto', gap: s[5], padding: px(s[7], s[6]), background: 'var(--pp-card, #fff)', border: `${rule.base}px solid ${p.ink}`, minWidth: 0 }}>
     <blockquote
       style={{
         margin: 0,
@@ -97,7 +104,7 @@ export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<stri
       id="testimonials"
       aria-labelledby="h-testimonials"
       {...hpadAttr}
-      style={{ containerType: 'inline-size', background: c.paper, color: p.ink, borderTop: `${rule.edge}px solid ${p.rule}`, padding: px(sectionY.top, gutter, sectionY.bottom) }}
+      style={{ containerType: 'inline-size', background: `var(--pp-bg, ${c.paper})`, color: p.ink, borderTop: `${rule.edge}px solid ${p.rule}`, padding: px(sectionY.top, gutter, sectionY.bottom) }}
     >
       <div data-testimonials-head style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'end', justifyContent: 'space-between', gap: s[6], marginBottom: s[9] }}>
         <div style={{ display: 'grid', gap: s[5] }}>

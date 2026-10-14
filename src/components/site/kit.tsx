@@ -18,15 +18,39 @@ import type { Faq } from '@/lib/schema';
  * describe layout (split, four-up, gutter), not the rescue offer.
  */
 
+/**
+ * Every colour below is a CSS variable whose fallback is the shipped value, so
+ * a page can re-theme itself by setting `--pp-*` on its root (see `PaperPage`'s
+ * `theme`) and every other page renders exactly as before.
+ */
+const v = (name: string, fallback: string) => `var(--pp-${name}, ${fallback})`;
+
 export const p = {
-  bg: c.paper,
-  ink: c.ink,
-  body: '#4a4a4a',
-  dim: c.dim,
-  gold: c.markOnPaper,
-  rule: 'rgba(10,10,10,.14)',
-  panel: c.accent,
-  picked: '#faf8f3',
+  bg: v('bg', c.paper),
+  ink: v('ink', c.ink),
+  body: v('body', '#4a4a4a'),
+  dim: v('dim', c.dim),
+  gold: v('gold', c.markOnPaper),
+  /** The accent for small type, where a bright accent can't hold contrast. */
+  goldText: v('gold-text', c.markOnPaper),
+  tick: v('tick', c.markOnPaper),
+  rule: v('rule', 'rgba(10,10,10,.14)'),
+  panel: v('panel', c.accent),
+  picked: v('picked', '#faf8f3'),
+} as const;
+
+/** The ink-side tokens: dark bands, the CTA, the footer. Same fallback rule as `p`. */
+export const k = {
+  ink: v('ink', c.ink),
+  onInk: v('on-ink', c.accent),
+  mark: v('mark', c.mark),
+  dimOnInk: v('dim-on-ink', c.dimOnInk),
+  rule: v('rule-on-ink', c.rule),
+  ruleSoft: v('rule-soft', c.ruleSoft),
+  plate: v('plate', c.plate),
+  white: v('white', '#fff'),
+  bright: v('bright', c.bright),
+  ctaAlt: v('cta-alt', c.accent),
 } as const;
 
 export const section: CSSProperties = {
@@ -54,8 +78,8 @@ export const cta: CSSProperties = {
   gap: s[3],
   minHeight: 52,
   padding: px(0, s[6]),
-  background: c.ink,
-  color: c.accent,
+  background: k.ink,
+  color: k.onInk,
   ...buttonType(),
   textDecoration: 'none',
 };
@@ -64,8 +88,8 @@ export const textLink: CSSProperties = { ...label(11, 700, 0.14), color: p.ink }
 
 export const split = (columns: string): CSSProperties => ({ display: 'grid', gridTemplateColumns: columns, gap: s[10] });
 
-export const Check = ({ color = p.gold, size = 14 }: { color?: string; size?: number }) => (
-  <svg aria-hidden width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={3} strokeLinecap="square">
+export const Check = ({ color = p.tick, size = 14 }: { color?: string; size?: number }) => (
+  <svg aria-hidden width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ stroke: color }} strokeWidth={3} strokeLinecap="square">
     <path d="M4 12.5l5 5L20 6.5" />
   </svg>
 );
@@ -126,7 +150,7 @@ export const SiteHeader = ({ page, current, auditType }: { page: string; current
     }}
   >
     <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-      <span aria-hidden style={{ width: 22, height: 22, background: c.ink, display: 'block' }} />
+      <span aria-hidden style={{ width: 22, height: 22, background: k.ink, display: 'block' }} />
       <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
     </Link>
     <nav aria-label="Services" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
@@ -137,7 +161,7 @@ export const SiteHeader = ({ page, current, auditType }: { page: string; current
           data-rescue-navlink
           aria-current={current === sv.key ? 'page' : undefined}
           className="pf-underline"
-          style={{ ...label(11, 700, 0.14), color: current === sv.key ? p.gold : p.ink }}
+          style={{ ...label(11, 700, 0.14), color: current === sv.key ? p.goldText : p.ink }}
         >
           {sv.nav}
         </Link>
@@ -157,7 +181,7 @@ export const SiteHeader = ({ page, current, auditType }: { page: string; current
   </header>
 );
 
-const footLink: CSSProperties = { ...label(11, 700, 0.12), color: c.dimOnInk };
+const footLink: CSSProperties = { ...label(11, 700, 0.12), color: k.dimOnInk };
 
 export const SiteFooter = () => (
   <footer
@@ -166,20 +190,20 @@ export const SiteFooter = () => (
       display: 'grid',
       gap: s[8],
       padding: px(s[9], gutter, s[10]),
-      background: c.ink,
-      borderTop: `${rule.hair}px solid ${c.rule}`,
+      background: k.ink,
+      borderTop: `${rule.hair}px solid ${k.rule}`,
     }}
   >
     <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[8] }}>
       <div style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>ANADI THAKUR</span>
-        <p style={{ ...body, fontSize: 14, color: c.dimOnInk }}>
+        <span style={{ ...label(11, 700, 0.12), color: k.white }}>ANADI THAKUR</span>
+        <p style={{ ...body, fontSize: 14, color: k.dimOnInk }}>
           Get your business ready for the AI era: found by AI, ready for India&apos;s data law, and running on an app
           that holds up.
         </p>
       </div>
       <nav aria-label="Services" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: c.ruleSoft }}>SERVICES</span>
+        <span style={{ ...label(10, 700, 0.16), color: k.ruleSoft }}>SERVICES</span>
         {SERVICES.map((sv) => (
           <Link key={sv.key} to={sv.path} className="pf-underline" style={footLink}>
             {sv.name.toUpperCase()}
@@ -190,7 +214,7 @@ export const SiteFooter = () => (
         </Link>
       </nav>
       <nav aria-label="Free tools" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: c.ruleSoft }}>FREE TOOLS</span>
+        <span style={{ ...label(10, 700, 0.16), color: k.ruleSoft }}>FREE TOOLS</span>
         <Link to="/ai-readiness" className="pf-underline" style={footLink}>
           AI READINESS CHECKER
         </Link>
@@ -208,7 +232,7 @@ export const SiteFooter = () => (
         </Link>
       </nav>
       <nav aria-label="Elsewhere" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: c.ruleSoft }}>MORE</span>
+        <span style={{ ...label(10, 700, 0.16), color: k.ruleSoft }}>MORE</span>
         <Link to="/notes" className="pf-underline" style={footLink}>
           NOTES
         </Link>
@@ -227,7 +251,7 @@ export const SiteFooter = () => (
       </nav>
     </div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: s[6] }}>
-      <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
+      <span style={{ ...label(11, 700, 0.12), color: k.white }}>© 2026 ANADI THAKUR</span>
       <LegalLinks />
     </div>
   </footer>
@@ -280,7 +304,7 @@ export const Steps = ({ steps }: { steps: { title: string; body: string }[] }) =
     }}
   >
     {steps.map((st, i) => (
-      <li key={st.title} style={{ display: 'grid', gap: s[3], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${c.ink}` }}>
+      <li key={st.title} style={{ display: 'grid', gap: s[3], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${p.ink}` }}>
         <div style={{ ...heading('d6'), color: p.gold }}>{String(i + 1).padStart(2, '0')}</div>
         <h3 style={{ margin: 0, font: `600 17px/1.3 ${display}` }}>{st.title}</h3>
         <p style={body}>{st.body}</p>
@@ -293,7 +317,7 @@ export const Steps = ({ steps }: { steps: { title: string; body: string }[] }) =
 export const Cards = ({ items }: { items: { title: string; body: string; items?: string[] }[] }) => (
   <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(items.length, 4)}, minmax(0, 1fr))`, gap: s[8], marginTop: s[9] }}>
     {items.map((it) => (
-      <div key={it.title} style={{ display: 'grid', gap: s[4], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${c.ink}` }}>
+      <div key={it.title} style={{ display: 'grid', gap: s[4], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${p.ink}` }}>
         <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase', color: p.ink }}>{it.title}</h3>
         <p style={body}>{it.body}</p>
         {it.items && (
@@ -371,25 +395,25 @@ export const FinalBand = ({
 }) => (
   <section
     aria-labelledby="h-final"
-    style={{ ...section, borderTop: 'none', background: c.ink, color: '#fff', paddingTop: s[13] }}
+    style={{ ...section, borderTop: 'none', background: k.ink, color: k.white, paddingTop: s[13] }}
     data-rescue-hpad
   >
     <h2 id="h-final" style={{ margin: 0, ...heading('d2', { stretch: stretch.bleed }), textTransform: 'uppercase', maxWidth: '16ch' }}>
-      {title} {accent && <span style={{ color: c.mark }}>{accent}</span>}
+      {title} {accent && <span style={{ color: k.mark }}>{accent}</span>}
     </h2>
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6], marginTop: s[10] }}>
-      <Link to={to} onClick={onClick} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: c.accent, color: c.ink }}>
+      <Link to={to} onClick={onClick} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: k.ctaAlt, color: k.ink }}>
         {action}
         <span aria-hidden>→</span>
       </Link>
     </div>
-    {small && <p style={{ ...body, color: c.dimOnInk, marginTop: s[8], fontSize: 14 }}>{small}</p>}
+    {small && <p style={{ ...body, color: k.dimOnInk, marginTop: s[8], fontSize: 14 }}>{small}</p>}
   </section>
 );
 
 /** The page frame: paper ground, header, main, footer. */
-export const PaperPage = ({ header, children }: { header: ReactNode; children: ReactNode }) => (
-  <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+export const PaperPage = ({ header, children, theme }: { header: ReactNode; children: ReactNode; theme?: CSSProperties }) => (
+  <div style={{ ...theme, background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
     {header}
     <main style={{ flex: 1 }}>{children}</main>
     <SiteFooter />
