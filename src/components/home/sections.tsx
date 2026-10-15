@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { useLocation } from 'react-router-dom';
 import { BitChat } from './BitChat';
+import { PackageBuilder } from './BitGuide';
 import { Bit, PixelIcon } from '@/components/brand/Bit';
 import portrait from '@/assets/portrait.webp';
 import { trackRescue } from '@/lib/rescue/track';
@@ -499,15 +500,7 @@ export function Pricing() {
         ))}
       </div>
       <p className="hq-small" style={{ marginTop: 24 }}>{pricing.footnote}</p>
-      <div className="hq-card hq-custom">
-        <div>
-          <h3 style={{ font: '400 32px/1 var(--bq-font-display)', margin: 0 }}>{pricing.custom.title}</h3>
-          <p className="hq-small" style={{ marginTop: 8 }}>{pricing.custom.body}</p>
-        </div>
-        <Go href={pricing.custom.cta.href} className="bq-btn" onClick={track('pricing:custom')}>
-          <span aria-hidden>▶</span> {pricing.custom.cta.text}
-        </Go>
-      </div>
+      <PackageBuilder />
     </Section>
   );
 }

@@ -14,6 +14,7 @@ import {
   Services,
   TrackingBoard,
 } from "@/components/home/sections";
+import { BitGuide } from "@/components/home/BitGuide";
 import { faq, offers } from "@/data/bitsQuest";
 import { BUSINESS_TAGLINE, faqPage, graph, service } from "@/lib/schema";
 import "@/styles/home.css";
@@ -100,6 +101,7 @@ const Hub = () => (
       <Blog />
       <About />
       <Faq />
+      <BitGuide />
     </PaperPage>
   </>
 );
