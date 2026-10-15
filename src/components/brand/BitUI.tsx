@@ -9,13 +9,13 @@ import { TerminalHead, type THFace } from './BitHead';
 import { Bit } from './Bit';
 
 const v = (name: string, fallback: string) => `var(--pp-${name}, ${fallback})`;
-const ink = v('ink', '#121212');
-const paper = v('bg', '#fafafa');
-const card = v('card', '#ffffff');
+const ink = v('ink', 'var(--bq-ink)');
+const paper = v('bg', 'var(--bq-bg)');
+const card = v('card', 'var(--bq-panel)');
 const red = v('shell', '#d42e24');
 const redText = v('red-text', '#d42e24');
 const green = v('ok', '#2f7d5b');
-const muted = v('dim', '#525252');
+const muted = v('dim', 'var(--bq-muted)');
 const font = "'Space Grotesk', system-ui, sans-serif";
 const pixel = "'Jersey 10', system-ui, sans-serif";
 const label = "'Press Start 2P', monospace";

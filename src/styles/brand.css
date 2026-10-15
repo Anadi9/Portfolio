@@ -20,6 +20,8 @@
   --bq-dark-panel: #121212;
   --bq-dark-panel-text: #f5f5f5;
   --bq-dark-line: #3a3a3a;
+  --bq-body-text: #4a4a4a;
+  --bq-rule: rgba(10, 10, 10, 0.14);
 
   --bq-font-display: 'Jersey 10', system-ui, sans-serif;
   --bq-font-body: 'Space Grotesk', system-ui, sans-serif;
@@ -56,6 +58,11 @@
   --bq-dark-panel: #1c1c1c;
   --bq-dark-panel-text: #f2f0ea;
   --bq-shadow: 6px 6px 0 #000;
+  --bq-shadow-sm: 4px 4px 0 #000;
+  --bq-shadow-lg: 8px 8px 0 #000;
+  --bq-body-text: #c9c4ba;
+  --bq-rule: rgba(242, 240, 234, 0.16);
+  color-scheme: dark;
 }
 
 .bq-page {
@@ -134,3 +141,7 @@
     transition: none !important;
   }
 }
+
+/* Light/dark toggle (pages that opt in with `themeable`). */
+.bq-theme { width: 44px; height: 44px; display: inline-grid; place-items: center; border: 2px solid var(--bq-ink); background: var(--bq-panel); color: var(--bq-ink); cursor: pointer; font-size: 18px; line-height: 1; }
+.bq-theme:hover { background: var(--bq-ink); color: var(--bq-bg); }

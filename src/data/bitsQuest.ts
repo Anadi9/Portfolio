@@ -120,7 +120,9 @@ export const process = {
     ['Day 01', 'First-bug video sent: “Anyone can see other people’s orders.” Fixed price attached.'],
     ['Day 02', 'Audit started — $349, credited toward the fix.'],
     ['Day 04', 'Fix booked: Launch-ready sprint. Daily updates begin.'],
+    ['Day 07', 'Update posted: access rules fixed and tested. Checkout next.'],
     ['Day 11', 'Live. Client confirmed it works. Second half invoiced.'],
+    ['Day 12', 'Care started: monitoring on, first monthly review booked.'],
   ],
 };
 

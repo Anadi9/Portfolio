@@ -82,7 +82,7 @@ const Hub = () => (
       type="website"
       jsonLd={jsonLd}
     />
-    <PaperPage header={<SiteHeader page={PAGE} />}>
+    <PaperPage themeable header={<SiteHeader page={PAGE} themeToggle />}>
       <Hero />
       <BugDemo />
       <Services />

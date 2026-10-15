@@ -31,7 +31,7 @@ const track = (page: string, location: string) => () => trackRescue('cta_click',
 
 export function ServicePage(p: ServicePageProps) {
   return (
-    <PaperPage header={<SiteHeader page={p.page} />}>
+    <PaperPage themeable header={<SiteHeader page={p.page} themeToggle />}>
       <section className="hq-section" aria-labelledby="h-top" style={{ paddingTop: 56 }}>
         <div className="hq-wrap hq-split" style={{ alignItems: 'center' }}>
           <div style={{ display: 'grid', gap: 20 }}>

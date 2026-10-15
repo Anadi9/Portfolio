@@ -223,7 +223,7 @@ export function BugDemo() {
                 <span className="hq-fixline">✓ Paid. Receipt sent.</span>
               ) : (
                 <>
-                  <div className="hq-row" style={{ justifyContent: 'center', background: '#eee' }}>Processing… 0:47</div>
+                  <div className="hq-row" style={{ justifyContent: 'center', background: 'var(--bq-grid)' }}>Processing… 0:47</div>
                   <span className="hq-errline">Something went wrong. Please try again.</span>
                 </>
               )}
@@ -385,36 +385,8 @@ export function SampleReport() {
   );
 }
 
-/* 5 · Process: six stops from first message to Care, and a sample project log. */
-export function Process() {
-  return (
-    <Section id="quest" label="h-quest">
-      <Head id="h-quest" eyebrow={process.eyebrow} title={process.title} intro={process.intro} />
-      <ol className="hq-six" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {process.steps.map((st) => (
-          <li key={st.title} className="hq-step">
-            <span className="hq-lab" style={{ color: 'var(--bq-brand)' }}>{st.day}</span>
-            <h3>{st.title}</h3>
-            <p className="hq-small" style={{ flex: 1 }}>{st.body}</p>
-            <span className="hq-lab" style={{ fontSize: 9 }}>{st.price}</span>
-          </li>
-        ))}
-      </ol>
-      <div className="hq-dark hq-log">
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span className="hq-lab" style={{ color: 'var(--bq-secondary)' }}>Project log · #A-1047 (example)</span>
-          <span className="hq-lab" style={{ color: '#35d48a' }}>● Live</span>
-        </div>
-        {process.log.map(([d, t]) => (
-          <div key={d}>
-            <span className="hq-lab" style={{ color: 'var(--bq-secondary)' }}>{d}</span>
-            <span>{t}</span>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
+/* 5 · Process: see ./Process (the animated mission-control run). */
+export { Process } from './Process';
 
 /* 6 · What the audit covers. */
 export function AuditChecklist() {

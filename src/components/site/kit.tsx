@@ -10,6 +10,7 @@ import type { Faq } from '@/lib/schema';
 import { TerminalHead, type THFace } from '@/components/brand/BitHead';
 import { useInView } from '@/hooks/use-in-view';
 import { NavLogo } from '@/components/brand/BitUI';
+import { ThemeToggle } from '@/components/brand/ThemeToggle';
 
 /**
  * The Bit's Quest pages' shared parts: the hub at `/`, the two service pages and the
@@ -29,19 +30,19 @@ import { NavLogo } from '@/components/brand/BitUI';
 const v = (name: string, fallback: string) => `var(--pp-${name}, ${fallback})`;
 
 export const p = {
-  bg: v('bg', c.paper),
-  ink: v('ink', c.ink),
-  body: v('body', '#4a4a4a'),
-  dim: v('dim', c.dim),
-  gold: v('gold', c.markOnPaper),
+  bg: v('bg', 'var(--bq-bg)'),
+  ink: v('ink', 'var(--bq-ink)'),
+  body: v('body', 'var(--bq-body-text)'),
+  dim: v('dim', 'var(--bq-muted)'),
+  gold: v('gold', 'var(--bq-brand)'),
   /** The accent for small type, where a bright accent can't hold contrast. */
-  goldText: v('gold-text', c.markOnPaper),
-  tick: v('tick', c.markOnPaper),
-  rule: v('rule', 'rgba(10,10,10,.14)'),
-  panel: v('panel', c.accent),
+  goldText: v('gold-text', 'var(--bq-brand)'),
+  tick: v('tick', 'var(--bq-brand)'),
+  rule: v('rule', 'var(--bq-rule)'),
+  panel: v('panel', 'var(--bq-panel)'),
   picked: v('picked', '#faf8f3'),
   /** White card on paper (Terminal Head theme). */
-  card: v('card', '#ffffff'),
+  card: v('card', 'var(--bq-panel)'),
 } as const;
 
 /** The ink-side tokens: dark bands, the CTA, the footer. Same fallback rule as `p`. */
@@ -155,7 +156,7 @@ const NAV = [
 ] as const;
 
 /** Sticky header (design: nav): mini Bit + wordmark, section links, red "Talk to Bit". */
-export const SiteHeader = ({ page, current, auditType }: { page: string; current?: ServiceKey; auditType?: ServiceKey }) => (
+export const SiteHeader = ({ page, current, auditType, themeToggle }: { page: string; current?: ServiceKey; auditType?: ServiceKey; themeToggle?: boolean }) => (
   <header
     data-rescue-header
     style={{ position: 'sticky', top: 0, zIndex: 20, background: p.bg, borderBottom: `${rule.edge}px solid ${p.ink}` }}
@@ -199,6 +200,7 @@ export const SiteHeader = ({ page, current, auditType }: { page: string; current
       >
         <span aria-hidden>▶</span> Talk to Bit
       </Link>
+      {themeToggle && <ThemeToggle />}
     </div>
   </header>
 );
@@ -430,8 +432,8 @@ export const FinalBand = ({
 );
 
 /** The page frame: graph-paper ground, header, main, footer. `theme` is accepted and ignored: one brand now. */
-export const PaperPage = ({ header, children }: { header: ReactNode; children: ReactNode; theme?: CSSProperties }) => (
-  <div className="bq-page" style={{ color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+export const PaperPage = ({ header, children, themeable }: { header: ReactNode; children: ReactNode; theme?: CSSProperties; themeable?: boolean }) => (
+  <div className="bq-page" data-themeable={themeable ? '' : undefined} style={{ color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
     {header}
     <main style={{ flex: 1 }}>{children}</main>
     <SiteFooter />
