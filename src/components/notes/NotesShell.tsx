@@ -1,12 +1,9 @@
 import type { ReactNode } from 'react';
-import { Link } from 'vite-react-ssg';
+import { SiteFooter, SiteHeader } from '@/components/site/kit';
 import { buttonType, c, display, label, mono, px, rule, s } from '@/components/brand/tokens';
-import { trackRescue } from '@/lib/rescue/track';
 import { MEASURE } from './prose';
-import { BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { NextUp } from './OnRamp';
 import Banner from './Banner';
-import { NavLogo } from '@/components/brand/BitUI';
 import BackToTop from './BackToTop';
 import { relatedTo } from '@/content';
 import type { Post } from '@/data/notes';
@@ -26,55 +23,17 @@ import type { Post } from '@/data/notes';
  */
 const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) => (
   <div
+    className="bq-page"
     style={{
-      background: c.paper,
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
       // The rail's sticky offset and every anchored heading's scroll-margin
       // measure against this, so the one number lives in one place.
-      ['--pf-header-h' as string]: '60px',
+      ['--pf-header-h' as string]: '72px',
     }}
   >
-    <header
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: s[4],
-        padding: px(s[4], 0),
-        paddingLeft: 'clamp(20px, 5vw, 40px)',
-        paddingRight: 'clamp(20px, 5vw, 40px)',
-        borderBottom: `${rule.edge}px solid ${c.ink}`,
-        position: 'sticky',
-        top: 0,
-        background: c.paper,
-        zIndex: 10,
-      }}
-    >
-      <NavLogo />
-      <nav style={{ display: 'flex', alignItems: 'center', gap: s[5] }}>
-        <Link to="/notes" style={{ ...label(11, 700, 0.14), color: c.ink, textDecoration: 'none' }}>
-          NOTES
-        </Link>
-        {/* The case studies. The portfolio itself lives on its own subdomain
-            and is linked from the footer. */}
-        <Link to="/work" className="pf-notes-work" style={{ ...label(11, 700, 0.14), color: c.dim, textDecoration: 'none' }}>
-          WORK
-        </Link>
-        {/* The one way from a note into a service. It goes to the audit
-            chooser, not straight to the app form: most readers of drops and
-            dispatches aren't app founders. Kept small enough that the header
-            stays inside --pf-header-h. */}
-        <Link
-          to="/audit"
-          onClick={() => trackRescue('audit_cta_click', { location: 'notes_header' })}
-          style={{ ...buttonType(13), padding: px(4, s[3]), background: c.ink, color: c.accent, textDecoration: 'none', whiteSpace: 'nowrap' }}
-        >
-          Free audit →
-        </Link>
-      </nav>
-    </header>
+    <SiteHeader page="notes" />
 
     <main style={{ flex: 1 }}>{children}</main>
 
@@ -96,36 +55,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
 
     {post && <NextUp posts={relatedTo(post)} />}
 
-    <footer
-      style={{
-        borderTop: `${rule.edge}px solid ${c.ink}`,
-        padding: px(s[9], 0),
-        paddingLeft: 'clamp(20px, 5vw, 40px)',
-        paddingRight: 'clamp(20px, 5vw, 40px)',
-        background: c.ink,
-      }}
-    >
-      <div style={{ maxWidth: MEASURE, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: s[4], justifyContent: 'space-between' }}>
-        <span style={{ ...label(10, 500, 0.14), color: c.dimOnInk }}>NOTES · {BYLINE}</span>
-        <span style={{ display: 'flex', flexWrap: 'wrap', gap: s[5] }}>
-          <Link to="/ai-visibility" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
-            AI VISIBILITY
-          </Link>
-          <Link to="/dpdp" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
-            DPDP
-          </Link>
-          <Link to="/production-ready" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
-            APP RESCUE
-          </Link>
-          <a href="/rss.xml" style={{ ...label(10, 700, 0.14), color: c.dimOnInk, textDecoration: 'none' }}>
-            RSS
-          </a>
-          <a href={PORTFOLIO_ORIGIN} style={{ ...label(10, 700, 0.14), color: c.mark, textDecoration: 'none' }}>
-            BACK TO THE PORTFOLIO →
-          </a>
-        </span>
-      </div>
-    </footer>
+    <SiteFooter />
   </div>
 );
 

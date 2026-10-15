@@ -1,15 +1,15 @@
 import { useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
+import { SiteFooter, SiteHeader } from '@/components/site/kit';
 import { track } from '@vercel/analytics';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/brand/tokens';
 import { parseScanInput } from '@/lib/scan/validate';
 import { KIT } from '@/lib/kit/product';
 import type { Finding, ScanReport, Severity } from '@/lib/scan/report';
-import LegalLinks from '@/components/LegalLinks';
 import { TerminalHead, type THFace } from '@/components/brand/BitHead';
-import { NavLogo, ScanStatus } from '@/components/brand/BitUI';
+import { ScanStatus } from '@/components/brand/BitUI';
 
 /**
  * `/scan`: the free Supabase security check.
@@ -51,8 +51,6 @@ const jsonLd = {
 
 const AUDIT = '/audit?type=app&s=1';
 const AUDIT_PLAIN = '/audit?type=app';
-const GITHUB = 'https://github.com/Anadi9';
-const LINKEDIN = 'https://www.linkedin.com/in/anadi-thakur-92163316b/';
 
 const p = {
   bg: c.paper,
@@ -414,25 +412,10 @@ export default function Scan() {
   const scanning = status.kind === 'scanning';
 
   return (
-    <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="bq-page" style={{ color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Seo title={TITLE} description={DESCRIPTION} path="/scan" type="website" jsonLd={jsonLd} />
 
-      <header
-        data-rescue-header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: s[4],
-          padding: px(s[4], gutter),
-          borderBottom: `${rule.edge}px solid ${p.rule}`,
-        }}
-      >
-        <NavLogo />
-        <Link to="/production-ready" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
-          ← PRODUCTION READINESS
-        </Link>
-      </header>
+      <SiteHeader page="scan" />
 
       <main style={{ flex: 1 }}>
         <section data-rescue-hpad style={{ containerType: 'inline-size', padding: px(s[10], gutter, sectionY.bottom) }}>
@@ -575,33 +558,7 @@ export default function Scan() {
         </section>
       </main>
 
-      <footer
-        data-rescue-footer
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: s[6],
-          padding: px(s[8], gutter, s[10]),
-          background: c.ink,
-          borderTop: `${rule.hair}px solid ${c.rule}`,
-        }}
-      >
-        <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
-        <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
-          <Link to="/production-ready" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            PRODUCTION READINESS
-          </Link>
-          <a href={GITHUB} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            GITHUB ↗
-          </a>
-          <a href={LINKEDIN} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            LINKEDIN ↗
-          </a>
-        </nav>
-        <LegalLinks />
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

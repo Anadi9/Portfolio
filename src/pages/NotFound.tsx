@@ -1,7 +1,8 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Head } from 'vite-react-ssg';
-import { c, display, heading, label, px, s, stretch } from '@/components/brand/tokens';
+import { Bit } from '@/components/brand/Bit';
+import { c, display, label, s } from '@/components/brand/tokens';
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,13 +13,14 @@ const NotFound = () => {
 
   return (
     <div
+      className="bq-page"
       style={{
         minHeight: '100vh',
-        background: c.ink,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        gap: s[7],
+        alignItems: 'flex-start',
+        gap: s[6],
         padding: 'clamp(24px,6vw,80px)',
       }}
     >
@@ -29,37 +31,23 @@ const NotFound = () => {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <span style={{ ...label(11, 700, 0.16), color: c.mark }}>ERROR · 404</span>
-      <h1
-        style={{
-          margin: 0,
-          ...heading('d0', { stretch: stretch.bleed, vw: true }),
-          color: c.accent,
-          textTransform: 'uppercase',
-        }}
-      >
-        Nothing
-        <br />
-        here
+      <Bit pose="found" size={126} bob label="Bit, looking for a page that isn't here" />
+      <span style={{ ...label(11), color: c.shell }}>Error · 404</span>
+      <h1 className="bq-h1" style={{ fontSize: 'clamp(56px, 9vw, 120px)' }}>
+        Bit looked everywhere.
       </h1>
-      <p style={{ margin: 0, maxWidth: 520, font: `400 16px/1.5 ${display}`, color: c.dimOnInk }}>
-        <code style={{ color: '#fff' }}>{location.pathname}</code> isn&apos;t a page on this site. The work, the route
-        and the contact details all live on the front page.
+      <p style={{ margin: 0, maxWidth: 520, font: `400 17px/1.5 ${display}`, color: c.dim }}>
+        <code style={{ color: c.ink }}>{location.pathname}</code> isn&apos;t a page on this site. Your app can still be
+        made production-ready, though.
       </p>
-      <a
-        href="/"
-        className="pf-nudge"
-        style={{
-          alignSelf: 'flex-start',
-          padding: px(s[4], s[6]),
-          background: c.accent,
-          color: c.ink,
-          ...label(11, 700, 0.12),
-          textDecoration: 'none',
-        }}
-      >
-        BACK TO THE PORTFOLIO →
-      </a>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[4] }}>
+        <a href="/" className="bq-btn">
+          <span aria-hidden>▶</span> Back to home
+        </a>
+        <a href="/audit?type=app" className="bq-btn-ghost">
+          Find my app&apos;s first bug — free
+        </a>
+      </div>
     </div>
   );
 };

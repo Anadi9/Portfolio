@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'vite-react-ssg';
+import { SiteHeader } from '@/components/site/kit';
 import { useLocation } from 'react-router-dom';
 import { Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/brand/tokens';
@@ -8,7 +9,6 @@ import Sample from '@/components/teardown/Sample';
 import Verdict from '@/components/teardown/Verdict';
 import { verdictFace } from '@/components/teardown/face';
 import { TerminalHead } from '@/components/brand/BitHead';
-import { NavLogo } from '@/components/brand/BitUI';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { band, score as scoreOf } from '@/lib/teardown/score';
 import { decodeAnswers, resultPaths } from '@/lib/teardown/share';
@@ -85,30 +85,7 @@ export default function TeardownResult() {
         robots="noindex, follow"
       />
 
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: s[4],
-          padding: px(s[4], gutter),
-          borderBottom: `${rule.edge}px solid ${c.rule}`,
-        }}
-      >
-        {/* Dark page: the wordmark reads light and the sprite takes Night Shift. */}
-        <span data-th-mode="night" style={{ ['--pp-ink' as string]: '#f2f0ea' }}>
-          <NavLogo />
-        </span>
-        <nav aria-label="Site" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
-          <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
-            NOTES
-          </Link>
-          <Link to="/audit?type=app" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
-            FREE AUDIT
-          </Link>
-        </nav>
-      </header>
+      <SiteHeader page="teardown_result" />
 
       <main style={{ flex: 1 }}>
         <section aria-label="A shared result" style={{ ...section, borderTop: 'none' }}>

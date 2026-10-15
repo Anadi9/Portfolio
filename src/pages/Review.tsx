@@ -1,8 +1,8 @@
+import { SiteHeader } from '@/components/site/kit';
 import { useState } from 'react';
 import type { ChangeEvent, CSSProperties, FormEvent, ReactNode } from 'react';
 import { Seo } from '@/components/Seo';
 import { TerminalHead } from '@/components/brand/BitHead';
-import { NavLogo } from '@/components/brand/BitUI';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/brand/tokens';
 import { FIELD_MAX, PHOTO_EDGE, REVIEW_MAX, parseReview, type ReviewField } from '@/lib/review/intake';
 
@@ -183,15 +183,10 @@ export default function Review() {
   const shown = hover || form.rating;
 
   return (
-    <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="bq-page" style={{ color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Seo title={TITLE} description={DESCRIPTION} path="/review" type="website" robots="noindex, nofollow" />
 
-      <header
-        data-rescue-header
-        style={{ display: 'flex', alignItems: 'center', gap: s[4], padding: px(s[4], gutter), borderBottom: `${rule.edge}px solid rgba(10,10,10,.14)` }}
-      >
-        <NavLogo />
-      </header>
+      <SiteHeader page="review" />
 
       <main style={{ flex: 1 }}>
         <section data-rescue-hpad style={{ padding: px(s[10], gutter, sectionY.bottom) }}>

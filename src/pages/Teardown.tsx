@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'vite-react-ssg';
+import { SiteHeader } from '@/components/site/kit';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/brand/tokens';
 import Gate from '@/components/teardown/Gate';
@@ -9,7 +10,6 @@ import Share from '@/components/teardown/Share';
 import Verdict from '@/components/teardown/Verdict';
 import { verdictFace } from '@/components/teardown/face';
 import { TerminalHead } from '@/components/brand/BitHead';
-import { NavLogo } from '@/components/brand/BitUI';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { report } from '@/lib/teardown/report';
 
@@ -90,30 +90,7 @@ export default function Teardown() {
     <div style={{ background: c.ink, color: '#fff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Seo title={TITLE} description={DESCRIPTION} path="/teardown" type="website" jsonLd={jsonLd} />
 
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: s[4],
-          padding: px(s[4], gutter),
-          borderBottom: `${rule.edge}px solid ${c.rule}`,
-        }}
-      >
-        {/* Dark page: the wordmark reads light and the sprite takes Night Shift. */}
-        <span data-th-mode="night" style={{ ['--pp-ink' as string]: '#f2f0ea' }}>
-          <NavLogo />
-        </span>
-        <nav aria-label="Site" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
-          <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
-            NOTES
-          </Link>
-          <Link to="/audit?type=app" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.dimOnInk }}>
-            FREE AUDIT
-          </Link>
-        </nav>
-      </header>
+      <SiteHeader page="teardown" />
 
       <main style={{ flex: 1 }}>
         <section style={{ ...section, borderTop: 'none' }}>

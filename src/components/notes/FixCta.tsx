@@ -34,7 +34,7 @@ const FixCta = ({ post }: { post: FixPost }) => {
 
   return (
     <aside
-      aria-label="Free audit"
+      aria-label="First bug free"
       style={{
         marginTop: s[12],
         padding: s[8],
@@ -65,7 +65,7 @@ const FixCta = ({ post }: { post: FixPost }) => {
             ...label(12, 700, 0.12),
           }}
         >
-          GET THE FREE AUDIT →
+          FIND MY FIRST BUG — FREE →
         </Link>
 
         {/* An app nobody can find is also an AI visibility problem, so that
