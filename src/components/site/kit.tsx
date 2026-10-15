@@ -228,8 +228,8 @@ export const SiteFooter = () => (
         <nav aria-label="Services" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
           <span style={footHead}>Services</span>
           <Link to="/production-ready" className="pf-underline" style={footLink}>Fix &amp; launch-ready</Link>
-          <a href="/#services" className="pf-underline" style={footLink}>Build with AI</a>
-          <a href="/#pricing" className="pf-underline" style={footLink}>Care plan</a>
+          <Link to="/build-with-ai" className="pf-underline" style={footLink}>Build with AI</Link>
+          <Link to="/care" className="pf-underline" style={footLink}>Care plan</Link>
           <a href="/#pricing" className="pf-underline" style={footLink}>Pricing</a>
           <Link to="/audit?type=app" className="pf-underline" style={footLink}>First bug free</Link>
         </nav>

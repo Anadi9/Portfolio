@@ -66,6 +66,7 @@ export const services = {
       fixes: ['Login, accounts and permissions', 'Data security and access rules', 'Payments, deploys and error tracking', 'Speed, crashes and stability'],
       stats: [['Audit', '$349'], ['Fix', '$1,500–$6,000'], ['Time', 'From 1 week']],
       ask: FIRST_BUG,
+      more: '/production-ready',
     },
     {
       icon: 'spark-dark',
@@ -75,6 +76,7 @@ export const services = {
       fixes: ['Assistants that answer from your data', 'Smart search and document reading', 'Agents and workflow automations', 'Guardrails, fallbacks and cost limits'],
       stats: [['AI build', '$2,000–$8,000'], ['MVP', '$6,000–$20,000'], ['Quote', 'Fixed']],
       ask: QUOTE_AI,
+      more: '/build-with-ai',
     },
     {
       icon: 'shield-dark',
@@ -84,8 +86,9 @@ export const services = {
       fixes: ['Monitoring and a monthly health review', 'Small fixes and upgrades every month', 'Quarterly search-visibility re-check', 'Quarterly privacy check (GDPR · CCPA · DPDP)'],
       stats: [['Care', '$299/mo'], ['Term', 'Monthly'], ['Cancel', 'Anytime']],
       ask: QUOTE_CARE,
+      more: '/care',
     },
-  ] satisfies { icon: IconName; tag: string; title: string; forYou: string; fixes: string[]; stats: string[][]; ask: string }[],
+  ] satisfies { icon: IconName; tag: string; title: string; forYou: string; fixes: string[]; stats: string[][]; ask: string; more: string }[],
 };
 
 export const report = {

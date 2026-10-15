@@ -306,9 +306,9 @@ export function Services() {
               <Go href={sv.ask} className="bq-btn" onClick={track(`services:${sv.tag}`)}>
                 Is this me? Ask
               </Go>
-              <a href="#pricing" className="bq-btn-ghost">
-                See prices <span aria-hidden>▶</span>
-              </a>
+              <Go href={sv.more} className="bq-btn-ghost">
+                More <span aria-hidden>▶</span>
+              </Go>
             </div>
           </article>
         ))}

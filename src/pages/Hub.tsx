@@ -52,28 +52,22 @@ const jsonLd = graph(
       serviceType: "Production fixes for web and mobile apps",
       offers: offers.fix,
     }),
-    {
-      ...service({
-        path: "/",
-        name: "Build with AI",
-        description:
-          "AI features with guardrails and cost limits, or a complete MVP, at a fixed quote.",
-        serviceType: "AI feature and MVP development",
-        offers: offers.build,
-      }),
-      "@id": "https://anadithakur.in/#service-build",
-    },
-    {
-      ...service({
-        path: "/",
-        name: "Care plan",
-        description:
-          "Monitoring, a monthly health review, small fixes and a quarterly visibility and privacy re-check.",
-        serviceType: "Application maintenance",
-        offers: offers.care,
-      }),
-      "@id": "https://anadithakur.in/#service-care",
-    },
+    service({
+      path: "/build-with-ai",
+      name: "Build with AI",
+      description:
+        "AI features with guardrails and cost limits, or a complete MVP, at a fixed quote.",
+      serviceType: "AI feature and MVP development",
+      offers: offers.build,
+    }),
+    service({
+      path: "/care",
+      name: "Care plan",
+      description:
+        "Monitoring, a monthly health review, small fixes and a quarterly visibility and privacy re-check.",
+      serviceType: "Application maintenance",
+      offers: offers.care,
+    }),
     faqPage(faq.items, "https://anadithakur.in/#faq"),
   ],
   true,

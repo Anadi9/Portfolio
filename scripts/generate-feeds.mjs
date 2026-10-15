@@ -67,6 +67,8 @@ const pages = [
   { path: '/ai-visibility', priority: '1.0' },
   { path: '/dpdp', priority: '1.0' },
   { path: '/production-ready', priority: '1.0' },
+  { path: '/build-with-ai', priority: '1.0' },
+  { path: '/care', priority: '1.0' },
   { path: '/audit', priority: '0.9' },
   { path: '/ai-readiness', priority: '0.9' },
   { path: '/dpdp/check', priority: '0.9' },
@@ -150,8 +152,8 @@ Anadi Thakur is a senior full-stack engineer based in India with 4+ years shippi
 All prices are fixed, in USD. Every project starts with a free first-bug review: the biggest risk in the app, on video, with the fixed price to fix it.
 
 - [Fix it or get it launch-ready](${ORIGIN}/production-ready): Production audit $349 (48 hours; reliability and security, search and AI visibility, privacy and compliance, ranked by business impact; credited 100% toward any package; full refund if nothing real is found). Launch-ready sprint $1,500–$2,500 (1 week, up to three problem areas). Full rescue $3,000–$6,000 (2–3 weeks, everything the audit found plus tests and monitoring). Half to start, the second half once the fix is live and confirmed.
-- [Build with AI](${ORIGIN}/#pricing): AI build $2,000–$8,000 (1–4 weeks: an assistant, smart search or automation with guardrails and cost limits). MVP build $6,000–$20,000 (4–8 weeks: a complete web or mobile product). Fixed quote after a short scoping call, weekly demos, paid in milestones.
-- [Keep it running](${ORIGIN}/#pricing): Care plan $299/month: monitoring, a monthly health review, small fixes, and a quarterly search-visibility and privacy re-check. Cancel anytime.
+- [Build with AI](${ORIGIN}/build-with-ai): AI build $2,000–$8,000 (1–4 weeks: an assistant, smart search or automation with guardrails and cost limits). MVP build $6,000–$20,000 (4–8 weeks: a complete web or mobile product). Fixed quote after a short scoping call, weekly demos, paid in milestones.
+- [Keep it running](${ORIGIN}/care): Care plan $299/month: monitoring, a monthly health review, small fixes, and a quarterly search-visibility and privacy re-check. Cancel anytime.
 - [First bug free](${ORIGIN}/audit): one form. No access needed, no sales call unless asked for.
 
 ## What the audit checks

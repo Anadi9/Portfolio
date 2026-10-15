@@ -57,6 +57,17 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/AiVisibility').then((m) => ({ Component: m.default })),
         entry: 'src/pages/AiVisibility.tsx',
       },
+      // The other two Bit's Quest services. Fix lives at /production-ready.
+      {
+        path: '/build-with-ai',
+        lazy: () => import('./pages/BuildWithAi').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/BuildWithAi.tsx',
+      },
+      {
+        path: '/care',
+        lazy: () => import('./pages/Care').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Care.tsx',
+      },
       {
         path: '/dpdp',
         lazy: () => import('./pages/Dpdp').then((m) => ({ Component: m.default })),
