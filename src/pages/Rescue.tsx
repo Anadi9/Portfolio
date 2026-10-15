@@ -21,7 +21,7 @@ import { useInView } from '@/hooks/use-in-view';
  * 301s here.)
  *
  * This was the homepage until the hub at `/` replaced it; it is now one of the
- * hub's three services. The portfolio is its own site at `PORTFOLIO_ORIGIN`,
+ * homepage's Fix service. The portfolio is its own site at `PORTFOLIO_ORIGIN`,
  * so links that mean "about me" are absolute `<a>`s, and the logo goes to the
  * hub. The page carries this service's JSON-LD (a `Service` provided by the
  * site-wide business entity, its offers, the FAQ as `FAQPage` and a breadcrumb),

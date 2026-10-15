@@ -56,7 +56,7 @@ const jsonLd = graph([
   faqPage(faqs, `https://anadithakur.in${PATH}#faq`),
   breadcrumbs(
     [
-      { name: 'DPDP Readiness', path: '/dpdp' },
+      { name: 'Privacy & compliance', path: '/dpdp' },
       { name: 'Self-check', path: PATH },
     ],
     `https://anadithakur.in${PATH}#breadcrumb`,
@@ -211,7 +211,7 @@ const DpdpCheck = () => {
           </ol>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: s[6], marginTop: s[8] }}>
             <Link to="/audit?type=dpdp" onClick={ctaClick(PAGE, 'gaps', 'dpdp')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]) }}>
-              Have me build these: free audit first<span aria-hidden>→</span>
+              Have these built: first bug free<span aria-hidden>→</span>
             </Link>
             <Link to="/dpdp" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
               HOW DPDP READINESS WORKS →

@@ -129,7 +129,7 @@ const Result = ({ report }: { report: Report }) => {
           )}
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: s[5] }}>
             <Link to={auditTo} onClick={ctaClick(PAGE, 'result', 'ai')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]) }}>
-              Have me fix it: free audit first<span aria-hidden>→</span>
+              Have it fixed: first bug free<span aria-hidden>→</span>
             </Link>
           </div>
           <p style={{ ...body, fontSize: 14 }}>

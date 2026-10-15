@@ -341,7 +341,7 @@ export default function ProductionKit() {
           <div style={{ display: 'grid', gap: s[5], padding: px(s[9], s[7]), background: c.plate, color: c.paper, alignContent: 'start' }}>
             <p style={{ margin: 0, font: `600 17px/1.3 ${display}`, color: c.paper }}>Rather have it fixed?</p>
             <p style={{ margin: 0, font: `400 15px/1.55 ${display}`, color: c.bright }}>
-              Get a free audit of your app: security, auth, deploys and performance, with a fixed price for the fix.
+              Get your app’s first bug found free, on video: security, auth, deploys and performance, with a fixed price for the fix.
             </p>
             <Link to="/audit?type=app" className="pf-underline" style={{ ...label(11, 700, 0.14), color: c.accent, justifySelf: 'start' }}>
               FREE AUDIT →

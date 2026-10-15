@@ -136,21 +136,29 @@ writeFileSync(join(OUT, 'rss.xml'), rss);
 
 // The llmstxt.org summary AI answer engines read before (or instead of) the
 // pages. Prices can't be imported from the TSX they live in, so they are
-// repeated here: change them in `Rescue.tsx`, `AiVisibility.tsx` or `Dpdp.tsx`
-// and here too. The first paragraph is the business's one-line description and
+// repeated here: change them in `data/bitsQuest.ts` and `Rescue.tsx` and here
+// too. The first paragraph is the business's one-line description and
 // must match `BUSINESS_TAGLINE` in `src/lib/schema.ts` word for word.
-const llms = `# Anadi Thakur · Get your business ready for the AI era
+const llms = `# Anadi Thakur · Your app, made production-ready
 
-> AI visibility audits, DPDP readiness and production fixes for AI-built apps, by a full-stack engineer who builds every fix personally.
+> Your app, made production-ready: fixes, AI builds and ongoing care for web and mobile apps, at fixed prices, by a senior full-stack engineer who does the work himself.
 
-Anadi Thakur is a full-stack engineer based in India with 4+ years shipping production web and mobile apps (including the ZEISS Microscopy platform). Anadi works with Indian and US businesses, remotely, and is available 8am–12pm US Eastern. Every engagement starts with a free audit based only on what is publicly visible, delivered in 48 hours as a short video and a one-page report, followed by fixed-price fixes built by Anadi directly. Contact: anadithakur99@gmail.com.
+Anadi Thakur is a senior full-stack engineer based in India with 4+ years shipping production web and mobile apps (including the ZEISS Microscopy platform). He fixes and hardens React, Next.js, React Native, Node.js and PostgreSQL products (plus Supabase and Firebase), whether written by people or with AI tools like Cursor, Claude Code, Lovable, Bolt, v0 or Replit, and adds AI features that hold up in production. Works with Indian and US businesses, remotely, available 8am–12pm US Eastern. Bit is the site's AI assistant; Anadi reads every request and does the work. Contact: anadithakur99@gmail.com.
 
 ## Services
 
-- [AI Visibility](${ORIGIN}/ai-visibility): checks whether ChatGPT, Gemini and Perplexity mention a business when customers ask for recommendations, who they recommend instead, and whether the site gives AI the information it needs (structured data, product details, clear pages); then builds the fixes and re-tests after 30 days. Free check (10 questions, readability score, top 3 fixes); deep audit ₹15,000 / $300; fixes from ₹40,000 / $1,000; monthly upkeep from ₹10,000 / $250.
-- [DPDP Readiness](${ORIGIN}/dpdp): implementation partner for India's Digital Personal Data Protection Act, 2023 and the DPDP Rules, 2025, whose core obligations apply from May 2027. Builds consent notices and consent capture, withdrawal, data access and deletion requests, retention and erasure, breach alerts and the audit trail into web and mobile apps, to what the client's lawyer specifies. Not a law firm.
-- [Production Readiness](${ORIGIN}/production-ready): fixed-price fixes that make a broken app or software ready for real users, hand-coded or built with Lovable, Bolt, Cursor and v0: security, database, auth, payments, deployment and performance. A single fix $499, a launch rescue $1,200–1,800, a full rescue from $2,500, done in 7 days with 7 days of follow-up fixes. If something in the quote isn't fixed, it isn't paid for. Monthly production care at $249/month.
-- [Free audit](${ORIGIN}/audit): one form for all three services. Public information only, no access needed, plain-English report in 48 hours, no sales call unless asked for.
+All prices are fixed, in USD. Every project starts with a free first-bug review: the biggest risk in the app, on video, with the fixed price to fix it.
+
+- [Fix it or get it launch-ready](${ORIGIN}/production-ready): Production audit $349 (48 hours; reliability and security, search and AI visibility, privacy and compliance, ranked by business impact; credited 100% toward any package; full refund if nothing real is found). Launch-ready sprint $1,500–$2,500 (1 week, up to three problem areas). Full rescue $3,000–$6,000 (2–3 weeks, everything the audit found plus tests and monitoring). Half to start, the second half once the fix is live and confirmed.
+- [Build with AI](${ORIGIN}/#pricing): AI build $2,000–$8,000 (1–4 weeks: an assistant, smart search or automation with guardrails and cost limits). MVP build $6,000–$20,000 (4–8 weeks: a complete web or mobile product). Fixed quote after a short scoping call, weekly demos, paid in milestones.
+- [Keep it running](${ORIGIN}/#pricing): Care plan $299/month: monitoring, a monthly health review, small fixes, and a quarterly search-visibility and privacy re-check. Cancel anytime.
+- [First bug free](${ORIGIN}/audit): one form. No access needed, no sales call unless asked for.
+
+## What the audit checks
+
+- [Reliability & security](${ORIGIN}/production-ready): accounts and access, customer data protection, exposed keys and secrets, safe releases, performance and error alerts.
+- [Search & AI visibility](${ORIGIN}/ai-visibility): whether Google and AI assistants (ChatGPT, Gemini, Perplexity) can read the site and recommend the business; business information, answer-ready content, reviews and mentions.
+- [Privacy & compliance](${ORIGIN}/dpdp): consent, privacy notices, data map, customer data requests, vendors and incident readiness, aligned with GDPR, CCPA and India's DPDP Act (core obligations from May 2027). Not a law firm.
 
 ## Free tools
 

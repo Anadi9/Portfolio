@@ -75,7 +75,7 @@ export type Study = {
 /** The soft CTA every client project ends on. */
 const CLIENT_CTA = {
   lead: 'Have an app like this that needs to hold up in production?',
-  label: 'Get a free audit',
+  label: 'Find my first bug — free',
   href: '/audit?type=app',
 };
 

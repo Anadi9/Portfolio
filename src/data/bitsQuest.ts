@@ -90,7 +90,7 @@ export const services = {
 
 export const report = {
   eyebrow: 'Sample audit report',
-  title: 'What the free audit looks like.',
+  title: 'What the audit report looks like.',
   intro: 'Three areas. One clear report. Bit lines up the checks; Anadi writes yours.',
   rows: [
     { icon: 'lens-dark', area: 'AI search visibility', line: 'Mentioned in 3 of 5 test questions asked to AI assistants.', state: 'Pass', tone: 'ok' },

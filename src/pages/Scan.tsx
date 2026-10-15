@@ -313,7 +313,7 @@ function Results({ report, onReset }: { report: ScanReport; onReset: () => void 
           <span style={{ ...label(10, 700, 0.16), color: p.body }}>WHAT THIS DOESN’T COVER</span>
           <p style={{ ...body, color: p.ink }}>
             Your database is closed to strangers, which puts you ahead of most AI-built apps. The other places they break are
-            auth flows, deploys and performance. If any of those keep you up, the free audit looks at all of it.{' '}
+            auth flows, deploys and performance. If any of those keep you up, the free first-bug review and the audit look at all of it.{' '}
             <Link
               to={KIT.path}
               onClick={() => track('scan_kit_click', { critical: 0, pack: 'none' })}

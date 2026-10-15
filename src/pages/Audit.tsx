@@ -294,7 +294,7 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
               <span role="status">Sending…</span>
             </>
           ) : (
-            'Send me my free audit'
+            'Send me my free check'
           )}
           <span aria-hidden>→</span>
         </button>

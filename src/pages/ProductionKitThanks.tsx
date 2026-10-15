@@ -64,7 +64,7 @@ export default function ProductionKitThanks() {
           <p style={{ ...body, font: `400 15px/1.55 ${display}` }}>
             Stuck, or found something wrong? Reply to the delivery email. Rather have it done for you?{' '}
             <Link to="/audit?type=app" style={{ color: p.ink }}>
-              Get a free audit
+              Find my app’s first bug, free
             </Link>
             .
           </p>

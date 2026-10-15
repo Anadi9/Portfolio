@@ -17,7 +17,7 @@ export const BUSINESS_ID = `${ORIGIN}/#business`;
 
 /** One line, used verbatim wherever the business describes itself. Keep it identical everywhere. */
 export const BUSINESS_TAGLINE =
-  'AI visibility audits, DPDP readiness and production fixes for apps and software, by a full-stack engineer who builds every fix personally.';
+  'Your app, made production-ready: fixes, AI builds and ongoing care for web and mobile apps, at fixed prices, by a senior full-stack engineer who does the work himself.';
 
 export const PERSON = {
   '@type': 'Person',
@@ -29,6 +29,8 @@ export const PERSON = {
   sameAs: [site.github, site.linkedin],
   worksFor: { '@id': BUSINESS_ID },
   knowsAbout: [
+    'Production readiness',
+    'AI feature development',
     'Generative engine optimisation (GEO)',
     'Answer engine optimisation (AEO)',
     'AI visibility',
@@ -47,7 +49,7 @@ export const PERSON = {
 export const BUSINESS = {
   '@type': 'ProfessionalService',
   '@id': BUSINESS_ID,
-  name: `${site.name} · AI-era readiness`,
+  name: `${site.name} · Production-ready apps`,
   alternateName: site.name,
   description: BUSINESS_TAGLINE,
   url: `${ORIGIN}/`,
@@ -61,7 +63,7 @@ export const BUSINESS = {
     { '@type': 'Country', name: 'United States' },
     { '@type': 'Place', name: 'Worldwide' },
   ],
-  knowsAbout: ['AI visibility', 'GEO', 'AEO', 'DPDP compliance', 'Production engineering'],
+  knowsAbout: ['Production engineering', 'Application security', 'AI feature development', 'MVP development', 'Application maintenance', 'AI visibility', 'Privacy compliance (GDPR, CCPA, DPDP)'],
   sameAs: [site.linkedin, site.github],
 };
 
