@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import type { PublicReview } from '@/lib/review/intake';
 import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { Bit } from '@/components/brand/Bit';
 
 /**
  * Approved reviews from `/review`, on the homepage and the portfolio.
@@ -81,7 +82,8 @@ const Card = ({ r }: { r: PublicReview }) => (
   </figure>
 );
 
-export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<string, string> }) {
+/** `mascot="bit"` on Bit's Quest pages; the portfolio keeps the default Terminal Head. */
+export default function Testimonials({ hpadAttr = {}, mascot = 'terminal' }: { hpadAttr?: Record<string, string>; mascot?: 'terminal' | 'bit' }) {
   const [reviews, setReviews] = useState<PublicReview[] | null>(null);
   const [all, setAll] = useState(false);
 
@@ -110,7 +112,7 @@ export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<stri
       <div data-testimonials-head style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'end', justifyContent: 'space-between', gap: s[6], marginBottom: s[9] }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: s[5] }}>
           {/* GUIDE.md: `happy` belongs on testimonials; still, so it never competes with the hero head. */}
-          <TerminalHead face="happy" size={60} motion="still" label="" />
+          {mascot === 'bit' ? <Bit pose="happy" size={54} /> : <TerminalHead face="happy" size={60} motion="still" label="" />}
           <h2 id="h-testimonials" style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' }}>
             From people I&apos;ve <span style={{ color: p.gold }}>worked with</span>
           </h2>

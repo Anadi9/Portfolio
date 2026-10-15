@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Head } from 'vite-react-ssg';
 import { Bit } from '@/components/brand/Bit';
+import { brandHeadTags } from '@/components/Seo';
 import { c, display, label, s } from '@/components/brand/tokens';
 
 const NotFound = () => {
@@ -29,6 +30,7 @@ const NotFound = () => {
       <Head>
         <title>Not found · Anadi Thakur</title>
         <meta name="robots" content="noindex" />
+        {brandHeadTags()}
       </Head>
 
       <Bit pose="found" size={126} bob label="Bit, looking for a page that isn't here" />

@@ -8,6 +8,21 @@ export const PORTFOLIO_ORIGIN = 'https://portfolio.anadithakur.in';
 
 export const BYLINE = '@the.anadi';
 
+/** Bit's Quest fonts. Loaded per page on the main site only; the portfolio keeps `index.html`'s set. */
+export const BRAND_FONTS =
+  'https://fonts.googleapis.com/css2?family=Jersey+10&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap';
+
+/**
+ * Bit favicons and brand fonts, for every main-site page (the 404 calls it too).
+ * An array of plain tags, because Helmet rejects components and fragments as children.
+ */
+export const brandHeadTags = () => [
+  <link key="bq-fonts" rel="stylesheet" href={BRAND_FONTS} />,
+  <link key="bq-icon" rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />,
+  <link key="bq-icon32" rel="icon" href="/brand/favicon-32.png" sizes="32x32" type="image/png" />,
+  <link key="bq-apple" rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />,
+  <meta key="bq-theme" name="theme-color" content="#fafafa" />,
+];
 /**
  * Per-page head. Every route owns its own, and `index.html` deliberately carries
  * no title or description, because a static one there and a rendered one here
@@ -22,7 +37,7 @@ export const Seo = ({
   description,
   path,
   type = 'article',
-  image = '/og.png',
+  image,
   robots,
   jsonLd,
   origin = ORIGIN,
@@ -31,7 +46,7 @@ export const Seo = ({
   description: string;
   path: string;
   type?: 'website' | 'article' | 'blog';
-  /** Root-relative; made absolute here, because Twitter won't take anything else. */
+  /** Root-relative; made absolute here, because Twitter won't take anything else. Defaults to the site's card for the host. */
   image?: string;
   /**
    * Only set by pages that should be shareable but not indexed. The result
@@ -45,9 +60,13 @@ export const Seo = ({
   origin?: string;
 }) => {
   const url = `${origin}${path}`;
-  const img = image.startsWith('http') ? image : `${ORIGIN}${image}`;
+  // Main-site pages get Bit's icons and fonts; the portfolio (its own origin) is left exactly as it was.
+  const brand = origin === ORIGIN;
+  const card = image ?? (brand ? '/og-brand.png' : '/og.png');
+  const img = card.startsWith('http') ? card : `${ORIGIN}${card}`;
   return (
     <Head>
+      {brand && brandHeadTags()}
       <title>{title}</title>
       <meta name="description" content={description} />
       {robots && <meta name="robots" content={robots} />}
