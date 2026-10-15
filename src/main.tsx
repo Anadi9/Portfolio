@@ -4,6 +4,7 @@ import { routes } from './routes';
 import './index.css';
 import './styles/portfolio.css';
 import './styles/notes.css';
+import './styles/brand.css';
 
 /**
  * SSG entry.

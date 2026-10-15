@@ -1,0 +1,127 @@
+/*
+ * Bit's Quest brand tokens (design/bits-quest/tokens/tokens.css), for every
+ * page except the portfolio. Fonts load from index.html. Light is the default;
+ * `data-theme="dark"` on <html> flips the variables (no toggle ships yet).
+ *
+ * Everything below is scoped to `.bq-page` or prefixed `bq-` so the portfolio,
+ * which shares this bundle, renders exactly as before.
+ */
+:root {
+  --bq-brand: #d42e24;
+  --bq-brand-text: #ffffff;
+  --bq-secondary: #ffd60a;
+  --bq-brand-soft: #fdecea;
+
+  --bq-bg: #fafafa;
+  --bq-grid: #ededed;
+  --bq-panel: #ffffff;
+  --bq-ink: #121212;
+  --bq-muted: #525252;
+  --bq-dark-panel: #121212;
+  --bq-dark-panel-text: #f5f5f5;
+  --bq-dark-line: #3a3a3a;
+
+  --bq-font-display: 'Jersey 10', system-ui, sans-serif;
+  --bq-font-body: 'Space Grotesk', system-ui, sans-serif;
+  --bq-font-label: 'Press Start 2P', ui-monospace, monospace;
+  --bq-h1: clamp(40px, 5.2vw, 74px);
+  --bq-h2: clamp(34px, 4vw, 52px);
+  --bq-card-title: 30px;
+  --bq-price: 29px;
+  --bq-body: 16px;
+  --bq-label: 11px;
+
+  --bq-border: 3px solid var(--bq-ink);
+  --bq-border-thin: 2px solid var(--bq-ink);
+  --bq-shadow-sm: 4px 4px 0 var(--bq-ink);
+  --bq-shadow: 6px 6px 0 var(--bq-ink);
+  --bq-shadow-brand: 6px 6px 0 var(--bq-brand);
+  --bq-shadow-lg: 8px 8px 0 var(--bq-ink);
+
+  --bq-max: 1240px;
+  --bq-gutter: clamp(16px, 4vw, 40px);
+  --bq-section-y: 56px;
+}
+
+[data-theme='dark'] {
+  --bq-brand: #ff5247;
+  --bq-brand-text: #121212;
+  --bq-secondary: #ff7a70;
+  --bq-brand-soft: #2a1614;
+  --bq-bg: #121212;
+  --bq-grid: #1c1c1c;
+  --bq-panel: #1c1c1c;
+  --bq-ink: #f2f0ea;
+  --bq-muted: #b9b4aa;
+  --bq-dark-panel: #1c1c1c;
+  --bq-dark-panel-text: #f2f0ea;
+  --bq-shadow: 6px 6px 0 #000;
+}
+
+.bq-page {
+  background-color: var(--bq-bg);
+  background-image:
+    linear-gradient(var(--bq-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bq-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--bq-ink);
+  font-family: var(--bq-font-body);
+  min-height: 100vh;
+}
+.bq-page,
+.bq-page * {
+  font-synthesis: none;
+}
+.bq-page ::selection {
+  background: var(--bq-brand);
+  color: var(--bq-brand-text);
+}
+
+.bq-label { font-family: var(--bq-font-label); font-size: var(--bq-label); line-height: 1.5; text-transform: uppercase; }
+.bq-display { font-family: var(--bq-font-display); font-weight: 400; line-height: 1; }
+.bq-h1 { font-family: var(--bq-font-display); font-weight: 400; font-size: var(--bq-h1); line-height: 0.95; color: var(--bq-brand); text-shadow: 4px 4px 0 var(--bq-ink); margin: 0; }
+.bq-h2 { font-family: var(--bq-font-display); font-weight: 400; font-size: var(--bq-h2); line-height: 1; color: var(--bq-ink); margin: 0; }
+.bq-card { background: var(--bq-panel); border: var(--bq-border); box-shadow: var(--bq-shadow); }
+.bq-pixel { image-rendering: pixelated; shape-rendering: crispEdges; }
+
+/* Buttons press down onto their shadow. */
+.bq-btn,
+.bq-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--bq-font-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  min-height: 44px;
+  cursor: pointer;
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+}
+.bq-btn { font-size: 12px; line-height: 1.5; background: var(--bq-brand); color: var(--bq-brand-text); border: 0; padding: 12px 16px; box-shadow: var(--bq-shadow-sm); }
+.bq-btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--bq-ink); }
+.bq-btn:active { transform: translate(4px, 4px); box-shadow: none; }
+.bq-btn-ghost { font-size: 11px; line-height: 1.5; background: var(--bq-panel); color: var(--bq-ink); border: var(--bq-border-thin); padding: 10px 14px; }
+.bq-btn-ghost:hover { background: var(--bq-ink); color: var(--bq-bg); }
+.bq-btn:focus-visible,
+.bq-btn-ghost:focus-visible,
+.bq-page a:focus-visible,
+.bq-page button:focus-visible {
+  outline: 3px solid var(--bq-brand);
+  outline-offset: 3px;
+}
+
+/* Bit bobs; sections rise in. Both off under reduced motion. */
+@keyframes bq-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.bq-bob { animation: bq-bob 1.6s steps(2, end) infinite; }
+@keyframes bq-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.bq-rise { animation: bq-rise 480ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bq-page *,
+  .bq-page *::before,
+  .bq-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

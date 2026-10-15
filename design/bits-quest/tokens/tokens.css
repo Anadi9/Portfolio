@@ -1,0 +1,79 @@
+/* Bit's Quest — design tokens. Light is the default; add data-theme="dark" on <html> for dark. */
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Brand — swap these two to re-skin the site */
+  --bq-brand: #d42e24;          /* Signal red: buttons, headings, highlights, Bit's body */
+  --bq-brand-text: #ffffff;     /* text on brand */
+  --bq-secondary: #ffd60a;      /* Arcade yellow: labels/highlights on dark panels */
+  --bq-brand-soft: #fdecea;     /* tint behind selected/picked items */
+
+  /* Surfaces */
+  --bq-bg: #fafafa;             /* page (off-white) */
+  --bq-grid: #ededed;           /* 40px graph-paper grid lines */
+  --bq-panel: #ffffff;          /* cards, boards */
+  --bq-ink: #121212;            /* text, borders, hard shadows */
+  --bq-muted: #525252;
+  --bq-dark-panel: #121212;     /* "Start here" card, chat screen, mission control */
+  --bq-dark-panel-text: #f5f5f5;
+  --bq-dark-line: #3a3a3a;
+
+  /* Type */
+  --bq-font-display: 'Jersey 10', system-ui, sans-serif;     /* headings, prices — weight 400, never synthesized bold */
+  --bq-font-body: 'Space Grotesk', system-ui, sans-serif;    /* paragraphs, chat, buttons' long text */
+  --bq-font-label: 'Press Start 2P', ui-monospace, monospace; /* tiny UPPERCASE labels, nav, button labels — keep 9–13px & short */
+  --bq-h1: clamp(40px, 5.2vw, 74px);
+  --bq-h2: clamp(34px, 4vw, 52px);
+  --bq-card-title: 30px;
+  --bq-price: 29px;
+  --bq-body: 16px;
+  --bq-label: 11px;
+
+  /* Shape — square corners, thick borders, hard offset shadows (no blur) */
+  --bq-radius: 0;
+  --bq-border: 3px solid var(--bq-ink);
+  --bq-border-thin: 2px solid var(--bq-ink);
+  --bq-shadow-sm: 4px 4px 0 var(--bq-ink);
+  --bq-shadow: 6px 6px 0 var(--bq-ink);
+  --bq-shadow-brand: 6px 6px 0 var(--bq-brand);
+  --bq-shadow-lg: 8px 8px 0 var(--bq-ink);
+
+  /* Layout */
+  --bq-max: 1240px;
+  --bq-gutter: clamp(16px, 4vw, 40px);
+  --bq-section-y: 56px;
+}
+
+[data-theme="dark"] {
+  --bq-brand: #ff5247;
+  --bq-brand-text: #121212;
+  --bq-secondary: #ff7a70;
+  --bq-brand-soft: #2a1614;
+  --bq-bg: #121212;
+  --bq-grid: #1c1c1c;
+  --bq-panel: #1c1c1c;
+  --bq-ink: #f2f0ea;
+  --bq-muted: #b9b4aa;
+  --bq-dark-panel: #1c1c1c;
+  --bq-dark-panel-text: #f2f0ea;
+  --bq-dark-line: #3a3a3a;
+  --bq-shadow: 6px 6px 0 #000;
+}
+
+* { font-synthesis: none; }
+.bq-page {
+  background-color: var(--bq-bg);
+  background-image: linear-gradient(var(--bq-grid) 1px, transparent 1px), linear-gradient(90deg, var(--bq-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--bq-ink);
+  font-family: var(--bq-font-body);
+}
+.bq-label { font-family: var(--bq-font-label); font-size: var(--bq-label); line-height: 1.5; text-transform: uppercase; }
+.bq-display { font-family: var(--bq-font-display); font-weight: 400; line-height: 1; }
+.bq-h1 { font-family: var(--bq-font-display); font-size: var(--bq-h1); line-height: .95; color: var(--bq-brand); text-shadow: 4px 4px 0 var(--bq-ink); margin: 0; }
+.bq-card { background: var(--bq-panel); border: var(--bq-border); box-shadow: var(--bq-shadow); border-radius: 0; }
+.bq-btn { font-family: var(--bq-font-label); font-size: 12px; background: var(--bq-brand); color: var(--bq-brand-text); border: 0; padding: 12px 14px; min-height: 44px; box-shadow: var(--bq-shadow-sm); cursor: pointer; }
+.bq-btn:active { transform: translate(4px, 4px); box-shadow: none; }
+.bq-btn-ghost { font-family: var(--bq-font-label); font-size: 11px; background: transparent; color: var(--bq-ink); border: var(--bq-border-thin); padding: 10px 12px; min-height: 44px; }
+.bq-pixel { image-rendering: pixelated; shape-rendering: crispEdges; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

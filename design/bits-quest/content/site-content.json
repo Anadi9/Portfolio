@@ -1,0 +1,284 @@
+{
+  "guarantees": [
+    {
+      "title": "First bug free",
+      "detail": "A real issue in your app, on video, in 24h."
+    },
+    {
+      "title": "Audit credited 100%",
+      "detail": "Every dollar counts toward the fix."
+    },
+    {
+      "title": "Nothing found? Full refund",
+      "detail": "No real issues means you pay nothing."
+    },
+    {
+      "title": "Pay the rest when it’s live",
+      "detail": "Half to start, half once it works."
+    }
+  ],
+  "pricingGroups": [
+    {
+      "label": "STEP 1 · DIAGNOSE",
+      "title": "Start here",
+      "blurb": "Not sure what’s wrong? Get a clear, ranked diagnosis first.",
+      "style": "dark",
+      "packages": [
+        {
+          "id": "paudit",
+          "name": "Production audit",
+          "duration": "48 hours",
+          "price": "$349",
+          "detail": "Reliability, search visibility and privacy — one plain-English report, ranked by business impact."
+        }
+      ],
+      "includes": [
+        "Your biggest risk found free, on video, in 24h",
+        "Credited 100% toward any package",
+        "Nothing found? Full refund"
+      ],
+      "cta": "▶ FIND MY FIRST BUG — FREE",
+      "secondaryCta": "Or book the $349 audit"
+    },
+    {
+      "label": "STEP 2 · FIX",
+      "title": "Fix",
+      "blurb": "Make a broken or risky app stable, secure and launch-ready.",
+      "style": "highlight",
+      "packages": [
+        {
+          "id": "sprint",
+          "name": "Launch-ready sprint",
+          "duration": "1 week",
+          "price": "$1,500–$2,500",
+          "detail": "Up to three problem areas fixed, tested and shipped.",
+          "badge": "★ MOST POPULAR"
+        },
+        {
+          "id": "rescue",
+          "name": "Full rescue",
+          "duration": "2–3 weeks",
+          "price": "$3,000–$6,000",
+          "detail": "Everything the audit found, plus tests and monitoring."
+        }
+      ],
+      "includes": [
+        "One fixed price — no hourly billing",
+        "Daily written updates",
+        "Pay the second half when it’s live"
+      ],
+      "cta": "▶ GET MY EXACT PRICE"
+    },
+    {
+      "label": "BUILD",
+      "title": "Build with AI",
+      "blurb": "Add AI to your product, or build a new one from zero.",
+      "packages": [
+        {
+          "id": "aifeat",
+          "name": "AI build",
+          "duration": "1–4 weeks",
+          "price": "$2,000–$8,000",
+          "detail": "An assistant, smart search or automation — with guardrails and cost limits."
+        },
+        {
+          "id": "mvp",
+          "name": "MVP build",
+          "duration": "4–8 weeks",
+          "price": "$6,000–$20,000",
+          "detail": "A complete web or mobile product, ready for real users."
+        }
+      ],
+      "includes": [
+        "Fixed quote after a short scoping call",
+        "Weekly demos as it’s built",
+        "Pay in milestones"
+      ],
+      "cta": "▶ GET MY EXACT PRICE"
+    },
+    {
+      "label": "ONGOING",
+      "title": "Keep it running",
+      "blurb": "A senior engineer looking after your live product.",
+      "packages": [
+        {
+          "id": "care",
+          "name": "Care plan",
+          "duration": "Monthly",
+          "price": "$299/mo",
+          "detail": "Monitoring, a monthly health review and small fixes included."
+        }
+      ],
+      "includes": [
+        "Quarterly visibility and privacy re-check",
+        "Priority response when something breaks",
+        "Cancel anytime"
+      ],
+      "cta": "▶ START CARE"
+    }
+  ],
+  "heroMenu": [
+    {
+      "label": "FIX · SOMETHING’S BREAKING",
+      "icon": "bug",
+      "route": "prod"
+    },
+    {
+      "label": "FIX · GET LAUNCH-READY",
+      "icon": "lock",
+      "route": "prod"
+    },
+    {
+      "label": "BUILD · ADD AI TO MY PRODUCT",
+      "icon": "spark",
+      "route": "ai"
+    },
+    {
+      "label": "KEEP · LOOK AFTER MY LIVE APP",
+      "icon": "shield",
+      "route": "care"
+    }
+  ],
+  "qualificationQuestions": "See nodes q1–q4 → qcheck in bit-logic.reference.js (live?, users?, impact?, when?) — 3 of 4 strong answers routes to the request form, otherwise to a 'not yet' path with free tools.",
+  "faq": [
+    {
+      "q": "What does it cost?",
+      "a": "The first-bug video is free. The audit is $349 and credited in full toward the work. After that there are five fixed packages: Launch-ready sprint $1,500–$2,500, Full rescue $3,000–$6,000, AI build $2,000–$8,000, MVP build $6,000–$20,000 and the Care plan at $299/mo. No hourly billing."
+    },
+    {
+      "q": "Why is the audit paid when the first bug is free?",
+      "a": "The video shows you one real problem. The audit checks everything and gives you a ranked plan — that takes a day or two of Anadi’s time. Book the fix within 30 days and every dollar is credited."
+    },
+    {
+      "q": "What if the audit finds nothing?",
+      "a": "If there are no real, fixable issues, you get a full refund."
+    },
+    {
+      "q": "How does “pay when it’s live” work?",
+      "a": "You pay half to start. The second half is due only once the fix is live and you’ve confirmed it works."
+    },
+    {
+      "q": "How will I know what’s happening?",
+      "a": "You get a ticket number the moment you send your request. Every step shows in request tracking and in your inbox, with a written update every day while work is in progress."
+    },
+    {
+      "q": "What if you can’t fix it?",
+      "a": "The price is fixed. If something wasn’t in the quote, you’re not billed for it."
+    },
+    {
+      "q": "Do you rebuild my app from scratch?",
+      "a": "No. Only the broken parts get rewritten, so your features and design stay as they are."
+    },
+    {
+      "q": "What if my app is too far gone?",
+      "a": "The audit will say so plainly. Sometimes a partial rebuild is cheaper than patching — you’ll know before you pay for anything."
+    },
+    {
+      "q": "Is my code safe with you?",
+      "a": "An NDA is available on request, and you can revoke repo access as soon as the project ends."
+    },
+    {
+      "q": "Which tools and stacks do you support?",
+      "a": "React, Next.js, React Native, Node.js and PostgreSQL products (plus Supabase and Firebase) — hand-written or built with AI tools like Cursor, Claude Code, Lovable, Bolt, v0 or Replit."
+    },
+    {
+      "q": "What do you need to start?",
+      "a": "A link to your app. Repo access helps if you have it, but it isn’t required for the free audit."
+    },
+    {
+      "q": "Is Bit a real person?",
+      "a": "No — Bit is an AI assistant that helps you find the right fix. Anadi, a real engineer, reads every request and does the work himself."
+    }
+  ],
+  "auditChecklist": [
+    {
+      "area": "RELIABILITY & SECURITY",
+      "topic": "prod",
+      "note": "Protects revenue and customer trust.",
+      "items": [
+        {
+          "title": "Customer accounts & access",
+          "detail": "Sign-in, roles and permissions work exactly as intended."
+        },
+        {
+          "title": "Customer data protection",
+          "detail": "Each customer can only ever see their own records."
+        },
+        {
+          "title": "Passwords & credentials",
+          "detail": "No keys or secrets exposed in code or the browser."
+        },
+        {
+          "title": "Uptime & safe releases",
+          "detail": "Updates ship without downtime and can be rolled back."
+        },
+        {
+          "title": "Performance & error alerts",
+          "detail": "Slow pages and failures are caught before customers notice."
+        }
+      ]
+    },
+    {
+      "area": "SEARCH & AI VISIBILITY",
+      "topic": "vis",
+      "note": "Helps new customers find and choose you.",
+      "items": [
+        {
+          "title": "Search & AI access",
+          "detail": "Google and AI assistants can read your key pages."
+        },
+        {
+          "title": "Business information",
+          "detail": "Services, pricing and contact details are clear to search engines."
+        },
+        {
+          "title": "Consistent brand details",
+          "detail": "Your name, offer and locations match everywhere online."
+        },
+        {
+          "title": "Answer-ready content",
+          "detail": "Pages answer the questions your buyers actually ask."
+        },
+        {
+          "title": "Help & product docs",
+          "detail": "Public, current and easy for AI tools to reference."
+        },
+        {
+          "title": "Reviews & mentions",
+          "detail": "Trusted third-party sites reference your business."
+        }
+      ]
+    },
+    {
+      "area": "PRIVACY & COMPLIANCE",
+      "topic": "dpdp",
+      "note": "Aligned with GDPR, CCPA and India’s DPDP Act.",
+      "items": [
+        {
+          "title": "Clear consent",
+          "detail": "Customers opt in knowingly — nothing pre-ticked."
+        },
+        {
+          "title": "Privacy notices",
+          "detail": "Plain-language policies that match what the app really does."
+        },
+        {
+          "title": "Data map",
+          "detail": "What personal data you hold, where it lives, who can access it."
+        },
+        {
+          "title": "Customer data requests",
+          "detail": "Access, export and deletion handled on time."
+        },
+        {
+          "title": "Third-party vendors",
+          "detail": "Every tool that receives customer data is listed and covered."
+        },
+        {
+          "title": "Incident readiness",
+          "detail": "A clear plan if data is ever exposed."
+        }
+      ]
+    }
+  ]
+}
