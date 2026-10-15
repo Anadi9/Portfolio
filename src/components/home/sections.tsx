@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
+import { useLocation } from 'react-router-dom';
+import { BitChat } from './BitChat';
 import { Bit, PixelIcon } from '@/components/brand/Bit';
 import portrait from '@/assets/portrait.webp';
 import { trackRescue } from '@/lib/rescue/track';
@@ -64,35 +66,60 @@ function Section({ id, label, children }: { id: string; label: string; children:
   );
 }
 
-/* 1 · Hero: Bit pointing at the menu board. */
+/* 1 · Hero: Bit pointing at the menu board. Picking an option turns the hero into Bit's chat. */
 export function Hero() {
+  const [chat, setChat] = useState<{ first?: string } | null>(null);
+  const { search } = useLocation();
+  // "Talk to Bit" from any page lands on `/?bit=1`; the homepage's own button fires `bq:chat`.
+  useEffect(() => {
+    if (new URLSearchParams(search).has('bit')) setChat({});
+  }, [search]);
+  useEffect(() => {
+    const open = () => {
+      setChat({});
+      document.getElementById('top')?.scrollIntoView({ block: 'start' });
+    };
+    window.addEventListener('bq:chat', open);
+    return () => window.removeEventListener('bq:chat', open);
+  }, []);
+  const start = (first?: string, where?: string) => (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    trackRescue('cta_click', { page: 'home', location: where ?? 'hero' });
+    setChat({ first });
+  };
   return (
     <section id="top" aria-labelledby="h-top" className="hq-hero">
       <div className="hq-wrap">
         <h1 id="h-top">{hero.title}</h1>
-        <div className="hq-stage">
-          <Bit pose="point" size={198} bob label="Bit, the site's assistant, pointing at the menu" />
-          <nav aria-label="What do you need?" className="hq-board">
-            {hero.menu.map((m) => (
-              <Go key={m.label} href={m.href} onClick={track(`hero-menu:${m.icon}`)}>
-                <PixelIcon name={m.icon} size={27} />
-                <span>{m.label}</span>
-                <span aria-hidden>✓</span>
-              </Go>
-            ))}
-            <span className="hq-lab" style={{ textAlign: 'center', color: 'var(--bq-muted)', paddingTop: 4 }}>
-              {hero.menuHint}
-            </span>
-          </nav>
-        </div>
-        <div className="hq-ctas">
-          <Go href={hero.primary.href} className="bq-btn" onClick={track('hero')}>
-            <span aria-hidden>▶</span> {hero.primary.text}
-          </Go>
-          <Go href={hero.secondary.href} className="bq-btn-ghost" onClick={track('hero-secondary')}>
-            {hero.secondary.text} <span aria-hidden>▶</span>
-          </Go>
-        </div>
+        {chat ? (
+          <BitChat first={chat.first} onClose={() => setChat(null)} />
+        ) : (
+          <>
+            <div className="hq-stage">
+              <Bit pose="point" size={198} bob label="Bit, the site's assistant, pointing at the menu" />
+              <nav aria-label="What do you need?" className="hq-board">
+                {hero.menu.map((m) => (
+                  <a key={m.label} href={m.href} onClick={start(m.start, `hero-menu:${m.icon}`)}>
+                    <PixelIcon name={m.icon} size={27} />
+                    <span>{m.label}</span>
+                    <span aria-hidden>✓</span>
+                  </a>
+                ))}
+                <span className="hq-lab" style={{ textAlign: 'center', color: 'var(--bq-muted)', paddingTop: 4 }}>
+                  {hero.menuHint}
+                </span>
+              </nav>
+            </div>
+            <div className="hq-ctas">
+              <a href={hero.primary.href} className="bq-btn" onClick={start(undefined, 'hero')}>
+                <span aria-hidden>▶</span> {hero.primary.text}
+              </a>
+              <a href={hero.secondary.href} className="bq-btn-ghost" onClick={start(hero.secondary.start, 'hero-secondary')}>
+                {hero.secondary.text} <span aria-hidden>▶</span>
+              </a>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
@@ -598,6 +625,11 @@ export function FreeTools() {
 /* 10 · Blog: real posts, filterable by audit area. */
 export function Blog() {
   const [topic, setTopic] = useState<BlogTopic | 'All'>('All');
+  useEffect(() => {
+    const onTopic = (e: Event) => setTopic(((e as CustomEvent).detail as BlogTopic | 'All') ?? 'All');
+    window.addEventListener('bq:blog', onTopic);
+    return () => window.removeEventListener('bq:blog', onTopic);
+  }, []);
   const posts = blog.posts.filter((p) => topic === 'All' || p.topic === topic).slice(0, 6);
   return (
     <Section id="blog" label="h-blog">

@@ -186,8 +186,15 @@ export const SiteHeader = ({ page, current, auditType }: { page: string; current
         ))}
       </nav>
       <Link
-        to={auditHref(auditType ?? current ?? 'app')}
-        onClick={ctaClick(page, 'header', auditType ?? current)}
+        to="/?bit=1"
+        onClick={(e) => {
+          ctaClick(page, 'header', auditType ?? current)();
+          // Already on the homepage: open the chat in place rather than re-navigating.
+          if (window.location.pathname === '/') {
+            e.preventDefault();
+            window.dispatchEvent(new Event('bq:chat'));
+          }
+        }}
         className="bq-btn"
       >
         <span aria-hidden>▶</span> Talk to Bit

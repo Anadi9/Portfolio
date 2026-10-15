@@ -23,14 +23,14 @@ export type Cta = { text: string; href: string };
 export const hero = {
   title: 'Your app, made production-ready.',
   menu: [
-    { label: 'Fix · something’s breaking', icon: 'bug', href: FIRST_BUG },
-    { label: 'Fix · get launch-ready', icon: 'lock', href: FIRST_BUG },
-    { label: 'Build · add AI to my product', icon: 'spark', href: '/#pricing' },
-    { label: 'Keep · look after my live app', icon: 'shield', href: '/#pricing' },
-  ] satisfies { label: string; icon: IconName; href: string }[],
+    { label: 'Fix · something’s breaking', icon: 'bug', href: FIRST_BUG, start: 'Something’s breaking in my app' },
+    { label: 'Fix · get launch-ready', icon: 'lock', href: FIRST_BUG, start: 'I’m about to launch' },
+    { label: 'Build · add AI to my product', icon: 'spark', href: '/#pricing', start: 'Add AI to my product' },
+    { label: 'Keep · look after my live app', icon: 'shield', href: '/#pricing', start: 'Look after my live app' },
+  ] satisfies { label: string; icon: IconName; href: string; start: string }[],
   menuHint: 'Tap one to start',
   primary: { text: 'Start with Bit', href: FIRST_BUG },
-  secondary: { text: 'Or: find my app’s first bug — free', href: FIRST_BUG },
+  secondary: { text: 'Or: find my app’s first bug — free', href: FIRST_BUG, start: 'Find my app’s first bug — free' },
 };
 
 export type DemoBug = 'leak' | 'checkout' | 'ai' | 'consent';
