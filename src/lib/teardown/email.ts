@@ -174,7 +174,7 @@ ${model.sections.map(sectionBlock).join('\n')}
                       </p>
                       <a href="${ORIGIN}/audit?type=app"
                          style="display:inline-block;padding:14px 18px;background:${INK};color:${PAPER};font:700 11px/1 ${MONO};letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;">
-                        Get a free audit
+                        Find my first bug, free
                       </a>
                     </td>
                   </tr>

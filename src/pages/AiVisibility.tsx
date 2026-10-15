@@ -220,7 +220,7 @@ const AiVisibility = () => (
             OR TEST YOUR SITE IN 10 SECONDS →
           </Link>
         </div>
-        <TrustLine items={['Free', '48 hours', 'No access needed']} />
+        <TrustLine items={['Free', '24 hours', 'No access needed']} />
       </div>
       {/* The Inspector: lens + scan, the hero's one animated head. */}
       <TerminalHead face="scan" prop="lens" motion="type" size={160} label="Terminal Head scanning with a magnifying lens" />
@@ -260,7 +260,7 @@ const AiVisibility = () => (
     </section>
 
     <section aria-labelledby="h-get" style={section} data-rescue-hpad>
-      <SectionHead id="h-get" title="What you get in 48 hours" intro="The free check. Delivered as a short video walkthrough plus a one-page report." />
+      <SectionHead id="h-get" title="What you get in 24 hours" intro="The free check. Delivered as a short video walkthrough plus a one-page report." />
       <Cards items={gets} />
     </section>
 

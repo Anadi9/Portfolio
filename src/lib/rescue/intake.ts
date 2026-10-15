@@ -4,7 +4,7 @@
  *
  * The homepage (`/`, the rescue offer; `/rescue` 301s there) promises an audit
  * of the visitor's actual app ("send your app link or repo") with a
- * plain-English report inside 48 hours. This module is what makes that promise
+ * first-bug review inside 24 hours. This module is what makes that promise
  * literal: the link is required, the deadline is computed once here and quoted
  * identically on the page and in both emails, and the symptom list is the same
  * array the homepage tally renders, so a ticked row arrives in the inbox as the
@@ -36,7 +36,8 @@ export type Tool = (typeof TOOLS)[number];
 export const CALL_OFFER = "When the report arrives, reply if you'd like a 15-minute call to go through it.";
 
 /** The turnaround the homepage quotes. */
-export const TURNAROUND_HOURS = 48;
+/** The free first-bug review (Bit's Quest promise: 24h). The paid $349 audit is a separate 48-hour job. */
+export const TURNAROUND_HOURS = 24;
 
 export const NOTES_MAX = 2000;
 
@@ -183,7 +184,7 @@ export function renderConfirmEmail(intake: Intake, due: Date): { subject: string
     subject: `Got it: your audit of ${host} lands by ${formatDue(due)}`,
     html: wrap(
       `<p>Hi,</p>
-<p>Thanks for sending <strong>${esc(host)}</strong>. I'll go through it myself and send a plain-English report to this address by <strong>${esc(formatDue(due))}</strong>:</p>
+<p>Thanks for sending <strong>${esc(host)}</strong>. I'll go through it myself and send your first-bug video, in plain English, to this address by <strong>${esc(formatDue(due))}</strong>:</p>
 <ul>
 <li><strong>Fix now</strong>: what's broken or exposed today</li>
 <li><strong>Risky</strong>: what will break once real users arrive</li>

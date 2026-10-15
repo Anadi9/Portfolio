@@ -650,7 +650,7 @@ const StickyBar = ({ watch }: { watch: RefObject<HTMLElement | null> }) => {
       }}
     >
       <div style={{ flex: 1, display: 'grid', gap: s[1] }}>
-        <span style={{ ...label(10, 700, 0.14), color: p.dim }}>FREE · 48 HOURS</span>
+        <span style={{ ...label(10, 700, 0.14), color: p.dim }}>FREE · 24 HOURS</span>
         <span style={{ font: `600 14px/1.2 ${display}` }}>Production audit</span>
       </div>
       <Link to={AUDIT} onClick={clicked('sticky_bar')} tabIndex={show ? undefined : -1} style={cta}>
@@ -716,7 +716,7 @@ const Rescue = () => {
                   color: p.body,
                 }}
               >
-                {['NO CALL REQUIRED', 'REPORT IN 48 HOURS', 'NDA ON REQUEST'].map((t) => (
+                {['NO CALL REQUIRED', 'FIRST BUG IN 24 HOURS', 'NDA ON REQUEST'].map((t) => (
                   <li key={t} style={{ display: 'flex', alignItems: 'center', gap: s[2] }}>
                     <Check />
                     {t}

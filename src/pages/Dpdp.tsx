@@ -83,7 +83,7 @@ const steps = [
     body: 'I go through your app and website as any user would: sign-up, consent, privacy notice, account deletion, cookies and trackers.',
   },
   {
-    title: 'Gap report in 48 hours',
+    title: 'Gap report in 24 hours',
     body: 'A short video and a one-page report: what the product does today, what the law asks it to do, and what to build first.',
   },
   {
@@ -134,7 +134,7 @@ const jsonLd = graph([
     description: DESCRIPTION,
     serviceType: 'Privacy compliance implementation',
     areaServed: ['India'],
-    offers: [{ name: 'Free DPDP readiness check', description: 'Gap report in 48 hours', min: 0, currency: 'INR' }],
+    offers: [{ name: 'Free DPDP readiness check', description: 'Gap report in 24 hours', min: 0, currency: 'USD' }],
   }),
   faqPage(faqs, `${URL}#faq`),
   breadcrumbs([{ name: 'Privacy & compliance', path: PATH }], `${URL}#breadcrumb`),
@@ -164,7 +164,7 @@ const Dpdp = () => (
               OR SCORE YOURSELF IN 3 MINUTES →
             </Link>
           </div>
-          <TrustLine items={['Free', '48 hours', 'No access needed']} />
+          <TrustLine items={['Free', '24 hours', 'No access needed']} />
         </div>
         <div style={{ display: 'grid', minWidth: 0 }}>
         {/* The Guardian: shield + fixed tick (GUIDE.md loadout), the hero's one animated head, standing on the timeline. */}

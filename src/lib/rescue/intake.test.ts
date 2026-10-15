@@ -98,10 +98,10 @@ describe('parseIntake', () => {
 });
 
 describe('deadline', () => {
-  it('is 48 hours out and quoted in Eastern time', () => {
+  it('is 24 hours out and quoted in Eastern time', () => {
     const due = dueBy(new Date('2026-09-23T19:00:00Z'));
-    expect(due.toISOString()).toBe('2026-09-25T19:00:00.000Z');
-    expect(formatDue(due)).toBe('Fri 25 Sep, 3pm EST');
+    expect(due.toISOString()).toBe('2026-09-24T19:00:00.000Z');
+    expect(formatDue(due)).toBe('Thu 24 Sep, 3pm EST');
   });
 });
 

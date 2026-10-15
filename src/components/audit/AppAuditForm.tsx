@@ -27,7 +27,7 @@ import { trackRescue } from '@/lib/rescue/track';
  * runs, so the two can never disagree about what is acceptable. Symptoms are
  * read after mount, because the prerendered HTML has no query string.
  *
- * The deadline is shown as "within 48 hours" in the prerender and resolved to
+ * The deadline is shown as "within 24 hours" in the prerender and resolved to
  * a date on mount; once submitted it is the server's date, the same one both
  * emails quote.
  *

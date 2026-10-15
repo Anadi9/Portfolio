@@ -50,7 +50,40 @@ Every non-portfolio file switches its import to it. The portfolio keeps the old 
 - [x] **7. QA pass**: every route at 1440 and 390 against `design/bits-quest/screenshots/light`; contrast, 44px
   targets, keyboard focus, reduced motion; portfolio route unchanged.
 
-## Left for tomorrow
+## Phase 2 (same night): decisions from Anadi
+
+24h first-bug turnaround · keep `/ai-visibility` + `/dpdp` as audit-area pages · build chat, builder,
+dock/tour, Build + Care pages, brand-only assets, animated process, dark mode · delete dead code.
+
+**Phase 2 rules:** the phase 1 hard rules still hold (portfolio untouched, real backends only, nothing fake, one
+commit per milestone, tests + build green, visual check, no push/deploy). New routes are allowed for Build with AI
+and Care only. Nothing in `design/bits-quest/` is executed; `bit-logic.reference.js` is read and ported by hand.
+
+- [x] **8. 24h turnaround + email copy**: `TURNAROUND_HOURS` → 24 for the first-bug review (the paid audit stays
+  48h), every form/email/page string that promises the first-bug turnaround, "free audit" wording in
+  `lib/teardown/email.ts` and `lib/audit/intake.ts` → first-bug wording; tests updated.
+- [ ] **9. Bit's chat**: port the conversation tree, `reply()`/`classify()` keyword routing, the 4 qualification
+  questions and recommendations from `bit-logic.reference.js` into a typed state machine (`lib/bit/`, unit-tested)
+  and a `BitChat` component. Hero menu options turn the hero into the chat; "Talk to Bit" opens it (other pages:
+  `/?bit=1`). Hand-off is real: Fix → `/audit?type=app` prefilled; Build/Care → email with the answers. No fake
+  ticket numbers.
+- [ ] **10. Package builder + Bit dock + tour**: "Build your own package" picker (totals, audit credit, send →
+  email summary); floating mini-Bit with a hint per section in view; Bit's tour with Next/Back across sections.
+  Keyboard accessible, reduced-motion safe.
+- [ ] **11. Build with AI + Care pages**: `/build-with-ai` and `/care` (routes, Seo, Service JSON-LD + FAQ,
+  sitemap/llms), linked from services cards, pricing, footer and llms.txt.
+- [ ] **12. Animated process + dark mode**: "mission control" timeline (play/pause/replay, day counter, paid-so-far,
+  log fills in) per `design/bits-quest/screenshots/*/05-quest-*`; light/dark toggle on CSS-variable surfaces
+  (homepage + new pages), persisted per viewer, light default.
+- [ ] **13. Brand-only assets**: Bit favicons and a new OG image served on brand pages only (route-level `<Head>`),
+  brand fonts loaded from brand pages instead of `index.html`, `Testimonials` gets an opt-in Bit mascot. Portfolio
+  output byte-identical apart from nothing.
+- [ ] **14. Dead-code cleanup**: delete files nothing imports (unused shadcn components, `ErrorBoundary.tsx`,
+  `build.log`); Terminal Head stays (portfolio uses it). One commit.
+- [ ] **15. Phase 2 QA**: all routes at 390/1440, chat + builder + tour by keyboard, dark mode contrast, portfolio
+  diff empty, summary.
+
+## Left for tomorrow (after phase 2)
 Bit chat + 4 qualification questions, package builder, interactive tracking, dock, tour, dark theme toggle,
 Build with AI / Care pages + checkout, route cleanup (see earlier relevance audit), placeholders (About photo
 choice, testimonials, teardown and Kit prices in the free-tools cards).
@@ -63,3 +96,4 @@ choice, testimonials, teardown and Kit prices in the free-tools cards).
 - M5: brand header (and footer where the page had its own) on notes + case studies (`NotesShell`, header height var → 72px), Kit + legal pages (`KitShell`), `/scan`, `/review`, `/teardown` and results (Wrapper Test keeps its dark ground). Graph-paper `.bq-page` ground on all of them. 404 rebuilt with Bit ("Bit looked everywhere", home + first-bug CTAs). Notes `ServicesCta` reframed as "First bug free" + the three audit areas (no longer reads `SERVICES`); fix-post CTA → "Find my first bug — free". Kit CTA → brand red. Tests 479/479, build + check green.
 - M6: `BUSINESS_TAGLINE` + `ProfessionalService` name/knowsAbout ("Your app, made production-ready…", "Anadi Thakur · Production-ready apps"); `llms.txt` generator rewritten (Fix / Build with AI / Keep it running with USD prices, the three audit areas, Bit). Visible "free audit" CTAs on Kit, Kit thanks/downloads, AI readiness, DPDP check, scan, case studies → first-bug wording; DPDP check breadcrumb → "Privacy & compliance". **Not changed (shared with the portfolio):** `index.html` static meta (theme-color, og:image:alt), `/og.png`. **Not changed (backend emails):** `lib/teardown/email.ts`, `lib/audit/intake.ts` footer still say "free audit". `/ai-visibility` and `/dpdp` titles kept for search intent. Tests 479/479, build + check green.
 - M7: swept 23 routes at 390px and 1440px in same-origin frames. Fixed a 3px overflow on every brand page at 390px (header inner row used the fixed 40px gutter; now `var(--bq-gutter)`, scoped to `.bq-page`). After the fix: no horizontal overflow anywhere, header CTA 44px tall. Contrast: brand red on paper ≈4.9:1, muted ≈7.6:1. Focus outlines + reduced-motion rules in `brand.css`. `git diff fff28d1` shows no changes to portfolio files, routes, API or `vercel.json`; `index.html` only gains the three brand fonts (also downloaded on the portfolio, which doesn't use them). Tests 479/479, build + check green; the 3 lint errors are pre-existing (shadcn `command`/`textarea`, `tailwind.config.ts`).
+- M8: `TURNAROUND_HOURS` 48 → 24 (drives the form deadline, the confirmation email "by <date>" and every "within N hours" line); deadline test updated (24h out, Thu 24 Sep 3pm EST). Static first-bug promises on `/production-ready`, `/ai-visibility`, `/dpdp` → 24 hours; the paid $349 audit keeps 48 hours. Emails: Wrapper Test report CTA → "Find my first bug, free"; lead-form footer and app confirmation say first-bug review/video. Tests 479/479, build + check green.
