@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { c, display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, px, rule, s } from '@/components/brand/tokens';
 
 /**
  * The one thing on this page that is asked for.

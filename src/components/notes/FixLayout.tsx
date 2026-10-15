@@ -1,4 +1,4 @@
-import { c, label, mono, px, s } from '@/components/portfolio/tokens';
+import { c, label, mono, px, s } from '@/components/brand/tokens';
 import { hasCover, ogImageFor, type FixPost } from '@/data/notes';
 import NotesShell, { Column, MetaLine, Standfirst } from './NotesShell';
 import { Seo } from '@/components/Seo';

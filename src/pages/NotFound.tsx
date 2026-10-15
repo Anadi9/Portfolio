@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Head } from 'vite-react-ssg';
-import { c, display, heading, label, px, s, stretch } from '@/components/portfolio/tokens';
+import { c, display, heading, label, px, s, stretch } from '@/components/brand/tokens';
 
 const NotFound = () => {
   const location = useLocation();

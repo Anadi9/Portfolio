@@ -3,13 +3,13 @@ import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { track } from '@vercel/analytics';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
-import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/portfolio/tokens';
+import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/brand/tokens';
 import { parseScanInput } from '@/lib/scan/validate';
 import { KIT } from '@/lib/kit/product';
 import type { Finding, ScanReport, Severity } from '@/lib/scan/report';
 import LegalLinks from '@/components/LegalLinks';
-import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
-import { NavLogo, ScanStatus } from '@/components/terminal-head/TerminalHeadUI';
+import { TerminalHead, type THFace } from '@/components/brand/BitHead';
+import { NavLogo, ScanStatus } from '@/components/brand/BitUI';
 
 /**
  * `/scan`: the free Supabase security check.

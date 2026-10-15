@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { ORIGIN } from '@/components/Seo';
 import { resultPath } from '@/lib/teardown/share';
 

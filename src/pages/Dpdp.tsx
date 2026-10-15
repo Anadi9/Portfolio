@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
-import { display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
+import { TerminalHead } from '@/components/brand/BitHead';
+import { display, heading, label, px, rule, s } from '@/components/brand/tokens';
 import { breadcrumbs, faqPage, graph, service, type Faq } from '@/lib/schema';
 import {
   Cards,

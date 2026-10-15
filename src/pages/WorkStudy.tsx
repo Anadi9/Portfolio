@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { useLocation } from 'react-router-dom';
-import { buttonType, c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { buttonType, c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import NotesShell, { Column } from '@/components/notes/NotesShell';
 import { prose } from '@/components/notes/prose';
 import { Seo, ORIGIN, PORTFOLIO_ORIGIN } from '@/components/Seo';

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'vite-react-ssg';
-import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
-import { LOADOUT, StatusBadge } from '@/components/terminal-head/TerminalHeadUI';
+import { TerminalHead, type THFace } from '@/components/brand/BitHead';
+import { LOADOUT, StatusBadge } from '@/components/brand/BitUI';
 import { Seo } from '@/components/Seo';
-import { c, display, gutter, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, gutter, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import portrait from '@/assets/portrait.webp';
 import Testimonials from '@/components/Testimonials';
 import { site } from '@/data/portfolio';

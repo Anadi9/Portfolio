@@ -1,6 +1,6 @@
 import { isValidElement, useRef, type ReactNode } from 'react';
 import { useCopy } from './useRail';
-import { c, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, label, mono, px, rule, s } from '@/components/brand/tokens';
 
 const LANGUAGE = /language-(\w+)/;
 const COLLAPSE_ABOVE = 24;

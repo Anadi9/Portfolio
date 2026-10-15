@@ -3,9 +3,9 @@ import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
 import { body, cta, hint, p } from '@/components/kit/styles';
-import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/portfolio/tokens';
+import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/brand/tokens';
 import { KIT } from '@/lib/kit/product';
-import { StateHead } from '@/components/terminal-head/TerminalHeadUI';
+import { StateHead } from '@/components/brand/BitUI';
 
 /**
  * `/products/production-kit/thanks`: where Stripe sends a buyer after payment.

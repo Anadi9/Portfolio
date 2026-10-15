@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
-import { buttonType, c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { buttonType, c, display, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { trackRescue } from '@/lib/rescue/track';
 import { MEASURE } from './prose';
 import { BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { NextUp } from './OnRamp';
 import Banner from './Banner';
-import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
+import { NavLogo } from '@/components/brand/BitUI';
 import BackToTop from './BackToTop';
 import { relatedTo } from '@/content';
 import type { Post } from '@/data/notes';

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { TerminalHead } from '@/components/brand/BitHead';
 import { Seo } from '@/components/Seo';
-import { c, display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, px, rule, s } from '@/components/brand/tokens';
 import AppAuditForm from '@/components/audit/AppAuditForm';
 import { PaperPage, SiteHeader, Check, body, cta, lead, p, section, split } from '@/components/site/kit';
 import { LEGAL_PATHS } from '@/data/legal';

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
-import { scoreFace } from '@/components/terminal-head/TerminalHeadUI';
-import { c, display, heading, label, px, rule, s, stretch } from '@/components/portfolio/tokens';
+import { TerminalHead } from '@/components/brand/BitHead';
+import { scoreFace } from '@/components/brand/BitUI';
+import { c, display, heading, label, px, rule, s, stretch } from '@/components/brand/tokens';
 import { FaqSection, PaperPage, SiteHeader, TrustLine, body, cta, ctaClick, lead, p, section, split } from '@/components/site/kit';
 import { ANSWERS, ANSWER_LABEL, QUESTIONS, type Answer } from '@/lib/dpdp/questions';
 import { scoreAnswers } from '@/lib/dpdp/score';

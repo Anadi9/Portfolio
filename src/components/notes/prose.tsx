@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import CopyBlock from './CopyBlock';
 import Figure from './Figure';
 import Flow from './Flow';

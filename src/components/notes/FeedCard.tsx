@@ -1,5 +1,5 @@
 import { Link } from 'vite-react-ssg';
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import banners from '@/generated/banners.json';
 import { coverFor, hasCover, readingMinutes, streamLabel, type Post } from '@/data/notes';
 import { formatChip, payloadOf } from './streamPayload';

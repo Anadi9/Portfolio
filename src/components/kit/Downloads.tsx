@@ -1,6 +1,6 @@
 import { track } from '@vercel/analytics';
 import { FREE_KIT, type PackId } from '@/data/kit';
-import { c, display, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, label, px, rule, s } from '@/components/brand/tokens';
 import { body, cta, hint, p } from './styles';
 
 /** Shared by `/kit/thanks` and `/kit/downloads/<token>`. */

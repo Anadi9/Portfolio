@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
-import { buttonType, c, display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
+import { TerminalHead } from '@/components/brand/BitHead';
+import { buttonType, c, display, heading, label, px, rule, s } from '@/components/brand/tokens';
 import {
   NOTES_MAX,
   SYMPTOMS,

@@ -5,11 +5,11 @@ import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
 import { FreeKitNote, MailLink, PackDownload, type Offer } from '@/components/kit/Downloads';
 import { body, hint, p } from '@/components/kit/styles';
-import { display, gutter, heading, px, s, sectionY } from '@/components/portfolio/tokens';
+import { display, gutter, heading, px, s, sectionY } from '@/components/brand/tokens';
 import type { PackId } from '@/data/kit';
 import { KIT } from '@/lib/kit/product';
-import type { THFace } from '@/components/terminal-head/TerminalHead';
-import { StateHead } from '@/components/terminal-head/TerminalHeadUI';
+import type { THFace } from '@/components/brand/BitHead';
+import { StateHead } from '@/components/brand/BitUI';
 
 /**
  * `/kit/downloads/<token>`: everything a buyer's email owns, newest version

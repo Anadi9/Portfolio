@@ -1,4 +1,4 @@
-import { c, display, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, mono, px, rule, s } from '@/components/brand/tokens';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { BANDS, type VerdictBand } from '@/lib/teardown/score';
 

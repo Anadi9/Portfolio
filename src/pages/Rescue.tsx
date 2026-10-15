@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, RefObject } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
-import { buttonType, c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
+import { buttonType, c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from '@/components/brand/tokens';
 import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
@@ -11,8 +11,8 @@ import LegalLinks from '@/components/LegalLinks';
 import Testimonials from '@/components/Testimonials';
 import { site } from '@/data/portfolio';
 import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
-import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
+import { TerminalHead } from '@/components/brand/BitHead';
+import { NavLogo } from '@/components/brand/BitUI';
 import { useInView } from '@/hooks/use-in-view';
 
 /**

@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
-import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
+import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/brand/tokens';
 import Gate from '@/components/teardown/Gate';
 import Quiz from '@/components/teardown/Quiz';
 import Report from '@/components/teardown/Report';
 import Share from '@/components/teardown/Share';
 import Verdict from '@/components/teardown/Verdict';
 import { verdictFace } from '@/components/teardown/face';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
-import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
+import { TerminalHead } from '@/components/brand/BitHead';
+import { NavLogo } from '@/components/brand/BitUI';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { report } from '@/lib/teardown/report';
 

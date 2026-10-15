@@ -1,4 +1,4 @@
-import type { THFace } from '@/components/terminal-head/TerminalHead';
+import type { THFace } from '@/components/brand/BitHead';
 
 /**
  * Terminal Head face for a wrapper-test score, on the same thresholds as

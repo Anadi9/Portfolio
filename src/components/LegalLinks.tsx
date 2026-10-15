@@ -1,5 +1,5 @@
 import { Link } from 'vite-react-ssg';
-import { c, label, s } from '@/components/portfolio/tokens';
+import { c, label, s } from '@/components/brand/tokens';
 import { LEGAL_PATHS } from '@/data/legal';
 
 /** The policy row under a dark footer. Stripe's reviewers look for these links. */

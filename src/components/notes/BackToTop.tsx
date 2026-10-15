@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { c, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, label, px, rule, s } from '@/components/brand/tokens';
 
 /**
  * Appears once you are a screen and a half down, and not before.

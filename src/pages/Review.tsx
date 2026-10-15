@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { ChangeEvent, CSSProperties, FormEvent, ReactNode } from 'react';
 import { Seo } from '@/components/Seo';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
-import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
-import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
+import { TerminalHead } from '@/components/brand/BitHead';
+import { NavLogo } from '@/components/brand/BitUI';
+import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/brand/tokens';
 import { FIELD_MAX, PHOTO_EDGE, REVIEW_MAX, parseReview, type ReviewField } from '@/lib/review/intake';
 
 /**

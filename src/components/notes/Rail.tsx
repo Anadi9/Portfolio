@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { c, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { readingMinutes, type Heading, type Post } from '@/data/notes';
 import { useActiveHeading, useDisclosureOpen, useReadProgress } from './useRail';
 

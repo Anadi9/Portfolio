@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef } from 'react';
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import {
   CLOSING,
   DOC_KIND,

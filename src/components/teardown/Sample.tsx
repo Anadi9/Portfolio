@@ -1,4 +1,4 @@
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { QUESTIONS, sampleFor } from '@/lib/teardown/questions';
 
 /**

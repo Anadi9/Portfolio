@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
-import { c, gutter, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, gutter, label, px, rule, s } from '@/components/brand/tokens';
 import { p } from './styles';
 import LegalLinks from '@/components/LegalLinks';
-import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
+import { NavLogo } from '@/components/brand/BitUI';
 
 /**
  * Header, footer and shared styles for the kit's two pages. Same paper ground,

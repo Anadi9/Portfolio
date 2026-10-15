@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { c, display, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, label, px, rule, s } from '@/components/brand/tokens';
 import { nodeText, parseTable, sortRows } from './tableData';
 
 type Sort = { column: number; direction: 'asc' | 'desc' } | null;

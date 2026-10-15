@@ -1,5 +1,5 @@
 import { Link } from 'vite-react-ssg';
-import { c, display, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, label, px, rule, s } from '@/components/brand/tokens';
 import { SERVICES } from '@/components/site/kit';
 import { trackRescue } from '@/lib/rescue/track';
 

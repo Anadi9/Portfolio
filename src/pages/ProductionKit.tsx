@@ -5,7 +5,7 @@ import { track } from '@vercel/analytics';
 import { Seo, ORIGIN } from '@/components/Seo';
 import KitShell, { Check } from '@/components/kit/KitShell';
 import { body, cta, hint, p } from '@/components/kit/styles';
-import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/portfolio/tokens';
+import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/brand/tokens';
 import portrait from '@/assets/portrait.webp';
 import { FREE_KIT, LATEST, PACK_IDS, pack } from '@/data/kit';
 import { parsePageParams } from '@/lib/kit/packs';

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { c, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, label, mono, px, rule, s } from '@/components/brand/tokens';
 
 /**
  * The container every figure sits in.

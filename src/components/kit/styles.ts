@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { buttonType, c, display, px, s } from '@/components/portfolio/tokens';
+import { buttonType, c, display, px, s } from '@/components/brand/tokens';
 
 /** Shared by the kit's two pages; see `KitShell`. */
 export const p = {

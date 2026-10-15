@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { c, display, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { AUDIENCE_LABEL, CATEGORIES, PROMPTS, type Audience, type Prompt } from '@/data/prompts';
 import { EMPTY_QUERY, audienceCounts, categoryCounts, filterPrompts, type PromptQuery } from './promptFilter';
 import { useCopy } from './useRail';

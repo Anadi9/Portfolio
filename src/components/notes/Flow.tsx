@@ -1,4 +1,4 @@
-import { c, display, label, mono, px, s } from '@/components/portfolio/tokens';
+import { c, display, label, mono, px, s } from '@/components/brand/tokens';
 import Figure from './Figure';
 
 export type FlowNode = { name: string; kind: 'trigger' | 'step' | 'action'; config?: string };

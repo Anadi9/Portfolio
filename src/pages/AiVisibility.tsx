@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'vite-react-ssg';
-import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
+import { TerminalHead, type THFace } from '@/components/brand/BitHead';
 import { useInView } from '@/hooks/use-in-view';
 import { Seo } from '@/components/Seo';
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { breadcrumbs, faqPage, graph, service, type Faq, type PricedOffer } from '@/lib/schema';
 import {
   Cards,

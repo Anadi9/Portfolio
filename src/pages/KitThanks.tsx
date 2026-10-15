@@ -4,11 +4,11 @@ import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
 import { FreeKitNote, MailLink, PackDownload, type Offer } from '@/components/kit/Downloads';
 import { body, hint, p } from '@/components/kit/styles';
-import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/portfolio/tokens';
+import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/brand/tokens';
 import type { PackId } from '@/data/kit';
 import { KIT } from '@/lib/kit/product';
-import type { THFace } from '@/components/terminal-head/TerminalHead';
-import { StateHead } from '@/components/terminal-head/TerminalHeadUI';
+import type { THFace } from '@/components/brand/BitHead';
+import { StateHead } from '@/components/brand/BitUI';
 
 /** The head follows the order check: working while it polls, the tick once the download is ready. */
 const THANKS_FACE: Record<State['status'], THFace> = {

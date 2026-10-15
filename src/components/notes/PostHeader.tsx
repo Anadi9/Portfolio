@@ -1,5 +1,5 @@
 import Cover from './Cover';
-import { c, heading, label, px, rule, s } from '@/components/portfolio/tokens';
+import { c, heading, label, px, rule, s } from '@/components/brand/tokens';
 import { streamLabel, type Post } from '@/data/notes';
 
 const fmtDate = (iso: string) =>

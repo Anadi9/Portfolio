@@ -1,18 +1,18 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN } from '@/components/Seo';
-import { buttonType, c, display, gutter, heading, label, mono, pixel, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
+import { buttonType, c, display, gutter, heading, label, mono, pixel, px, rule, s, sectionY, stretch } from '@/components/brand/tokens';
 import LegalLinks from '@/components/LegalLinks';
 import { KIT } from '@/lib/kit/product';
 import { trackRescue } from '@/lib/rescue/track';
 import { site } from '@/data/portfolio';
 import type { Faq } from '@/lib/schema';
-import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
+import { TerminalHead, type THFace } from '@/components/brand/BitHead';
 import { useInView } from '@/hooks/use-in-view';
-import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
+import { NavLogo } from '@/components/brand/BitUI';
 
 /**
- * The paper pages' shared parts: the hub at `/`, the two service pages and the
+ * The Bit's Quest pages' shared parts: the hub at `/`, the two service pages and the
  * unified audit form. `/production-ready` came first and still carries its own copies of
  * these (it predates the kit and has page-specific variants); the values here
  * are lifted from it unchanged, so the four pages and `/production-ready` read as one site.
@@ -55,7 +55,7 @@ export const k = {
   plate: v('plate', c.plate),
   white: v('white', '#fff'),
   bright: v('bright', c.bright),
-  ctaAlt: v('cta-alt', c.accent),
+  ctaAlt: v('cta-alt', c.shell),
 } as const;
 
 export const section: CSSProperties = {
@@ -64,7 +64,7 @@ export const section: CSSProperties = {
   padding: px(sectionY.top, gutter, sectionY.bottom),
 };
 
-export const h2: CSSProperties = { margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' };
+export const h2: CSSProperties = { margin: 0, ...heading('d3'), maxWidth: '20ch' };
 
 export const body: CSSProperties = {
   margin: 0,
@@ -83,8 +83,9 @@ export const cta: CSSProperties = {
   gap: s[3],
   minHeight: 52,
   padding: px(0, s[6]),
-  background: k.ink,
-  color: k.onInk,
+  background: c.shell,
+  color: '#fff',
+  boxShadow: `4px 4px 0 ${c.ink}`,
   ...buttonType(),
   textDecoration: 'none',
 };
@@ -141,125 +142,113 @@ export type ServiceKey = (typeof SERVICES)[number]['key'];
 
 export const auditHref = (type?: ServiceKey) => (type ? `/audit?type=${type}` : '/audit');
 
-/** Header for the paper pages: the logo, the three services and the audit button. */
+/** Brand nav: section anchors on the homepage (work from any page). */
+const NAV = [
+  ['SERVICES', '/#services'],
+  ['PROCESS', '/#quest'],
+  ['PRICING', '/#pricing'],
+  ['TRACKING', '/#board'],
+  ['FREE TOOLS', '/#free'],
+  ['BLOG', '/notes'],
+  ['ABOUT', '/#about'],
+  ['FAQ', '/#faq'],
+] as const;
+
+/** Sticky header (design: nav): mini Bit + wordmark, section links, red "Talk to Bit". */
 export const SiteHeader = ({ page, current, auditType }: { page: string; current?: ServiceKey; auditType?: ServiceKey }) => (
   <header
     data-rescue-header
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: s[4],
-      padding: px(s[3], gutter),
-      borderBottom: `${rule.edge}px solid ${p.rule}`,
-    }}
+    style={{ position: 'sticky', top: 0, zIndex: 20, background: p.bg, borderBottom: `${rule.edge}px solid ${p.ink}` }}
   >
-    <NavLogo />
-    <nav aria-label="Services" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
-      {SERVICES.map((sv) => (
-        <Link
-          key={sv.key}
-          to={sv.path}
-          data-rescue-navlink
-          aria-current={current === sv.key ? 'page' : undefined}
-          className="pf-underline"
-          style={{ ...label(11, 700, 0.14), color: current === sv.key ? p.goldText : p.ink }}
-        >
-          {sv.nav}
-        </Link>
-      ))}
-      <Link to="/notes" data-rescue-navlink className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
-        NOTES
-      </Link>
+    <div
+      style={{
+        maxWidth: 1240,
+        margin: '0 auto',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: s[4],
+        padding: px(s[3], gutter),
+      }}
+    >
+      <NavLogo />
+      <nav aria-label="Site" className="bq-navlinks" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 18 }}>
+        {NAV.map(([text, href]) => (
+          <a
+            key={href}
+            href={href}
+            data-rescue-navlink
+            className="pf-underline"
+            style={{ ...label(12), color: p.ink, textDecoration: 'none' }}
+          >
+            {text}
+          </a>
+        ))}
+      </nav>
       <Link
-        to={auditHref(auditType ?? current)}
+        to={auditHref(auditType ?? current ?? 'app')}
         onClick={ctaClick(page, 'header', auditType ?? current)}
-        className="pf-nudge"
-        style={{ ...cta, minHeight: 44, padding: px(0, s[5]) }}
+        className="bq-btn"
       >
-        Free audit<span aria-hidden>→</span>
+        <span aria-hidden>▶</span> Talk to Bit
       </Link>
-    </nav>
+    </div>
   </header>
 );
 
-const footLink: CSSProperties = { ...label(11, 700, 0.12), color: k.dimOnInk };
+const footLink: CSSProperties = { ...label(11), color: p.ink, textDecoration: 'none' };
+const footHead: CSSProperties = { ...label(10), color: p.goldText };
 
+/** Footer (design: footer), on paper, with the site map underneath. */
 export const SiteFooter = () => (
-  <footer
-    data-rescue-footer
-    style={{
-      display: 'grid',
-      gap: s[8],
-      padding: px(s[9], gutter, s[10]),
-      background: k.ink,
-      borderTop: `${rule.hair}px solid ${k.rule}`,
-    }}
-  >
-    {/* Terminal Head sign-off: LOVE in Night Shift (GUIDE.md: footer). */}
-    <div data-th-mode="night" style={{ display: 'flex', alignItems: 'center', gap: s[4], paddingBottom: s[8], borderBottom: `${rule.hair}px solid ${k.rule}` }}>
-      <TerminalHead face="love" size={72} label="" />
-      <span style={{ font: `700 22px/1.2 ${pixel}`, color: k.white }}>Built &amp; looked after by Anadi.</span>
-    </div>
-    <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[8] }}>
-      <div style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(11, 700, 0.12), color: k.white }}>ANADI THAKUR</span>
-        <p style={{ ...body, fontSize: 14, color: k.dimOnInk }}>
-          Get your business ready for the AI era: found by AI, ready for India&apos;s data law, and running on an app
-          that holds up.
-        </p>
+  <footer data-rescue-footer style={{ borderTop: `${rule.edge}px solid ${p.ink}`, background: p.bg }}>
+    <div style={{ maxWidth: 1240, margin: '0 auto', display: 'grid', gap: s[9], padding: px(s[10], gutter, s[10]) }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[5], justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: s[3] }}>
+          <TerminalHead face="hello" size={36} label="" motion="still" />
+          <span style={{ font: `400 26px/1 ${pixel}`, color: p.ink }}>anadi.thakur</span>
+        </span>
+        <span style={{ ...label(11), color: p.dim }}>Bit is an AI assistant · Anadi reads every request</span>
       </div>
-      <nav aria-label="Services" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: k.mark }}>SERVICES</span>
-        {SERVICES.map((sv) => (
-          <Link key={sv.key} to={sv.path} className="pf-underline" style={footLink}>
-            {sv.name.toUpperCase()}
-          </Link>
-        ))}
-        <Link to="/audit" className="pf-underline" style={footLink}>
-          FREE AUDIT
-        </Link>
-      </nav>
-      <nav aria-label="Free tools" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: k.mark }}>FREE TOOLS</span>
-        <Link to="/ai-readiness" className="pf-underline" style={footLink}>
-          AI READINESS CHECKER
-        </Link>
-        <Link to="/dpdp/check" className="pf-underline" style={footLink}>
-          DPDP SELF-CHECK
-        </Link>
-        <Link to="/scan" className="pf-underline" style={footLink}>
-          SUPABASE SECURITY CHECK
-        </Link>
-        <Link to="/teardown" className="pf-underline" style={footLink}>
-          THE WRAPPER TEST
-        </Link>
-        <Link to={KIT.path} className="pf-underline" style={footLink}>
-          PRODUCTION KIT
-        </Link>
-      </nav>
-      <nav aria-label="Elsewhere" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: k.mark }}>MORE</span>
-        <Link to="/notes" className="pf-underline" style={footLink}>
-          NOTES
-        </Link>
-        <Link to="/work" className="pf-underline" style={footLink}>
-          CASE STUDIES
-        </Link>
-        <a href={PORTFOLIO_ORIGIN} className="pf-underline" style={footLink}>
-          ABOUT ME ↗
-        </a>
-        <a href={site.linkedin} className="pf-underline" style={footLink}>
-          LINKEDIN ↗
-        </a>
-        <a href={`mailto:${site.email}`} className="pf-underline" style={footLink}>
-          EMAIL
-        </a>
-      </nav>
-    </div>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: s[6] }}>
-      <span style={{ ...label(11, 700, 0.12), color: k.white }}>© 2026 ANADI THAKUR</span>
-      <LegalLinks />
+      <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[8] }}>
+        <div style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
+          <span style={footHead}>Anadi Thakur</span>
+          <p style={{ ...body, fontSize: 14 }}>
+            Your app, made production-ready. Fixed, built with AI and kept running by a senior full-stack engineer, at
+            fixed prices.
+          </p>
+        </div>
+        <nav aria-label="Services" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
+          <span style={footHead}>Services</span>
+          <Link to="/production-ready" className="pf-underline" style={footLink}>Fix &amp; launch-ready</Link>
+          <a href="/#services" className="pf-underline" style={footLink}>Build with AI</a>
+          <a href="/#pricing" className="pf-underline" style={footLink}>Care plan</a>
+          <a href="/#pricing" className="pf-underline" style={footLink}>Pricing</a>
+          <Link to="/audit?type=app" className="pf-underline" style={footLink}>First bug free</Link>
+        </nav>
+        <nav aria-label="Free tools" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
+          <span style={footHead}>Free tools</span>
+          <Link to="/teardown" className="pf-underline" style={footLink}>The Wrapper Test</Link>
+          <Link to="/scan" className="pf-underline" style={footLink}>Supabase security check</Link>
+          <Link to="/ai-readiness" className="pf-underline" style={footLink}>AI readiness checker</Link>
+          <Link to="/dpdp/check" className="pf-underline" style={footLink}>Privacy self-check</Link>
+          <Link to={KIT.path} className="pf-underline" style={footLink}>Production Kit</Link>
+        </nav>
+        <nav aria-label="More" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
+          <span style={footHead}>More</span>
+          <Link to="/ai-visibility" className="pf-underline" style={footLink}>Search &amp; AI visibility</Link>
+          <Link to="/dpdp" className="pf-underline" style={footLink}>Privacy &amp; compliance</Link>
+          <Link to="/notes" className="pf-underline" style={footLink}>Blog</Link>
+          <Link to="/work" className="pf-underline" style={footLink}>Case studies</Link>
+          <a href={PORTFOLIO_ORIGIN} className="pf-underline" style={footLink}>Portfolio ↗</a>
+          <a href={site.linkedin} className="pf-underline" style={footLink}>LinkedIn ↗</a>
+          <a href={`mailto:${site.email}`} className="pf-underline" style={footLink}>Email</a>
+        </nav>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: s[6], paddingTop: s[6], borderTop: `${rule.base}px solid ${p.rule}` }}>
+        <span style={{ ...label(11), color: p.ink }}>© 2026 Anadi Thakur</span>
+        <LegalLinks />
+      </div>
     </div>
   </footer>
 );
@@ -338,9 +327,9 @@ export const Cards = ({ items }: { items: { title: string; body: string; items?:
       <div
         key={it.title}
         className="th-card"
-        style={{ display: 'grid', gap: s[4], alignContent: 'start', padding: s[6], background: p.card, border: `${rule.base}px solid ${p.ink}` }}
+        style={{ display: 'grid', gap: s[4], alignContent: 'start', padding: s[6], background: p.card, border: `${rule.edge}px solid ${p.ink}`, boxShadow: `6px 6px 0 ${c.ink}` }}
       >
-        <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase', color: p.ink }}>{it.title}</h3>
+        <h3 style={{ margin: 0, ...heading('d5'), color: p.ink }}>{it.title}</h3>
         <p style={body}>{it.body}</p>
         {it.items && (
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, font: `500 14px/1.4 ${display}` }}>
@@ -361,7 +350,7 @@ export const FaqSection = ({ faqs, title = 'Questions' }: { faqs: Faq[]; title?:
   <section aria-labelledby="h-faq" style={{ ...section, background: p.panel }} data-rescue-hpad>
     <div data-rescue-split style={{ ...split('4fr 8fr'), alignItems: 'start' }}>
       <div style={{ display: 'grid', gap: s[5] }}>
-        <h2 id="h-faq" style={{ ...h2, ...heading('d6'), margin: 0, textTransform: 'uppercase' }}>
+        <h2 id="h-faq" style={{ ...h2, margin: 0 }}>
           {title}
         </h2>
         <p style={body}>
@@ -420,11 +409,11 @@ export const FinalBand = ({
     style={{ ...section, borderTop: 'none', background: k.ink, color: k.white, paddingTop: s[13] }}
     data-rescue-hpad
   >
-    <h2 id="h-final" style={{ margin: 0, ...heading('d2', { stretch: stretch.bleed }), textTransform: 'uppercase', maxWidth: '16ch' }}>
+    <h2 id="h-final" style={{ margin: 0, ...heading('d2', { stretch: stretch.bleed }), maxWidth: '18ch' }}>
       {title} {accent && <span style={{ color: k.mark }}>{accent}</span>}
     </h2>
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6], marginTop: s[10] }}>
-      <Link to={to} onClick={onClick} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: k.ctaAlt, color: k.ink }}>
+      <Link to={to} onClick={onClick} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: k.ctaAlt, color: '#fff', boxShadow: `4px 4px 0 ${c.bright}` }}>
         {action}
         <span aria-hidden>→</span>
       </Link>
@@ -433,9 +422,9 @@ export const FinalBand = ({
   </section>
 );
 
-/** The page frame: paper ground, header, main, footer. */
-export const PaperPage = ({ header, children, theme }: { header: ReactNode; children: ReactNode; theme?: CSSProperties }) => (
-  <div style={{ ...theme, background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+/** The page frame: graph-paper ground, header, main, footer. `theme` is accepted and ignored: one brand now. */
+export const PaperPage = ({ header, children }: { header: ReactNode; children: ReactNode; theme?: CSSProperties }) => (
+  <div className="bq-page" style={{ color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
     {header}
     <main style={{ flex: 1 }}>{children}</main>
     <SiteFooter />

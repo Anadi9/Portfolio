@@ -3,7 +3,7 @@ import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import KitShell from '@/components/kit/KitShell';
 import { body, hint, p } from '@/components/kit/styles';
-import { gutter, heading, px, s, sectionY } from '@/components/portfolio/tokens';
+import { gutter, heading, px, s, sectionY } from '@/components/brand/tokens';
 import { BUSINESS, LEGAL_PATHS } from '@/data/legal';
 import { KIT } from '@/lib/kit/product';
 

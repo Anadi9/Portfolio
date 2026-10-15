@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { c, display, heading, label, px, rule, s, stretch } from '@/components/portfolio/tokens';
+import { c, display, heading, label, px, rule, s, stretch } from '@/components/brand/tokens';
 import NotesShell, { Column } from '@/components/notes/NotesShell';
 import FeedCard from '@/components/notes/FeedCard';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { TerminalHead } from '@/components/brand/BitHead';
 import { StartHere } from '@/components/notes/OnRamp';
 import { Seo, ORIGIN, BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { BUSINESS_REF, PERSON_ID } from '@/lib/schema';

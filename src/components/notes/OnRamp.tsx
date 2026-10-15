@@ -1,5 +1,5 @@
 import { Link } from 'vite-react-ssg';
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { streamLabel, type Post } from '@/data/notes';
 import { payloadOf } from './streamPayload';
 import { MEASURE } from './prose';

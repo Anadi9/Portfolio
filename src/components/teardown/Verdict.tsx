@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
+import { c, display, heading, label, mono, px, rule, s } from '@/components/brand/tokens';
 import { QUESTIONS, SECTIONS, type Axis } from '@/lib/teardown/questions';
 import type { Result } from '@/lib/teardown/score';
 import Ladder from './Ladder';
-import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { TerminalHead } from '@/components/brand/BitHead';
 import { verdictFace } from './face';
 
 /**
