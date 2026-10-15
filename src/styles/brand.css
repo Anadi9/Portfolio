@@ -98,7 +98,7 @@
   cursor: pointer;
   transition: transform 80ms ease-out, box-shadow 80ms ease-out;
 }
-.bq-btn { font-size: 12px; line-height: 1.5; background: var(--bq-brand); color: var(--bq-brand-text); border: 0; padding: 12px 16px; box-shadow: var(--bq-shadow-sm); }
+.bq-btn { white-space: nowrap; font-size: 12px; line-height: 1.5; background: var(--bq-brand); color: var(--bq-brand-text); border: 0; padding: 12px 16px; box-shadow: var(--bq-shadow-sm); }
 .bq-btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--bq-ink); }
 .bq-btn:active { transform: translate(4px, 4px); box-shadow: none; }
 .bq-btn-ghost { font-size: 11px; line-height: 1.5; background: var(--bq-panel); color: var(--bq-ink); border: var(--bq-border-thin); padding: 10px 14px; }
@@ -119,6 +119,10 @@
 
 @media (max-width: 1180px) {
   .bq-navlinks { display: none !important; }
+}
+@media (max-width: 600px) {
+  .bq-btn { white-space: normal; }
+  header .bq-btn { white-space: nowrap; font-size: 10px; padding: 10px 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

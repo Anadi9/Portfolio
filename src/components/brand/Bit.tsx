@@ -36,8 +36,8 @@ export const ICONS = {
   'bug-dark': 'icon-05',
   'spark-dark': 'icon-06',
   'shield-dark': 'icon-07',
-  'lock-dark': 'icon-08',
-  'check-dark': 'icon-09',
+  'lens-dark': 'icon-08',
+  'mark-dark': 'icon-09',
 } as const satisfies Record<string, SpriteName>;
 
 export type IconName = keyof typeof ICONS;
