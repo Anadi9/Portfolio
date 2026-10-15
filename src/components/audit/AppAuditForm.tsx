@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
 import { buttonType, c, display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
 import {
   NOTES_MAX,
@@ -119,7 +120,8 @@ const Field = ({
     {children}
     {note && <p style={hint}>{note}</p>}
     {error && (
-      <p id={`${id}-error`} role="alert" style={{ ...hint, color: p.error }}>
+      <p id={`${id}-error`} role="alert" style={{ ...hint, color: p.error , display: 'flex', alignItems: 'center', gap: s[2] }}>
+        <TerminalHead face="error" size={40} label="" className="th-inline" />
         {error}
       </p>
     )}
@@ -196,6 +198,7 @@ export default function AppAuditForm() {
     <>
           {status.kind === 'sent' ? (
             <div style={{ display: 'grid', gap: s[6], maxWidth: '60ch' }} aria-live="polite">
+              <TerminalHead face="fixed" motion="hop" size={80} label="Done" />
               <h2 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
                 Your report lands by <span style={{ color: p.gold }}>{formatDue(status.due)}.</span>
               </h2>
@@ -296,7 +299,8 @@ export default function AppAuditForm() {
                     })}
                   </div>
                   {errors.tool && (
-                    <p id="ra-tool-error" role="alert" style={{ ...hint, color: p.error }}>
+                    <p id="ra-tool-error" role="alert" style={{ ...hint, color: p.error , display: 'flex', alignItems: 'center', gap: s[2] }}>
+                      <TerminalHead face="error" size={40} label="" className="th-inline" />
                       {errors.tool}
                     </p>
                   )}
@@ -405,7 +409,14 @@ export default function AppAuditForm() {
 
                 <div style={{ display: 'grid', gap: s[4], justifyItems: 'start' }}>
                   <button type="submit" disabled={status.kind === 'sending'} className="pf-nudge pf-nudge-lg" style={{ ...cta, opacity: status.kind === 'sending' ? 0.6 : 1 }}>
-                    {status.kind === 'sending' ? 'Sending…' : 'Send for audit'}
+                    {status.kind === 'sending' ? (
+            <>
+              <TerminalHead face="think" size={28} label="" />
+              <span role="status">Sending…</span>
+            </>
+          ) : (
+            'Send for audit'
+          )}
                     <span aria-hidden>→</span>
                   </button>
                   <p style={hint}>
@@ -413,12 +424,15 @@ export default function AppAuditForm() {
                     them. I only use your email for this audit.
                   </p>
                   {status.kind === 'failed' && (
-                    <p role="alert" style={{ ...body, color: p.error }}>
-                      That didn&apos;t go through, and it&apos;s my end, not yours. Email the link to{' '}
-                      <a href={`mailto:${EMAIL}?subject=${encodeURIComponent('Rescue audit')}&body=${encodeURIComponent(form.appUrl)}`} style={{ color: p.error, fontWeight: 600 }}>
-                        {EMAIL}
-                      </a>{' '}
-                      and the same {TURNAROUND_HOURS} hours applies.
+                    <p role="alert" style={{ ...body, color: p.error, display: 'flex', alignItems: 'flex-start', gap: s[3] }}>
+                      <TerminalHead face="error" size={40} label="" />
+                      <span>
+                        That didn&apos;t go through, and it&apos;s my end, not yours. Email the link to{' '}
+                        <a href={`mailto:${EMAIL}?subject=${encodeURIComponent('Rescue audit')}&body=${encodeURIComponent(form.appUrl)}`} style={{ color: p.error, fontWeight: 600 }}>
+                          {EMAIL}
+                        </a>{' '}
+                        and the same {TURNAROUND_HOURS} hours applies.
+                      </span>
                     </p>
                   )}
                 </div>

@@ -27,6 +27,8 @@ export const site = {
   years: '04',
   releases: '18',
   clients: ['ZEISS', 'ZENQUA', 'PRECIOUS', 'YUGAM', 'SHETHINK', 'ORIONS'],
+  /** Drives the hub's status badge: true = "Taking new projects" (prompt face), false = "Booked" (sleep face). */
+  available: true,
 };
 
 /**

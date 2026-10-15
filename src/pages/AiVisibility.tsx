@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'vite-react-ssg';
+import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
+import { useInView } from '@/hooks/use-in-view';
 import { Seo } from '@/components/Seo';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { breadcrumbs, faqPage, graph, service, type Faq, type PricedOffer } from '@/lib/schema';
@@ -122,8 +125,16 @@ const jsonLd = graph([
   breadcrumbs([{ name: 'AI Visibility', path: PATH }], `${URL}#breadcrumb`),
 ]);
 
-const SampleReport = () => (
-  <div style={{ border: `${rule.base}px solid ${c.ink}`, minWidth: 0 }}>
+/**
+ * The sample report. A `found` head sits by the score and peeks in when the
+ * report scrolls into view; hovering or focusing a question swaps it to that
+ * row's verdict (`found` for a miss, `fixed` tick for a mention).
+ */
+const SampleReport = () => {
+  const { ref, entered } = useInView<HTMLDivElement>();
+  const [face, setFace] = useState<THFace>('found');
+  return (
+  <div ref={ref} style={{ border: `${rule.base}px solid ${c.ink}`, minWidth: 0, background: p.card }}>
     <div
       style={{
         display: 'flex',
@@ -138,15 +149,24 @@ const SampleReport = () => (
       <span>AI VISIBILITY REPORT · FICTIONAL BRAND</span>
       <span style={{ color: p.dim }}>SAMPLE</span>
     </div>
-    <div style={{ display: 'flex', alignItems: 'baseline', gap: s[4], padding: px(s[6], s[6], s[4]) }}>
-      <span style={{ ...heading('d3'), color: p.ink }}>34</span>
-      <span style={{ ...label(11, 700, 0.14), color: p.dim }}>/ 100 AI VISIBILITY</span>
+    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: s[4], padding: px(s[6], s[6], s[4]) }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: s[4] }}>
+        <span style={{ ...heading('d3'), color: p.ink }}>34</span>
+        <span style={{ ...label(11, 700, 0.14), color: p.dim }}>/ 100 AI VISIBILITY</span>
+      </div>
+      <TerminalHead key={String(entered)} face={face} prop="clipboard" size={60} motion={entered ? 'peek' : 'still'} label="" />
     </div>
     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
       {sampleQuestions.map((r) => (
         <li
           key={r.q}
           data-rescue-finding
+          className="th-finding"
+          tabIndex={0}
+          onMouseEnter={() => setFace(r.hit ? 'fixed' : 'found')}
+          onFocus={() => setFace(r.hit ? 'fixed' : 'found')}
+          onMouseLeave={() => setFace('found')}
+          onBlur={() => setFace('found')}
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr auto',
@@ -172,13 +192,15 @@ const SampleReport = () => (
       ))}
     </div>
   </div>
-);
+  );
+};
 
 const AiVisibility = () => (
   <PaperPage header={<SiteHeader page={PAGE} current="ai" />}>
     <Seo title={TITLE} description={DESCRIPTION} path={PATH} type="website" jsonLd={jsonLd} />
 
     <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: s[8] }}>
       <div style={{ display: 'grid', gap: s[6], maxWidth: 900 }}>
         <span style={{ ...label(11, 700, 0.14), color: p.gold }}>AI VISIBILITY · GEO · AEO</span>
         <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
@@ -197,6 +219,9 @@ const AiVisibility = () => (
           </Link>
         </div>
         <TrustLine items={['Free', '48 hours', 'No access needed']} />
+      </div>
+      {/* The Inspector: lens + scan, the hero's one animated head. */}
+      <TerminalHead face="scan" prop="lens" motion="type" size={160} label="Terminal Head scanning with a magnifying lens" />
       </div>
     </section>
 

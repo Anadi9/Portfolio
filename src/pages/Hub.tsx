@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'vite-react-ssg';
+import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
+import { LOADOUT, StatusBadge } from '@/components/terminal-head/TerminalHeadUI';
 import { Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import portrait from '@/assets/portrait.webp';
@@ -136,7 +139,39 @@ const sample = [
   { area: 'App', line: 'Database tables readable with the public key', state: 'BROKEN' },
 ];
 
-const SampleCheck = () => (
+/** Seconds between findings typing in (CSS animation-delay), and when the first starts. */
+const ROW_GAP = 0.35;
+const ROW_START = 0.5;
+/** Rounded so the inline style reads cleanly (0.5 + 0.35 * 4 is 1.9000000000000001). */
+const rowDelay = (i: number) => `${(ROW_START + ROW_GAP * i).toFixed(2)}s`;
+const ROW_FACE: Record<string, THFace> = { GAP: 'found', RISK: 'found', BROKEN: 'error' };
+
+/**
+ * The hero's Terminal Head runs the sample check: it scans while the findings
+ * type in, then lands on `found`. Hovering or focusing a finding swaps the face
+ * to match it. The rows animate in CSS, so the prerendered HTML already plays;
+ * the face sequence is client-only and starts from `prompt`, the SSR face.
+ */
+const SampleCheck = () => {
+  const [face, setFace] = useState<THFace>('prompt');
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    const scan = setTimeout(() => setFace('scan'), ROW_START * 1000);
+    const found = setTimeout(() => {
+      setFace('found');
+      setDone(true);
+    }, (ROW_START + ROW_GAP * sample.length + 0.4) * 1000);
+    return () => {
+      clearTimeout(scan);
+      clearTimeout(found);
+    };
+  }, []);
+  const rest = () => done && setFace('found');
+  return (
+  <div style={{ display: 'grid', minWidth: 0 }}>
+    <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: s[6], marginBottom: -rule.base }}>
+      <TerminalHead face={face} motion="type" size={120} label={`Terminal Head, ${face === 'scan' ? 'scanning' : face === 'prompt' ? 'ready' : 'found issues'}`} />
+    </div>
   <div
     aria-label="An example of what the free check finds"
     style={{ font: `400 13px/1.9 ${mono}`, background: c.plate, border: `${rule.base}px solid ${c.ink}`, minWidth: 0 }}
@@ -157,8 +192,17 @@ const SampleCheck = () => (
       <span style={{ color: c.mark }}>SAMPLE</span>
     </div>
     <div style={{ padding: px(s[5], s[6], s[5]) }}>
-      {sample.map((r) => (
-        <div key={r.line} style={{ display: 'grid', gridTemplateColumns: '5.5em minmax(0, 1fr)', columnGap: s[2] }}>
+      {sample.map((r, i) => (
+        <div
+          key={r.line}
+          className="th-row"
+          tabIndex={0}
+          onMouseEnter={() => setFace(ROW_FACE[r.state])}
+          onFocus={() => setFace(ROW_FACE[r.state])}
+          onMouseLeave={rest}
+          onBlur={rest}
+          style={{ display: 'grid', gridTemplateColumns: '5.5em minmax(0, 1fr)', columnGap: s[2], animationDelay: rowDelay(i), cursor: 'default' }}
+        >
           <span style={{ fontWeight: 500, color: c.mark }}>{r.state.toLowerCase()}</span>
           <span style={{ overflowWrap: 'anywhere', color: '#fff' }}>
             <span style={{ color: c.dimOnInk }}>{r.area}: </span>
@@ -166,12 +210,61 @@ const SampleCheck = () => (
           </span>
         </div>
       ))}
-      <div style={{ marginTop: s[4], color: c.dimOnInk }}>
+      <div className="th-row" style={{ marginTop: s[4], color: c.dimOnInk, animationDelay: rowDelay(sample.length) }}>
         ready for the AI era: <b style={{ fontWeight: 500, color: c.mark }}>not yet</b>
       </div>
     </div>
   </div>
-);
+  </div>
+  );
+};
+
+/**
+ * A service path card. Its loadout head (wrench / lens / shield) sits still
+ * until the card is hovered or focused, then wakes up, so the grid reads calm
+ * and responds to the pointer.
+ */
+const ServiceCard = ({ sv }: { sv: (typeof SERVICES)[number] }) => {
+  const [awake, setAwake] = useState(false);
+  const l = LOADOUT[sv.key];
+  return (
+    <Link
+      to={sv.path}
+      onClick={ctaClick(PAGE, 'path_card', sv.key)}
+      onMouseEnter={() => setAwake(true)}
+      onMouseLeave={() => setAwake(false)}
+      onFocus={() => setAwake(true)}
+      onBlur={() => setAwake(false)}
+      className="pf-nudge"
+      style={{
+        display: 'grid',
+        gridTemplateRows: 'auto auto auto 1fr auto',
+        gap: s[4],
+        padding: px(s[7], s[6]),
+        background: p.panel,
+        border: `${rule.base}px solid ${c.ink}`,
+        color: p.ink,
+        textDecoration: 'none',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: s[3] }}>
+        <TerminalHead face={l.face} prop={l.prop} size={60} motion={awake ? 'hop' : 'still'} key={String(awake)} label="" />
+        <span style={{ ...label(10, 700, 0.14), color: p.goldText }}>{l.tag}</span>
+      </div>
+      <span style={{ ...label(10, 700, 0.14), color: p.body }}>
+        {sv.name.toUpperCase()} · {sv.tag.toUpperCase()}
+      </span>
+      <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase' }}>{sv.title}</h3>
+      <p style={body}>{sv.body}</p>
+      <span style={{ ...textLink, paddingTop: s[3], borderTop: `${rule.hair}px solid ${p.rule}` }}>
+        {sv.action.toUpperCase()} <span aria-hidden>→</span>
+      </span>
+    </Link>
+  );
+};
+
+/** One face per step: ready, working, done. */
+const STEP_FACES: THFace[] = ['prompt', 'think', 'fixed'];
 
 const Hub = () => (
   <PaperPage header={<SiteHeader page={PAGE} />}>
@@ -180,6 +273,9 @@ const Hub = () => (
     <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
       <div data-rescue-split style={{ ...split('7fr 5fr'), alignItems: 'end' }}>
         <div style={{ display: 'grid', gap: s[6], alignContent: 'start' }}>
+          <div>
+            <StatusBadge available={site.available} />
+          </div>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '15ch' }}>
             Get your business ready <span style={{ color: p.gold }}>for the AI era.</span>
           </h1>
@@ -235,31 +331,7 @@ const Hub = () => (
       <SectionHead id="h-paths" title="What do you need help with?" />
       <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: s[5], marginTop: s[9] }}>
         {SERVICES.map((sv) => (
-          <Link
-            key={sv.key}
-            to={sv.path}
-            onClick={ctaClick(PAGE, 'path_card', sv.key)}
-            className="pf-nudge"
-            style={{
-              display: 'grid',
-              gridTemplateRows: 'auto auto 1fr auto',
-              gap: s[4],
-              padding: px(s[7], s[6]),
-              background: p.panel,
-              border: `${rule.base}px solid ${c.ink}`,
-              color: p.ink,
-              textDecoration: 'none',
-            }}
-          >
-            <span style={{ ...label(10, 700, 0.14), color: p.body }}>
-              {sv.name.toUpperCase()} · {sv.tag.toUpperCase()}
-            </span>
-            <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase' }}>{sv.title}</h3>
-            <p style={body}>{sv.body}</p>
-            <span style={{ ...textLink, paddingTop: s[3], borderTop: `${rule.hair}px solid ${p.rule}` }}>
-              {sv.action.toUpperCase()} <span aria-hidden>→</span>
-            </span>
-          </Link>
+          <ServiceCard key={sv.key} sv={sv} />
         ))}
       </div>
       <p style={{ ...body, marginTop: s[8] }}>
@@ -270,7 +342,7 @@ const Hub = () => (
 
     <section aria-labelledby="h-how" style={section} data-rescue-hpad>
       <SectionHead id="h-how" title="Simple, from first check to fix" />
-      <Steps steps={steps} />
+      <Steps steps={steps} faces={STEP_FACES} />
     </section>
 
     <section aria-labelledby="h-why" style={section} data-rescue-hpad>

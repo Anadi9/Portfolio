@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
 import { display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
 import { breadcrumbs, faqPage, graph, service, type Faq } from '@/lib/schema';
 import {
@@ -194,6 +195,11 @@ const Dpdp = () => (
           </div>
           <TrustLine items={['Free', '48 hours', 'No access needed']} />
         </div>
+        <div style={{ display: 'grid', minWidth: 0 }}>
+        {/* The Guardian: shield + fixed tick (GUIDE.md loadout), the hero's one animated head, standing on the timeline. */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: s[6], marginBottom: -rule.base }}>
+          <TerminalHead face="fixed" prop="shield" motion="type" size={120} label="Terminal Head holding a shield" />
+        </div>
         <ol aria-label="DPDP timeline" style={{ listStyle: 'none', margin: 0, padding: px(s[7], s[7]), background: k.plate, color: k.white, display: 'grid', gap: s[5] }}>
           {timeline.map((t, i) => (
             <li key={t.when} style={{ display: 'grid', gridTemplateColumns: '6.5em 1fr', gap: s[4], alignItems: 'baseline' }}>
@@ -202,6 +208,7 @@ const Dpdp = () => (
             </li>
           ))}
         </ol>
+        </div>
       </div>
     </section>
 
@@ -229,7 +236,7 @@ const Dpdp = () => (
 
     <section aria-labelledby="h-how" style={section} data-rescue-hpad>
       <SectionHead id="h-how" title="From check to compliant product" />
-      <Steps steps={steps} />
+      <Steps steps={steps} faces={['prompt', 'scan', 'fix', 'fixed']} />
     </section>
 
     <section aria-labelledby="h-who" style={section} data-rescue-hpad>

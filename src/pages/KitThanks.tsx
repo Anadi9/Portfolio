@@ -7,6 +7,20 @@ import { body, hint, p } from '@/components/kit/styles';
 import { c, display, gutter, heading, label, mono, px, s, sectionY } from '@/components/portfolio/tokens';
 import type { PackId } from '@/data/kit';
 import { KIT } from '@/lib/kit/product';
+import type { THFace } from '@/components/terminal-head/TerminalHead';
+import { StateHead } from '@/components/terminal-head/TerminalHeadUI';
+
+/** The head follows the order check: working while it polls, the tick once the download is ready. */
+const THANKS_FACE: Record<State['status'], THFace> = {
+  loading: 'think',
+  pending: 'think',
+  slow: 'think',
+  ready: 'fixed',
+  unpaid: 'sleep',
+  refunded: 'sleep',
+  unknown: 'lost',
+  error: 'error',
+};
 
 /**
  * `/kit/thanks?session_id=cs_…`: where Stripe sends a pack buyer after paying.
@@ -64,6 +78,7 @@ export default function KitThanks() {
       <Seo title={`Thanks · ${KIT.name}`} description="Your download." path={KIT.packsThanksPath} type="website" robots="noindex, nofollow" />
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <div style={{ display: 'grid', gap: s[7], maxWidth: 720 }}>
+          <StateHead face={THANKS_FACE[state.status]} />
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
             {state.status === 'ready' ? (
               <>

@@ -76,3 +76,62 @@
     display: none;
   }
 }
+
+/*
+ * Terminal Head theme: shared interaction layer.
+ * Colours come from the same --pp-* variables as src/components/site/kit.tsx;
+ * the fallbacks are the theme defaults (tokens.ts `c`). Transitions use steps()
+ * so the UI moves in the same chunky increments as the pixel mascot.
+ */
+:root {
+  --th-shadow: var(--pp-shell, #d42e24);
+  --th-ease: steps(3, end);
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--pp-shell, #d42e24);
+  outline-offset: 2px;
+}
+
+/* Primary buttons and CTAs: hard red offset shadow; pressing flattens it. */
+.th-btn {
+  box-shadow: 4px 4px 0 var(--th-shadow);
+  transition: transform 120ms var(--th-ease), box-shadow 120ms var(--th-ease);
+}
+.th-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--th-shadow); }
+.th-btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--th-shadow); }
+
+/* Cards: lift with a red shadow on hover/focus-within. */
+.th-card {
+  transition: transform 160ms var(--th-ease), box-shadow 160ms var(--th-ease);
+}
+.th-card:hover, .th-card:focus-within { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--th-shadow); }
+
+/* Once-only reveal for sections (paired with useInView). Hidden only once the
+   client has marked it data-in="false", so prerendered HTML is always visible. */
+.th-reveal { transition: opacity 240ms var(--th-ease), transform 240ms var(--th-ease); }
+.th-reveal[data-in='false'] { opacity: 0; transform: translateY(8px); }
+
+/* Hero sample: findings type in one at a time. Pure CSS with per-row
+   animation-delay, so it plays from the prerendered HTML without waiting for JS. */
+/* `backwards`, not `both`: holding the end frame of a steps() animation can land a
+   float hair short (Chrome: 1900ms + 240ms) and freeze the row at 75%. Once done,
+   the row simply falls back to its normal, fully visible style. */
+.th-row { animation: th-row-in 0.24s steps(4, end) backwards; }
+@keyframes th-row-in { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+.th-row:hover { background: rgba(255, 255, 255, 0.06); }
+
+/* Interactive report rows (sample findings): a quiet highlight that pairs with the head's face swap. */
+.th-finding { transition: background 0.12s steps(2, end); cursor: default; }
+.th-finding:hover, .th-finding:focus-visible { background: var(--pp-picked, #faf8f3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .th-row { animation: none; }
+  .th-btn, .th-card, .th-reveal { transition: none !important; }
+  .th-btn:hover:not(:disabled), .th-card:hover, .th-card:focus-within { transform: none; }
+  .th-reveal[data-in='false'] { opacity: 1; transform: none; }
+}
+
+/* A 40px head beside a 13px hint line: crisp at 2 screen px per sprite px, but
+   pulled in so the line keeps roughly its text height and the form doesn't jump. */
+.th-inline { margin-block: -10px; }

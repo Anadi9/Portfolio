@@ -21,7 +21,7 @@ html {
 body {
   margin: 0;
   background: var(--ink);
-  font-family: Archivo, Helvetica, sans-serif;
+  font-family: 'Instrument Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   cursor: auto;
 }
@@ -60,15 +60,24 @@ body {
    use-portfolio-motion go through `bindActive`, which adds a third trigger;
    see the note there. */
 
-/* Solid button that nudges up-left on hover. */
+/* Solid button that nudges up-left on hover. Terminal Head theme: it carries a
+   hard red offset shadow that grows as it lifts and flattens when pressed, in
+   steps() to match the pixel mascot. */
 .pf-nudge {
-  transition: transform 0.18s ease;
+  box-shadow: 4px 4px 0 var(--pp-shell, #d42e24);
+  transition: transform 0.12s steps(3, end), box-shadow 0.12s steps(3, end);
 }
 .pf-nudge:focus-visible {
   transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--pp-shell, #d42e24);
 }
 .pf-nudge-lg:focus-visible {
   transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0 var(--pp-shell, #d42e24);
+}
+.pf-nudge:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--pp-shell, #d42e24);
 }
 
 /* Ghost button that fills in. */
@@ -83,9 +92,15 @@ body {
 @media (hover: hover) {
   .pf-nudge:hover {
     transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--pp-shell, #d42e24);
   }
   .pf-nudge-lg:hover {
     transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0 var(--pp-shell, #d42e24);
+  }
+  .pf-nudge:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--pp-shell, #d42e24);
   }
   .pf-ghost:hover {
     background: var(--ink);
@@ -346,13 +361,31 @@ button:focus-visible,
 [data-rescue-faq] > summary::-webkit-details-marker { display: none; }
 /* /audit: the radio and checkbox inputs are visually hidden inside their
    labels, so the focus ring has to be drawn on the label. */
-[data-audit-chip]:has(input:focus-visible) { outline: 2px solid #0a0a0a; outline-offset: 2px; }
+[data-audit-chip]:has(input:focus-visible) { outline: 2px solid var(--pp-shell, #d42e24); outline-offset: 2px; }
 /* /products/production-kit: each pack card is a label around a real checkbox,
    so the card carries the checkbox's focus ring. */
 [data-kit-pack]:has(input:focus-visible) { outline: 2px solid var(--mark); outline-offset: 3px; }
 [data-review-star]:has(input:focus-visible) { outline: 2px solid var(--mark); outline-offset: 2px; }
-[data-rescue-faq-sign]::before { content: '+'; }
-[data-rescue-faq][open] [data-rescue-faq-sign]::before { content: '\2212'; }
+/* Terminal Head theme: the FAQ marker is a pixel chevron (a 5x3 pixel mask,
+   painted in currentColor) that flips in steps when the item opens. */
+[data-rescue-faq-sign] {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 15px;
+  height: 9px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 3' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1H0zM4 0h1v1H4zM1 1h1v1H1zM3 1h1v1H3zM2 2h1v1H2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 3' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1H0zM4 0h1v1H4zM1 1h1v1H1zM3 1h1v1H3zM2 2h1v1H2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 0.16s steps(2, end);
+}
+[data-rescue-faq][open] [data-rescue-faq-sign] { transform: rotate(180deg); color: var(--pp-shell, #d42e24); }
+[data-rescue-faq] > summary { transition: color 0.12s steps(2, end); }
+@media (hover: hover) {
+  [data-rescue-faq] > summary:hover { color: var(--pp-red-text, #b02a20); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-rescue-faq-sign] { transition: none; }
+}
 
 @media (max-width: 1024px) {
   [data-rescue-four] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }

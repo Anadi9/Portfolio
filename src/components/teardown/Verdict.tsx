@@ -3,6 +3,8 @@ import { c, display, heading, label, mono, px, rule, s } from '@/components/port
 import { QUESTIONS, SECTIONS, type Axis } from '@/lib/teardown/questions';
 import type { Result } from '@/lib/teardown/score';
 import Ladder from './Ladder';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { verdictFace } from './face';
 
 /**
  * The ungated result. Verdict, score, four axis bars, and the thinnest
@@ -85,7 +87,11 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
         {result.verdict}
       </Heading>
 
-      <p style={{ margin: px(s[4], 0, 0), font: `700 20px/1 ${mono}`, color: '#fff' }}>
+      <p style={{ margin: px(s[4], 0, 0), font: `700 20px/1 ${mono}`, color: '#fff', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[3] }}>
+        <span data-th-mode="night" style={{ lineHeight: 0 }}>
+          <TerminalHead face={verdictFace(result.score)} size={60} motion={verdictFace(result.score) === 'fixed' ? 'hop' : 'idle'} label="" />
+        </span>
+        <span>
         {result.score}
         <span style={{ color: c.dimOnInk }}>/100</span>
         {/*
@@ -96,6 +102,7 @@ export default function Verdict({ result, mine = true }: { result: Result; mine?
           link or a stranger has just opened it.
         */}
         <span style={{ font: `400 15px/1 ${display}`, color: c.dimOnInk }}> on the wrapper test</span>
+        </span>
       </p>
 
       {result.undecidedCount > 0 && (

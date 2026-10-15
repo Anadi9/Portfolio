@@ -1,12 +1,15 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { PORTFOLIO_ORIGIN } from '@/components/Seo';
-import { buttonType, c, display, gutter, heading, label, mono, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
+import { buttonType, c, display, gutter, heading, label, mono, pixel, px, rule, s, sectionY, stretch } from '@/components/portfolio/tokens';
 import LegalLinks from '@/components/LegalLinks';
 import { KIT } from '@/lib/kit/product';
 import { trackRescue } from '@/lib/rescue/track';
 import { site } from '@/data/portfolio';
 import type { Faq } from '@/lib/schema';
+import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
+import { useInView } from '@/hooks/use-in-view';
+import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
 
 /**
  * The paper pages' shared parts: the hub at `/`, the two service pages and the
@@ -37,6 +40,8 @@ export const p = {
   rule: v('rule', 'rgba(10,10,10,.14)'),
   panel: v('panel', c.accent),
   picked: v('picked', '#faf8f3'),
+  /** White card on paper (Terminal Head theme). */
+  card: v('card', '#ffffff'),
 } as const;
 
 /** The ink-side tokens: dark bands, the CTA, the footer. Same fallback rule as `p`. */
@@ -149,10 +154,7 @@ export const SiteHeader = ({ page, current, auditType }: { page: string; current
       borderBottom: `${rule.edge}px solid ${p.rule}`,
     }}
   >
-    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-      <span aria-hidden style={{ width: 22, height: 22, background: k.ink, display: 'block' }} />
-      <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
-    </Link>
+    <NavLogo />
     <nav aria-label="Services" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
       {SERVICES.map((sv) => (
         <Link
@@ -194,6 +196,11 @@ export const SiteFooter = () => (
       borderTop: `${rule.hair}px solid ${k.rule}`,
     }}
   >
+    {/* Terminal Head sign-off: LOVE in Night Shift (GUIDE.md: footer). */}
+    <div data-th-mode="night" style={{ display: 'flex', alignItems: 'center', gap: s[4], paddingBottom: s[8], borderBottom: `${rule.hair}px solid ${k.rule}` }}>
+      <TerminalHead face="love" size={72} label="" />
+      <span style={{ font: `700 22px/1.2 ${pixel}`, color: k.white }}>Built &amp; looked after by Anadi.</span>
+    </div>
     <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[8] }}>
       <div style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
         <span style={{ ...label(11, 700, 0.12), color: k.white }}>ANADI THAKUR</span>
@@ -203,7 +210,7 @@ export const SiteFooter = () => (
         </p>
       </div>
       <nav aria-label="Services" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: k.ruleSoft }}>SERVICES</span>
+        <span style={{ ...label(10, 700, 0.16), color: k.mark }}>SERVICES</span>
         {SERVICES.map((sv) => (
           <Link key={sv.key} to={sv.path} className="pf-underline" style={footLink}>
             {sv.name.toUpperCase()}
@@ -214,7 +221,7 @@ export const SiteFooter = () => (
         </Link>
       </nav>
       <nav aria-label="Free tools" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: k.ruleSoft }}>FREE TOOLS</span>
+        <span style={{ ...label(10, 700, 0.16), color: k.mark }}>FREE TOOLS</span>
         <Link to="/ai-readiness" className="pf-underline" style={footLink}>
           AI READINESS CHECKER
         </Link>
@@ -232,7 +239,7 @@ export const SiteFooter = () => (
         </Link>
       </nav>
       <nav aria-label="Elsewhere" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-        <span style={{ ...label(10, 700, 0.16), color: k.ruleSoft }}>MORE</span>
+        <span style={{ ...label(10, 700, 0.16), color: k.mark }}>MORE</span>
         <Link to="/notes" className="pf-underline" style={footLink}>
           NOTES
         </Link>
@@ -290,9 +297,16 @@ export const TrustLine = ({ items }: { items: string[] }) => (
   </ul>
 );
 
-/** Numbered steps, three or four across. */
-export const Steps = ({ steps }: { steps: { title: string; body: string }[] }) => (
+/**
+ * Numbered steps, three or four across. Pass `faces` (one per step) to put a
+ * still Terminal Head beside each number; they peek up once the list scrolls
+ * into view, which is a one-shot, so the one-animated-head rule holds.
+ */
+export const Steps = ({ steps, faces }: { steps: { title: string; body: string }[]; faces?: THFace[] }) => {
+  const { ref, entered } = useInView<HTMLOListElement>();
+  return (
   <ol
+    ref={ref}
     data-rescue-four
     style={{
       listStyle: 'none',
@@ -305,19 +319,27 @@ export const Steps = ({ steps }: { steps: { title: string; body: string }[] }) =
   >
     {steps.map((st, i) => (
       <li key={st.title} style={{ display: 'grid', gap: s[3], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${p.ink}` }}>
-        <div style={{ ...heading('d6'), color: p.gold }}>{String(i + 1).padStart(2, '0')}</div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: s[3] }}>
+          <div style={{ ...heading('d6'), color: p.gold }}>{String(i + 1).padStart(2, '0')}</div>
+          {faces?.[i] && <TerminalHead key={String(entered)} face={faces[i]} size={40} motion={entered ? 'peek' : 'still'} label="" />}
+        </div>
         <h3 style={{ margin: 0, font: `600 17px/1.3 ${display}` }}>{st.title}</h3>
         <p style={body}>{st.body}</p>
       </li>
     ))}
   </ol>
-);
+  );
+};
 
-/** Ruled cards with a title, body and optional bullet list. */
+/** Bordered cards with a title, body and optional bullet list; they lift with a red shadow on hover (`.th-card`). */
 export const Cards = ({ items }: { items: { title: string; body: string; items?: string[] }[] }) => (
-  <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(items.length, 4)}, minmax(0, 1fr))`, gap: s[8], marginTop: s[9] }}>
+  <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(items.length, 4)}, minmax(0, 1fr))`, gap: s[6], marginTop: s[9] }}>
     {items.map((it) => (
-      <div key={it.title} style={{ display: 'grid', gap: s[4], alignContent: 'start', paddingTop: s[6], borderTop: `${rule.base}px solid ${p.ink}` }}>
+      <div
+        key={it.title}
+        className="th-card"
+        style={{ display: 'grid', gap: s[4], alignContent: 'start', padding: s[6], background: p.card, border: `${rule.base}px solid ${p.ink}` }}
+      >
         <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase', color: p.ink }}>{it.title}</h3>
         <p style={body}>{it.body}</p>
         {it.items && (

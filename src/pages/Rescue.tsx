@@ -11,6 +11,9 @@ import LegalLinks from '@/components/LegalLinks';
 import Testimonials from '@/components/Testimonials';
 import { site } from '@/data/portfolio';
 import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
+import { useInView } from '@/hooks/use-in-view';
 
 /**
  * `/production-ready`: Production Readiness, fixed-price fixes that make a
@@ -366,6 +369,12 @@ const ErrorLog = () => {
   const fade = 'color 0.4s ease, text-decoration-color 0.4s ease';
 
   return (
+    <div style={{ display: 'grid', minWidth: 0 }}>
+      {/* The Fixer (wrench): `error` on the unfixed log, `fix` once work starts. It
+          stays on `fix` because the log rests short of all fixed, on purpose. */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: s[6], marginBottom: -rule.base }}>
+        <TerminalHead face={fixed ? 'fix' : 'error'} prop="wrench" motion="type" size={120} label={fixed ? 'Terminal Head fixing errors' : 'Terminal Head, errors found'} />
+      </div>
     <div
       aria-label="Example production errors that get fixed"
       style={{
@@ -431,6 +440,57 @@ const ErrorLog = () => {
         </div>
       </div>
     </div>
+    </div>
+  );
+};
+
+/** The 7-day timeline. Step 03 is the work itself: red bar, and the `fix` head peeks in when the section arrives (GUIDE.md: `fix` on the current timeline step). */
+const Timeline = () => {
+  const { ref, entered } = useInView<HTMLDivElement>();
+  return (
+    <>
+      <div
+        aria-hidden
+        data-rescue-track
+        style={{
+          display: 'grid',
+          gridTemplateColumns: steps.map((st) => `${st.span}fr`).join(' '),
+          gap: s[1],
+          marginTop: s[10],
+        }}
+      >
+        {steps.map((st) => (
+          <div
+            key={st.num}
+            style={{
+              height: 8,
+              background:
+                st.num === '03'
+                  ? c.shell
+                  : st.num === '04'
+                    ? `repeating-linear-gradient(90deg, ${c.accentEdge} 0 8px, transparent 8px 12px)`
+                    : c.accentEdge,
+            }}
+          />
+        ))}
+      </div>
+      <div ref={ref} data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[8], marginTop: s[8] }}>
+        {steps.map((step) => (
+          <div key={step.num} style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
+            <span style={{ ...label(10, 700, 0.14), color: step.num === '03' ? p.ink : p.dim }}>
+              {step.when.toUpperCase()}
+            </span>
+            {/* Same height on every step so the numerals line up whether or not a head sits beside them. */}
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: s[3], minHeight: 40 }}>
+              <div style={{ ...heading('d6'), color: p.gold }}>{step.num}</div>
+              {step.num === '03' && <TerminalHead key={String(entered)} face="fix" prop="wrench" size={40} motion={entered ? 'peek' : 'still'} label="" />}
+            </div>
+            <h3 style={{ margin: 0, font: `600 17px/1.3 ${display}` }}>{step.title}</h3>
+            <p style={body}>{step.body}</p>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
@@ -615,10 +675,7 @@ const Rescue = () => {
         }}
         data-rescue-header
       >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-          <span aria-hidden style={{ width: 22, height: 22, background: c.ink, display: 'block' }} />
-          <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
-        </Link>
+        <NavLogo />
         <nav aria-label="Page" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
           {[
             ['#h-fix', 'WHAT I FIX'],
@@ -783,35 +840,7 @@ const Rescue = () => {
           <h2 id="h-how" style={h2}>
             Fixed in 7 days, then 7 days of support
           </h2>
-          <div
-            aria-hidden
-            data-rescue-track
-            style={{
-              display: 'grid',
-              gridTemplateColumns: steps.map((st) => `${st.span}fr`).join(' '),
-              gap: s[1],
-              marginTop: s[10],
-            }}
-          >
-            {steps.map((st) => (
-              <div
-                key={st.num}
-                style={{ height: 8, background: st.num === '03' ? c.ink : st.num === '04' ? c.accent : c.accentEdge }}
-              />
-            ))}
-          </div>
-          <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[8], marginTop: s[8] }}>
-            {steps.map((step) => (
-              <div key={step.num} style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
-                <span style={{ ...label(10, 700, 0.14), color: step.num === '03' ? p.ink : p.dim }}>
-                  {step.when.toUpperCase()}
-                </span>
-                <div style={{ ...heading('d6'), color: p.gold }}>{step.num}</div>
-                <h3 style={{ margin: 0, font: `600 17px/1.3 ${display}` }}>{step.title}</h3>
-                <p style={body}>{step.body}</p>
-              </div>
-            ))}
-          </div>
+          <Timeline />
         </section>
 
         <section aria-labelledby="h-proof" style={section} data-rescue-hpad>
@@ -1155,7 +1184,10 @@ const Rescue = () => {
           borderTop: `${rule.hair}px solid ${c.rule}`,
         }}
       >
-        <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
+        <span data-th-mode="night" style={{ display: 'flex', alignItems: 'center', gap: s[3] }}>
+          <TerminalHead face="love" size={40} motion="still" label="" />
+          <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
+        </span>
         <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
           <Link to={KIT.path} onClick={kitClicked('footer')} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
             FREE PRODUCTION KIT

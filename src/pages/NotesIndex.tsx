@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { c, display, heading, label, px, rule, s, stretch } from '@/components/portfolio/tokens';
 import NotesShell, { Column } from '@/components/notes/NotesShell';
 import FeedCard from '@/components/notes/FeedCard';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
 import { StartHere } from '@/components/notes/OnRamp';
 import { Seo, ORIGIN, BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { BUSINESS_REF, PERSON_ID } from '@/lib/schema';
@@ -143,10 +144,14 @@ const NotesIndex = ({ stream }: { stream?: Stream }) => {
         {filter === 'all' && <StartHere posts={pinnedPosts()} />}
 
         {shown.length === 0 ? (
-          <p style={{ margin: px(s[10], 0), font: `400 17px/1.6 ${display}`, color: c.dim }}>
-            {q.trim()
-              ? `Nothing matches “${q.trim()}”. Try a tool or a topic: n8n, Supabase, Vercel, prompts.`
-              : 'Nothing in this stream yet. The other chips have the rest.'}
+          <p style={{ margin: px(s[10], 0), font: `400 17px/1.6 ${display}`, color: c.dim, display: 'flex', alignItems: 'center', gap: s[5] }}>
+            {/* GUIDE.md: `lost` for no results, `sleep` for an empty state. */}
+            <TerminalHead face={q.trim() ? 'lost' : 'sleep'} size={80} label="" />
+            <span>
+              {q.trim()
+                ? `Nothing matches “${q.trim()}”. Try a tool or a topic: n8n, Supabase, Vercel, prompts.`
+                : 'Nothing in this stream yet. The other chips have the rest.'}
+            </span>
           </p>
         ) : (
           <ol style={{ listStyle: 'none', margin: 0, padding: 0, borderTop: `${rule.edge}px solid ${c.ink}` }}>

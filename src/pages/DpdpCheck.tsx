@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { scoreFace } from '@/components/terminal-head/TerminalHeadUI';
 import { c, display, heading, label, px, rule, s, stretch } from '@/components/portfolio/tokens';
 import { FaqSection, PaperPage, SiteHeader, TrustLine, body, cta, ctaClick, lead, p, section, split } from '@/components/site/kit';
 import { ANSWERS, ANSWER_LABEL, QUESTIONS, type Answer } from '@/lib/dpdp/questions';
@@ -148,9 +150,22 @@ const DpdpCheck = () => {
           </ol>
 
           <aside aria-live="polite" style={{ position: 'sticky', top: s[6], display: 'grid', gap: s[5], padding: px(s[8], s[7]), background: c.plate, color: '#fff' }}>
-            <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>
-              {done ? 'YOUR DPDP READINESS' : `${result.answered} OF ${QUESTIONS.length} ANSWERED`}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: s[3] }}>
+              <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>
+                {done ? 'YOUR DPDP READINESS' : `${result.answered} OF ${QUESTIONS.length} ANSWERED`}
+              </span>
+              {/* Keyed by the count, so every answer replays the screen flicker: the head visibly takes each one in. */}
+              <span data-th-mode="night" style={{ lineHeight: 0 }}>
+                <TerminalHead
+                  key={result.answered}
+                  face={result.answered === 0 ? 'prompt' : done ? scoreFace(result.score) : 'think'}
+                  shape="laptop"
+                  size={60}
+                  motion={done && result.score >= 80 ? 'hop' : 'idle'}
+                  label=""
+                />
+              </span>
+            </div>
             {result.answered === 0 ? (
               <p style={{ ...body, color: c.bright }}>Answer the questions and your score builds here.</p>
             ) : (

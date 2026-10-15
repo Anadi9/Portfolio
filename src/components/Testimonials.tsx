@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import type { PublicReview } from '@/lib/review/intake';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
 
 /**
  * Approved reviews from `/review`, on the homepage and the portfolio.
@@ -58,7 +59,7 @@ const Avatar = ({ r }: { r: PublicReview }) =>
   );
 
 const Card = ({ r }: { r: PublicReview }) => (
-  <figure style={{ margin: 0, display: 'grid', gridTemplateRows: '1fr auto', gap: s[5], padding: px(s[7], s[6]), background: 'var(--pp-card, #fff)', border: `${rule.base}px solid ${p.ink}`, minWidth: 0 }}>
+  <figure className="th-card" style={{ margin: 0, display: 'grid', gridTemplateRows: '1fr auto', gap: s[5], padding: px(s[7], s[6]), background: 'var(--pp-card, #fff)', border: `${rule.base}px solid ${p.ink}`, minWidth: 0 }}>
     <blockquote
       style={{
         margin: 0,
@@ -107,7 +108,9 @@ export default function Testimonials({ hpadAttr = {} }: { hpadAttr?: Record<stri
       style={{ containerType: 'inline-size', background: `var(--pp-bg, ${c.paper})`, color: p.ink, borderTop: `${rule.edge}px solid ${p.rule}`, padding: px(sectionY.top, gutter, sectionY.bottom) }}
     >
       <div data-testimonials-head style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'end', justifyContent: 'space-between', gap: s[6], marginBottom: s[9] }}>
-        <div style={{ display: 'grid', gap: s[5] }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: s[5] }}>
+          {/* GUIDE.md: `happy` belongs on testimonials; still, so it never competes with the hero head. */}
+          <TerminalHead face="happy" size={60} motion="still" label="" />
           <h2 id="h-testimonials" style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' }}>
             From people I&apos;ve <span style={{ color: p.gold }}>worked with</span>
           </h2>

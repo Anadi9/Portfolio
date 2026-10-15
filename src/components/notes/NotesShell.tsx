@@ -6,6 +6,7 @@ import { MEASURE } from './prose';
 import { BYLINE, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { NextUp } from './OnRamp';
 import Banner from './Banner';
+import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
 import BackToTop from './BackToTop';
 import { relatedTo } from '@/content';
 import type { Post } from '@/data/notes';
@@ -51,12 +52,7 @@ const NotesShell = ({ children, post }: { children: ReactNode; post?: Post }) =>
         zIndex: 10,
       }}
     >
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-        <span
-          style={{ width: 22, height: 22, background: c.accent, border: `${rule.hair}px solid ${c.ink}`, display: 'block' }}
-        />
-        <span style={{ ...label(11, 700, 0.12), color: c.ink }}>ANADI THAKUR</span>
-      </Link>
+      <NavLogo />
       <nav style={{ display: 'flex', alignItems: 'center', gap: s[5] }}>
         <Link to="/notes" style={{ ...label(11, 700, 0.14), color: c.ink, textDecoration: 'none' }}>
           NOTES

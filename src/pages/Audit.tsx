@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
 import { Seo } from '@/components/Seo';
 import { c, display, heading, label, px, rule, s } from '@/components/portfolio/tokens';
 import AppAuditForm from '@/components/audit/AppAuditForm';
@@ -96,7 +97,8 @@ const Field = ({ id, title, optional, note, error, children }: { id: string; tit
     {children}
     {note && <p style={hint}>{note}</p>}
     {error && (
-      <p id={`${id}-error`} role="alert" style={{ ...hint, color: ERROR }}>
+      <p id={`${id}-error`} role="alert" style={{ ...hint, color: ERROR , display: 'flex', alignItems: 'center', gap: s[2] }}>
+        <TerminalHead face="error" size={40} label="" className="th-inline" />
         {error}
       </p>
     )}
@@ -197,6 +199,7 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
   if (status.kind === 'sent') {
     return (
       <div style={{ display: 'grid', gap: s[6], maxWidth: '60ch' }} aria-live="polite">
+        <TerminalHead face="fixed" motion="hop" size={80} label="Done" />
         <h2 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
           Got it, {status.name}. <span style={{ color: p.gold }}>Report by {formatDue(status.due)}.</span>
         </h2>
@@ -247,7 +250,8 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
           ))}
         </div>
         {errors.market && (
-          <p id="au-market-error" role="alert" style={{ ...hint, color: ERROR }}>
+          <p id="au-market-error" role="alert" style={{ ...hint, color: ERROR , display: 'flex', alignItems: 'center', gap: s[2] }}>
+            <TerminalHead face="error" size={40} label="" className="th-inline" />
             {errors.market}
           </p>
         )}
@@ -284,7 +288,14 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
 
       <div style={{ display: 'grid', gap: s[4], justifyItems: 'start' }}>
         <button type="submit" disabled={status.kind === 'sending'} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]), border: 0, cursor: 'pointer', opacity: status.kind === 'sending' ? 0.6 : 1 }}>
-          {status.kind === 'sending' ? 'Sending…' : 'Send me my free audit'}
+          {status.kind === 'sending' ? (
+            <>
+              <TerminalHead face="think" size={28} label="" />
+              <span role="status">Sending…</span>
+            </>
+          ) : (
+            'Send me my free audit'
+          )}
           <span aria-hidden>→</span>
         </button>
         <p style={hint}>
@@ -296,12 +307,15 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
           .
         </p>
         {status.kind === 'failed' && (
-          <p role="alert" style={{ ...body, color: ERROR }}>
-            That didn&apos;t go through, and it&apos;s my end, not yours. Email your link to{' '}
-            <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(`Free audit: ${TYPE_LABEL[type]}`)}&body=${encodeURIComponent(form.url)}`} style={{ color: ERROR, fontWeight: 600 }}>
-              {EMAIL}
-            </a>{' '}
-            and the same {TURNAROUND_HOURS} hours applies.
+          <p role="alert" style={{ ...body, color: ERROR, display: 'flex', alignItems: 'flex-start', gap: s[3] }}>
+            <TerminalHead face="error" size={40} label="" />
+            <span>
+              That didn&apos;t go through, and it&apos;s my end, not yours. Email your link to{' '}
+              <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(`Free audit: ${TYPE_LABEL[type]}`)}&body=${encodeURIComponent(form.url)}`} style={{ color: ERROR, fontWeight: 600 }}>
+                {EMAIL}
+              </a>{' '}
+              and the same {TURNAROUND_HOURS} hours applies.
+            </span>
           </p>
         )}
       </div>

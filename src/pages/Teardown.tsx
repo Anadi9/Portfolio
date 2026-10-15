@@ -7,6 +7,9 @@ import Quiz from '@/components/teardown/Quiz';
 import Report from '@/components/teardown/Report';
 import Share from '@/components/teardown/Share';
 import Verdict from '@/components/teardown/Verdict';
+import { verdictFace } from '@/components/teardown/face';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { report } from '@/lib/teardown/report';
 
@@ -59,6 +62,8 @@ export default function Teardown() {
 
   const complete = answers.every((a) => a !== null);
   const model = useMemo(() => (complete ? report(answers as number[]) : null), [complete, answers]);
+  const answered = answers.filter((a) => a !== null).length;
+  const heroFace = model ? verdictFace(model.result.score) : answered ? 'think' : 'prompt';
 
   /** `optionIndex === -1` is the Back contract: clear this answer. */
   const onAnswer = (questionIndex: number, optionIndex: number) =>
@@ -96,13 +101,10 @@ export default function Teardown() {
           borderBottom: `${rule.edge}px solid ${c.rule}`,
         }}
       >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-          <span
-            aria-hidden
-            style={{ width: 22, height: 22, background: c.accent, border: `${rule.hair}px solid ${c.accentEdge}`, display: 'block' }}
-          />
-          <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>ANADI THAKUR</span>
-        </Link>
+        {/* Dark page: the wordmark reads light and the sprite takes Night Shift. */}
+        <span data-th-mode="night" style={{ ['--pp-ink' as string]: '#f2f0ea' }}>
+          <NavLogo />
+        </span>
         <nav aria-label="Site" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
           <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
             NOTES
@@ -115,9 +117,15 @@ export default function Teardown() {
 
       <main style={{ flex: 1 }}>
         <section style={{ ...section, borderTop: 'none' }}>
-          <h1 style={{ margin: 0, ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch' }}>
-            The <span style={{ color: c.mark }}>wrapper</span> test 🧪
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: s[6] }}>
+            <h1 style={{ margin: 0, ...heading('d2'), textTransform: 'uppercase', maxWidth: '15ch' }}>
+              The <span style={{ color: c.mark }}>wrapper</span> test 🧪
+            </h1>
+            {/* Follows the quiz: ready, thinking while answers come in, then the verdict's face. */}
+            <span data-th-mode="night" style={{ lineHeight: 0 }}>
+              <TerminalHead face={heroFace} motion="type" size={120} label="" />
+            </span>
+          </div>
           <p
             style={{
               margin: px(s[6], 0, 0),

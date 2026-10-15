@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { ChangeEvent, CSSProperties, FormEvent, ReactNode } from 'react';
-import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
 import { c, display, gutter, heading, label, px, rule, s, sectionY } from '@/components/portfolio/tokens';
 import { FIELD_MAX, PHOTO_EDGE, REVIEW_MAX, parseReview, type ReviewField } from '@/lib/review/intake';
 
@@ -93,7 +94,8 @@ const Field = ({
     {children}
     {note && <p style={hint}>{note}</p>}
     {error && (
-      <p id={`${id}-error`} role="alert" style={{ ...hint, color: p.error }}>
+      <p id={`${id}-error`} role="alert" style={{ ...hint, color: p.error, display: 'flex', alignItems: 'center', gap: s[2] }}>
+        <TerminalHead face="error" size={40} label="" className="th-inline" />
         {error}
       </p>
     )}
@@ -188,10 +190,7 @@ export default function Review() {
         data-rescue-header
         style={{ display: 'flex', alignItems: 'center', gap: s[4], padding: px(s[4], gutter), borderBottom: `${rule.edge}px solid rgba(10,10,10,.14)` }}
       >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-          <span aria-hidden style={{ width: 22, height: 22, background: c.ink, display: 'block' }} />
-          <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
-        </Link>
+        <NavLogo />
       </header>
 
       <main style={{ flex: 1 }}>
@@ -199,6 +198,8 @@ export default function Review() {
           <div style={{ maxWidth: 640, display: 'grid', gap: s[8] }}>
             {status === 'sent' ? (
               <div style={{ display: 'grid', gap: s[6] }} aria-live="polite">
+                {/* GUIDE.md: `happy` belongs on thank-yous. */}
+                <TerminalHead face="happy" motion="hop" size={80} label="" />
                 <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
                   Thank you, <span style={{ color: p.gold }}>{form.name.trim().split(' ')[0]}.</span>
                 </h1>
@@ -248,7 +249,8 @@ export default function Review() {
                     </span>
                   </div>
                   {errors.rating && (
-                    <p id="rv-rating-error" role="alert" style={{ ...hint, color: p.error }}>
+                    <p id="rv-rating-error" role="alert" style={{ ...hint, color: p.error, display: 'flex', alignItems: 'center', gap: s[2] }}>
+                      <TerminalHead face="error" size={40} label="" className="th-inline" />
                       {errors.rating}
                     </p>
                   )}
@@ -365,17 +367,27 @@ export default function Review() {
 
                 <div style={{ display: 'grid', gap: s[4], justifyItems: 'start' }}>
                   <button type="submit" disabled={status === 'sending'} className="pf-nudge pf-nudge-lg" style={{ ...cta, opacity: status === 'sending' ? 0.6 : 1 }}>
-                    {status === 'sending' ? 'Sending…' : 'Send review'}
+                    {status === 'sending' ? (
+                      <>
+                        <TerminalHead face="think" size={28} label="" />
+                        <span role="status">Sending…</span>
+                      </>
+                    ) : (
+                      'Send review'
+                    )}
                     <span aria-hidden>→</span>
                   </button>
                   <p style={hint}>By sending this, you're OK with it appearing on my site with your name, title and photo.</p>
                   {status === 'failed' && (
-                    <p role="alert" style={{ ...body, font: `400 15px/1.5 ${display}`, color: p.error }}>
-                      That didn&apos;t go through, and it&apos;s my end, not yours. Could you email it to{' '}
-                      <a href={`mailto:${EMAIL}?subject=${encodeURIComponent('Review')}&body=${encodeURIComponent(form.review)}`} style={{ color: p.error, fontWeight: 600 }}>
-                        {EMAIL}
-                      </a>
-                      ?
+                    <p role="alert" style={{ ...body, font: `400 15px/1.5 ${display}`, color: p.error, display: 'flex', alignItems: 'flex-start', gap: s[3] }}>
+                      <TerminalHead face="error" size={40} label="" />
+                      <span>
+                        That didn&apos;t go through, and it&apos;s my end, not yours. Could you email it to{' '}
+                        <a href={`mailto:${EMAIL}?subject=${encodeURIComponent('Review')}&body=${encodeURIComponent(form.review)}`} style={{ color: p.error, fontWeight: 600 }}>
+                          {EMAIL}
+                        </a>
+                        ?
+                      </span>
                     </p>
                   )}
                 </div>

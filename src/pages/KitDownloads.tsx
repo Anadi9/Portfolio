@@ -8,6 +8,8 @@ import { body, hint, p } from '@/components/kit/styles';
 import { display, gutter, heading, px, s, sectionY } from '@/components/portfolio/tokens';
 import type { PackId } from '@/data/kit';
 import { KIT } from '@/lib/kit/product';
+import type { THFace } from '@/components/terminal-head/TerminalHead';
+import { StateHead } from '@/components/terminal-head/TerminalHeadUI';
 
 /**
  * `/kit/downloads/<token>`: everything a buyer's email owns, newest version
@@ -27,6 +29,14 @@ type Library = {
   upgrade: Offer;
 };
 type State = { kind: 'loading' } | { kind: 'ready'; library: Library } | { kind: 'invalid' | 'limited' | 'error' };
+
+/** Empty library = asleep (GUIDE: empty states), a bad link = lost. */
+const downloadsFace = (st: State): THFace =>
+  st.kind === 'ready'
+    ? st.library.packs.length
+      ? 'fixed'
+      : 'sleep'
+    : ({ loading: 'think', invalid: 'lost', limited: 'sleep', error: 'error' } as const)[st.kind];
 
 export default function KitDownloads() {
   const { token = '' } = useParams();
@@ -54,6 +64,7 @@ export default function KitDownloads() {
       <Seo title={`Your downloads · ${KIT.name}`} description="Your downloads." path={KIT.downloadsPath} type="website" robots="noindex, nofollow" />
       <section data-rescue-hpad style={{ padding: px(s[11], gutter, sectionY.bottom) }}>
         <div style={{ display: 'grid', gap: s[7], maxWidth: 720 }}>
+          <StateHead face={downloadsFace(state)} />
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>Your downloads.</h1>
           {state.kind === 'ready' && <p style={hint}>Bought with {state.library.email}</p>}
 

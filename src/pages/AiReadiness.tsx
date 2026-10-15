@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { CSSProperties, FormEvent } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
+import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
+import { scoreFace } from '@/components/terminal-head/TerminalHeadUI';
 import { c, display, heading, label, mono, px, rule, s } from '@/components/portfolio/tokens';
 import { FaqSection, PaperPage, SectionHead, SiteHeader, TrustLine, body, cta, ctaClick, lead, p, section, split } from '@/components/site/kit';
 import type { Report, Status } from '@/lib/readiness/analyze';
@@ -97,9 +99,14 @@ const Result = ({ report }: { report: Report }) => {
       <div data-rescue-split style={{ ...split('5fr 7fr'), alignItems: 'start' }}>
         <div style={{ display: 'grid', gap: s[4], padding: px(s[8], s[7]), background: c.plate, color: '#fff' }}>
           <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>AI READINESS · {new URL(report.url).hostname.toUpperCase()}</span>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: s[3] }}>
-            <span style={{ ...heading('d2'), color: report.score >= 80 ? c.signalOnInk : c.mark }}>{report.score}</span>
-            <span style={{ ...label(12, 700, 0.12), color: c.dimOnInk }}>/ 100</span>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: s[3] }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: s[3] }}>
+              <span style={{ ...heading('d2'), color: report.score >= 80 ? c.signalOnInk : c.mark }}>{report.score}</span>
+              <span style={{ ...label(12, 700, 0.12), color: c.dimOnInk }}>/ 100</span>
+            </div>
+            <span data-th-mode="night" style={{ lineHeight: 0 }}>
+              <TerminalHead face={scoreFace(report.score)} size={60} motion="still" label="" />
+            </span>
           </div>
           <p style={{ ...body, color: c.bright }}>{verdict}</p>
         </div>
@@ -169,6 +176,8 @@ const Result = ({ report }: { report: Report }) => {
 const AiReadiness = () => {
   const [url, setUrl] = useState('');
   const [state, setState] = useState<State>({ kind: 'idle' });
+  const heroFace: THFace =
+    state.kind === 'checking' ? 'scan' : state.kind === 'error' ? 'error' : state.kind === 'done' ? scoreFace(state.report.score) : 'prompt';
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -199,7 +208,8 @@ const AiReadiness = () => {
       <Seo title={TITLE} description={DESCRIPTION} path={PATH} type="website" jsonLd={jsonLd} />
 
       <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
-        <div style={{ display: 'grid', gap: s[6], maxWidth: 900 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: s[8] }}>
+        <div style={{ display: 'grid', gap: s[6], maxWidth: 900, flex: '1 1 480px' }}>
           <span style={{ ...label(11, 700, 0.14), color: p.gold }}>FREE TOOL · 10 SECONDS</span>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
             Can ChatGPT <span style={{ color: p.gold }}>read your site?</span>
@@ -228,17 +238,28 @@ const AiReadiness = () => {
                 style={{ ...input, borderColor: state.kind === 'error' ? ERROR : c.ink }}
               />
               <button type="submit" disabled={state.kind === 'checking'} className="pf-nudge" style={{ ...cta, minHeight: 58, border: 0, cursor: 'pointer', opacity: state.kind === 'checking' ? 0.6 : 1 }}>
-                {state.kind === 'checking' ? 'Checking…' : 'Check my site'}
+                {state.kind === 'checking' ? (
+                  <>
+                    <TerminalHead face="think" size={28} label="" />
+                    <span role="status">Checking…</span>
+                  </>
+                ) : (
+                  'Check my site'
+                )}
                 <span aria-hidden>→</span>
               </button>
             </div>
             {state.kind === 'error' && (
-              <p id="ar-error" role="alert" style={{ ...body, color: ERROR }}>
-                {state.error}
+              <p id="ar-error" role="alert" style={{ ...body, color: ERROR, display: 'flex', alignItems: 'center', gap: s[3] }}>
+                <TerminalHead face="error" size={40} label="" className="th-inline" />
+                <span>{state.error}</span>
               </p>
             )}
           </form>
           <TrustLine items={['Free', 'No sign-up', 'Nothing stored']} />
+        </div>
+        {/* The Inspector follows the check: ready → scanning → the score's face, or error. */}
+        <TerminalHead key={heroFace} face={heroFace} prop="lens" size={160} motion={heroFace === 'fixed' ? 'hop' : 'type'} label="" />
         </div>
       </section>
 

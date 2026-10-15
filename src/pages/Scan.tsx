@@ -8,6 +8,8 @@ import { parseScanInput } from '@/lib/scan/validate';
 import { KIT } from '@/lib/kit/product';
 import type { Finding, ScanReport, Severity } from '@/lib/scan/report';
 import LegalLinks from '@/components/LegalLinks';
+import { TerminalHead, type THFace } from '@/components/terminal-head/TerminalHead';
+import { NavLogo, ScanStatus } from '@/components/terminal-head/TerminalHeadUI';
 
 /**
  * `/scan`: the free Supabase security check.
@@ -107,6 +109,25 @@ type Status =
   | { kind: 'scanning' }
   | { kind: 'done'; report: ScanReport }
   | { kind: 'failed'; message: string };
+
+/** The head follows the check: ready → scanning → found (anything open or worth a look) or fixed (all clear) → error on failure. */
+const scanFace = (st: Status): THFace =>
+  st.kind === 'idle'
+    ? 'prompt'
+    : st.kind === 'scanning'
+      ? 'scan'
+      : st.kind === 'failed'
+        ? 'error'
+        : st.report.counts.critical + st.report.counts.warning > 0
+          ? 'found'
+          : 'fixed';
+const FACE_LABEL: Partial<Record<THFace, string>> = {
+  prompt: 'Terminal Head, ready to check',
+  scan: 'Terminal Head, scanning',
+  found: 'Terminal Head, found issues',
+  fixed: 'Terminal Head, all clear',
+  error: 'Terminal Head, check failed',
+};
 
 const SEVERITY: Record<Severity, { label: string; tag: string; color: string }> = {
   critical: { label: 'Open to anyone', tag: 'CRITICAL', color: p.error },
@@ -326,6 +347,7 @@ export default function Scan() {
   const [form, setForm] = useState({ url: '', key: '' });
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
+  const face = scanFace(status);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const set = (key: Field, value: string) => {
@@ -406,10 +428,7 @@ export default function Scan() {
           borderBottom: `${rule.edge}px solid ${p.rule}`,
         }}
       >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-          <span aria-hidden style={{ width: 22, height: 22, background: c.ink, display: 'block' }} />
-          <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
-        </Link>
+        <NavLogo />
         <Link to="/production-ready" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
           ← PRODUCTION READINESS
         </Link>
@@ -487,13 +506,21 @@ export default function Scan() {
 
                 <div style={{ display: 'grid', gap: s[4], justifyItems: 'start' }}>
                   <button type="submit" disabled={scanning} className="pf-nudge pf-nudge-lg" style={{ ...cta, opacity: scanning ? 0.6 : 1 }}>
-                    {scanning ? 'CHECKING…' : 'RUN THE CHECK'}
+                    {scanning ? (
+                      <>
+                        <TerminalHead face="think" size={28} label="" />
+                        CHECKING…
+                      </>
+                    ) : (
+                      'RUN THE CHECK'
+                    )}
                     <span aria-hidden>→</span>
                   </button>
                   <p style={hint}>Free. No signup. Reads counts, never rows. Nothing is stored.</p>
                   {status.kind === 'failed' && (
-                    <p role="alert" style={{ ...body, color: p.error }}>
-                      {status.message}
+                    <p role="alert" style={{ ...body, color: p.error, display: 'flex', alignItems: 'center', gap: s[3] }}>
+                      <TerminalHead face="error" size={40} label="" />
+                      <span>{status.message}</span>
                     </p>
                   )}
                 </div>
@@ -504,12 +531,17 @@ export default function Scan() {
                 {scanning ? 'Checking your project…' : status.kind === 'done' ? summarize(status.report) : ''}
               </p>
               <div ref={resultsRef} style={{ scrollMarginTop: s[6], minWidth: 0 }}>
-                {scanning && <p style={{ ...hint, ...label(11, 700, 0.14) }}>CHECKING YOUR TABLES…</p>}
+                {scanning && <ScanStatus stage="scanning" size={60} text="Checking your tables…" />}
                 {status.kind === 'done' && <Results report={status.report} onReset={reset} />}
               </div>
             </div>
 
             <aside style={{ display: 'grid', gap: s[6], position: 'sticky', top: s[6] }}>
+              <div style={{ display: 'grid' }}>
+              {/* The Inspector stands on the panel and follows the real check (GUIDE.md free-scan flow). */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: s[6], marginBottom: -rule.base }}>
+                <TerminalHead key={face} face={face} prop="lens" size={120} motion={face === 'fixed' ? 'hop' : 'idle'} label={FACE_LABEL[face] ?? ''} />
+              </div>
               <div style={{ display: 'grid', gap: s[5], padding: px(s[8], s[7]), background: c.plate, color: '#fff' }}>
                 <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>WHAT IT CHECKS</span>
                 <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: s[4] }}>
@@ -533,6 +565,7 @@ export default function Scan() {
                     </li>
                   ))}
                 </ul>
+              </div>
               </div>
               <p style={{ ...hint, color: p.body }}>
                 It asks your database exactly what a stranger with your public key could ask, and nothing more.

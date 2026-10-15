@@ -9,14 +9,18 @@ import type { CSSProperties } from 'react';
  * depending on what it sits on.
  */
 export const c = {
-  ink: '#0a0a0a',
-  paper: '#ffffff',
+  ink: '#121212',
+  paper: '#f2f0ea',
 
-  accent: '#E4DED0',
-  accentEdge: '#CFC6B2',
+  /** Terminal Head theme: the "accent surface" is a white card on warm paper. */
+  accent: '#ffffff',
+  accentEdge: '#cfcabd',
 
-  mark: '#C9A24B',
-  markOnPaper: '#8A6A2A',
+  /** Signal red, two tiers like the old gold: `mark` on ink, `markOnPaper` for small type on paper. */
+  mark: '#ff5a4e',
+  markOnPaper: '#b02a20',
+  /** The mascot's shell red, for fills and the button offset shadow; never small type. */
+  shell: '#d42e24',
 
   /**
    * Status hue: one colour, reserved.
@@ -32,7 +36,7 @@ export const c = {
   signal: '#0E7A45',
   signalOnInk: '#35D48A',
 
-  dim: '#6b6b6b',
+  dim: '#555550',
   dimOnInk: '#9a9a9a',
   rule: '#2a2a2a',
   ruleSoft: '#3a3a3a',
@@ -41,7 +45,12 @@ export const c = {
 } as const;
 
 export const mono = "'JetBrains Mono', ui-monospace, monospace";
-export const display = 'Archivo, Helvetica, sans-serif';
+/** Reading face: body copy, buttons, card text. Kept as `display` so existing call sites pick it up. */
+export const display = "'Instrument Sans', system-ui, sans-serif";
+/** Pixel display face for headings and the wordmark (Terminal Head theme). */
+export const pixel = "'Pixelify Sans', 'Silkscreen', monospace";
+/** Pixel caps for eyebrows, nav and metadata. */
+export const pixelLabel = "'Silkscreen', 'JetBrains Mono', monospace";
 
 /**
  * Width axis. Archivo is variable on width, which makes it tempting to pick a
@@ -105,6 +114,7 @@ export type Step = keyof typeof RAMP;
 /** Widths at which a step stops growing: container for `cqw`, viewport for `vw`. */
 const CAP_CQW = 1450;
 const CAP_VW = 1700;
+const PIXEL_SCALE = 0.82;
 
 /**
  * A step off the display ramp. Size, leading and tracking always travel together.
@@ -118,15 +128,20 @@ export const heading = (
   opts: { stretch?: number; vw?: boolean; fixed?: boolean; weight?: 800 | 900 } = {},
 ): CSSProperties => {
   const r = RAMP[step];
+  // Pixelify Sans sets wider and taller than Archivo did: scale the caps down,
+  // open the leading so ascenders don't collide, and drop the negative tracking
+  // (pixel glyphs touch when tightened). `stretch`/`weight` are kept in the
+  // signature for existing call sites; Pixelify tops out at 700.
+  const max = Math.round(r.max * PIXEL_SCALE);
+  const min = Math.round(r.min * PIXEL_SCALE);
   const cap = opts.vw ? CAP_VW : CAP_CQW;
-  const fluid = `${((r.max / cap) * 100).toFixed(2)}${opts.vw ? 'vw' : 'cqw'}`;
+  const fluid = `${((max / cap) * 100).toFixed(2)}${opts.vw ? 'vw' : 'cqw'}`;
   return {
-    fontFamily: display,
-    fontWeight: opts.weight ?? 900,
-    fontStretch: `${opts.stretch ?? stretch.display}%`,
-    fontSize: opts.fixed ? r.max : `clamp(${r.min}px, ${fluid}, ${r.max}px)`,
-    lineHeight: r.lh,
-    letterSpacing: `${r.ls}em`,
+    fontFamily: pixel,
+    fontWeight: 700,
+    fontSize: opts.fixed ? max : `clamp(${min}px, ${fluid}, ${max}px)`,
+    lineHeight: Math.max(r.lh, 1.02),
+    letterSpacing: 0,
   };
 };
 
@@ -152,6 +167,7 @@ export const label = (
   weight: 500 | 600 | 700 = 700,
   tracking = 0.14,
 ): CSSProperties => ({
-  font: `${weight} ${Math.max(10, size)}px/1 ${mono}`,
-  letterSpacing: `${tracking}em`,
+  // Silkscreen is already all-caps and wide, so the mono-era tracking is cut to a third.
+  font: `${weight >= 600 ? 700 : 400} ${Math.max(10, size)}px/1 ${pixelLabel}`,
+  letterSpacing: `${(tracking / 3).toFixed(3)}em`,
 });

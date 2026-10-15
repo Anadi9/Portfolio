@@ -6,6 +6,9 @@ import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from 
 import Ladder from '@/components/teardown/Ladder';
 import Sample from '@/components/teardown/Sample';
 import Verdict from '@/components/teardown/Verdict';
+import { verdictFace } from '@/components/teardown/face';
+import { TerminalHead } from '@/components/terminal-head/TerminalHead';
+import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
 import { QUESTIONS } from '@/lib/teardown/questions';
 import { band, score as scoreOf } from '@/lib/teardown/score';
 import { decodeAnswers, resultPaths } from '@/lib/teardown/share';
@@ -93,13 +96,10 @@ export default function TeardownResult() {
           borderBottom: `${rule.edge}px solid ${c.rule}`,
         }}
       >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-          <span
-            aria-hidden
-            style={{ width: 22, height: 22, background: c.accent, border: `${rule.hair}px solid ${c.accentEdge}`, display: 'block' }}
-          />
-          <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>ANADI THAKUR</span>
-        </Link>
+        {/* Dark page: the wordmark reads light and the sprite takes Night Shift. */}
+        <span data-th-mode="night" style={{ ['--pp-ink' as string]: '#f2f0ea' }}>
+          <NavLogo />
+        </span>
         <nav aria-label="Site" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
           <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.14), color: '#fff' }}>
             NOTES
@@ -129,10 +129,15 @@ export default function TeardownResult() {
               >
                 {verdict}
               </h1>
-              <p style={{ margin: px(s[4], 0, 0), font: `700 20px/1 ${mono}`, color: '#fff' }}>
-                {pathScore}
-                <span style={{ color: c.dimOnInk }}>/100</span>
-                <span style={{ font: `400 15px/1 ${display}`, color: c.dimOnInk }}> on the wrapper test</span>
+              <p style={{ margin: px(s[4], 0, 0), font: `700 20px/1 ${mono}`, color: '#fff', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[3] }}>
+                <span data-th-mode="night" style={{ lineHeight: 0 }}>
+                  <TerminalHead face={verdictFace(pathScore)} size={60} motion="still" label="" />
+                </span>
+                <span>
+                  {pathScore}
+                  <span style={{ color: c.dimOnInk }}>/100</span>
+                  <span style={{ font: `400 15px/1 ${display}`, color: c.dimOnInk }}> on the wrapper test</span>
+                </span>
               </p>
               <Ladder score={pathScore} verdict={verdict} />
             </>

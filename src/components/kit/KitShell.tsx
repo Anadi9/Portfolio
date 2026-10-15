@@ -3,6 +3,7 @@ import { Link } from 'vite-react-ssg';
 import { c, gutter, label, px, rule, s } from '@/components/portfolio/tokens';
 import { p } from './styles';
 import LegalLinks from '@/components/LegalLinks';
+import { NavLogo } from '@/components/terminal-head/TerminalHeadUI';
 
 /**
  * Header, footer and shared styles for the kit's two pages. Same paper ground,
@@ -33,10 +34,7 @@ export default function KitShell({ children }: { children: ReactNode }) {
           borderBottom: `${rule.edge}px solid ${p.rule}`,
         }}
       >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: s[3], textDecoration: 'none' }}>
-          <span aria-hidden style={{ width: 22, height: 22, background: c.ink, display: 'block' }} />
-          <span style={{ ...label(11, 700, 0.12), color: p.ink }}>ANADI THAKUR</span>
-        </Link>
+        <NavLogo />
         <Link to="/production-ready" className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
           ← PRODUCTION READINESS
         </Link>
