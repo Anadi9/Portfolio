@@ -78,6 +78,9 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
   const logRef = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const opened = useRef(false);
+  const optsRef = useRef<HTMLDivElement>(null);
+  /** Set when a reply is picked, so focus can follow into the new replies instead of dropping to <body>. */
+  const refocus = useRef(false);
 
   // Bit "types" for a moment before answering; instant under reduced motion.
   const commit = (next: ChatState) => {
@@ -94,6 +97,7 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
 
   const pick = (opt: Option) => {
     const t = opt.to;
+    refocus.current = opened.current;
     if ('section' in t) {
       goSection(t.section, t.event);
       return;
@@ -115,6 +119,10 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
   useEffect(() => {
     const el = logRef.current;
     if (el) el.scrollTop = el.scrollHeight;
+    if (!typing && refocus.current) {
+      refocus.current = false;
+      optsRef.current?.querySelector<HTMLElement>('button, a')?.focus({ preventScroll: true });
+    }
   }, [state.log.length, typing]);
 
   const submit = (e: FormEvent) => {
@@ -146,7 +154,7 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
           {typing && <p className="hq-msg bit" aria-label="Bit is typing">…</p>}
         </div>
         {!typing && (
-          <div className="hq-chat-opts" role="group" aria-label="Replies">
+          <div ref={optsRef} className="hq-chat-opts" role="group" aria-label="Replies">
             {opts.map((o) => (
               <OptionButton key={o.label} opt={o} onPick={pick} />
             ))}
