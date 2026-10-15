@@ -168,7 +168,7 @@ export const SiteHeader = ({ page, current, auditType }: { page: string; current
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: s[4],
-        padding: px(s[3], gutter),
+        padding: `${s[3]}px var(--bq-gutter)`,
       }}
     >
       <NavLogo />

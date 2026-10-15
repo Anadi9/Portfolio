@@ -123,6 +123,7 @@
 @media (max-width: 600px) {
   .bq-btn { white-space: normal; }
   header .bq-btn { white-space: nowrap; font-size: 10px; padding: 10px 12px; }
+  .bq-page [data-rescue-header] { padding-left: 0 !important; padding-right: 0 !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
