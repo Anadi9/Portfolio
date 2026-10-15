@@ -43,7 +43,7 @@ const URL = `https://anadithakur.in${PATH}`;
 const AUDIT = auditHref('ai');
 const TITLE = 'Does ChatGPT Recommend Your Business? Free Check';
 const DESCRIPTION =
-  'See if ChatGPT, Gemini and Perplexity mention your brand, who they recommend instead, and how to fix it. Free report in 48 hours.';
+  'See if ChatGPT, Gemini and Perplexity mention your app or business, who they recommend instead, and how to fix it. Checked in every production audit.';
 
 const SHOPIFY_SOURCE = 'https://www.digitalcommerce360.com/2026/02/17/shopify-revenue-gmv-q4-2025/';
 
@@ -82,11 +82,12 @@ const sampleQuestions = [
   { q: 'Organic sunscreen that ships to Bangalore', hit: false },
 ];
 
+/** Where visibility sits in the one price list (homepage `#pricing`): it is one of the audit's three areas. */
 const plans: (PricedOffer & { price: string; includes: string })[] = [
-  { name: 'Free check', includes: '10 AI questions, readability score, top 3 fixes', price: 'Free', min: 0, currency: 'INR', description: '10 AI questions, readability score, top 3 fixes' },
-  { name: 'Deep audit', includes: '30 questions across AI tools, full site review, 90-day action plan', price: '₹15,000 / $300', min: 15000, currency: 'INR', description: '30 questions across AI tools, full site review, 90-day action plan' },
-  { name: 'Fix it for me', includes: 'All fixes built, then a re-test after 30 days', price: 'From ₹40,000 / $1,000', min: 40000, currency: 'INR', description: 'All fixes built, then a re-test after 30 days' },
-  { name: 'Stay visible', includes: 'Monthly re-test, new pages, updates as AI tools change', price: 'From ₹10,000 / $250 a month', min: 10000, currency: 'INR', monthly: true, description: 'Monthly re-test, new pages, updates as AI tools change' },
+  { name: 'First-bug review', includes: 'The biggest visibility gap, on video, with the fixed price to fix it', price: 'Free', min: 0, currency: 'USD', description: 'The biggest visibility gap, on video' },
+  { name: 'Production audit', includes: 'Search & AI visibility, reliability and privacy, ranked by business impact. Credited 100% toward the fix', price: '$349', min: 349, currency: 'USD', description: 'Search & AI visibility, reliability and privacy, ranked by impact' },
+  { name: 'Launch-ready sprint', includes: 'Up to three problem areas fixed, visibility included, in one week', price: '$1,500–$2,500', min: 1500, currency: 'USD', description: 'Up to three problem areas fixed in one week' },
+  { name: 'Care plan', includes: 'Monitoring, monthly fixes, and a quarterly search & AI visibility re-check', price: '$299/mo', min: 299, currency: 'USD', monthly: true, description: 'Monitoring, monthly fixes and a quarterly visibility re-check' },
 ];
 
 const faqs: Faq[] = [
@@ -122,7 +123,7 @@ const jsonLd = graph([
     offers: plans.map(({ name, description, min, currency, monthly }) => ({ name, description, min, currency, monthly })),
   }),
   faqPage(faqs, `${URL}#faq`),
-  breadcrumbs([{ name: 'AI Visibility', path: PATH }], `${URL}#breadcrumb`),
+  breadcrumbs([{ name: 'Search & AI visibility', path: PATH }], `${URL}#breadcrumb`),
 ]);
 
 /**
@@ -202,13 +203,14 @@ const AiVisibility = () => (
     <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: s[8] }}>
       <div style={{ display: 'grid', gap: s[6], maxWidth: 900 }}>
-        <span style={{ ...label(11, 700, 0.14), color: p.gold }}>AI VISIBILITY · GEO · AEO</span>
+        <span style={{ ...label(11, 700, 0.14), color: p.gold }}>AUDIT AREA · SEARCH &amp; AI VISIBILITY</span>
         <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
           When customers ask AI, <span style={{ color: p.gold }}>does it recommend you?</span>
         </h1>
         <p style={{ ...lead, maxWidth: '56ch' }}>
           People now ask ChatGPT, Gemini and Perplexity which brand to buy, which clinic to visit, which tool to use.
-          I&apos;ll show you whether AI mentions your business, who it recommends instead, and fix it.
+          Search &amp; AI visibility is one of the three areas every audit checks: whether AI mentions your business,
+          who it recommends instead, and what it takes to fix it.
         </p>
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6] }}>
           <Link to={AUDIT} onClick={ctaClick(PAGE, 'hero', 'ai')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]) }}>
@@ -293,7 +295,7 @@ const AiVisibility = () => (
     </section>
 
     <section aria-labelledby="h-price" style={section} data-rescue-hpad>
-      <SectionHead id="h-price" title="Clear prices, agreed upfront" />
+      <SectionHead id="h-price" title="Part of one fixed price list" intro="Visibility isn’t sold on its own: it is checked in the audit, fixed in a sprint and re-checked on Care." />
       <ul style={{ listStyle: 'none', margin: px(s[9], 0, 0), padding: 0, borderBottom: `${rule.hair}px solid ${p.rule}` }}>
         {plans.map((pl) => (
           <li
@@ -308,7 +310,12 @@ const AiVisibility = () => (
           </li>
         ))}
       </ul>
-      <p style={{ ...body, marginTop: s[6] }}>Every quote is fixed before work starts. US clients are billed in dollars.</p>
+      <p style={{ ...body, marginTop: s[6] }}>
+        Every quote is fixed before work starts.{' '}
+        <a href="/#pricing" className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
+          See all six packages →
+        </a>
+      </p>
     </section>
 
     <FaqSection faqs={faqs} />
@@ -321,9 +328,13 @@ const AiVisibility = () => (
       onClick={ctaClick(PAGE, 'final', 'ai')}
       small={
         <>
-          Also need your app ready for India&apos;s data law?{' '}
+          The audit also checks{' '}
+          <Link to="/production-ready" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
+            reliability &amp; security
+          </Link>{' '}
+          and{' '}
           <Link to="/dpdp" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
-            See DPDP Readiness →
+            privacy &amp; compliance →
           </Link>
         </>
       }

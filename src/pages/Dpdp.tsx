@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import { TerminalHead } from '@/components/brand/BitHead';
@@ -47,7 +46,7 @@ const URL = `https://anadithakur.in${PATH}`;
 const AUDIT = auditHref('dpdp');
 const TITLE = 'DPDP Act Compliance for Apps · Free Readiness Check';
 const DESCRIPTION =
-  "Is your app ready for India's DPDP Act by May 2027? Free readiness check, then I build consent, deletion and breach-alert flows into your product.";
+  "Privacy & compliance is one of the three areas every production audit checks: GDPR, CCPA and India's DPDP Act (May 2027). Then consent, deletion and breach-alert flows get built into your product.";
 
 const timeline = [
   { when: 'Nov 2025', what: 'DPDP Rules notified. The Data Protection Board provisions take effect.' },
@@ -138,46 +137,18 @@ const jsonLd = graph([
     offers: [{ name: 'Free DPDP readiness check', description: 'Gap report in 48 hours', min: 0, currency: 'INR' }],
   }),
   faqPage(faqs, `${URL}#faq`),
-  breadcrumbs([{ name: 'DPDP Readiness', path: PATH }], `${URL}#breadcrumb`),
+  breadcrumbs([{ name: 'Privacy & compliance', path: PATH }], `${URL}#breadcrumb`),
 ]);
 
-/**
- * Theme preview for this page only: Cod Gray ink on a Chrome White ground,
- * Carnation as the one loud accent (large type, the closing CTA, and a darker
- * cut of it for small type), Wasabi for the ticks. Other paper pages keep the
- * shipped palette through the fallbacks in `kit`.
- */
-const theme = {
-  '--pp-bg': '#edf2d6',
-  '--pp-ink': '#111111',
-  '--pp-body': '#3b3f33',
-  '--pp-dim': '#666b58',
-  '--pp-gold': '#f55349',
-  '--pp-gold-text': '#c2362d',
-  '--pp-tick': '#7c932d',
-  '--pp-rule': 'rgba(17,17,17,.12)',
-  '--pp-panel': '#f6f8ea',
-  '--pp-picked': '#f6f8ea',
-  '--pp-card': '#f6f8ea',
-  '--pp-on-ink': '#edf2d6',
-  '--pp-mark': '#f55349',
-  '--pp-dim-on-ink': '#a2a690',
-  '--pp-rule-on-ink': 'rgba(237,242,214,.12)',
-  '--pp-rule-soft': '#7c932d',
-  '--pp-plate': '#181818',
-  '--pp-white': '#edf2d6',
-  '--pp-bright': '#d6dbc0',
-  '--pp-cta-alt': '#f55349',
-} as CSSProperties;
 
 const Dpdp = () => (
-  <PaperPage header={<SiteHeader page={PAGE} current="dpdp" />} theme={theme}>
+  <PaperPage header={<SiteHeader page={PAGE} current="dpdp" />}>
     <Seo title={TITLE} description={DESCRIPTION} path={PATH} type="website" jsonLd={jsonLd} />
 
     <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
       <div data-rescue-split style={{ ...split('7fr 5fr'), alignItems: 'end' }}>
         <div style={{ display: 'grid', gap: s[6], alignContent: 'start' }}>
-          <span style={{ ...label(11, 700, 0.14), color: p.goldText }}>DPDP ACT 2023 · DPDP RULES 2025</span>
+          <span style={{ ...label(11, 700, 0.14), color: p.goldText }}>AUDIT AREA · PRIVACY &amp; COMPLIANCE · DPDP ACT 2023</span>
           <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
             India&apos;s data law gets real in May 2027. <span style={{ color: p.gold }}>Is your app ready?</span>
           </h1>
@@ -286,9 +257,13 @@ const Dpdp = () => (
       onClick={ctaClick(PAGE, 'final', 'dpdp')}
       small={
         <>
-          Also want to know if ChatGPT recommends you?{' '}
+          The same audit checks{' '}
+          <Link to="/production-ready" className="pf-underline" style={{ color: k.bright, fontWeight: 600 }}>
+            reliability &amp; security
+          </Link>{' '}
+          and{' '}
           <Link to="/ai-visibility" className="pf-underline" style={{ color: k.bright, fontWeight: 600 }}>
-            See AI Visibility →
+            search &amp; AI visibility →
           </Link>
         </>
       }

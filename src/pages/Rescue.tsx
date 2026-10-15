@@ -7,12 +7,11 @@ import portrait from '@/assets/portrait.webp';
 import { SYMPTOMS as symptoms } from '@/lib/rescue/intake';
 import { trackRescue } from '@/lib/rescue/track';
 import { KIT } from '@/lib/kit/product';
-import LegalLinks from '@/components/LegalLinks';
 import Testimonials from '@/components/Testimonials';
 import { site } from '@/data/portfolio';
 import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
 import { TerminalHead } from '@/components/brand/BitHead';
-import { NavLogo } from '@/components/brand/BitUI';
+import { SiteFooter, SiteHeader } from '@/components/site/kit';
 import { useInView } from '@/hooks/use-in-view';
 
 /**
@@ -28,7 +27,7 @@ import { useInView } from '@/hooks/use-in-view';
  * site-wide business entity, its offers, the FAQ as `FAQPage` and a breadcrumb),
  * built from the same arrays the page renders so the two cannot drift.
  *
- * Everything after the offer is aimed at one action, the free audit. Each CTA
+ * Everything after the offer is aimed at one action, the free first-bug video. Each CTA
  * reports `audit_cta_click` with where it sat, so the placements can be judged
  * against each other. For visitors who aren't that buyer yet, the free-tools
  * section just above the FAQ lays out everything that costs nothing (the audit,
@@ -57,10 +56,10 @@ import { useInView } from '@/hooks/use-in-view';
 
 const NAME = 'Production Readiness';
 const PATH = '/production-ready';
-const TITLE = `Fix your broken app or software · ${NAME}`;
+const TITLE = `Fix your app or get it launch-ready · ${NAME}`;
 const ORIGIN_URL = `https://anadithakur.in${PATH}`;
 const DESCRIPTION =
-  "I fix broken apps and software so they're ready for real users. Any stack, hand-coded or AI-built. Fixed price, done in 7 days. Free audit first.";
+  "Something's breaking, or you're about to launch? Login, data, payments, deploys and speed, fixed at a fixed price. Your first bug found free, on video.";
 
 const AUDIT = '/audit?type=app';
 const EMAIL = 'anadithakur99@gmail.com';
@@ -107,8 +106,9 @@ const cta: CSSProperties = {
   gap: s[3],
   minHeight: 52,
   padding: px(0, s[6]),
-  background: c.ink,
-  color: c.accent,
+  background: c.shell,
+  color: '#fff',
+  boxShadow: `4px 4px 0 ${c.ink}`,
   ...buttonType(),
   textDecoration: 'none',
 };
@@ -142,10 +142,10 @@ const builders = ['Lovable', 'Bolt', 'Cursor', 'v0', 'Replit'];
  *  three are for visitors who aren't ready to send a link yet. */
 const freeTools = [
   {
-    tag: '48 hours',
-    title: 'Production audit',
-    body: 'Send your app and get a plain-English report of what is broken, what is risky and what can wait.',
-    action: 'Get a free audit',
+    tag: 'Free',
+    title: 'First-bug video',
+    body: 'Send your app link. Anadi films the biggest risk he finds and tells you the fixed price to fix it.',
+    action: 'Find my first bug',
     to: AUDIT,
     onClick: () => trackRescue('audit_cta_click', { location: 'free_tools' }),
   },
@@ -201,19 +201,19 @@ const fixes = [
 const steps = [
   {
     num: '01',
-    title: 'Free audit',
-    when: 'Day 0–2',
-    span: 2,
-    body: "Send your app link or repo. You get a plain-English report: what's broken, what's risky, what can wait.",
+    title: 'First-bug video',
+    when: 'Day 1 · free',
+    span: 1,
+    body: 'Send your app link. Anadi films the biggest risk in your app, with the fixed price to fix it.',
   },
-  { num: '02', title: 'Fixed quote', when: 'Same day', span: 1, body: 'One price, clear scope. No hourly billing surprises.' },
-  { num: '03', title: 'The fix', when: '7 days', span: 7, body: 'Daily written updates so you always know where things stand.' },
+  { num: '02', title: 'Audit', when: 'Day 2–3 · $349', span: 2, body: 'Everything checked, ranked Fix now, Risky and Can wait. Credited in full toward the fix.' },
+  { num: '03', title: 'The fix', when: 'Day 4–10', span: 7, body: 'Fixed price, half to start. A written update every day.' },
   {
     num: '04',
-    title: 'Handover',
-    when: '+7 days support',
-    span: 7,
-    body: 'Working code, a short doc of what changed, and a week of free follow-up fixes.',
+    title: 'Live',
+    when: 'Day 11',
+    span: 1,
+    body: 'You confirm it works, then the second half is due. Care is optional after that.',
   },
 ];
 
@@ -229,9 +229,9 @@ const findings = [
 /** The price section's three sizes of job, and the service JSON-LD's offers.
  *  `max` is absent where the tier is open-ended. */
 const tiers = [
-  { name: 'Single fix', scope: 'One area: sign-up and login, database security, deploys or speed.', min: 499, max: 499 },
-  { name: 'Launch rescue', scope: 'Two or three areas. The usual state of an app about to launch.', min: 1200, max: 1800 },
-  { name: 'Full rescue', scope: 'All four areas, before real users arrive.', min: 2500, max: undefined },
+  { name: 'Production audit', scope: 'Reliability, search visibility and privacy, ranked by business impact. 48 hours, credited 100% toward any package.', min: 349, max: 349 },
+  { name: 'Launch-ready sprint', scope: 'Up to three problem areas fixed, tested and shipped in one week.', min: 1500, max: 2500 },
+  { name: 'Full rescue', scope: 'Everything the audit found, plus tests and monitoring, in 2–3 weeks.', min: 3000, max: 6000 },
 ] as const;
 
 const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
@@ -239,22 +239,26 @@ const tierPrice = ({ min, max }: { min: number; max?: number }) =>
   max === undefined ? `From ${usd(min)}` : min === max ? usd(min) : `${usd(min)}–${max.toLocaleString('en-US')}`;
 
 /** The service's promise. Said once under the price and again in the FAQ. */
-const GUARANTEE = "Fixed price. If I don't fix something in the quote, you don't pay for it.";
+const GUARANTEE = 'Fixed price. If something wasn’t in the quote, you’re not billed for it. If the audit finds nothing, you get a full refund.';
 
 const included = [
-  'A free audit report first',
-  'One fixed price, agreed up front',
+  'Your first bug found free, on video',
+  'Audit credited 100% toward the fix',
+  'One fixed price — no hourly billing',
   'Daily written updates',
-  'A handover doc of what changed',
-  '7 days of free follow-up fixes',
+  'Pay the second half when it’s live',
 ];
 
 const faqs = [
   {
     q: 'What does it usually cost?',
-    a: `Most jobs are one of three sizes: ${tiers
+    a: `The first-bug video is free. Then: ${tiers
       .map((t) => `${t.name.toLowerCase()}, ${tierPrice(t).replace('From', 'from')}`)
-      .join('; ')}. The audit tells you which, and the quote is fixed before I start.`,
+      .join('; ')}. The audit is credited in full, and the quote is fixed before work starts.`,
+  },
+  {
+    q: 'Why is the audit paid when the first bug is free?',
+    a: 'The video shows you one real problem. The audit checks everything and gives you a ranked plan, which takes a day or two. Book the fix within 30 days and every dollar is credited.',
   },
   {
     q: "What if you can't fix it?",
@@ -286,15 +290,15 @@ const faqs = [
  *  a rescue turns into once the handover week is over. Prices are starting points. */
 const addons = [
   {
-    title: 'Production care',
-    body: 'After the handover: code review of every change you ship, monitoring, and small fixes.',
-    price: '$249',
+    title: 'Care plan',
+    body: 'After launch: monitoring, a monthly health review, small fixes, and a quarterly visibility and privacy re-check. Cancel anytime.',
+    price: '$299',
     unit: '/month',
   },
   {
-    title: 'Search & AI visibility fix',
-    body: 'Apps that build every page in the browser, including most made with Lovable or Bolt, can look like an empty page to Google and AI tools. I make your pages readable to them, with proper titles, descriptions and a sitemap, and set up Search Console so you can watch them get found.',
-    price: '$199',
+    title: 'Build with AI',
+    body: 'Add an assistant, smart search or automation with guardrails and cost limits ($2,000–$8,000), or build a complete MVP ($6,000–$20,000). Fixed quote after a short scoping call.',
+    price: '$2,000',
     unit: null,
   },
 ];
@@ -340,7 +344,6 @@ const jsonLd = graph([
 const clicked = (location: string) => () => trackRescue('audit_cta_click', { location });
 
 /** The same for the kit, from the free-tools section and the footer. */
-const kitClicked = (location: string) => () => trackRescue('kit_link_click', { location });
 
 /** How many of the log's errors get fixed before it comes to rest. It stops
  *  short of all of them on purpose: a log that ends fully struck through and
@@ -506,7 +509,7 @@ const Symptoms = () => {
     count === 0
       ? 'Tick any that apply to your app.'
       : count < 3
-        ? 'Worth a free audit before it gets worse. It takes 48 hours and costs nothing.'
+        ? 'Worth a free first-bug video before it gets worse. It costs nothing.'
         : "That's the full rescue. Start with the audit and you'll have a fixed quote the same day.";
 
   return (
@@ -586,7 +589,7 @@ const Symptoms = () => {
           className="pf-nudge"
           style={{ ...cta, background: c.accent, color: c.ink }}
         >
-          Get a free audit<span aria-hidden>→</span>
+          Find my first bug — free<span aria-hidden>→</span>
         </Link>
         <p style={{ ...body, fontSize: 14, color: c.dimOnInk }}>
           Not ready to talk?{' '}
@@ -661,39 +664,10 @@ const Rescue = () => {
   const heroCta = useRef<HTMLAnchorElement>(null);
 
   return (
-    <div style={{ background: p.bg, color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="bq-page" style={{ color: p.ink, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Seo title={TITLE} description={DESCRIPTION} path={PATH} type="website" jsonLd={jsonLd} />
 
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: s[4],
-          padding: px(s[3], gutter),
-          borderBottom: `${rule.edge}px solid ${p.rule}`,
-        }}
-        data-rescue-header
-      >
-        <NavLogo />
-        <nav aria-label="Page" style={{ display: 'flex', alignItems: 'center', gap: s[6] }}>
-          {[
-            ['#h-fix', 'WHAT I FIX'],
-            ['#h-how', 'HOW IT WORKS'],
-            ['#h-price', 'PRICE'],
-            ['#h-free', 'FREE TOOLS'],
-            ['#h-faq', 'FAQ'],
-            ['/', 'ALL SERVICES'],
-          ].map(([href, text]) => (
-            <a key={href} href={href} data-rescue-navlink className="pf-underline" style={{ ...label(11, 700, 0.14), color: p.ink }}>
-              {text}
-            </a>
-          ))}
-          <Link to={AUDIT} onClick={clicked('header')} className="pf-nudge" style={{ ...cta, minHeight: 44, padding: px(0, s[5]) }}>
-            Free audit<span aria-hidden>→</span>
-          </Link>
-        </nav>
-      </header>
+      <SiteHeader page="production-ready" current="app" />
 
       <main style={{ flex: 1 }}>
         <section style={{ ...section, borderTop: 'none', paddingTop: s[11], paddingBottom: s[10] }} data-rescue-hpad>
@@ -701,11 +675,11 @@ const Rescue = () => {
             <div style={{ display: 'grid', gap: s[6], alignContent: 'start' }}>
               <span style={{ ...label(11, 700, 0.16), color: p.gold }}>{NAME.toUpperCase()}</span>
               <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase', maxWidth: '16ch' }}>
-                Fix your broken app. <span style={{ color: p.gold }}>Ready for real users.</span>
+                Fix it — <span style={{ color: p.gold }}>or get it launch-ready.</span>
               </h1>
               <p style={{ ...lead, maxWidth: '44ch' }}>
-                Your app or software works in the demo and breaks in production. I fix the auth, database, deployment and
-                performance, whatever it&apos;s built with. Fixed price. Done in 7 days.
+                Something&apos;s breaking — login, data, payments, deploys, speed — or you&apos;re about to launch and need
+                it to hold up. Fixed price, from one week. Your first bug is found free, on video.
               </p>
               {/* The "I" above has a face. Same file as the engineer section, so no second download. */}
               <a href="#h-who" style={{ display: 'flex', alignItems: 'center', gap: s[4], textDecoration: 'none', color: p.ink, justifySelf: 'start' }}>
@@ -724,7 +698,7 @@ const Rescue = () => {
               </a>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6] }}>
                 <Link ref={heroCta} to={AUDIT} onClick={clicked('hero')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56, padding: px(0, s[7]) }}>
-                  Get a free audit<span aria-hidden>→</span>
+                  Find my first bug — free<span aria-hidden>→</span>
                 </Link>
                 <a href="#h-proof" className="pf-underline" style={textLink}>
                   SEE A SAMPLE REPORT ↓
@@ -838,7 +812,7 @@ const Rescue = () => {
 
         <section aria-labelledby="h-how" style={section} data-rescue-hpad>
           <h2 id="h-how" style={h2}>
-            Fixed in 7 days, then 7 days of support
+            Fixed in a week, paid in two halves
           </h2>
           <Timeline />
         </section>
@@ -973,7 +947,7 @@ const Rescue = () => {
                 ))}
               </ul>
               <Link to={AUDIT} onClick={clicked('price')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 56 }}>
-                Start with the free audit<span aria-hidden>→</span>
+                Start with the free first-bug video<span aria-hidden>→</span>
               </Link>
             </div>
           </div>
@@ -1151,19 +1125,19 @@ const Rescue = () => {
             Find out what&apos;s breaking <span style={{ color: c.mark }}>before your users do.</span>
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: s[6], marginTop: s[10] }}>
-            <Link to={AUDIT} onClick={clicked('final')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: c.accent, color: c.ink }}>
-              Get my free audit<span aria-hidden>→</span>
+            <Link to={AUDIT} onClick={clicked('final')} className="pf-nudge pf-nudge-lg" style={{ ...cta, minHeight: 60, padding: px(0, s[8]), background: c.shell, color: '#fff' }}>
+              Find my first bug — free<span aria-hidden>→</span>
             </Link>
             <a href={`mailto:${EMAIL}`} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
               OR EMAIL {EMAIL.toUpperCase()}
             </a>
           </div>
           <p style={{ ...body, color: c.dimOnInk, marginTop: s[10], fontSize: 14 }}>
-            Want customers to find it too?{' '}
+            Want customers to find it too? The audit checks{' '}
             <Link to="/ai-visibility" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
-              See whether ChatGPT recommends you →
+              search &amp; AI visibility →
             </Link>{' '}
-            Building an AI feature instead?{' '}
+            Adding AI instead?{' '}
             <Link to="/teardown" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
               Take the 3-minute Wrapper Test →
             </Link>
@@ -1171,42 +1145,7 @@ const Rescue = () => {
         </section>
       </main>
 
-      <footer
-        data-rescue-footer
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: s[6],
-          padding: px(s[8], gutter, s[10]),
-          background: c.ink,
-          borderTop: `${rule.hair}px solid ${c.rule}`,
-        }}
-      >
-        <span data-th-mode="night" style={{ display: 'flex', alignItems: 'center', gap: s[3] }}>
-          <TerminalHead face="love" size={40} motion="still" label="" />
-          <span style={{ ...label(11, 700, 0.12), color: '#fff' }}>© 2026 ANADI THAKUR</span>
-        </span>
-        <nav aria-label="Elsewhere" style={{ display: 'flex', gap: s[6], flexWrap: 'wrap' }}>
-          <Link to={KIT.path} onClick={kitClicked('footer')} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            FREE PRODUCTION KIT
-          </Link>
-          <Link to="/notes" className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            NOTES
-          </Link>
-          <a href={PORTFOLIO_ORIGIN} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            ABOUT ME ↗
-          </a>
-          <a href={GITHUB} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            GITHUB ↗
-          </a>
-          <a href={LINKEDIN} className="pf-underline" style={{ ...label(11, 700, 0.12), color: c.dimOnInk }}>
-            LINKEDIN ↗
-          </a>
-        </nav>
-        <LegalLinks />
-      </footer>
+      <SiteFooter />
 
       <StickyBar watch={heroCta} />
     </div>

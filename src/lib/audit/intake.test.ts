@@ -80,7 +80,7 @@ describe('emails', () => {
 
   it('escapes visitor input in the lead and links WhatsApp', () => {
     const { subject, html } = renderAuditLeadEmail(r.intake, due);
-    expect(subject).toContain('DPDP Readiness');
+    expect(subject).toContain('Privacy & compliance');
     expect(html).toContain('&lt;b&gt;Leaf&lt;/b&gt;');
     expect(html).not.toContain('<b>Leaf</b>');
     expect(html).toContain('https://wa.me/919876543210');

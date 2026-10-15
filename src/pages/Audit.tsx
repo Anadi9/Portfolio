@@ -39,31 +39,31 @@ import {
  */
 
 const PATH = '/audit';
-const TITLE = 'Get Your Free Audit · Report in 48 Hours';
+const TITLE = 'Find Your App’s First Bug, Free · Anadi Thakur';
 const DESCRIPTION =
-  'Request a free AI visibility, DPDP readiness or app audit. Public information only, no access needed. Plain-English report in 48 hours.';
+  'Send your app link and get its biggest risk found free: reliability and security, search & AI visibility, or privacy & compliance. No access needed, no call.';
 const EMAIL = 'anadithakur99@gmail.com';
 
 const jsonLd = graph([
   {
     ...service({
       path: PATH,
-      name: 'Free audit: AI visibility, DPDP readiness or app production check',
+      name: 'Free first-bug review: reliability, search & AI visibility, privacy',
       description: DESCRIPTION,
       serviceType: 'Free audit',
-      offers: [{ name: 'Free audit', description: 'Plain-English report in 48 hours', min: 0, currency: 'USD' }],
+      offers: [{ name: 'First-bug review', description: 'Your app’s biggest risk, found free', min: 0, currency: 'USD' }],
     }),
   },
-  breadcrumbs([{ name: 'Free audit', path: PATH }], 'https://anadithakur.in/audit#breadcrumb'),
+  breadcrumbs([{ name: 'First bug free', path: PATH }], 'https://anadithakur.in/audit#breadcrumb'),
 ]);
 
 /** The chooser, in the order a visitor scans it. */
 const CHOICES: { type: AuditType; hint: string }[] = [
-  { type: 'ai', hint: 'Does ChatGPT recommend you?' },
-  { type: 'dpdp', hint: "Is your app ready for India's data law?" },
-  { type: 'both', hint: 'AI visibility and DPDP together' },
-  { type: 'app', hint: 'App or software breaking' },
-  { type: 'unsure', hint: "I'll check all three" },
+  { type: 'app', hint: 'Something’s breaking, or you’re about to launch' },
+  { type: 'ai', hint: 'Can Google and AI assistants find and recommend you?' },
+  { type: 'dpdp', hint: 'Consent, notices and data requests (GDPR · CCPA · DPDP)' },
+  { type: 'both', hint: 'Visibility and privacy together' },
+  { type: 'unsure', hint: 'Not sure? All three areas get checked' },
 ];
 
 const fieldLabel: CSSProperties = { ...label(11, 700, 0.14), color: p.ink };
@@ -347,13 +347,16 @@ const Audit = () => {
           <div style={{ display: 'grid', gap: s[8], minWidth: 0 }}>
             <div style={{ display: 'grid', gap: s[5] }}>
               <h1 style={{ margin: 0, ...heading('d3'), textTransform: 'uppercase' }}>
-                Get your <span style={{ color: p.gold }}>free audit</span>
+                Find your app&apos;s <span style={{ color: p.gold }}>first bug, free.</span>
               </h1>
-              <p style={lead}>Takes 2 minutes. Report in {TURNAROUND_HOURS} hours.</p>
+              <p style={lead}>
+                Takes 2 minutes. Back within {TURNAROUND_HOURS} hours. Then, if you want everything checked, the $349
+                production audit is credited in full toward the fix.
+              </p>
             </div>
 
             <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
-              <legend style={{ ...fieldLabel, padding: 0, marginBottom: s[4] }}>WHICH AUDIT?</legend>
+              <legend style={{ ...fieldLabel, padding: 0, marginBottom: s[4] }}>WHAT SHOULD BIT LOOK AT?</legend>
               <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: s[3] }}>
                 {CHOICES.filter((ch) => AUDIT_TYPES.includes(ch.type)).map((ch) => {
                   const on = type === ch.type;
@@ -393,9 +396,9 @@ const Audit = () => {
             <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>WHAT HAPPENS NEXT</span>
             <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: s[5] }}>
               {[
-                ['Report', `Within ${TURNAROUND_HOURS} hours: a short video and a one-page report, in plain English.`],
-                ['Fixed quote', 'If something is worth fixing, the report ends with one price for it, agreed before work starts.'],
-                ['Your call', "Nothing worth fixing? I'll say so. Reply if you want a 20-minute call. No sales call unless you ask."],
+                ['First bug, on video', `Within ${TURNAROUND_HOURS} hours: a short video of the biggest risk, in plain English, with the fixed price to fix it.`],
+                ['Audit, if you want it', '$349 for everything checked and ranked. Credited 100% toward the fix; nothing found means a full refund.'],
+                ['Pay when it’s live', 'Fixes are fixed-price: half to start, the rest once it works. No sales call unless you ask.'],
               ].map(([title, text], i) => (
                 <li key={title} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: s[4] }}>
                   <span style={{ ...label(11, 700, 0.12), color: c.mark }}>0{i + 1}</span>

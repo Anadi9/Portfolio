@@ -26,10 +26,10 @@ export const LEAD_TYPES = ['ai', 'dpdp', 'both', 'unsure'] as const;
 export type LeadType = (typeof LEAD_TYPES)[number];
 
 export const TYPE_LABEL: Record<AuditType, string> = {
-  ai: 'AI Visibility',
-  dpdp: 'DPDP Readiness',
-  both: 'AI Visibility + DPDP',
-  app: 'Production Readiness',
+  ai: 'Search & AI visibility',
+  dpdp: 'Privacy & compliance',
+  both: 'Visibility + privacy',
+  app: 'Reliability & security',
   unsure: 'Not sure, check everything',
 };
 

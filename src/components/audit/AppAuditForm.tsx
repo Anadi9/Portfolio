@@ -227,12 +227,12 @@ export default function AppAuditForm() {
               <form onSubmit={onSubmit} noValidate style={{ display: 'grid', gap: s[8], minWidth: 0 }}>
                 <div style={{ display: 'grid', gap: s[5] }}>
                   <h2 style={{ margin: 0, ...heading('d4'), textTransform: 'uppercase', maxWidth: '18ch' }}>
-                    Send me your app. <span style={{ color: p.gold }}>I&apos;ll tell you what breaks.</span>
+                    Send your app. <span style={{ color: p.gold }}>Bit finds what breaks.</span>
                   </h2>
                   <p style={{ ...body, font: `400 17px/1.5 ${display}`, maxWidth: '50ch' }}>
-                    I look at your live app myself, not a scanner, and send a plain-English report ranked Fix now, Risky
-                    and Can wait. It&apos;s free, back within {TURNAROUND_HOURS} hours, and takes about two minutes to fill
-                    in.
+                    Anadi looks at your live app himself, not a scanner, and sends back its biggest risk on video, with the
+                    fixed price to fix it. It&apos;s free, back within {TURNAROUND_HOURS} hours, and takes about two minutes
+                    to fill in.
                   </p>
                 </div>
 
@@ -420,8 +420,8 @@ export default function AppAuditForm() {
                     <span aria-hidden>→</span>
                   </button>
                   <p style={hint}>
-                    Free. No call needed. Report by {due ?? `${TURNAROUND_HOURS} hours from now`}. Fixes start from $499 if you want
-                    them. I only use your email for this audit.
+                    Free. No call needed. Report by {due ?? `${TURNAROUND_HOURS} hours from now`}. The full audit is $349 and
+                    credited toward any fix. I only use your email for this audit.
                   </p>
                   {status.kind === 'failed' && (
                     <p role="alert" style={{ ...body, color: p.error, display: 'flex', alignItems: 'flex-start', gap: s[3] }}>
