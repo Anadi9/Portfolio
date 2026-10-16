@@ -137,7 +137,7 @@ export function Process() {
                   {i === stop && (
                     <span className="hq-runner" aria-hidden>
                       <Bit pose={stop === 5 ? 'ready' : stop === 4 ? 'happy' : 'scan'} size={54} bob={playing} />
-                      <span className="hq-tickettag">#A-1047</span>
+                      <span className="hq-tickettag">#A-0000</span>
                     </span>
                   )}
                 </li>
@@ -149,7 +149,7 @@ export function Process() {
           </div>
           <div className="hq-dark hq-log" style={{ marginTop: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span className="hq-lab" style={{ color: 'var(--bq-secondary)' }}>Project log · #A-1047 (example)</span>
+              <span className="hq-lab" style={{ color: 'var(--bq-secondary)' }}>Project log · #A-0000 (example)</span>
               <span className="hq-lab" style={{ color: day >= 11 ? '#35d48a' : 'var(--bq-secondary)' }}>
                 {day >= 11 ? '● Live' : playing ? '● Running' : '● Paused'}
               </span>

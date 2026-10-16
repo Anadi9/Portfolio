@@ -116,7 +116,7 @@ export const process = {
     { day: 'Day 12+', title: 'Care', body: 'Optional. Bit stays on guard every month.', price: '$299/mo · optional' },
   ],
   log: [
-    ['Day 00', 'Ticket #A-1047 opened for example-app.com. Anadi notified.'],
+    ['Day 00', 'Ticket #A-0000 opened for example-app.com. Anadi notified.'],
     ['Day 01', 'First-bug video sent: “Anyone can see other people’s orders.” Fixed price attached.'],
     ['Day 02', 'Audit started — $349, credited toward the fix.'],
     ['Day 04', 'Fix booked: Launch-ready sprint. Daily updates begin.'],
@@ -269,7 +269,7 @@ export const board = {
   emptyTitle: 'No live requests to show yet.',
   emptyNote: 'Live requests appear here, anonymised, once clients opt in.',
   ticket: {
-    id: 'Ticket #A-1038',
+    id: 'Ticket #A-0000',
     stack: 'CRM · Next.js',
     steps: [
       ['Request received', 'Mon', 'done'],
