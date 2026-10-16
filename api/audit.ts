@@ -11,9 +11,10 @@ import { dueBy, parseAuditIntake, renderAuditConfirmEmail, renderAuditLeadEmail 
  * told it failed and given the mailto fallback; the confirmation goes second
  * and a failure there is only logged.
  *
- * Nothing is stored and the visitor is not added to any audience. The email
- * pair is the whole record, which is what the form's "used only to send your
- * report" line promises.
+ * The visitor is not added to any audience. Once the ticket work lands, the
+ * request is also saved as a ticket (after the emails go) so Anadi can track
+ * it: that is what the form's "saved as a ticket so I can track this request,
+ * used only for it, and deleted on request" line promises. See docs/data-map.md.
  */
 
 const FROM = 'Anadi Thakur <audit@anadithakur.in>';

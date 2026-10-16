@@ -299,8 +299,8 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
           <span aria-hidden>→</span>
         </button>
         <p style={hint}>
-          I only check what&apos;s publicly visible. Your details are used only to send your report
-          {due ? `, by ${due}` : ''}.{' '}
+          I only check what&apos;s publicly visible. Your details are saved as a ticket so I can track this request, used only for it, and deleted on request
+          {due ? `. Report by ${due}` : ''}.{' '}
           <Link to={LEGAL_PATHS.privacy} className="pf-underline" style={{ color: p.ink }}>
             Privacy notice
           </Link>

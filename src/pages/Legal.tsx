@@ -182,17 +182,43 @@ export function Privacy() {
         <List
           items={[
             <><strong>When you buy:</strong> your email address, name and country, and a record of what you bought. Card details go to Stripe and never reach me.</>,
-            <><strong>When you ask for an audit or a teardown report:</strong> what you type into the form, usually your name, email, a link to your project and a description of the problem.</>,
+            <><strong>When you ask for an audit, a first-bug review or a teardown report:</strong> what you type into the form, usually your name, email, a link to your project, its tech stack and a description of the problem. Optionally a WhatsApp number and a budget.</>,
+            <><strong>When you send a request through Bit:</strong> Bit, the assistant on the site, runs its scripted questions in your browser and sends nothing until you submit. If you do, the answers and your contact details are saved as a ticket (a number like A-1001) so I can track your request.</>,
+            <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below). Your name and email are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
+            <><strong>When you leave a review:</strong> your name, role, company, rating, review and an optional photo. Nothing is shown publicly until I approve it.</>,
             <><strong>When you use the free Supabase check:</strong> the project URL and public key you enter are used for that one check and not stored or logged.</>,
-            <><strong>When you browse:</strong> anonymous page views and events (which page, which button, rough country, device type). No cookies, and nothing that identifies you personally.</>,
+            <><strong>When you browse:</strong> anonymous page views and events (which page, which button, rough country, device type), and technical error reports from your browser (the error message, file, line and page path, with nothing that identifies you). No cookies.</>,
           ]}
         />
       </Section>
       <Section title="Why">
         <P>
-          To take payment, deliver what you bought and let you download it again later; to reply to you; to handle refunds and
-          support; to meet tax and accounting obligations; and to see which pages are useful. I don’t sell your data, rent it, or
-          use it for advertising.
+          To take payment, deliver what you bought and let you download it again later; to answer and carry out the request you
+          made; to reply to you and send updates on your ticket; to handle refunds and support; to meet tax and accounting
+          obligations; to keep the site working; and to see which pages are useful. I don’t sell your data, rent it, or use it for
+          advertising.
+        </P>
+      </Section>
+      <Section title="Bit and AI answers">
+        <P>
+          Bit has two parts. The scripted flows (the questions, the quote builder, the tour) run in your browser. When you type a
+          free-text question, only that question is sent to an AI service so it can write a reply. The services are the Vercel AI
+          Gateway, with Groq as a fallback. They do not use this data to train models, and I send no personal data to them beyond
+          what you type into the question, so please don’t type secrets or personal details there. AI answers are not stored. If
+          you ask me to take a request further, only the ticket you submit is kept.
+        </P>
+      </Section>
+      <Section title="Tickets and alerts">
+        <P>
+          Requests are saved as tickets in my database (Supabase) with your contact details, so I can track the work and email you
+          about it. When a new ticket arrives I get an alert by email and on my own WhatsApp. I only send you WhatsApp updates if
+          you tick the opt-in box when you submit, and you can opt out at any time. My replies to you are emails, and anything
+          about price, scope or findings is written and sent by me.
+        </P>
+        <P>
+          There is an optional public tracking board. A ticket appears on it only if you tick the box to allow it, and then only
+          as a ticket number, a generalised category, the tech stack, the stage and a date. Never your name, email, links or
+          company.
         </P>
       </Section>
       <Section title="Who processes it">
@@ -200,9 +226,11 @@ export function Privacy() {
         <List
           items={[
             <><strong>Stripe</strong>: payments and receipts.</>,
-            <><strong>Supabase</strong>: the order records behind your downloads page.</>,
-            <><strong>Resend</strong>: sending delivery, receipt and reply emails.</>,
-            <><strong>Vercel</strong>: hosting and anonymous analytics.</>,
+            <><strong>Supabase</strong>: the order records behind your downloads page, tickets, and reviews.</>,
+            <><strong>Resend</strong>: sending delivery, receipt, report and reply emails.</>,
+            <><strong>Vercel</strong>: hosting, anonymous analytics, logs and the AI Gateway.</>,
+            <><strong>Groq</strong>: AI fallback for Bit’s typed questions (the question text only).</>,
+            <><strong>Meta (WhatsApp Cloud API)</strong>: my own new-ticket alerts, and your updates if you opt in.</>,
           ]}
         />
         <P>
@@ -212,8 +240,10 @@ export function Privacy() {
       </Section>
       <Section title="How long I keep it">
         <P>
-          Order records are kept for as long as you might need to re-download, and at least as long as Indian tax law requires.
-          Audit and report requests are kept while we are in touch and deleted on request.
+          Leads and tickets are kept for 24 months after the last activity on them, then deleted. Chat questions used to get an AI
+          answer are not stored beyond a ticket. Order records are kept for as long as you might need to re-download, and at least
+          as long as Indian tax law requires. Reviews stay until you ask me to remove them. You can ask me to delete your data
+          sooner at any time (see Your rights).
         </P>
       </Section>
       <Section title="How it’s protected">
@@ -225,7 +255,7 @@ export function Privacy() {
       <Section title="Your rights">
         <P>
           You can ask for a copy of your data, a correction, or its deletion, and withdraw consent at any time. Email <Mail /> from
-          the address you used. I’ll reply within 30 days. Grievances under India’s data protection law can be sent to the same
+          the address you used. Replying “delete” to any email from me works too. I’ll act on it within 30 days, apart from order records I must keep for tax. Grievances under India’s data protection law can be sent to the same
           address, and you can also complain to the Data Protection Board of India.
         </P>
       </Section>

@@ -421,7 +421,7 @@ export default function AppAuditForm() {
                   </button>
                   <p style={hint}>
                     Free. No call needed. Report by {due ?? `${TURNAROUND_HOURS} hours from now`}. The full audit is $349 and
-                    credited toward any fix. I only use your email for this audit.
+                    credited toward any fix. Your details are saved as a ticket so I can track this request, used only for it, and deleted on request.
                   </p>
                   {status.kind === 'failed' && (
                     <p role="alert" style={{ ...body, color: p.error, display: 'flex', alignItems: 'flex-start', gap: s[3] }}>

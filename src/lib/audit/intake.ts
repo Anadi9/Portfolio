@@ -187,7 +187,7 @@ export function renderAuditConfirmEmail(intake: AuditIntake, due: Date): { subje
 <p>You'll get a short video walkthrough and a one-page report in plain English. If something is worth fixing, it ends with one fixed price. If nothing is, I'll tell you that too, and you owe nothing either way.</p>
 <p>If you'd like to talk it through when it arrives, just reply. No pressure either way.</p>
 <p>Anadi<br><span style="color:#6b6b6b">anadithakur.in</span></p>
-<p style="color:#6b6b6b;font-size:12px">You're getting this because you asked for a free first-bug review at anadithakur.in/audit. Your details are used only to send this report. Reply "delete" and I'll erase them.</p>`,
+<p style="color:#6b6b6b;font-size:12px">You're getting this because you asked for a free first-bug review at anadithakur.in/audit. Your details are saved as a ticket so I can track this request, used only for it, and deleted on request. Reply "delete" and I'll erase them.</p>`,
     ),
   };
 }

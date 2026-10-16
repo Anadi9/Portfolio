@@ -90,6 +90,6 @@ describe('emails', () => {
     const { subject, html } = renderAuditConfirmEmail(r.intake, due);
     expect(subject).toMatch(/^Got it, Priya:/);
     expect(html).toContain('May 2027');
-    expect(html).toContain('used only to send this report');
+    expect(html).toContain('saved as a ticket so I can track this request');
   });
 });
