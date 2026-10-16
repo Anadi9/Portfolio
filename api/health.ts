@@ -14,5 +14,6 @@ export default withErrorLog('health', async (req: VercelRequest, res: VercelResp
     res.setHeader('Allow', 'GET, HEAD');
     return res.status(405).json({ error: 'method not allowed' });
   }
-  return res.status(200).json(await healthReport(process.env, fetch));
+  const report = await healthReport(process.env, fetch);
+  return res.status(report.ok ? 200 : 503).json(report);
 });

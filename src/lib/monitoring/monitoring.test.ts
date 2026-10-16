@@ -86,3 +86,40 @@ describe('healthReport', () => {
     expect(r.supabaseReachable).toBe('unreachable');
   });
 });
+
+describe('healthReport outage and handler status', () => {
+  const env = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SECRET_KEY: 'sekret' };
+  it('is ok:false when supabase is unreachable (throw or 5xx), without leaking', async () => {
+    const a = await healthReport(env, async () => { throw new Error('sekret down'); });
+    const b = await healthReport(env, async () => ({ status: 503 }));
+    for (const r of [a, b]) {
+      expect(r.ok).toBe(false);
+      expect(r.supabaseReachable).toBe('unreachable');
+      expect(JSON.stringify(r)).not.toContain('sekret');
+    }
+  });
+  it('maps to 503 when unreachable and 200 when missing env', async () => {
+    const { default: handler } = await import('../../../api/health');
+    const mkRes = () => {
+      const res: any = { headersSent: false, setHeader: vi.fn(), status: vi.fn(() => res), json: vi.fn(() => res) };
+      return res;
+    };
+    const saved = { ...process.env };
+    try {
+      Object.assign(process.env, env);
+      vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('net'); }));
+      let res = mkRes();
+      await handler({ method: 'GET' } as any, res);
+      expect(res.status).toHaveBeenCalledWith(503);
+      expect(res.setHeader).toHaveBeenCalledWith('Cache-Control', 'no-store');
+      delete process.env.SUPABASE_URL;
+      delete process.env.SUPABASE_SECRET_KEY;
+      res = mkRes();
+      await handler({ method: 'GET' } as any, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+    } finally {
+      vi.unstubAllGlobals();
+      process.env = saved;
+    }
+  });
+});

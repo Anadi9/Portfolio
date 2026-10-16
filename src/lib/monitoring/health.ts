@@ -1,6 +1,6 @@
 export type Status = 'configured' | 'missing';
 export type HealthReport = {
-  ok: true;
+  ok: boolean;
   checks: { resend: Status; supabase: Status; whatsapp: Status; ai: Status };
   supabaseReachable?: 'reachable' | 'unreachable';
 };
@@ -11,7 +11,7 @@ type FetchLike = (url: string, init?: { headers?: Record<string, string>; signal
 const has = (v: string | undefined) => typeof v === 'string' && v.length > 0;
 const status = (b: boolean): Status => (b ? 'configured' : 'missing');
 
-/** Env presence only, never values. Informational: `ok` just means the function ran. */
+/** Env presence only, never values. Missing env is informational (`ok` stays true); a configured but unreachable Supabase makes `ok` false. */
 export async function healthReport(env: Env, fetchImpl: FetchLike): Promise<HealthReport> {
   const supabase = has(env.SUPABASE_URL) && has(env.SUPABASE_SECRET_KEY);
   const report: HealthReport = {
@@ -30,8 +30,10 @@ export async function healthReport(env: Env, fetchImpl: FetchLike): Promise<Heal
         signal: AbortSignal.timeout(3000),
       });
       report.supabaseReachable = res.status < 500 ? 'reachable' : 'unreachable';
+      if (report.supabaseReachable === 'unreachable') report.ok = false;
     } catch {
       report.supabaseReachable = 'unreachable';
+      report.ok = false;
     }
   }
   return report;
