@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
+import { recordFormTicket } from '../src/lib/notify/ticket.js';
 import { dueBy, parseAuditIntake, renderAuditConfirmEmail, renderAuditLeadEmail } from '../src/lib/audit/intake.js';
 
 /**
@@ -74,6 +75,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (err) {
     console.warn('[audit] confirmation send threw', err);
   }
+
+  // Best-effort: a ticket failure (or no store) never changes the response.
+  await recordFormTicket({
+    email: intake.email,
+    name: intake.name,
+    whatsapp: intake.whatsapp ?? undefined,
+    appUrl: intake.url,
+    kind: 'audit',
+    source: 'audit_form',
+    boardOptIn: false,
+    whatsappOptIn: false,
+    answers: { type: intake.type, business: intake.business, sells: intake.sells, market: intake.market, worries: intake.worries },
+  });
 
   return res.status(200).json({ ok: true, due: due.toISOString() });
 }

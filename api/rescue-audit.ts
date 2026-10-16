@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
-import { dueBy, parseIntake, renderConfirmEmail, renderLeadEmail } from '../src/lib/rescue/intake.js';
+import { recordFormTicket } from '../src/lib/notify/ticket.js';
+import { SYMPTOMS, dueBy, parseIntake, renderConfirmEmail, renderLeadEmail } from '../src/lib/rescue/intake.js';
 
 /**
  * POST /api/rescue-audit
@@ -76,6 +77,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (err) {
     console.warn('[rescue] confirmation send threw', err);
   }
+
+  // Best-effort: a ticket failure (or no store) never changes the response.
+  await recordFormTicket({
+    email: intake.email,
+    appUrl: intake.appUrl,
+    kind: 'first_bug',
+    source: 'app_form',
+    stack: intake.tool,
+    boardOptIn: false,
+    whatsappOptIn: false,
+    answers: {
+      repoUrl: intake.repoUrl,
+      tool: intake.tool,
+      symptoms: intake.symptoms.map((i) => SYMPTOMS[i]?.line).filter(Boolean),
+      notes: intake.notes,
+    },
+  });
 
   return res.status(200).json({ ok: true, due: due.toISOString() });
 }

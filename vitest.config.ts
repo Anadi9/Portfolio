@@ -13,6 +13,7 @@ export default defineConfig((env) =>
   mergeConfig(viteConfig(env), {
     test: {
       environment: 'node',
+      setupFiles: ['./src/test-setup.ts'],
       // Deliberately not 'api/**': Vercel deploys every file under `api/` as a
       // function, so tests for the handler live in `src` and reach across.
       include: ['src/**/*.test.ts'],

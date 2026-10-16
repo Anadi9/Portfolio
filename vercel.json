@@ -109,6 +109,10 @@
     {
       "path": "/api/kit/ping",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/notify",
+      "schedule": "0 7 * * *"
     }
   ]
 }

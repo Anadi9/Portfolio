@@ -30,3 +30,53 @@ Site-wide headers are in `vercel.json` (`source: "/(.*)"`). The CSP ships as `Co
 1. Apply `supabase/migrations/20261016000000_tickets.sql`: either paste it into the Supabase SQL editor and run it once, or run `supabase db push` from the repo (linked project). It creates the tickets tables, the `ticket_number_seq` sequence (first number `A-1001`), the `public_board` view, and turns RLS on with no policies. Run it once only; it is not idempotent.
 2. Confirm `SUPABASE_URL` and `SUPABASE_SECRET_KEY` are set in Vercel (Production and Preview). Without them the ticket store is off and the UI falls back to the first-bug form and email.
 3. Check in the SQL editor: `select * from public.public_board;` returns no rows, and as the anon key `select` on `tickets` is denied.
+
+## Tickets & alerts (Task 6)
+
+New endpoints: `POST /api/bit/ticket` (Bit's form; answers 501 `tickets not configured` until Supabase is set) and `GET /api/cron/notify` (daily retry). The audit forms (`/audit`, `/audit?type=app`) also save a ticket after their own emails go; if the store is missing they behave exactly as before.
+
+### Environment variables (Vercel, Production and Preview)
+
+| Name | Value | Notes |
+| --- | --- | --- |
+| `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | from Task 5 | Required for any ticket to be saved |
+| `RESEND_API_KEY` | existing | Without it, emails are skipped and logged |
+| `TICKETS_INBOX` | where new-ticket emails go | Optional. Defaults to `RESCUE_INBOX`, then `anadithakur99@gmail.com` |
+| `CRON_SECRET` | any long random string | Required for the retry cron. `/api/cron/notify` returns 401 without it (it fails closed). Vercel sends it as `Authorization: Bearer <value>` automatically |
+| `WHATSAPP_TOKEN` | Meta permanent access token | WhatsApp alert is skipped (and logged) if any of the four WhatsApp vars is missing |
+| `WHATSAPP_PHONE_NUMBER_ID` | the sender's Phone number ID (not the number) | |
+| `WHATSAPP_ALERT_TO` | your number, digits only with country code, e.g. `919876543210` | The alert recipient |
+| `WHATSAPP_TEMPLATE_NEW_TICKET` | the approved template name, e.g. `new_ticket_alert` | |
+
+`/api/health` already reports whether the WhatsApp vars are present.
+
+### Meta WhatsApp Business setup (once)
+
+1. Go to https://business.facebook.com, create or pick a Meta Business account, and verify the business (needed for higher limits; not for the first test messages).
+2. At https://developers.facebook.com create an app (type Business), add the **WhatsApp** product, and attach the business account.
+3. Add a sender phone number. It must **not** be registered on the WhatsApp or WhatsApp Business app (a number can be either on the app or on the Cloud API, not both). A spare SIM or a Meta test number works. Copy its **Phone number ID** into `WHATSAPP_PHONE_NUMBER_ID`.
+4. Create a **System User** in Business settings, give it the app and `whatsapp_business_messaging` + `whatsapp_business_management`, and generate a token with no expiry. That is `WHATSAPP_TOKEN`. Do not use the 24-hour test token in production.
+5. Add your own number as the recipient (`WHATSAPP_ALERT_TO`). Business-initiated messages only work through an approved template, which is what the code sends.
+6. In WhatsApp Manager, Message templates, create a template:
+   - Category: **Utility**
+   - Name: `new_ticket_alert` (lowercase, underscores; this is `WHATSAPP_TEMPLATE_NEW_TICKET`)
+   - Language: English (`en`)
+   - Body, exactly: `New ticket {{1}} · {{2}} · {{3}}`
+   - Parameter order: `{{1}}` = ticket number (e.g. A-1001), `{{2}}` = kind (e.g. first_bug), `{{3}}` = short summary (app host or name, at most 60 characters)
+   - Sample values when asked: `A-1001`, `first_bug`, `myapp.lovable.app`
+   - No header, footer or buttons.
+   Approval usually takes minutes to a day. Until it is approved the API returns an error, the row is retried by the cron, and after 3 tries it stays `failed` in the `notifications` table.
+7. Test: submit a ticket from a Preview deploy and check the WhatsApp message and the `notifications` row (`status = sent`).
+
+### Resend
+
+The sender is `Anadi Thakur <tickets@anadithakur.in>`. The `anadithakur.in` domain is already verified for `audit@` and `rescue@`; any address on a verified domain works, so no new DNS is needed. Check in Resend that the domain still shows Verified.
+
+### Cron
+
+`vercel.json` adds `/api/cron/notify` daily at 07:00 UTC. On the Hobby plan crons run at most once a day, so a failed email or WhatsApp is retried the next morning, up to 3 attempts in total (the inline send counts as the first). On Pro you can shorten the schedule (for example `*/15 * * * *`). Rows that exhaust their attempts stay `failed` with `last_error` in Supabase.
+
+### Manual follow-ups
+
+- Stage-change emails (`stage_change` template) are built but not triggered by anything yet; they go out when a later admin action moves a stage.
+- Messages about price, scope, findings, fit or follow-ups are saved as drafts in `messages`, never sent. Review them in Supabase.
