@@ -10,3 +10,9 @@ Site-wide headers are in `vercel.json` (`source: "/(.*)"`). The CSP ships as `Co
 4. Switch to enforcing: rename `Content-Security-Policy-Report-Only` to `Content-Security-Policy` in `vercel.json` (and update `src/lib/security/headers.test.ts`), deploy to preview, re-check, then promote.
 5. Optional later: remove `'unsafe-inline'` from `script-src` (needed today for SSG inline data and JSON-LD) using nonces or hashes.
 6. HSTS has `preload`: submit at https://hstspreload.org only when every subdomain is HTTPS-only.
+
+## Monitoring (Task 3)
+
+1. Create a free uptime monitor (UptimeRobot or Better Stack) on `https://anadithakur.in/` and on `https://anadithakur.in/api/health`, alerting by email. `/api/health` returns 200 with `{ ok, checks }`; `checks.*` are informational (`configured` / `missing`), so alert on HTTP status, not on a `missing` value.
+2. Browser errors go to `/api/client-error` and appear in Vercel logs as `[client-error]` lines; API handler crashes appear as `[api-error]`. Search the project's Vercel logs for those tags. The portfolio host is not reported.
+3. Optional upgrades: Vercel Log Drains to a log service, or Sentry for grouping and alerts. Not needed to launch.

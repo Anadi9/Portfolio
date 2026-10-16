@@ -1,6 +1,7 @@
 import { ViteReactSSG } from 'vite-react-ssg';
 import { inject } from '@vercel/analytics';
 import { routes } from './routes';
+import { installErrorReporter } from './lib/monitoring/report';
 import './index.css';
 import './styles/portfolio.css';
 import './styles/notes.css';
@@ -27,4 +28,6 @@ export const createRoot = ViteReactSSG({ routes });
  */
 if (typeof window !== 'undefined') {
   inject();
+  // Main-site host only; the reporter skips the portfolio host itself.
+  installErrorReporter();
 }
