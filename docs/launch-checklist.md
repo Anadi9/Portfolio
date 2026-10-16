@@ -24,3 +24,9 @@ Site-wide headers are in `vercel.json` (`source: "/(.*)"`). The CSP ships as `Co
 3. Verify `https://anadithakur.in` in Google Search Console (DNS TXT record) and Bing Webmaster Tools, then submit `https://anadithakur.in/sitemap.xml` to both. Bing also feeds ChatGPT search.
 4. IndexNow (optional): generate a key (any 8 to 128 hex chars), add `public/<key>.txt` containing just the key, then POST changed URLs to `https://api.indexnow.org/indexnow` after each deploy. Not wired into the build yet.
 5. After deploy, check `https://anadithakur.in/rss.xml` in a feed reader (full content) and view-source the sitemap for the trailing-slash root and `<image:image>` entries.
+
+## Database (Task 5)
+
+1. Apply `supabase/migrations/20261016000000_tickets.sql`: either paste it into the Supabase SQL editor and run it once, or run `supabase db push` from the repo (linked project). It creates the tickets tables, the `ticket_number_seq` sequence (first number `A-1001`), the `public_board` view, and turns RLS on with no policies. Run it once only; it is not idempotent.
+2. Confirm `SUPABASE_URL` and `SUPABASE_SECRET_KEY` are set in Vercel (Production and Preview). Without them the ticket store is off and the UI falls back to the first-bug form and email.
+3. Check in the SQL editor: `select * from public.public_board;` returns no rows, and as the anon key `select` on `tickets` is denied.
