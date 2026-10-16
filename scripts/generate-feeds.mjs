@@ -63,38 +63,45 @@ if (!posts.length) {
 // route that doesn't exist yet can't leak in.
 const prerendered = (path) => existsSync(join(OUT, path === '/' ? 'index.html' : `${path.slice(1)}/index.html`)) || existsSync(join(OUT, `${path.slice(1)}.html`));
 const pages = [
-  { path: '/', priority: '1.0' },
-  { path: '/ai-visibility', priority: '1.0' },
-  { path: '/dpdp', priority: '1.0' },
-  { path: '/production-ready', priority: '1.0' },
-  { path: '/build-with-ai', priority: '1.0' },
-  { path: '/care', priority: '1.0' },
-  { path: '/audit', priority: '0.9' },
-  { path: '/ai-readiness', priority: '0.9' },
-  { path: '/dpdp/check', priority: '0.9' },
-  { path: '/scan', priority: '0.9' },
-  { path: '/teardown', priority: '0.9' },
-  { path: '/notes', priority: '0.9' },
-  { path: '/products/production-kit', priority: '0.9' },
+  { path: '/' },
+  { path: '/ai-visibility' },
+  { path: '/dpdp' },
+  { path: '/production-ready' },
+  { path: '/build-with-ai' },
+  { path: '/care' },
+  { path: '/audit' },
+  { path: '/ai-readiness' },
+  { path: '/dpdp/check' },
+  { path: '/scan' },
+  { path: '/teardown' },
+  { path: '/notes' },
+  { path: '/products/production-kit' },
 ]
   .filter((pg) => prerendered(pg.path))
-  .map((pg) => ({ url: pg.path === '/' ? ORIGIN : `${ORIGIN}${pg.path}`, modified: posts[0].modified, priority: pg.priority }));
+  // The root is `${ORIGIN}/`, the form the page's own canonical uses; a sitemap
+  // that disagrees with the canonical is the same URL listed twice.
+  .map((pg) => ({ url: `${ORIGIN}${pg.path}`, modified: posts[0].modified }));
 pages.push(
   // Case studies: whatever the build prerendered under `dist/work`, which is
   // exactly the live set. Reading the output rather than the TS data keeps a
   // pending study out of the sitemap by construction.
-  ...workPaths().map((p) => ({ url: `${ORIGIN}${p}`, modified: posts[0].modified, priority: '0.8' })),
-  ...posts.map((p) => ({ url: p.url, modified: p.modified, priority: '0.8' })),
+  ...workPaths().map((p) => ({ url: `${ORIGIN}${p}`, modified: posts[0].modified })),
+  // Posts with a cover list its OG card (a committed JPEG, shipped to
+  // `dist/og`) so it is eligible for image search. Only files that exist.
+  ...posts.map((p) => {
+    const card = `/og/${streamPath[p.stream]}/${p.slug}.jpg`;
+    const image = p.cover !== false && existsSync(join(OUT, card)) ? `${ORIGIN}${card}` : undefined;
+    return { url: p.url, modified: p.modified, image };
+  }),
 );
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${pages
   .map(
     (p) => `  <url>
     <loc>${esc(p.url)}</loc>
-    <lastmod>${esc(p.modified)}</lastmod>
-    <priority>${p.priority}</priority>
+    <lastmod>${esc(p.modified)}</lastmod>${p.image ? `\n    <image:image><image:loc>${esc(p.image)}</image:loc></image:image>` : ''}
   </url>`,
   )
   .join('\n')}
@@ -108,8 +115,43 @@ writeFileSync(join(OUT, 'sitemap.xml'), sitemap);
 /** RFC-822, which is what RSS 2.0 requires and ISO-8601 is not. */
 const rfc822 = (iso) => new Date(`${iso}T09:00:00Z`).toUTCString();
 
+/**
+ * The article body as the prerendered page shipped it: the contents of the
+ * `data-feed-body` wrapper the four post layouts put around the MDX. Read from
+ * `dist/` so the feed carries exactly what the page does (tables, code, the
+ * lot) rather than a second, lossy MDX-to-HTML conversion. Returns '' if the
+ * page or wrapper is missing, and the item then falls back to its summary.
+ */
+const bodyOf = (post) => {
+  const file = join(OUT, streamPath[post.stream], post.slug, 'index.html');
+  if (!existsSync(file)) return '';
+  const html = readFileSync(file, 'utf8');
+  const open = /<div data-feed-body="" style="display:contents">/.exec(html);
+  if (!open) return '';
+  // Walk the div nesting to the wrapper's own close tag.
+  const tag = /<(\/?)div\b/g;
+  tag.lastIndex = open.index + open[0].length;
+  let depth = 1;
+  let end = -1;
+  for (let m = tag.exec(html); m; m = tag.exec(html)) {
+    depth += m[1] ? -1 : 1;
+    if (depth === 0) {
+      end = m.index;
+      break;
+    }
+  }
+  if (end < 0) return '';
+  return html
+    .slice(open.index + open[0].length, end)
+    .replace(/<script\b[\s\S]*?<\/script>/g, '')
+    .replace(/<button\b[\s\S]*?<\/button>/g, '')
+    .replace(/\sstyle="[^"]*"/g, '')
+    .replace(/\s(?:href|src)="\/(?!\/)/g, (m) => `${m.slice(0, -1)}${ORIGIN}/`)
+    .replace(/\]\]>/g, ']]]]><![CDATA[>');
+};
+
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Notes · Anadi Thakur</title>
     <link>${ORIGIN}/notes</link>
@@ -124,7 +166,7 @@ ${posts
       <link>${esc(p.url)}</link>
       <guid isPermaLink="true">${esc(p.url)}</guid>
       <pubDate>${rfc822(p.date)}</pubDate>
-      <description>${esc(p.summary)}</description>
+      <description>${esc(p.summary)}</description>${bodyOf(p) ? `\n      <content:encoded><![CDATA[${bodyOf(p)}]]></content:encoded>` : ''}
     </item>`,
   )
   .join('\n')}

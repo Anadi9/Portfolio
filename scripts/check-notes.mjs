@@ -172,7 +172,7 @@ const STATIC_PAGES = ['', '/ai-visibility', '/dpdp', '/production-ready', '/buil
 const SITEMAP_URLS = 45;
 check(`sitemap lists ${SITEMAP_URLS} urls (found ${count(sitemap, '<loc>')})`, count(sitemap, '<loc>') === SITEMAP_URLS);
 for (const path of STATIC_PAGES) {
-  check(`sitemap lists ${path || '/'}`, sitemap.includes(`<loc>https://anadithakur.in${path}</loc>`));
+  check(`sitemap lists ${path || '/'}`, sitemap.includes(`<loc>https://anadithakur.in${path || '/'}</loc>`));
 }
 // A redirect and another host's page, neither of which belongs in this file.
 check('sitemap does not list /rescue/audit', !sitemap.includes('<loc>https://anadithakur.in/rescue/audit</loc>'));
@@ -185,6 +185,9 @@ check('sitemap does not list /portfolio', !sitemap.includes('/portfolio</loc>'))
 const teardown = readFileSync('dist/teardown/index.html', 'utf8');
 check('/teardown prerenders its intro', teardown.includes('thirteen questions'));
 check('/teardown prerenders question 1', teardown.includes('without using the words'));
+check(`rss carries full content for every item (found ${count(rss, '<content:encoded>')})`, count(rss, '<content:encoded>') === 28);
+check('sitemap has no <priority> noise', !sitemap.includes('<priority>'));
+check('sitemap lists the root with the canonical trailing slash', !sitemap.includes('<loc>https://anadithakur.in</loc>'));
 check(`rss lists 28 items (found ${count(rss, '<item>')})`, count(rss, '<item>') === 28);
 check('robots.txt declares the sitemap', readFileSync('dist/robots.txt', 'utf8').includes('Sitemap:'));
 for (const page of pages) {

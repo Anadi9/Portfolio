@@ -16,3 +16,11 @@ Site-wide headers are in `vercel.json` (`source: "/(.*)"`). The CSP ships as `Co
 1. Create a free uptime monitor (UptimeRobot or Better Stack) on `https://anadithakur.in/` and on `https://anadithakur.in/api/health`, alerting by email. `/api/health` returns 200 with `{ ok, checks }`, and 503 (`ok: false`) when Supabase is configured but unreachable. A `missing` check is informational and stays 200, so alert on HTTP status, not on a `missing` value.
 2. Browser errors go to `/api/client-error` and appear in Vercel logs as `[client-error]` lines; API handler crashes appear as `[api-error]`. Search the project's Vercel logs for those tags. The portfolio host is not reported.
 3. Optional upgrades: Vercel Log Drains to a log service, or Sentry for grouping and alerts. Not needed to launch.
+
+## Privacy & SEO (Task 4)
+
+1. Privacy copy is live in `src/pages/Legal.tsx` and `docs/data-map.md` describes the full pipeline (Bit, tickets, WhatsApp, AI answers, public board). Do not deploy before Tasks 5 to 8 land, since the copy describes tickets, WhatsApp alerts and AI answers as already running. If any of those is dropped, edit the Privacy page and the form lines first.
+2. Retention: tickets and leads are deleted 24 months after last activity. This is a manual clean-up until automated. Put a recurring reminder (quarterly) to delete `tickets` and `clients` with no activity for 24 months.
+3. Verify `https://anadithakur.in` in Google Search Console (DNS TXT record) and Bing Webmaster Tools, then submit `https://anadithakur.in/sitemap.xml` to both. Bing also feeds ChatGPT search.
+4. IndexNow (optional): generate a key (any 8 to 128 hex chars), add `public/<key>.txt` containing just the key, then POST changed URLs to `https://api.indexnow.org/indexnow` after each deploy. Not wired into the build yet.
+5. After deploy, check `https://anadithakur.in/rss.xml` in a feed reader (full content) and view-source the sitemap for the trailing-slash root and `<image:image>` entries.

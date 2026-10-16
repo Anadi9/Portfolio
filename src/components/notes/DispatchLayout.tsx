@@ -58,7 +58,9 @@ const DispatchLayout = ({ post }: { post: DispatchPost }) => {
           ))}
         </ol>
 
-        <Body components={prose} />
+        <div data-feed-body="" style={{ display: 'contents' }}>
+          <Body components={prose} />
+        </div>
         <ServicesCta slug={post.slug} />
       </Column>
     </NotesShell>

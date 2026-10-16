@@ -67,7 +67,9 @@ const WisdomLayout = ({ post }: { post: WisdomPost }) => {
           ))}
         </ol>
 
-        <Body components={prose} />
+        <div data-feed-body="" style={{ display: 'contents' }}>
+          <Body components={prose} />
+        </div>
 
         <aside
           style={{

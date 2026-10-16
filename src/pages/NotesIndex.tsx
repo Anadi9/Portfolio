@@ -40,6 +40,7 @@ const NotesIndex = ({ stream }: { stream?: Stream }) => {
   const matches = (p: Post) =>
     terms.every((t) => `${p.title} ${p.useWhen} ${p.summary}`.toLowerCase().includes(t));
 
+  const shownAll = posts.filter((p) => !stream || p.stream === stream);
   const shown = posts.filter((p) => (filter === 'all' || p.stream === filter) && matches(p));
 
   const chips: { key: Filter; label: string; count: number }[] = [
@@ -66,6 +67,14 @@ const NotesIndex = ({ stream }: { stream?: Stream }) => {
           url: `${ORIGIN}${path}`,
           author: { '@type': 'Person', '@id': PERSON_ID, name: 'Anadi Thakur', url: PORTFOLIO_ORIGIN },
           publisher: BUSINESS_REF,
+          // The corpus as a liftable list: every post the page lists, in feed order.
+          blogPost: shownAll.map((p) => ({
+            '@type': 'BlogPosting',
+            headline: p.title,
+            url: `${ORIGIN}${p.path}`,
+            datePublished: p.date,
+            ...(p.lastVerified ? { dateModified: p.lastVerified } : {}),
+          })),
         }}
       />
       <Column

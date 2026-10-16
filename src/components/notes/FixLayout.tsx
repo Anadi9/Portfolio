@@ -49,7 +49,9 @@ const FixLayout = ({ post }: { post: FixPost }) => {
           <Standfirst>{post.summary}</Standfirst>
         </PostHeader>
 
-        <Body components={prose} />
+        <div data-feed-body="" style={{ display: 'contents' }}>
+          <Body components={prose} />
+        </div>
 
         <FixCta post={post} />
       </Column>

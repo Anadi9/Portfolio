@@ -6,6 +6,14 @@ export const ORIGIN = 'https://anadithakur.in';
 /** The portfolio's own host. `vercel.json` serves `/portfolio` as its root. */
 export const PORTFOLIO_ORIGIN = 'https://portfolio.anadithakur.in';
 
+/**
+ * Default `robots` for main-site pages. `max-snippet:-1` lifts Google's cap on
+ * snippet length, which otherwise limits featured-snippet and AI-overview
+ * extraction. It lives here rather than in `index.html` because the portfolio
+ * host shares that file and must render exactly as before.
+ */
+export const DEFAULT_ROBOTS = 'index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1';
+
 export const BYLINE = '@the.anadi';
 
 /** Bit's Quest fonts. Loaded per page on the main site only; the portfolio keeps `index.html`'s set. */
@@ -69,7 +77,9 @@ export const Seo = ({
       {brand && brandHeadTags()}
       <title>{title}</title>
       <meta name="description" content={description} />
-      {robots && <meta name="robots" content={robots} />}
+      {(robots ?? (brand ? DEFAULT_ROBOTS : undefined)) && (
+        <meta name="robots" content={robots ?? DEFAULT_ROBOTS} />
+      )}
       <link rel="canonical" href={url} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />

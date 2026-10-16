@@ -65,7 +65,9 @@ const DropLayout = ({ post }: { post: DropPost }) => {
           <Standfirst>{post.summary}</Standfirst>
         </PostHeader>
 
-        <Body components={prose} />
+        <div data-feed-body="" style={{ display: 'contents' }}>
+          <Body components={prose} />
+        </div>
 
         <aside
           style={{
