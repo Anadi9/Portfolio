@@ -1,12 +1,13 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type {
-  BoardTicket,
-  Channel,
-  NewNotification,
-  NewTicket,
-  Notification,
-  Scorecard,
-  Ticket,
+import {
+  NewTicketSchema,
+  type BoardTicket,
+  type Channel,
+  type NewNotification,
+  type NewTicket,
+  type Notification,
+  type Scorecard,
+  type Ticket,
 } from './types.js';
 
 /**
@@ -92,10 +93,13 @@ const toNotification = (r: Row): Notification => ({
   sentAt: r.sent_at,
 });
 
-function supabaseStore(db: SupabaseClient): TicketStore {
+export function supabaseStore(db: SupabaseClient): TicketStore {
   return {
-    async createTicket(input) {
-      const email = input.email.trim().toLowerCase();
+    async createTicket(raw) {
+      // Same contract as the memory store: trim, lower-case, length/email checks,
+      // empty fields dropped. Throws before any write if the input is bad.
+      const input = NewTicketSchema.parse(raw);
+      const email = input.email;
       // Only overwrite client details the form actually gave.
       const client: Row = { email };
       if (input.name) client.name = input.name;
@@ -104,6 +108,9 @@ function supabaseStore(db: SupabaseClient): TicketStore {
       const c = await db.from('clients').upsert(client, { onConflict: 'email' }).select('id').single();
       if (c.error) fail('upsert client', c.error);
 
+      // Write order: client, then ticket, then the `created` event. The ticket is
+      // the record that matters and it carries the number, so once it exists we
+      // never throw: a retry by the caller would create a duplicate ticket.
       const t = await db
         .from('tickets')
         .insert({
@@ -113,18 +120,21 @@ function supabaseStore(db: SupabaseClient): TicketStore {
           stack: input.stack ?? null,
           answers: input.answers,
           budget: input.budget ?? null,
-          board_opt_in: input.boardOptIn ?? false,
-          whatsapp_opt_in: input.whatsappOptIn ?? false,
+          board_opt_in: input.boardOptIn,
+          whatsapp_opt_in: input.whatsappOptIn,
           source: input.source,
           category: input.category ?? null,
         })
         .select('*')
         .single();
-      if (t.error) fail('insert ticket', t.error);
+      if (t.error) {
+        console.error('[tickets]', JSON.stringify({ op: 'createTicket', message: t.error.message }));
+        fail('insert ticket', t.error);
+      }
 
       const ticket = toTicket(t.data);
       const e = await db.from('ticket_events').insert({ ticket_id: ticket.id, type: 'created', data: { source: input.source, kind: input.kind } });
-      if (e.error) fail('write created event', e.error);
+      if (e.error) console.error('[tickets]', JSON.stringify({ op: 'addEvent', ticket: ticket.number, message: e.error.message }));
       return ticket;
     },
 
