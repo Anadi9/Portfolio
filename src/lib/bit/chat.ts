@@ -11,9 +11,9 @@
 import { site } from '@/data/portfolio';
 
 export type NodeId =
-  | 'start' | 'prod' | 'prod2' | 'prod3' | 'vis' | 'vis2' | 'dpdp' | 'dpdp2' | 'free' | 'teardown' | 'kit'
+  | 'start' | 'prod' | 'prod2' | 'prod3' | 'prod4' | 'vis' | 'vis2' | 'dpdp' | 'dpdp2' | 'free' | 'teardown' | 'kit'
   | 'ask' | 'contact' | 'recProd' | 'recVis' | 'recDpdp' | 'recAi' | 'recKit' | 'blog' | 'hunt'
-  | 'q1' | 'q2' | 'q3' | 'q4' | 'qurl' | 'notyet' | 'ai' | 'ai2' | 'care';
+  | 'q1' | 'q2' | 'q3' | 'q4' | 'qurl' | 'notyet' | 'ai' | 'ai2' | 'ai3' | 'care';
 
 /** Where an option leads: another node, the qualification check, or a real action outside the chat. */
 export type Target =
@@ -24,7 +24,7 @@ export type Target =
 
 export type Option = { label: string; to: Target };
 
-export type Answers = Partial<Record<'stack' | 'live' | 'scope' | 'asked' | 'js' | 'pd' | 'consent' | 'kitTool' | 'users' | 'impact' | 'when' | 'aiwant' | 'aistage', string>>;
+export type Answers = Partial<Record<'stack' | 'live' | 'scope' | 'asked' | 'js' | 'pd' | 'consent' | 'kitTool' | 'users' | 'impact' | 'when' | 'aiwant' | 'aistage' | 'budget', string>>;
 
 export type Rec = { title: string; price: string; notes: string[]; actions: Option[] };
 
@@ -54,6 +54,7 @@ const LABELS: Record<keyof Answers, string> = {
   when: 'Fix by',
   aiwant: 'AI should',
   aistage: 'Stage',
+  budget: 'Budget',
 };
 
 /** A real email to Anadi with everything Bit has learned, so nothing is retyped. */
@@ -67,6 +68,8 @@ const to = (node: NodeId): Target => ({ node });
 const o = (label: string, target: Target): Option => ({ label, to: target });
 const tour: Option = o('Walk me through the site', { section: 'services', event: { name: 'bq:tour' } });
 const startOver: Option = o('Start over', to('start'));
+
+const BUDGET = ['Under $2,000', '$2,000–$5,000', '$5,000–$20,000', 'Not sure yet'];
 
 export const NODES: Record<NodeId, Node> = {
   start: {
@@ -88,14 +91,15 @@ export const NODES: Record<NodeId, Node> = {
     opts: ['Hand-coded (React / Node)', 'Cursor or Claude Code', 'Lovable, Bolt or v0', 'Replit', 'Not sure'].map((l) => o(l, to('prod2'))),
   },
   prod2: { say: 'Is it live with real users?', key: 'live', opts: ['Not yet — launching soon', 'Yes, under 100 users', 'Yes, 100+ users'].map((l) => o(l, to('prod3'))) },
-  prod3: { say: 'One known problem, or lots of small ones?', key: 'scope', opts: ['One specific thing', 'Lots, or not sure'].map((l) => o(l, to('recProd'))) },
+  prod3: { say: 'One known problem, or lots of small ones?', key: 'scope', opts: ['One specific thing', 'Lots, or not sure'].map((l) => o(l, to('prod4'))) },
+  prod4: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi confirms a fixed price after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recProd'))) },
   vis: { say: 'Have you asked an AI assistant for the best tool in your category?', key: 'asked', opts: ['Yes — we’re missing', 'Not yet'].map((l) => o(l, to('vis2'))) },
   vis2: { say: 'Is your site a JavaScript app (React, Next, Lovable…)?', key: 'js', opts: ['Yes', 'No', 'Not sure'].map((l) => o(l, to('recVis'))) },
   dpdp: { say: 'Do you collect personal data — names, emails, payments?', key: 'pd', opts: ['Yes', 'Not sure'].map((l) => o(l, to('dpdp2'))) },
   dpdp2: { say: 'How do people give consent today?', key: 'consent', opts: ['Pre-ticked box, or no consent', 'We ask properly', 'Not sure'].map((l) => o(l, to('recDpdp'))) },
   free: { say: 'Free stuff, coming up. Tap one:', opts: [o('Back to start', to('start')), tour] },
   teardown: {
-    say: 'The recorded teardown is a paid add-on to the Wrapper Test: Anadi records a walkthrough of your product with the fixes. Take the free test first — then he knows where to look.',
+    say: 'The recorded teardown is a $149 add-on to the Wrapper Test: a 15–20 minute recorded walkthrough of your product plus a written fix list, in 48 hours. The $149 is credited in full toward the $349 audit or an AI build within 30 days. Take the free test first — then he knows where to look.',
     opts: [o('Take the Wrapper Test', { href: '/teardown' }), o('Ask Anadi about a teardown', { href: mailto('Recorded teardown', {}) }), o('Back to start', to('start'))],
   },
   kit: {
@@ -150,7 +154,8 @@ export const NODES: Record<NodeId, Node> = {
     key: 'aiwant',
     opts: ['Answer questions from our data', 'Automate a workflow or agent', 'A Bit-style guide for our site', 'Fix an AI feature we already have'].map((l) => o(l, to('ai2'))),
   },
-  ai2: { say: 'Is the product live?', key: 'aistage', opts: ['Live with users', 'Still building'].map((l) => o(l, to('recAi'))) },
+  ai2: { say: 'Is the product live?', key: 'aistage', opts: ['Live with users', 'Still building'].map((l) => o(l, to('ai3'))) },
+  ai3: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi confirms a fixed price after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recAi'))) },
   care: {
     say: 'Care keeps a live app healthy: monitoring, a monthly review and small fixes — $299/mo, month to month. Search visibility and privacy are re-checked every quarter.',
     opts: [o('Start Care', { href: mailto('Care plan', {}) }), o('Find my first bug first', to('hunt')), o('Back to start', to('start'))],
@@ -239,9 +244,9 @@ export function reply(id: NodeId, ans: Answers): Message[] {
         who: 'rec',
         rec: {
           title,
-          price: 'See the packs',
+          price: 'Free download',
           notes: ['The same rules and checklists Anadi uses on client apps.', 'Want him to do it instead? Start with the free first-bug video.'],
-          actions: [o('See the packs', { href: '/products/production-kit' }), o('Have Anadi fix it', to('prod')), tour],
+          actions: [o('Get the free kit', { href: '/products/production-kit' }), o('Have Anadi fix it', to('prod')), tour],
         },
       },
     ];

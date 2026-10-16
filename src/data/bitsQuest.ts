@@ -266,26 +266,8 @@ export const board = {
   eyebrow: 'Request tracking',
   title: 'Every request, tracked.',
   intro: 'The moment you hit send you get a ticket. Every step lands on this board — and in your inbox.',
-  columns: [
-    { name: 'Inbox', tickets: [['#A-1046', 'Invoicing app · React + Node', 'Received today']] },
-    { name: 'Bug review', tickets: [['#A-1044', 'Booking app · Bolt', 'First-bug video sent ✓']] },
-    { name: 'Audit', tickets: [['#A-1041', 'Marketplace · Next.js + Postgres', 'Report due in 1 day']] },
-    {
-      name: 'Fixing',
-      tickets: [
-        ['#A-1038', 'CRM · Next.js', 'Day 4 of 7 · update posted today'],
-        ['#A-1036', 'Support bot · AI feature', 'Day 2 of 5 · answers from docs'],
-      ],
-    },
-    {
-      name: 'Live ✓',
-      tickets: [
-        ['#A-1033', 'SaaS dashboard', 'Access leak + checkout fixed'],
-        ['#A-1029', 'Course platform', 'Now named in AI answers'],
-      ],
-    },
-  ],
-  sampleNote: 'Sample tickets · real ones appear here, anonymised',
+  emptyTitle: 'No live requests to show yet.',
+  emptyNote: 'Live requests appear here, anonymised, once clients opt in.',
   ticket: {
     id: 'Ticket #A-1038',
     stack: 'CRM · Next.js',
@@ -328,17 +310,17 @@ export const free = {
       style: 'plain',
     },
     {
-      kind: 'Paid add-on',
+      kind: 'Paid add-on · $149',
       title: 'Recorded teardown',
-      body: 'Took the Wrapper Test and want the fix? Anadi records a walkthrough of your product.',
+      body: 'Took the Wrapper Test and want the fix? Anadi records a 15–20 minute walkthrough of your product, plus a written fix list, in 48 hours. The $149 is credited in full toward the $349 audit or an AI build within 30 days.',
       cta: { text: 'Start with the test', href: '/teardown' },
       style: 'dashed',
     },
     {
-      kind: 'DIY',
+      kind: 'Free · DIY',
       title: 'The Production Kit',
-      body: 'Anadi’s rules and checklists for Claude Code, Cursor, Lovable and Bolt.',
-      cta: { text: 'See the packs', href: '/products/production-kit' },
+      body: 'Anadi’s rules and checklists for Claude Code, Cursor, Lovable and Bolt. One free download, no sign-up.',
+      cta: { text: 'Get the free kit', href: '/products/production-kit' },
       style: 'dark',
     },
   ] as { kind: string; title: string; body: string; cta: Cta; style: 'feature' | 'plain' | 'dashed' | 'dark' }[],

@@ -168,6 +168,7 @@ All prices are fixed, in USD. Every project starts with a free first-bug review:
 - [DPDP self-check](${ORIGIN}/dpdp/check): a short questionnaire that scores how ready an app is for the DPDP Act's obligations.
 - [Free Supabase security check](${ORIGIN}/scan): checks in 30 seconds whether a Supabase project's tables are readable by anyone, using only the public anon key. Nothing is stored.
 - [The Wrapper Test](${ORIGIN}/teardown): a free 13-question diagnostic that scores an AI product on defensibility, failure design, cost floor and evaluation.
+- [Recorded teardown](${ORIGIN}/teardown): a $149 add-on to the Wrapper Test: a 15–20 minute recorded walkthrough plus a written fix list in 48 hours, credited in full toward the $349 audit or an AI build within 30 days.
 - [The Production Kit](${ORIGIN}/products/production-kit): CLAUDE.md, Cursor rules, Claude Code skills, templates, launch and security checklists and Supabase SQL for AI-built apps. Free, one download, no sign-up.
 
 ## Notes

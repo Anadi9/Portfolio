@@ -477,31 +477,22 @@ export function Pricing() {
   );
 }
 
+/* The live board's slot. Shown until enough clients opt in (fewer than 3 visible tickets). */
+function BoardEmpty() {
+  return (
+    <div className="hq-card" style={{ padding: '28px 24px', display: 'grid', gap: 8 }}>
+      <b style={{ font: '400 24px/1.1 var(--bq-font-display)' }}>{board.emptyTitle}</b>
+      <p className="hq-small" style={{ margin: 0 }}>{board.emptyNote}</p>
+    </div>
+  );
+}
+
 /* 8 · Request tracking: the board, an example ticket and the four promises. */
 export function TrackingBoard() {
   return (
     <Section id="board" label="h-board">
       <Head id="h-board" eyebrow={board.eyebrow} title={board.title} intro={board.intro} />
-      <div className="hq-kanban">
-        {board.columns.map((col) => (
-          <div key={col.name} className="hq-col">
-            <header>
-              <span>{col.name}</span>
-              <span>{col.tickets.length}</span>
-            </header>
-            <div>
-              {col.tickets.map(([id, name, note]) => (
-                <div key={id} className="hq-tix">
-                  <span className="hq-lab" style={{ color: 'var(--bq-brand)' }}>{id}</span>
-                  <b>{name}</b>
-                  <span className="hq-small" style={{ fontSize: 13 }}>{note}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-      <p className="hq-lab" style={{ color: 'var(--bq-muted)', marginTop: 16 }}>{board.sampleNote}</p>
+      <BoardEmpty />
       <div className="hq-track">
         <article className="hq-card" style={{ padding: 22, boxShadow: 'var(--bq-shadow-brand)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>

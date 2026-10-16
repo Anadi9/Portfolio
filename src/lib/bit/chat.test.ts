@@ -40,9 +40,30 @@ describe('Bit chat', () => {
     s = pick(s, 'Lovable, Bolt or v0');
     s = pick(s, 'Not yet — launching soon');
     s = pick(s, 'Lots, or not sure');
+    expect(s.node).toBe('prod4');
+    s = pick(s, 'Not sure yet');
+    expect(s.node).toBe('recProd');
     const rec = s.log.find((m) => m.who === 'rec');
     expect(rec).toMatchObject({ rec: { title: 'Launch-ready sprint', price: '$1,500–$2,500' } });
     if (rec?.who === 'rec') expect(rec.rec.actions[0].to).toEqual({ href: '/audit?type=app&s=5' });
+  });
+
+  it('asks an optional budget in the Fix and AI flows, records it, and never prices from it', () => {
+    let s = pick(initial(), 'Add AI to my product');
+    s = pick(s, 'Answer questions from our data');
+    s = pick(s, 'Still building');
+    expect(s.node).toBe('ai3');
+    s = pick(s, 'Under $2,000');
+    expect(s.node).toBe('recAi');
+    expect(s.ans.budget).toBe('Under $2,000');
+    expect(decodeURIComponent(mailto('x', s.ans))).toContain('Budget: Under $2,000');
+    const published = ['$349', '$299', '$149', '$1,500–$2,500', '$2,000–$8,000', '$3,000–$6,000', '$6,000–$20,000'];
+    for (const b of ['Under $2,000', '$2,000–$5,000', '$5,000–$20,000', 'Not sure yet']) {
+      const rec = reply('recAi', { ...s.ans, budget: b }).find((m) => m.who === 'rec');
+      if (rec?.who !== 'rec') throw new Error('no rec');
+      expect(published.some((p) => rec.rec.price.startsWith(p))).toBe(true);
+      expect(JSON.stringify(rec)).not.toContain(b);
+    }
   });
 
   it('routes free text by keyword, and the unknown to Anadi', () => {
