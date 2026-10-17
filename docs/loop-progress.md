@@ -29,7 +29,7 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 5 · Numbers tab (promises kept, average first reply, tickets, pipeline) (`cad427c`); Today panel (max three) and While you were away card (`30522f0`).
 - Phase 5 · per-brief email dropped; one 08:30 IST morning summary email from `/api/cron/summary` (`88a7c9d`).
 - Phase 5 · plan as data (`scripts/generate-plan.mjs` → `src/data/plan.generated.ts`), Plan tab, Coach's Monday review and 1st-of-month AI-visibility card (`632d21e`).
-- Phase 5 · Give to helper + migration `20261021000000_command_v2.sql` (`18e48ab`); installable `/admin` (manifest + service worker) and web push for urgent cards (`710841b`); email check + passkey login (`3858dd6`); 60 s polling, plan served without a database (`PHASE5`).
+- Phase 5 · Give to helper + migration `20261021000000_command_v2.sql` (`18e48ab`); installable `/admin` (manifest + service worker) and web push for urgent cards (`710841b`); email check + passkey login (`3858dd6`); 60 s polling, plan served without a database (`5829c06`).
 - Phase 5 browser-checked locally without a database: email + password login, Settings (passkeys, phone alerts), Plan tab. Passkey and push need HTTPS and a real device: check on the preview.
 - Phase 5 complete; `npm run build` green.
 
