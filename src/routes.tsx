@@ -69,6 +69,11 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/Care.tsx',
       },
       {
+        path: '/scorecard',
+        lazy: () => import('./pages/Scorecard').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Scorecard.tsx',
+      },
+      {
         path: '/dpdp',
         lazy: () => import('./pages/Dpdp').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Dpdp.tsx',

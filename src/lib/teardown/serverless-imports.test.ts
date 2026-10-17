@@ -63,6 +63,10 @@ const GRAPH = [
   'api/board.ts',
   'src/lib/tickets/board.ts',
   'api/cron/notify.ts',
+  'api/cron/scorecard.ts',
+  'api/scorecard.ts',
+  'src/lib/scorecard/summary.ts',
+  'src/lib/scorecard/headers.ts',
   'src/lib/notify/dispatch.ts',
   'src/lib/notify/email.ts',
   'src/lib/notify/whatsapp.ts',
@@ -144,6 +148,7 @@ describe('api/ directory: deployable files only', () => {
       'rescue-audit.ts',
       'review.ts',
       'scan.ts',
+      'scorecard.ts',
       'stripe-webhook.ts',
       'teardown-report.ts',
     ]);

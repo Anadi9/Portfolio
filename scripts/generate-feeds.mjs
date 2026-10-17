@@ -69,6 +69,7 @@ const pages = [
   { path: '/production-ready' },
   { path: '/build-with-ai' },
   { path: '/care' },
+  { path: '/scorecard' },
   { path: '/audit' },
   { path: '/ai-readiness' },
   { path: '/dpdp/check' },

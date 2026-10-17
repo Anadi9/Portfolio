@@ -113,6 +113,10 @@
     {
       "path": "/api/cron/notify",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/scorecard",
+      "schedule": "0 8 * * *"
     }
   ]
 }

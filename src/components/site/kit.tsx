@@ -247,6 +247,7 @@ export const SiteFooter = () => (
           <span style={footHead}>More</span>
           <Link to="/ai-visibility" className="pf-underline" style={footLink}>Search &amp; AI visibility</Link>
           <Link to="/dpdp" className="pf-underline" style={footLink}>Privacy &amp; compliance</Link>
+          <Link to="/scorecard" className="pf-underline" style={footLink}>We audit ourselves</Link>
           <Link to="/notes" className="pf-underline" style={footLink}>Blog</Link>
           <Link to="/work" className="pf-underline" style={footLink}>Case studies</Link>
           <a href={PORTFOLIO_ORIGIN} className="pf-underline" style={footLink}>Portfolio ↗</a>

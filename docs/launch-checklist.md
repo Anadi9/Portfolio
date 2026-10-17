@@ -112,3 +112,12 @@ Data and training (please verify in each provider's current terms — this is wh
 - Anthropic (primary): https://www.anthropic.com/legal/commercial-terms and https://privacy.anthropic.com.
 - Groq (fallback): https://console.groq.com/docs/your-data and https://groq.com/privacy-policy/.
 - Only the question (emails and phone numbers masked), the chat node and the tapped button labels are sent; nothing from the ticket form. `/privacy` and `docs/data-map.md` say this.
+
+## Scorecard (Task 9)
+
+`/scorecard` shows the latest daily self-audit of anadithakur.in. No new env vars: it needs the ticket setup (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`, tickets migration applied) and `CRON_SECRET` (already needed for the notify cron).
+- The cron `GET /api/cron/scorecard` runs daily at 08:00 UTC after deploy (`vercel.json`). It runs the AI-readiness analysis on `https://anadithakur.in/` and checks the site-wide headers, then stores a summary in `scorecard_runs`.
+- Until the first run the page says "No scan yet. First scan runs after launch." and `GET /api/scorecard` returns `{ "run": null }` (501 if Supabase isn't configured).
+- To trigger it once manually after deploy: `curl -s https://anadithakur.in/api/cron/scorecard -H "Authorization: Bearer $CRON_SECRET"` → `{"ok":true,"score":…}`. Then `/api/scorecard` shows it (cached up to 1 hour).
+- The expected header list lives in `src/lib/scorecard/headers.ts`; a test fails if it drifts from `vercel.json`.
+- The page says `/api/health` is monitored: only true once the uptime service from the monitoring checklist is set up.
