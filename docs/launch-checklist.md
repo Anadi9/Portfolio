@@ -80,3 +80,9 @@ The sender is `Anadi Thakur <tickets@anadithakur.in>`. The `anadithakur.in` doma
 
 - Stage-change emails (`stage_change` template) are built but not triggered by anything yet; they go out when a later admin action moves a stage.
 - Messages about price, scope, findings, fit or follow-ups are saved as drafts in `messages`, never sent. Review them in Supabase.
+
+## Chat tickets and live board (Task 7)
+
+No new env vars. Both features need the Task 5/6 setup (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`, the tickets migration applied). Until then the chat form says it could not save the request and offers the first-bug form and email, and the homepage board shows its empty state.
+- After applying the migration, submit one test request in Bit's chat with "Show my request on the public board" ticked. The board stays on its empty state until 3 opted-in tickets exist (`GET /api/board` returns the count in `total`).
+- `/api/board` is cached for 5 minutes (`s-maxage=300`), so a new ticket can take up to that long to appear.

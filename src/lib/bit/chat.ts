@@ -32,7 +32,9 @@ export type Message =
   | { who: 'bit'; text: string }
   | { who: 'you'; text: string }
   | { who: 'rec'; rec: Rec }
-  | { who: 'links'; links: Option[] };
+  | { who: 'links'; links: Option[] }
+  /** The in-chat ticket form. Active only while it is the last form in the log and the chat is still at its node. */
+  | { who: 'form'; kind: 'first_bug' | 'question' };
 
 type Node = { say?: string; key?: keyof Answers; opts: Option[] };
 
@@ -109,7 +111,7 @@ export const NODES: Record<NodeId, Node> = {
   },
   ask: { say: 'Type it below in your own words — your app, AI visibility, privacy, pricing, anything.', opts: [o('Back to start', to('start'))] },
   contact: {
-    say: 'That one’s for Anadi himself. Tap below to email him — I’ve filled in what you told me. He reads every request.',
+    say: 'That one’s for Anadi himself. Leave your email and I’ll open a ticket with what you told me. He reads every request.',
     opts: [o('Back to start', to('start'))],
   },
   recProd: { opts: [tour, startOver] },
@@ -137,7 +139,7 @@ export const NODES: Record<NodeId, Node> = {
   q3: { say: 'What happens if it breaks?', key: 'impact', opts: ['We lose money or users', 'It’s embarrassing', 'Nothing much'].map((l) => o(l, to('q4'))) },
   q4: { say: 'When do you want it fixed?', key: 'when', opts: ['This week', 'This month', 'Someday'].map((l) => o(l, { qcheck: true })) },
   qurl: {
-    say: 'You qualify. The next screen asks for your app link and where Anadi should send the video — it takes about two minutes.',
+    say: 'You qualify. Tell me where to send the video and which app to look at, and I’ll open a ticket for Anadi.',
     opts: [o('Back to start', to('start'))],
   },
   notyet: {
@@ -264,8 +266,9 @@ export function reply(id: NodeId, ans: Answers): Message[] {
       ],
     });
   }
-  if (id === 'qurl') out.push({ who: 'links', links: [o('Send my app link', { href: FIRST_BUG })] });
-  if (id === 'contact') out.push({ who: 'links', links: [o('Email Anadi', { href: mailto('A question for Anadi', ans) })] });
+  // The form's own fallback links (first-bug form, email) sit under the form and replace it if saving fails.
+  if (id === 'qurl') out.push({ who: 'form', kind: 'first_bug' });
+  if (id === 'contact') out.push({ who: 'form', kind: 'question' });
   return out;
 }
 

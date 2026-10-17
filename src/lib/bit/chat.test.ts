@@ -30,8 +30,7 @@ describe('Bit chat', () => {
     s = pick(s, 'This week');
     expect(s.node).toBe('qurl');
     expect(s.ans).toMatchObject({ live: 'Live now', users: 'Paying customers', impact: 'We lose money or users', when: 'This week' });
-    const links = s.log.at(-1);
-    expect(links).toMatchObject({ who: 'links', links: [{ to: { href: '/audit?type=app' } }] });
+    expect(s.log.at(-1)).toEqual({ who: 'form', kind: 'first_bug' });
     expect(JSON.stringify(s.log)).not.toMatch(/A-10\d\d|ticket #/i);
   });
 

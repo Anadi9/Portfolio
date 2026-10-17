@@ -3,6 +3,7 @@ import { Link } from 'vite-react-ssg';
 import { useLocation } from 'react-router-dom';
 import { BitChat } from './BitChat';
 import { PackageBuilder } from './BitGuide';
+import { LiveBoard } from './LiveBoard';
 import { Bit, PixelIcon } from '@/components/brand/Bit';
 import portrait from '@/assets/portrait.webp';
 import { trackRescue } from '@/lib/rescue/track';
@@ -477,22 +478,12 @@ export function Pricing() {
   );
 }
 
-/* The live board's slot. Shown until enough clients opt in (fewer than 3 visible tickets). */
-function BoardEmpty() {
-  return (
-    <div className="hq-card" style={{ padding: '28px 24px', display: 'grid', gap: 8 }}>
-      <b style={{ font: '400 24px/1.1 var(--bq-font-display)' }}>{board.emptyTitle}</b>
-      <p className="hq-small" style={{ margin: 0 }}>{board.emptyNote}</p>
-    </div>
-  );
-}
-
 /* 8 · Request tracking: the board, an example ticket and the four promises. */
 export function TrackingBoard() {
   return (
     <Section id="board" label="h-board">
       <Head id="h-board" eyebrow={board.eyebrow} title={board.title} intro={board.intro} />
-      <BoardEmpty />
+      <LiveBoard />
       <div className="hq-track">
         <article className="hq-card" style={{ padding: 22, boxShadow: 'var(--bq-shadow-brand)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>

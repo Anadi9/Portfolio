@@ -2,7 +2,9 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Bit } from '@/components/brand/Bit';
 import { ask, choose, initial, optionsFor, type ChatState, type Message, type Option } from '@/lib/bit/chat';
+import { activeFormIndex, applyOutcome, questionFor, rememberTicket, type Outcome } from '@/lib/bit/submit';
 import { trackRescue } from '@/lib/rescue/track';
+import { BitTicketForm } from './BitTicketForm';
 
 /**
  * Bit's chat: the hero turns into this once a visitor picks a menu option,
@@ -44,6 +46,7 @@ function OptionButton({ opt, onPick, primary }: { opt: Option; onPick: (o: Optio
 function Bubble({ m, onPick }: { m: Message; onPick: (o: Option) => void }) {
   if (m.who === 'you') return <p className="hq-msg you">{m.text}</p>;
   if (m.who === 'bit') return <p className="hq-msg bit">{m.text}</p>;
+  if (m.who === 'form') return null;
   if (m.who === 'links')
     return (
       <div className="hq-msg-links">
@@ -79,6 +82,8 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const opened = useRef(false);
   const optsRef = useRef<HTMLDivElement>(null);
+  /** Index of the live ticket form in the log, or -1. While it is open it owns focus. */
+  const formAt = typing ? -1 : activeFormIndex(state);
   /** Set when a reply is picked, so focus can follow into the new replies instead of dropping to <body>. */
   const refocus = useRef(false);
 
@@ -121,9 +126,17 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
     if (el) el.scrollTop = el.scrollHeight;
     if (!typing && refocus.current) {
       refocus.current = false;
-      optsRef.current?.querySelector<HTMLElement>('button, a')?.focus({ preventScroll: true });
+      if (formAt < 0) optsRef.current?.querySelector<HTMLElement>('button, a')?.focus({ preventScroll: true });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.log.length, typing]);
+
+  // The ticket form finished: show Bit's confirmation (or the fallback) and move focus into it.
+  const ticketDone = (kind: 'first_bug' | 'question', out: Outcome, email: string) => {
+    if (out.type === 'ok') rememberTicket(out.number);
+    refocus.current = true;
+    setState((s) => applyOutcome(s, kind, out, email));
+  };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -148,9 +161,13 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
           </button>
         </header>
         <div ref={logRef} className="hq-chat-log" role="log" aria-live="polite">
-          {state.log.map((m, i) => (
-            <Bubble key={i} m={m} onPick={pick} />
-          ))}
+          {state.log.map((m, i) =>
+            m.who === 'form' ? (
+              i === formAt ? <BitTicketForm key={i} kind={m.kind} ans={state.ans} question={questionFor(state)} onOutcome={(o, email) => ticketDone(m.kind, o, email)} /> : null
+            ) : (
+              <Bubble key={i} m={m} onPick={pick} />
+            ),
+          )}
           {typing && <p className="hq-msg bit" aria-label="Bit is typing">…</p>}
         </div>
         {!typing && (
