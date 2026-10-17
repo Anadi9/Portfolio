@@ -24,7 +24,7 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 4 · Task 4: hooks: new ticket opens inbox tasks and the 24 h promise (and a Coach card past five first bugs a week); first reply keeps it; stage entry opens tasks and promises; audit report task keeps the 48 h promise; daily updates roll over (`aeabecf`). Manual: none.
 - Phase 4 · Task 5: `/api/cron/heartbeat`: at-risk card + one email, missed card, stale-scorecard card, idempotent; daily Vercel cron 05:00 UTC (`5bccd69`). Manual: cron-job.org hourly job with the bearer header.
 - Phase 4 · Tasks 6–7: `/api/admin` refuses stage moves while the gate is closed (409 + blockers); ops `taskDone`, `keep`, `missReason`; Coach box on the ticket view (`ebc5b35`, `f735890`). Not browser-checked (needs ticket data); covered by tests. Manual: check the Coach box on the preview.
-- Phase 4 · Task 8: data map and launch checklist (`DOCS4`). Phase 4 complete; `npm run build` green.
+- Phase 4 · Task 8: data map and launch checklist (`483fad0`). Phase 4 complete; `npm run build` green.
 
 ## Manual steps for Anadi
 
