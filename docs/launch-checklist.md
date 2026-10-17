@@ -72,6 +72,7 @@ Done when: every row you need is set in Production and Preview, and you have red
 7. Apply `supabase/migrations/20261020000000_coach.sql` the same way, **once, after** the feed migration. It creates Coach's `commitments` and `tasks` tables. Check `commitments?select=*` and `tasks?select=*` with the anon key: no rows.
 8. Apply `supabase/migrations/20261021000000_command_v2.sql` the same way, **once, after** the Coach migration. It adds `feed_items.assignee` and the `push_subscriptions` and `admin_passkeys` tables. Check both new tables with the anon key: no rows.
 9. Apply `supabase/migrations/20261022000000_portal.sql` the same way, **once, after** the v2 migration. It creates `portal_links`. Check it with the anon key: no rows.
+10. Apply `supabase/migrations/20261023000000_invoices.sql` the same way, **once, after** the portal migration. It creates `invoices`. Check it with the anon key: no rows.
 
 ## 3. Resend domain check
 
@@ -184,8 +185,9 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
 5. **IndexNow (optional).** Generate a key (8 to 128 hex chars), add `public/<key>.txt` containing just the key, then POST changed URLs to `https://api.indexnow.org/indexnow` after each deploy. Not wired into the build yet.
 6. **Feed and sitemap.** Check `https://anadithakur.in/rss.xml` in a feed reader (full content) and view-source the sitemap for the trailing-slash root and `<image:image>` entries.
 7. **Uptime sentence.** Once the monitor exists (step 7), add a line on `/scorecard` such as "An uptime monitor checks /api/health every few minutes and emails us if it fails." The page currently says only that `/api/health` reports whether the backend is reachable.
-8. **Morning summary.** `/api/cron/summary` runs daily at 03:00 UTC (08:30 IST) from `vercel.json`; nothing to set up beyond `CRON_SECRET`. It stays silent on a quiet day.
-9. **Coach's hourly heartbeat.** Vercel runs `/api/cron/heartbeat` once a day (05:00 UTC) as a floor. For the hourly check, create a free job at https://cron-job.org: URL `https://anadithakur.in/api/cron/heartbeat`, every hour, method GET, request header `Authorization: Bearer <your CRON_SECRET>`, and turn on failure notifications to your email. Done when the job's history shows 200s.
-10. **Retention reminder.** Tickets and leads are deleted 24 months after last activity. This is manual until automated: set a recurring quarterly reminder to delete `tickets` and `clients` with no activity for 24 months.
-11. **Open SEO content items** in `docs/seo-geo-aeo-todo.md`.
-12. **Optional later:** remove `'unsafe-inline'` from `script-src`; Vercel Log Drains or Sentry.
+8. **Care checks, nudges and invoices.** `/api/cron/care` runs daily at 02:00 UTC from `vercel.json` (needs only `CRON_SECRET`): monthly checks for open Care tickets and one drafted follow-up per quiet lead, both waiting in `/admin`. Invoices: on a ticket in `/admin`, "Plan invoices" works out the amounts with credits; create each one in Stripe (Invoices, New, the same lines and amounts), send it from Stripe, then paste the `in_…` id back and press "Mark sent". The second half of a fix can't be marked sent until "Client confirms it works" is ticked.
+9. **Morning summary.** `/api/cron/summary` runs daily at 03:00 UTC (08:30 IST) from `vercel.json`; nothing to set up beyond `CRON_SECRET`. It stays silent on a quiet day.
+10. **Coach's hourly heartbeat.** Vercel runs `/api/cron/heartbeat` once a day (05:00 UTC) as a floor. For the hourly check, create a free job at https://cron-job.org: URL `https://anadithakur.in/api/cron/heartbeat`, every hour, method GET, request header `Authorization: Bearer <your CRON_SECRET>`, and turn on failure notifications to your email. Done when the job's history shows 200s.
+11. **Retention reminder.** Tickets and leads are deleted 24 months after last activity. This is manual until automated: set a recurring quarterly reminder to delete `tickets` and `clients` with no activity for 24 months.
+12. **Open SEO content items** in `docs/seo-geo-aeo-todo.md`.
+13. **Optional later:** remove `'unsafe-inline'` from `script-src`; Vercel Log Drains or Sentry.

@@ -225,12 +225,14 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 
 ## Phase 7: one audit engine and money
 
-- [ ] Combine scan, AI readiness, DPDP and teardown scoring into one engine.
-- [ ] Draft the report skeleton from the engine's findings.
-- [ ] Monthly Care monitoring by cron, results in the portal and the feed.
-- [ ] Follow-up nudges for quiet leads (drafts, per the send policy).
-- [ ] Stripe invoices linked to tickets, with the audit and teardown credits
-      applied.
+- [x] Combine scan, AI readiness, DPDP and teardown scoring into one engine.
+- [x] Draft the report skeleton from the engine's findings.
+- [x] Monthly Care monitoring by cron, results in the portal and the feed.
+- [x] Follow-up nudges for quiet leads (drafts, per the send policy).
+- [x] Invoices linked to tickets, with the audit and teardown credits applied
+      (planned in `/admin`; the second half waits for the client's confirmation).
+- [ ] Create those invoices in Stripe automatically. Needs Anadi's OK for code
+      to write to Stripe; until then he copies each plan into Stripe by hand.
 
 ## Phase 8: finish the homepage and the products
 

@@ -35,6 +35,9 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 6 plan: `docs/superpowers/plans/2026-10-19-client-portal.md`.
 - Phase 6 · `clientView` strips briefs, drafts, Coach data, internal events, budget and contact details (`b07ad67`); single-use `portal_links` + client-scoped store (`e9cbb98`); `/api/portal` (emailed link, same answer for unknown emails, per-IP and per-email limits, 7-day session, isolation tests) (`0e38330`); `/portal` page (`ca0f66b`); receipt email links the portal, privacy/data map/checklist (`61b2df0`). Browser-checked the sign-in form locally; the signed-in views need real data (preview).
 - Phase 6 complete; `npm run build` green.
+- Phase 7 plan: `docs/superpowers/plans/2026-10-19-audit-engine-and-money.md`.
+- Phase 7 · one engine (`src/lib/engine/`: adapters for the lead scan, Supabase scan, DPDP check and Wrapper Test; ranked findings; area scores, null when unchecked) (`f2af5ac`); audit report skeleton from a fresh scan, `[ANADI: …]` blocks sending, sending it keeps the 48 h promise (`5a5ef7f`); daily `/api/cron/care`: monthly Care checks (portal shows the score, review drafted, `care_review` promise rolls monthly) and one follow-up draft per quiet lead (`49d77cb`); invoice plans with credits, second half held until confirmation (`a580fa9`); docs (`PHASE7`).
+- Phase 7 complete except creating invoices in Stripe automatically (blocked by the no-Stripe-changes rule; see Blocked).
 
 ## Manual steps for Anadi
 
@@ -49,9 +52,16 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - On the preview: add a passkey on phone and laptop, add `/admin` to the phone's Home Screen and enable phone alerts (launch checklist step 8, "Command centre v2").
 - Apply `supabase/migrations/20261022000000_portal.sql` once, after the v2 migration; set `PORTAL_SESSION_SECRET`.
 - On the preview, run the "Client portal" smoke test with two of your own addresses (launch checklist step 8).
+- Apply `supabase/migrations/20261023000000_invoices.sql` once, after the portal migration.
+- For each planned invoice: create it in Stripe by hand, then paste the `in_…` id into `/admin` (launch checklist "Care checks, nudges and invoices").
 - Create the hourly cron-job.org job for `/api/cron/heartbeat` (launch checklist step 9.8) and run the "Coach" smoke test (step 8).
 
 ## Decisions to confirm
+
+- The audit report's "Draft from a fresh scan" uses the outside-in scan only. The Supabase scan needs the client's key and consent, so the engine accepts its results but never fetches them itself.
+- Engine scores come from findings (each severity costs points); an area nobody checked shows "not checked", never 100.
+- The $149 teardown credit applies to the audit or an AI build, as the site says, not to fix work.
+- Quiet-lead nudges start 5 days after your last sent reply, one per ticket per stage, as drafts.
 
 - The portal signs clients in with our own emailed, signed, single-use link instead of Supabase Auth, so the database stays closed to the browser (Supabase Auth would need the anon key and per-client policies).
 - Clients can read in the portal but not write; they reply by email.
@@ -77,3 +87,5 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - The lead brief drops any field that mentions money at all (stricter than the plan's "published prices only"), so `likelyPackage` is a package name and never a range.
 
 ## Blocked
+
+- Creating invoices in Stripe automatically: this build may not change Stripe. Invoice plans are ready in `/admin`; automating the Stripe step needs your OK and a restricted Stripe key with invoice write access.
