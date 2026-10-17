@@ -38,6 +38,10 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 7 plan: `docs/superpowers/plans/2026-10-19-audit-engine-and-money.md`.
 - Phase 7 · one engine (`src/lib/engine/`: adapters for the lead scan, Supabase scan, DPDP check and Wrapper Test; ranked findings; area scores, null when unchecked) (`f2af5ac`); audit report skeleton from a fresh scan, `[ANADI: …]` blocks sending, sending it keeps the 48 h promise (`5a5ef7f`); daily `/api/cron/care`: monthly Care checks (portal shows the score, review drafted, `care_review` promise rolls monthly) and one follow-up draft per quiet lead (`49d77cb`); invoice plans with credits, second half held until confirmation (`a580fa9`); docs (`b7b10f0`).
 - Phase 7 complete except creating invoices in Stripe automatically (blocked by the no-Stripe-changes rule; see Blocked).
+- Phase 8 · chat answers carried across the homepage (Bit's pick on the service card and package, Yours on the audit area and demo bug, blog on their topic) (`c754292`); boot screen once per session, scanlines, scroll reveals (`9de77d8`). Browser-checked.
+- Phase 1 · service picker with the hopping Bit (← → Enter) opens from "Start with Bit" (`2aca61f`). Browser-checked.
+- Search · `llms-full.txt` (`b14e0e9`); IndexNow after production builds (`b602b15`); self-hosted brand fonts with preloads (`42a96d1`); FAQPage on Q&A-shaped notes (`b06f4cb`); `/about` entity page (`4c47c1c`).
+- **Loop finished 19 Oct 2026: no code items left.** Remaining master-plan boxes are manual, content, or blocked (below).
 
 ## Manual steps for Anadi
 
@@ -54,7 +58,11 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - On the preview, run the "Client portal" smoke test with two of your own addresses (launch checklist step 8).
 - Apply `supabase/migrations/20261023000000_invoices.sql` once, after the portal migration.
 - For each planned invoice: create it in Stripe by hand, then paste the `in_…` id into `/admin` (launch checklist "Care checks, nudges and invoices").
-- Create the hourly cron-job.org job for `/api/cron/heartbeat` (launch checklist step 9.8) and run the "Coach" smoke test (step 8).
+- Create the hourly cron-job.org job for `/api/cron/heartbeat` (launch checklist "After launch", Coach's hourly heartbeat) and run the "Coach" smoke test (step 8).
+- Optional: set `INDEXNOW_KEY` (`openssl rand -hex 16`) in Vercel Production.
+- Review the wording of `/about` (built only from facts already on the site).
+- Content still yours: HowTo steps for the procedural drops, keeping the Production Kit current, the monthly "do AI assistants cite us?" check (Coach reminds you on the 1st).
+- Everything else in `docs/launch-checklist.md`: env vars, the tickets migration first, Resend, the WhatsApp template, AI Gateway, uptime monitor, Search Console and Bing, the preview smoke tests, then promote.
 
 ## Decisions to confirm
 
@@ -88,4 +96,5 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 
 ## Blocked
 
+- Paid self-serve scans: needs you to decide the offer and create a Stripe price; this build may not change Stripe.
 - Creating invoices in Stripe automatically: this build may not change Stripe. Invoice plans are ready in `/admin`; automating the Stripe step needs your OK and a restricted Stripe key with invoice write access.
