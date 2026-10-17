@@ -32,7 +32,12 @@ async function call<T>(body: Record<string, unknown>): Promise<AdminResult<T>> {
 type Ok = { ok: true };
 
 export const admin = {
-  login: (password: string) => call<Ok>({ op: 'login', password }),
+  login: (email: string, password: string) => call<{ ok?: true; passkey?: true; options?: Record<string, unknown> }>({ op: 'login', email, password }),
+  passkeyLogin: (response: unknown) => call<Ok>({ op: 'passkeyLogin', response }),
+  passkeyOptions: () => call<{ options: Record<string, unknown> }>({ op: 'passkeyOptions' }),
+  passkeyRegister: (response: unknown) => call<Ok>({ op: 'passkeyRegister', response }),
+  passkeys: () => call<{ passkeys: { id: string; createdAt: string }[] }>({ op: 'passkeys' }),
+  passkeyRemove: (id: string) => call<Ok>({ op: 'passkeyRemove', id }),
   logout: () => call<Ok>({ op: 'logout' }),
   feed: () => call<{ items: FeedItem[] }>({ op: 'feed' }),
   numbers: () => call<{ numbers: Numbers }>({ op: 'numbers' }),

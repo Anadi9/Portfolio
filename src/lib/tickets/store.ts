@@ -18,6 +18,7 @@ import type { CoachTask, Commitment } from '../coach/types.js';
 import type { CommitmentStatus } from '../coach/rules.js';
 import type { TaskTemplate } from '../coach/stages.js';
 import type { PromiseId } from '../../data/promises.js';
+import type { StoredPasskey } from '../admin/passkey.js';
 import { FEED_BODY_MAX, FEED_TITLE_MAX, feedOrder, type FeedItem, type NewFeedItem } from '../feed/types.js';
 
 /**
@@ -73,6 +74,11 @@ export interface TicketStore {
   savePushSubscription(s: { endpoint: string; keys: { p256dh: string; auth: string } }): Promise<void>;
   removePushSubscription(endpoint: string): Promise<void>;
   pushSubscriptions(): Promise<{ endpoint: string; p256dh: string; auth: string }[]>;
+  /** Anadi's passkeys for /admin. */
+  passkeys(): Promise<StoredPasskey[]>;
+  savePasskey(p: Omit<StoredPasskey, 'createdAt'>): Promise<void>;
+  setPasskeyCounter(id: string, counter: number): Promise<void>;
+  removePasskey(id: string): Promise<void>;
   /** Coach (master plan Phase 4). */
   openCommitment(c: { ticketId: string | null; promiseId: PromiseId; dueAt: string; openedAt?: string }): Promise<Commitment>;
   /** Open and at-risk commitments, soonest due first. */
@@ -454,6 +460,27 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async doneFeedFor(ref) {
       const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('ref', ref).is('done_at', null);
       if (error) fail('done feed for', error);
+    },
+
+    async passkeys() {
+      const { data, error } = await db.from('admin_passkeys').select('*').order('created_at', { ascending: true });
+      if (error) fail('passkeys', error);
+      return (data as Row[]).map((r) => ({ id: r.id, publicKey: r.public_key, counter: Number(r.counter), transports: r.transports ?? [], createdAt: r.created_at }));
+    },
+
+    async savePasskey(p) {
+      const { error } = await db.from('admin_passkeys').insert({ id: p.id, public_key: p.publicKey, counter: p.counter, transports: p.transports });
+      if (error) fail('save passkey', error);
+    },
+
+    async setPasskeyCounter(id, counter) {
+      const { error } = await db.from('admin_passkeys').update({ counter }).eq('id', id);
+      if (error) fail('set passkey counter', error);
+    },
+
+    async removePasskey(id) {
+      const { error } = await db.from('admin_passkeys').delete().eq('id', id);
+      if (error) fail('remove passkey', error);
     },
 
     async savePushSubscription(sub) {

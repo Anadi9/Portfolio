@@ -6,7 +6,7 @@ import { signSession } from '../lib/admin/session';
 import { joinDraft } from '../lib/brief/draft';
 
 const SECRET = 's'.repeat(32);
-const env = { ADMIN_PASSWORD: 'open sesame', ADMIN_SESSION_SECRET: SECRET, TICKETS_INBOX: 'me@example.com' };
+const env = { ADMIN_EMAIL: 'anadi@example.com', ADMIN_PASSWORD: 'open sesame', ADMIN_SESSION_SECRET: SECRET, TICKETS_INBOX: 'me@example.com' };
 
 type Res = { statusCode?: number; body?: any; headers: Record<string, string | string[]> }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -39,7 +39,7 @@ const ticketInput = { email: 'jo@example.com', name: 'Jo Bloggs', appUrl: 'a.exa
 
 describe('/api/admin auth', () => {
   it('logs in with the password and sets a strict cookie', async () => {
-    const res = await call({ op: 'login', password: 'open sesame' });
+    const res = await call({ op: 'login', email: 'Anadi@Example.com', password: 'open sesame' });
     expect(res.statusCode).toBe(200);
     const cookie = String(res.headers['set-cookie']);
     expect(cookie).toMatch(/^admin_session=/);
@@ -47,7 +47,7 @@ describe('/api/admin auth', () => {
   });
 
   it('refuses a wrong password', async () => {
-    const res = await call({ op: 'login', password: 'nope' });
+    const res = await call({ op: 'login', email: 'anadi@example.com', password: 'nope' });
     expect(res.statusCode).toBe(401);
     expect(res.headers['set-cookie']).toBeUndefined();
   });
@@ -57,7 +57,7 @@ describe('/api/admin auth', () => {
     for (let i = 0; i < 6; i++) {
       const r: Res = { headers: {} };
       const rr = { status: (c: number) => ((r.statusCode = c), rr), json: () => rr, setHeader: () => rr };
-      await handler({ method: 'POST', body: { op: 'login', password: 'x' }, headers: { 'content-type': 'application/json', 'x-forwarded-for': '9.9.9.9' } } as unknown as VercelRequest, rr as unknown as VercelResponse);
+      await handler({ method: 'POST', body: { op: 'login', email: 'anadi@example.com', password: 'x' }, headers: { 'content-type': 'application/json', 'x-forwarded-for': '9.9.9.9' } } as unknown as VercelRequest, rr as unknown as VercelResponse);
       res.push(r);
     }
     expect(res.at(-1)!.statusCode).toBe(429);
@@ -79,7 +79,7 @@ describe('/api/admin auth', () => {
     const bare = createAdminHandler({ store: () => mem.store, env: {}, resend: null, delay: async () => {} });
     const res: Res = { headers: {} };
     const r = { status: (c: number) => ((res.statusCode = c), r), json: () => r, setHeader: () => r };
-    await bare({ method: 'POST', body: { op: 'login', password: 'x' }, headers: { 'content-type': 'application/json' } } as unknown as VercelRequest, r as unknown as VercelResponse);
+    await bare({ method: 'POST', body: { op: 'login', email: 'anadi@example.com', password: 'x' }, headers: { 'content-type': 'application/json' } } as unknown as VercelRequest, r as unknown as VercelResponse);
     expect(res.statusCode).toBe(501);
     expect((await call({}, { method: 'GET' })).statusCode).toBe(405);
     expect((await call('op=login', { type: 'application/x-www-form-urlencoded' })).statusCode).toBe(415);
@@ -280,5 +280,75 @@ describe('/api/admin push', () => {
     expect((await call({ op: 'pushSubscribe', ...sub, endpoint: 'http://insecure.example/x' }, { cookie: authed() })).statusCode).toBe(400);
     await call({ op: 'pushUnsubscribe', endpoint: sub.endpoint }, { cookie: authed() });
     expect(await mem.store.pushSubscriptions()).toHaveLength(0);
+  });
+});
+
+describe('/api/admin email check and passkey', () => {
+  const fake = () => ({
+    registrationOptions: vi.fn().mockResolvedValue({ challenge: 'reg-challenge', rp: { id: 'localhost' } }),
+    verifyRegistration: vi.fn().mockResolvedValue({ id: 'cred-123456789', publicKey: 'pk', counter: 0, transports: ['internal'] }),
+    authenticationOptions: vi.fn().mockResolvedValue({ challenge: 'auth-challenge' }),
+    verifyAuthentication: vi.fn().mockResolvedValue({ newCounter: 5 }),
+  });
+  const cookieFrom = (res: Res, name: string) => {
+    const all = ([] as string[]).concat(res.headers['set-cookie'] as string | string[]);
+    const c = all.find((x) => x.startsWith(`${name}=`));
+    return c ? c.split(';')[0] : undefined;
+  };
+
+  it('refuses the right password with the wrong email', async () => {
+    expect((await call({ op: 'login', email: 'someone@else.com', password: 'open sesame' })).statusCode).toBe(401);
+  });
+
+  it('is not configured without ADMIN_EMAIL', async () => {
+    handler = createAdminHandler({ store: () => mem.store, env: { ...env, ADMIN_EMAIL: '' }, resend: null, delay: async () => {} });
+    expect((await call({ op: 'login', email: 'anadi@example.com', password: 'open sesame' })).statusCode).toBe(501);
+  });
+
+  it('registers a passkey, then requires it to log in', async () => {
+    const pk = fake();
+    handler = createAdminHandler({ store: () => mem.store, env, resend: null, delay: async () => {}, passkeys: pk });
+
+    const opts = await call({ op: 'passkeyOptions' }, { cookie: authed() });
+    expect(opts.body.options).toMatchObject({ challenge: 'reg-challenge' });
+    const pending = cookieFrom(opts, 'admin_pending')!;
+    expect(pending).toBeTruthy();
+    expect((await call({ op: 'passkeyRegister', response: { id: 'x' } }, { cookie: authed() })).statusCode).toBe(400); // no pending cookie
+    const reg = await call({ op: 'passkeyRegister', response: { id: 'x' } }, { cookie: `${authed()}; ${pending}` });
+    expect(reg.statusCode).toBe(200);
+    expect(pk.verifyRegistration.mock.calls[0][2]).toBe('reg-challenge');
+    expect((await call({ op: 'passkeys' }, { cookie: authed() })).body.passkeys).toMatchObject([{ id: 'cred-123456789' }]);
+
+    // Password alone no longer gives a session.
+    const login = await call({ op: 'login', email: 'anadi@example.com', password: 'open sesame' });
+    expect(login.statusCode).toBe(200);
+    expect(login.body).toMatchObject({ passkey: true, options: { challenge: 'auth-challenge' } });
+    expect(cookieFrom(login, 'admin_session')).toBeUndefined();
+    const loginPending = cookieFrom(login, 'admin_pending')!;
+    // The pending cookie is not a session.
+    expect((await call({ op: 'feed' }, { cookie: loginPending.replace('admin_pending', 'admin_session') })).statusCode).toBe(401);
+
+    const done = await call({ op: 'passkeyLogin', response: { id: 'cred-123456789' } }, { cookie: loginPending });
+    expect(done.statusCode).toBe(200);
+    expect(cookieFrom(done, 'admin_session')).toBeTruthy();
+    expect((await mem.store.passkeys())[0].counter).toBe(5);
+  });
+
+  it('refuses a passkey login without the pending cookie, with an unknown key, or a failed check', async () => {
+    const pk = fake();
+    handler = createAdminHandler({ store: () => mem.store, env, resend: null, delay: async () => {}, passkeys: pk });
+    await mem.store.savePasskey({ id: 'cred-123456789', publicKey: 'pk', counter: 0, transports: [] });
+    expect((await call({ op: 'passkeyLogin', response: { id: 'cred-123456789' } })).statusCode).toBe(401);
+    const login = await call({ op: 'login', email: 'anadi@example.com', password: 'open sesame' });
+    const pending = cookieFrom(login, 'admin_pending')!;
+    expect((await call({ op: 'passkeyLogin', response: { id: 'other-credential' } }, { cookie: pending })).statusCode).toBe(401);
+    pk.verifyAuthentication.mockResolvedValueOnce(null);
+    expect((await call({ op: 'passkeyLogin', response: { id: 'cred-123456789' } }, { cookie: pending })).statusCode).toBe(401);
+  });
+
+  it('removes a passkey', async () => {
+    await mem.store.savePasskey({ id: 'cred-123456789', publicKey: 'pk', counter: 0, transports: [] });
+    expect((await call({ op: 'passkeyRemove', id: 'cred-123456789' }, { cookie: authed() })).statusCode).toBe(200);
+    expect(await mem.store.passkeys()).toEqual([]);
   });
 });

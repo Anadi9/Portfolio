@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
 import { Head } from 'vite-react-ssg';
+import { startAuthentication, startRegistration } from '@simplewebauthn/browser';
 import { Seo } from '@/components/Seo';
 import { Bit, Coach } from '@/components/brand/Bit';
 import { admin } from '@/lib/admin/client';
@@ -276,9 +277,66 @@ function PhoneAlerts({ guard }: { guard: Guard }) {
   );
 }
 
+function Passkeys({ guard }: { guard: Guard }) {
+  const [keys, setKeys] = useState<{ id: string; createdAt: string }[] | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+  const load = useCallback(async () => {
+    const d = guard(await admin.passkeys());
+    if (d) setKeys(d.passkeys);
+  }, [guard]);
+  useEffect(() => {
+    load();
+  }, [load]);
+  const add = async () => {
+    setMsg(null);
+    const o = guard(await admin.passkeyOptions());
+    if (!o) return;
+    try {
+      const response = await startRegistration({ optionsJSON: o.options as unknown as Parameters<typeof startRegistration>[0]['optionsJSON'] });
+      if (guard(await admin.passkeyRegister(response))) {
+        setMsg('Passkey added. From now on, logging in asks for it after the password.');
+        load();
+      }
+    } catch {
+      setMsg('Cancelled.');
+    }
+  };
+  return (
+    <div style={box}>
+      <h2 style={h2}>Passkeys</h2>
+      <p style={small}>With a passkey added, logging in needs your email, your password and this device’s Face ID, fingerprint or PIN.</p>
+      {keys?.length ? (
+        <ul style={{ margin: 0, paddingLeft: 20 }}>
+          {keys.map((k) => (
+            <li key={k.id} style={small}>
+              Added {new Date(k.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}{' '}
+              <button
+                type="button"
+                style={{ ...btn, minHeight: 28 }}
+                onClick={async () => {
+                  if (window.confirm('Remove this passkey?') && guard(await admin.passkeyRemove(k.id))) load();
+                }}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        keys && <p style={small}>None yet: password only.</p>
+      )}
+      <button type="button" style={{ ...primary, justifySelf: 'start' }} onClick={add}>
+        Add a passkey on this device
+      </button>
+      {msg && <p style={small}>{msg}</p>}
+    </div>
+  );
+}
+
 function Settings({ guard }: { guard: Guard }) {
   return (
     <section style={{ display: 'grid', gap: 12 }}>
+      <Passkeys guard={guard} />
       <PhoneAlerts guard={guard} />
     </section>
   );
@@ -291,19 +349,46 @@ const TabButton = ({ active, onClick, children }: { active: boolean; onClick: ()
 );
 
 function Login({ onIn }: { onIn: () => void }) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const r = await admin.login(password);
+    setMsg(null);
+    const r = await admin.login(email, password);
+    if (!r.ok) {
+      setBusy(false);
+      return setMsg('error' in r && r.error === 'too many attempts' ? 'Too many attempts. Wait a minute.' : 'Wrong email or password.');
+    }
+    if (r.data.passkey && r.data.options) {
+      try {
+        const response = await startAuthentication({ optionsJSON: r.data.options as unknown as Parameters<typeof startAuthentication>[0]['optionsJSON'] });
+        const done = await admin.passkeyLogin(response);
+        setBusy(false);
+        return done.ok ? onIn() : setMsg('Passkey not recognised.');
+      } catch {
+        setBusy(false);
+        return setMsg('Passkey cancelled. Log in again to retry.');
+      }
+    }
     setBusy(false);
-    if (r.ok) onIn();
-    else setMsg('error' in r && r.error === 'too many attempts' ? 'Too many attempts. Wait a minute.' : 'Wrong password.');
+    onIn();
   };
   return (
     <form onSubmit={submit} style={{ ...box, maxWidth: 360 }}>
+      <label htmlFor="admin-email" style={h2}>
+        Email
+      </label>
+      <input
+        id="admin-email"
+        type="email"
+        autoComplete="username"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{ font: '16px var(--bq-font-body)', minHeight: 44, padding: '0 10px', border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)' }}
+      />
       <label htmlFor="admin-pw" style={h2}>
         Password
       </label>
@@ -320,7 +405,7 @@ function Login({ onIn }: { onIn: () => void }) {
           {msg}
         </p>
       )}
-      <button type="submit" style={primary} disabled={busy || !password}>
+      <button type="submit" style={primary} disabled={busy || !password || !email}>
         {busy ? 'Checking…' : 'Log in'}
       </button>
     </form>

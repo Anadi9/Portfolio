@@ -22,6 +22,7 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
   const feed: FeedItem[] = [];
   const commitments: Commitment[] = [];
   const tasks: CoachTask[] = [];
+  const passkeys: { id: string; publicKey: string; counter: number; transports: string[]; createdAt: string }[] = [];
   const pushSubs = new Map<string, { endpoint: string; p256dh: string; auth: string }>();
   const id = (p: string) => `${p}_${++n}`;
   const now = () => (opts.clock ? opts.clock().toISOString() : new Date(Date.UTC(2026, 9, 16) + n * 1000).toISOString());
@@ -187,6 +188,20 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
     },
     async doneFeedFor(ref) {
       for (const f of feed) if (f.ref === ref && !f.doneAt) f.doneAt = now();
+    },
+    async passkeys() {
+      return passkeys.map((p) => ({ ...p }));
+    },
+    async savePasskey(p) {
+      passkeys.push({ ...p, createdAt: now() });
+    },
+    async setPasskeyCounter(pid, counter) {
+      const p = passkeys.find((x) => x.id === pid);
+      if (p) p.counter = counter;
+    },
+    async removePasskey(pid) {
+      const i = passkeys.findIndex((x) => x.id === pid);
+      if (i >= 0) passkeys.splice(i, 1);
     },
     async savePushSubscription(sub) {
       pushSubs.set(sub.endpoint, { endpoint: sub.endpoint, p256dh: sub.keys.p256dh, auth: sub.keys.auth });

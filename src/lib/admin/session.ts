@@ -10,9 +10,19 @@ export const COOKIE = 'admin_session';
 
 const sign = (payload: string, secret: string) => createHmac('sha256', secret).update(payload).digest('base64url');
 
-export function signSession(secret: string, now = Date.now()): string {
-  const payload = Buffer.from(JSON.stringify({ exp: Math.floor(now / 1000) + SESSION_SECONDS })).toString('base64url');
+export const PENDING_COOKIE = 'admin_pending';
+export const PENDING_SECONDS = 5 * 60;
+
+type Claims = { exp: number; kind: 'session' | 'pending'; [k: string]: unknown };
+
+/** A signed, expiring token. `kind` keeps a pending (passkey challenge) token from ever passing as a session. */
+export function signToken(claims: Omit<Claims, 'exp'>, secret: string, ttlSeconds: number, now = Date.now()): string {
+  const payload = Buffer.from(JSON.stringify({ ...claims, exp: Math.floor(now / 1000) + ttlSeconds })).toString('base64url');
   return `${payload}.${sign(payload, secret)}`;
+}
+
+export function signSession(secret: string, now = Date.now()): string {
+  return signToken({ kind: 'session' }, secret, SESSION_SECONDS, now);
 }
 
 const same = (a: string, b: string) => {
@@ -21,18 +31,23 @@ const same = (a: string, b: string) => {
   return x.length === y.length && timingSafeEqual(x, y);
 };
 
-export function verifySession(token: string | undefined, secret: string, now = Date.now()): boolean {
-  if (!token || !secret) return false;
+/** The token's claims when it is genuine, unexpired and of this kind; otherwise null. */
+export function verifyToken(token: string | undefined, secret: string, kind: Claims['kind'], now = Date.now()): Claims | null {
+  if (!token || !secret) return null;
   const parts = token.split('.');
-  if (parts.length !== 2) return false;
+  if (parts.length !== 2) return null;
   const [payload, mac] = parts;
-  if (!same(mac, sign(payload, secret))) return false;
+  if (!same(mac, sign(payload, secret))) return null;
   try {
-    const { exp } = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { exp?: unknown };
-    return typeof exp === 'number' && exp * 1000 > now;
+    const claims = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as Partial<Claims>;
+    return typeof claims.exp === 'number' && claims.exp * 1000 > now && claims.kind === kind ? (claims as Claims) : null;
   } catch {
-    return false;
+    return null;
   }
+}
+
+export function verifySession(token: string | undefined, secret: string, now = Date.now()): boolean {
+  return verifyToken(token, secret, 'session', now) !== null;
 }
 
 /** SHA-256 both sides first, so the comparison is constant-time whatever the lengths. */

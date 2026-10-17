@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkPassword, signSession, verifySession, SESSION_SECONDS } from './session';
+import { checkPassword, signSession, signToken, verifySession, verifyToken, SESSION_SECONDS } from './session';
 
 const secret = 'x'.repeat(32);
 const t0 = Date.UTC(2026, 9, 18, 12);
@@ -29,5 +29,15 @@ describe('admin session', () => {
     expect(checkPassword('correct hors', 'correct horse')).toBe(false);
     expect(checkPassword('', 'correct horse')).toBe(false);
     expect(checkPassword('anything', '')).toBe(false);
+  });
+});
+
+describe('pending tokens', () => {
+  it('never pass as a session, and carry their claims', () => {
+    const pending = signToken({ kind: 'pending', challenge: 'abc', purpose: 'login' }, secret, 300, t0);
+    expect(verifySession(pending, secret, t0)).toBe(false);
+    expect(verifyToken(pending, secret, 'pending', t0)).toMatchObject({ challenge: 'abc', purpose: 'login' });
+    expect(verifyToken(pending, secret, 'pending', t0 + 301_000)).toBeNull();
+    expect(verifyToken(signSession(secret, t0), secret, 'pending', t0)).toBeNull();
   });
 });
