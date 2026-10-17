@@ -272,3 +272,8 @@
 [data-theme='dark'] .hq-board svg,
 [data-theme='dark'] .hq-bug svg,
 [data-theme='dark'] .hq-eyebrow svg { filter: invert(1) hue-rotate(180deg); }
+
+/* Bit's pick / Yours: what the visitor told Bit, carried across the page (lib/bit/profile). */
+.hq-bitpick { justify-self: start; align-self: flex-start; width: max-content; white-space: nowrap; font: 400 9px/1.5 var(--bq-font-label); text-transform: uppercase; background: var(--bq-secondary); color: #121212; padding: 4px 8px; }
+.hq-svc[data-pick], .hq-pkg[data-pick], .hq-area[data-yours] { outline: 3px solid var(--bq-secondary); outline-offset: 3px; }
+.hq-bug[data-yours]::after { content: 'Yours'; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font: 400 8px/1.4 var(--bq-font-label); text-transform: uppercase; background: var(--bq-secondary); color: #121212; padding: 2px 5px; white-space: nowrap; }

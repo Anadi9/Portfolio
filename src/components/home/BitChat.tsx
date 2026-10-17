@@ -6,6 +6,7 @@ import { askPayload, canAskAi, requestAiAnswer } from '@/lib/bit/ask-client';
 import { activeFormIndex, applyOutcome, questionFor, rememberTicket, type Outcome } from '@/lib/bit/submit';
 import { trackRescue } from '@/lib/rescue/track';
 import { BitTicketForm } from './BitTicketForm';
+import { profileFor, saveProfile } from '@/lib/bit/profile';
 
 /**
  * Bit's chat: the hero turns into this once a visitor picks a menu option,
@@ -100,6 +101,12 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
   const aiOff = useRef(false);
   /** Aborts an AI request in flight when the chat closes. */
   const aiAbort = useRef<AbortController>();
+
+  // Carry a recommendation across the page: Bit's pick on the matching cards, the blog on their topic.
+  useEffect(() => {
+    const p = profileFor(state.node, state.ans);
+    if (p) saveProfile(p);
+  }, [state.node, state.ans]);
 
   // Bit "types" for a moment before answering; instant under reduced motion.
   const commit = (next: ChatState) => {

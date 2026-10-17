@@ -7,6 +7,7 @@ import { LiveBoard } from './LiveBoard';
 import { Bit, PixelIcon } from '@/components/brand/Bit';
 import portrait from '@/assets/portrait.webp';
 import { trackRescue } from '@/lib/rescue/track';
+import { loadProfile, PROFILE_EVENT, type Profile } from '@/lib/bit/profile';
 import { site } from '@/data/portfolio';
 import {
   about,
@@ -127,14 +128,28 @@ export function Hero() {
   );
 }
 
+/** What the visitor told Bit in this tab, or null. Read after mount, so prerendered HTML is the same for everyone. */
+function useBitProfile(): Profile | null {
+  const [p, setP] = useState<Profile | null>(null);
+  useEffect(() => {
+    setP(loadProfile());
+    const on = (e: Event) => setP((e as CustomEvent<Profile>).detail ?? null);
+    window.addEventListener(PROFILE_EVENT, on);
+    return () => window.removeEventListener(PROFILE_EVENT, on);
+  }, []);
+  return p;
+}
+
 /* 2 · Bug-fix demo: four bugs in a mock app; click one and it's fixed. */
 function BugButton({ id, fixed, onFix, name }: { id: DemoBug; fixed: boolean; onFix: (b: DemoBug) => void; name: string }) {
+  const yours = useBitProfile()?.bug === id;
   return (
     <button
       type="button"
       className="hq-bug"
+      data-yours={yours ? '' : undefined}
       aria-pressed={fixed}
-      aria-label={fixed ? `${name}: fixed` : `Fix bug: ${name}`}
+      aria-label={`${fixed ? `${name}: fixed` : `Fix bug: ${name}`}${yours ? ' (the one you told Bit about)' : ''}`}
       onClick={() => !fixed && onFix(id)}
     >
       {fixed ? <span aria-hidden style={{ color: '#0e7a45', fontSize: 20 }}>✓</span> : <PixelIcon name="bug" size={27} />}
@@ -270,12 +285,14 @@ export function BugDemo() {
 
 /* 3 · Services: three dark pillars. */
 export function Services() {
+  const profile = useBitProfile();
   return (
     <Section id="services" label="h-services">
       <Head id="h-services" eyebrow={services.eyebrow} title={services.title} intro={services.intro} />
       <div className="hq-three">
         {services.cards.map((sv) => (
-          <article key={sv.tag} className="hq-dark hq-svc">
+          <article key={sv.tag} className="hq-dark hq-svc" data-pick={profile?.service === sv.tag ? '' : undefined}>
+            {profile?.service === sv.tag && <span className="hq-bitpick">Bit’s pick</span>}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <span className="hq-iconbox">
                 <PixelIcon name={sv.icon} size={27} />
@@ -391,12 +408,14 @@ export { Process } from './Process';
 
 /* 6 · What the audit covers. */
 export function AuditChecklist() {
+  const profile = useBitProfile();
   return (
     <Section id="checks" label="h-checks">
       <Head id="h-checks" eyebrow={checks.eyebrow} title={checks.title} intro={checks.intro} />
       <div className="hq-three">
         {checks.areas.map((a) => (
-          <article key={a.area} className="hq-card hq-area">
+          <article key={a.area} className="hq-card hq-area" data-yours={profile?.area === a.area ? '' : undefined}>
+            {profile?.area === a.area && <span className="hq-bitpick">Yours</span>}
             <span className="hq-stamp" aria-hidden>
               Checked
             </span>
@@ -426,6 +445,7 @@ export function AuditChecklist() {
 
 /* 7 · Pricing: guarantees, then four groups holding six packages. */
 export function Pricing() {
+  const profile = useBitProfile();
   return (
     <Section id="pricing" label="h-pricing">
       <Head id="h-pricing" eyebrow={pricing.eyebrow} title={pricing.title} intro={pricing.intro} />
@@ -446,8 +466,8 @@ export function Pricing() {
             <h3>{g.title}</h3>
             <p className="hq-small" style={g.style === 'dark' ? { color: '#c9c9c9' } : undefined}>{g.blurb}</p>
             {g.packages.map((pk) => (
-              <div key={pk.name} className="hq-pkg">
-                {pk.badge && <span className="hq-badge">{pk.badge}</span>}
+              <div key={pk.name} className="hq-pkg" data-pick={profile?.pkg === pk.name ? '' : undefined}>
+                {profile?.pkg === pk.name ? <span className="hq-bitpick">Bit’s pick</span> : pk.badge && <span className="hq-badge">{pk.badge}</span>}
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'baseline' }}>
                   <b style={{ fontSize: 17 }}>{pk.name}</b>
                   <span className="hq-small" style={{ whiteSpace: 'nowrap' }}>{pk.duration}</span>
@@ -572,6 +592,12 @@ export function FreeTools() {
 /* 10 · Blog: real posts, filterable by audit area. */
 export function Blog() {
   const [topic, setTopic] = useState<BlogTopic | 'All'>('All');
+  const profile = useBitProfile();
+  // Start on the visitor's topic; their own chip clicks win afterwards.
+  const chose = useRef(false);
+  useEffect(() => {
+    if (profile?.topic && !chose.current) setTopic(profile.topic);
+  }, [profile]);
   useEffect(() => {
     const onTopic = (e: Event) => setTopic(((e as CustomEvent).detail as BlogTopic | 'All') ?? 'All');
     window.addEventListener('bq:blog', onTopic);
@@ -583,7 +609,15 @@ export function Blog() {
       <Head id="h-blog" eyebrow={blog.eyebrow} title={blog.title} intro={blog.intro} />
       <div className="hq-chips" role="group" aria-label="Filter posts">
         {(['All', ...blog.topics] as const).map((t) => (
-          <button key={t} type="button" aria-pressed={topic === t} onClick={() => setTopic(t)}>
+          <button
+            key={t}
+            type="button"
+            aria-pressed={topic === t}
+            onClick={() => {
+              chose.current = true;
+              setTopic(t);
+            }}
+          >
             {t}
           </button>
         ))}
