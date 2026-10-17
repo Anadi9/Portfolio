@@ -57,7 +57,7 @@ export type TaskOwner = 'coach' | 'anadi' | 'helper';
 export type TaskTemplate = { key: string; owner: TaskOwner; title: string; doneWhen: string };
 export type StageRule = { tasks: TaskTemplate[]; commitments: PromiseId[] };
 export const STAGE_RULES: Record<TicketStage, StageRule>;
-export type GateInput = { stage: TicketStage; tasks: { key: string; stage: TicketStage; status: 'open' | 'done' }[]; commitments: { promiseId: PromiseId; status: CommitmentStatus; missReason: string | null }[] };
+export type GateInput = { stage: TicketStage; to: TicketStage; tasks: { key: string; stage: TicketStage; status: 'open' | 'done' }[]; commitments: { promiseId: PromiseId; status: CommitmentStatus; missReason: string | null }[] };
 export function gate(input: GateInput): { ok: boolean; blockers: string[] };
 ```
 Stage contents (conservative; every gate is a task Anadi ticks unless the system can see it):
@@ -68,7 +68,7 @@ Stage contents (conservative; every gate is a task Anadi ticks unless the system
 - `live`: tasks `client_confirmed` (anadi, "Client confirms it works"), `second_invoice` (anadi, "Send the second invoice, only after confirmation").
 - `closed`: none.
 
-Gate: blocked by every open task of the current stage, and by every `missed` commitment with no `missReason`. Moving to `closed` is always allowed except for the missed-without-reason rule (closing a dead lead must be possible).
+Gate: a forward move is blocked by every open task of the current stage; any move (forward, back or to `closed`) is blocked by every `missed` commitment with no `missReason`. Closing a dead lead and stepping back are allowed with open tasks.
 
 - [ ] Failing tests for each stage's gate, the closed exception, a missed commitment with and without a reason, and that every promise id named in `STAGE_RULES` has a deadline (`promiseHours` doesn't throw).
 - [ ] Implement, run, commit `feat(coach): stage tasks and gates`.
