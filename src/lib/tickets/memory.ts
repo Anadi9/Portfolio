@@ -1,4 +1,5 @@
-import { MAX_ATTEMPTS, statusAfter, type TicketStore } from './store';
+import { feedRow, MAX_ATTEMPTS, statusAfter, type TicketStore } from './store';
+import { feedOrder, isOpen, type FeedItem } from '../feed/types';
 import { NewTicketSchema, type BoardTicket, type Notification, type Scorecard, type Ticket } from './types';
 
 /**
@@ -15,6 +16,7 @@ export function memoryTicketStore() {
   const notifications: Notification[] = [];
   const messages: { ticketId: string; direction: 'out'; kind: string; status: 'draft'; body: string; channel: string }[] = [];
   const scorecards: Scorecard[] = [];
+  const feed: FeedItem[] = [];
   const id = (p: string) => `${p}_${++n}`;
   const now = () => new Date(Date.UTC(2026, 9, 16) + n * 1000).toISOString();
 
@@ -99,6 +101,25 @@ export function memoryTicketStore() {
       const last = scorecards[scorecards.length - 1];
       return last ? { ...last } : null;
     },
+    async postFeed(item) {
+      const f: FeedItem = { id: id('feed'), ...feedRow(item), createdAt: now(), doneAt: null, snoozedUntil: null };
+      feed.push(f);
+      return { ...f };
+    },
+    async openFeed(at = new Date(), limit = 100) {
+      return feed.filter((f) => isOpen(f, at)).sort(feedOrder).slice(0, limit).map((f) => ({ ...f }));
+    },
+    async markFeedDone(fid) {
+      const f = feed.find((x) => x.id === fid);
+      if (f) f.doneAt = now();
+    },
+    async snoozeFeed(fid, until) {
+      const f = feed.find((x) => x.id === fid);
+      if (f) f.snoozedUntil = until.toISOString();
+    },
+    async doneFeedFor(ref) {
+      for (const f of feed) if (f.ref === ref && !f.doneAt) f.doneAt = now();
+    },
   };
-  return { store, clients, tickets, events, notifications, messages, scorecards };
+  return { store, clients, tickets, events, notifications, messages, scorecards, feed };
 }

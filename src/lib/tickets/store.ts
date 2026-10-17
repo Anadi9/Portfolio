@@ -9,6 +9,7 @@ import {
   type Scorecard,
   type Ticket,
 } from './types.js';
+import { FEED_BODY_MAX, FEED_TITLE_MAX, feedOrder, type FeedItem, type NewFeedItem } from '../feed/types.js';
 
 /**
  * Everything the ticket pipeline keeps. Supabase, reached with the secret key
@@ -40,7 +41,27 @@ export interface TicketStore {
   publicBoard(): Promise<BoardTicket[]>;
   saveScorecard(results: Record<string, unknown>): Promise<void>;
   latestScorecard(): Promise<Scorecard | null>;
+  /** Command centre cards (`/admin`). Title and body are clipped to the table's limits. */
+  postFeed(item: NewFeedItem): Promise<FeedItem>;
+  /** Not done and not snoozed past `now`; urgent first, then newest. */
+  openFeed(now?: Date, limit?: number): Promise<FeedItem[]>;
+  markFeedDone(id: string): Promise<void>;
+  snoozeFeed(id: string, until: Date): Promise<void>;
+  /** Closes every open card about `ref` (e.g. a draft once it's sent). */
+  doneFeedFor(ref: string): Promise<void>;
 }
+
+/** The row a new card becomes, shared so both stores clip alike. */
+export const feedRow = (item: NewFeedItem) => ({
+  ticketId: item.ticketId ?? null,
+  bot: item.bot,
+  kind: item.kind.slice(0, 60),
+  title: item.title.trim().slice(0, FEED_TITLE_MAX) || item.kind,
+  body: (item.body ?? '').slice(0, FEED_BODY_MAX),
+  action: item.action,
+  ref: item.ref ?? null,
+  urgent: item.urgent ?? false,
+});
 
 /** What the next status is after an attempt; shared so both stores agree. */
 export function statusAfter(result: MarkResult, attemptsNow: number): Notification['status'] {
@@ -78,6 +99,21 @@ const toTicket = (r: Row): Ticket => ({
   category: r.category,
   createdAt: r.created_at,
   updatedAt: r.updated_at,
+});
+
+const toFeed = (r: Row): FeedItem => ({
+  id: r.id,
+  ticketId: r.ticket_id,
+  bot: r.bot,
+  kind: r.kind,
+  title: r.title,
+  body: r.body ?? '',
+  action: r.action,
+  ref: r.ref,
+  urgent: r.urgent,
+  createdAt: r.created_at,
+  doneAt: r.done_at,
+  snoozedUntil: r.snoozed_until,
 });
 
 const toNotification = (r: Row): Notification => ({
@@ -206,6 +242,45 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
       const { data, error } = await db.from('scorecard_runs').select('run_at, results').order('run_at', { ascending: false }).limit(1).maybeSingle();
       if (error) fail('latest scorecard', error);
       return data ? { runAt: data.run_at, results: data.results ?? {} } : null;
+    },
+
+    async postFeed(item) {
+      const r = feedRow(item);
+      const { data, error } = await db
+        .from('feed_items')
+        .insert({ ticket_id: r.ticketId, bot: r.bot, kind: r.kind, title: r.title, body: r.body, action: r.action, ref: r.ref, urgent: r.urgent })
+        .select('*')
+        .single();
+      if (error) fail('post feed', error);
+      return toFeed(data);
+    },
+
+    async openFeed(now = new Date(), limit = 100) {
+      const { data, error } = await db
+        .from('feed_items')
+        .select('*')
+        .is('done_at', null)
+        .or(`snoozed_until.is.null,snoozed_until.lte.${now.toISOString()}`)
+        .order('urgent', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) fail('open feed', error);
+      return (data as Row[]).map(toFeed).sort(feedOrder);
+    },
+
+    async markFeedDone(id) {
+      const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('id', id);
+      if (error) fail('mark feed done', error);
+    },
+
+    async snoozeFeed(id, until) {
+      const { error } = await db.from('feed_items').update({ snoozed_until: until.toISOString() }).eq('id', id);
+      if (error) fail('snooze feed', error);
+    },
+
+    async doneFeedFor(ref) {
+      const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('ref', ref).is('done_at', null);
+      if (error) fail('done feed for', error);
     },
   };
 }

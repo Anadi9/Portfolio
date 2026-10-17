@@ -122,3 +122,47 @@ describe('memory ticket store', () => {
     expect((await m.store.latestScorecard())?.results).toEqual({ leads: 2 });
   });
 });
+
+describe('feed items', () => {
+  const card = { bot: 'bit' as const, kind: 'new_ticket', title: 'A-1001 · first bug', action: 'open' as const };
+
+  it('shows a posted card until it is done', async () => {
+    const { store } = memoryTicketStore();
+    const c = await store.postFeed(card);
+    expect(c).toMatchObject({ bot: 'bit', title: 'A-1001 · first bug', body: '', urgent: false, doneAt: null });
+    expect((await store.openFeed()).map((f) => f.id)).toEqual([c.id]);
+    await store.markFeedDone(c.id);
+    expect(await store.openFeed()).toEqual([]);
+  });
+
+  it('hides a snoozed card until the time passes', async () => {
+    const { store } = memoryTicketStore();
+    const c = await store.postFeed(card);
+    await store.snoozeFeed(c.id, new Date('2030-01-01T09:00:00Z'));
+    expect(await store.openFeed(new Date('2029-12-31T00:00:00Z'))).toEqual([]);
+    expect((await store.openFeed(new Date('2030-01-01T09:00:01Z'))).length).toBe(1);
+  });
+
+  it('puts urgent cards first, then newest', async () => {
+    const { store } = memoryTicketStore();
+    const a = await store.postFeed({ ...card, title: 'a' });
+    const b = await store.postFeed({ ...card, title: 'b' });
+    const u = await store.postFeed({ ...card, title: 'u', urgent: true, bot: 'coach' });
+    expect((await store.openFeed()).map((f) => f.id)).toEqual([u.id, b.id, a.id]);
+  });
+
+  it('closes only the cards for one ref', async () => {
+    const { store } = memoryTicketStore();
+    await store.postFeed({ ...card, kind: 'draft_ready', action: 'approve_send', ref: 'm1' });
+    const other = await store.postFeed({ ...card, kind: 'draft_ready', action: 'approve_send', ref: 'm2' });
+    await store.doneFeedFor('m1');
+    expect((await store.openFeed()).map((f) => f.id)).toEqual([other.id]);
+  });
+
+  it('clips long titles and bodies', async () => {
+    const { store } = memoryTicketStore();
+    const c = await store.postFeed({ ...card, title: 'x'.repeat(500), body: 'y'.repeat(5000) });
+    expect(c.title.length).toBe(140);
+    expect(c.body.length).toBe(2000);
+  });
+});
