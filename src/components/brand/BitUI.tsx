@@ -1,7 +1,6 @@
 /**
  * Bit's Quest versions of the Terminal Head UI helpers (same exports, same
- * props), drawn with Bit and the brand palette. Every page except the
- * portfolio imports these instead of `terminal-head/TerminalHeadUI`.
+ * props), drawn with Bit and the brand palette.
  */
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'vite-react-ssg';

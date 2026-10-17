@@ -886,7 +886,7 @@ const Rescue = () => {
           </div>
         </section>
 
-        <Testimonials hpadAttr={{ 'data-rescue-hpad': '' }} mascot="bit" />
+        <Testimonials hpadAttr={{ 'data-rescue-hpad': '' }} />
 
         <section aria-labelledby="h-price" style={section} data-rescue-hpad>
           <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'start' }}>
