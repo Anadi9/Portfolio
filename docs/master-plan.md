@@ -156,17 +156,17 @@ Plan: `docs/superpowers/plans/2026-10-18-ticket-pipeline-brief-and-admin.md`.
 
 - [x] `src/data/promises.ts` from the table above; `TURNAROUND_HOURS` and the
       site copy read from it.
-- [ ] Readable admin email with the reply-by time.
-- [ ] Outside-in scan of the app URL on every new ticket.
-- [ ] AI-written brief with a non-AI fallback.
-- [ ] Drafted first reply (and questions draft for other kinds).
-- [ ] All of it runs in the background on ticket creation, with a daily backfill.
+- [x] Readable admin email with the reply-by time.
+- [x] Outside-in scan of the app URL on every new ticket.
+- [x] AI-written brief with a non-AI fallback.
+- [x] Drafted first reply (and questions draft for other kinds).
+- [x] All of it runs in the background on ticket creation, with a daily backfill.
 
 ## Phase 3: command centre v1 (`/admin`)
 
 Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 
-- [ ] `feed_items` table: one row per card, posted by Bit (client news) or Coach
+- [x] `feed_items` table: one row per card, posted by Bit (client news) or Coach
       (deadlines, plan). Email and WhatsApp alerts are copies of feed items.
 - [ ] Login for Anadi only (password + signed cookie in v1; passkey in Phase 5).
       `noindex`, not prerendered, not in the sitemap; reads only through
