@@ -15,6 +15,7 @@ import {
   TrackingBoard,
 } from "@/components/home/sections";
 import { BitGuide } from "@/components/home/BitGuide";
+import { Boot } from "@/components/home/Boot";
 import { faq, offers } from "@/data/bitsQuest";
 import { BUSINESS_TAGLINE, faqPage, graph, service } from "@/lib/schema";
 import "@/styles/home.css";
@@ -83,6 +84,7 @@ const Hub = () => (
       jsonLd={jsonLd}
     />
     <PaperPage themeable header={<SiteHeader page={PAGE} themeToggle />}>
+      <Boot />
       <Hero />
       <BugDemo />
       <Services />

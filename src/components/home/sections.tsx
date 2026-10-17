@@ -8,6 +8,7 @@ import { Bit, PixelIcon } from '@/components/brand/Bit';
 import portrait from '@/assets/portrait.webp';
 import { trackRescue } from '@/lib/rescue/track';
 import { loadProfile, PROFILE_EVENT, type Profile } from '@/lib/bit/profile';
+import { useInView } from '@/hooks/use-in-view';
 import { site } from '@/data/portfolio';
 import {
   about,
@@ -61,9 +62,11 @@ function Head({ id, eyebrow, title, intro }: { id: string; eyebrow?: string; tit
   );
 }
 
+/** Sections rise in as they scroll into view; prerendered HTML and reduced motion stay fully visible (see useInView). */
 function Section({ id, label, children }: { id: string; label: string; children: ReactNode }) {
+  const { ref, revealProps } = useInView<HTMLElement>();
   return (
-    <section id={id} aria-labelledby={label} className="hq-section">
+    <section ref={ref} id={id} aria-labelledby={label} className="hq-section" data-in={revealProps['data-in']}>
       <div className="hq-wrap">{children}</div>
     </section>
   );
