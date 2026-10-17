@@ -110,6 +110,7 @@ const GRAPH = [
   'src/lib/command/numbers.ts',
   'src/lib/command/today.ts',
   'src/lib/command/plan.ts',
+  'src/lib/command/push.ts',
   'src/data/plan.generated.ts',
   'src/lib/brief/background.ts',
   'src/lib/brief/process.ts',

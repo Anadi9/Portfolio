@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
+import { Head } from 'vite-react-ssg';
 import { Seo } from '@/components/Seo';
 import { Bit, Coach } from '@/components/brand/Bit';
 import { admin } from '@/lib/admin/client';
@@ -48,7 +49,7 @@ const small: CSSProperties = { margin: 0, font: '400 13px/1.4 var(--bq-font-body
 const h2: CSSProperties = { margin: 0, font: '600 18px/1.3 var(--bq-font-body)' };
 
 type Auth = 'checking' | 'out' | 'in';
-type View = { tab: 'feed' } | { tab: 'tickets' } | { tab: 'numbers' } | { tab: 'plan' } | { tab: 'ticket'; id: string; focus?: string };
+type View = { tab: 'feed' } | { tab: 'tickets' } | { tab: 'numbers' } | { tab: 'plan' } | { tab: 'settings' } | { tab: 'ticket'; id: string; focus?: string };
 
 export default function Admin() {
   const [auth, setAuth] = useState<Auth>('checking');
@@ -63,11 +64,17 @@ export default function Admin() {
 
   useEffect(() => {
     admin.feed().then((r) => setAuth(r.auth ? 'in' : 'out'));
+    // Installable on the phone, and the target for push alerts. Scoped to /admin only.
+    navigator.serviceWorker?.register('/admin-sw.js', { scope: '/admin' }).catch(() => {});
   }, []);
 
   return (
     <div className="bq-page" style={{ minHeight: '100vh', color: 'var(--bq-ink)' }}>
       <Seo title="Command centre" description="Private." path="/admin" type="website" robots="noindex, nofollow" />
+      <Head>
+        <link rel="manifest" href="/admin.webmanifest" />
+        <meta name="theme-color" content="#121212" />
+      </Head>
       <div style={{ maxWidth: 880, margin: '0 auto', padding: '24px var(--bq-gutter) 64px', display: 'grid', gap: 20 }}>
         <header style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <Bit pose="calm" size={36} />
@@ -113,12 +120,16 @@ export default function Admin() {
               <TabButton active={view.tab === 'plan'} onClick={() => setView({ tab: 'plan' })}>
                 Plan
               </TabButton>
+              <TabButton active={view.tab === 'settings'} onClick={() => setView({ tab: 'settings' })}>
+                Settings
+              </TabButton>
             </nav>
             {view.tab === 'feed' && <Away guard={guard} />}
             {view.tab === 'feed' && <Today guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
             {view.tab === 'feed' && <Feed guard={guard} open={(id, focus) => setView({ tab: 'ticket', id, focus })} />}
             {view.tab === 'numbers' && <NumbersView guard={guard} />}
             {view.tab === 'plan' && <PlanView guard={guard} />}
+            {view.tab === 'settings' && <Settings guard={guard} />}
             {view.tab === 'tickets' && <Tickets guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
             {view.tab === 'ticket' && <TicketView id={view.id} focus={view.focus} guard={guard} back={() => setView({ tab: 'tickets' })} />}
           </>
@@ -209,6 +220,66 @@ function PlanView({ guard }: { guard: Guard }) {
           </ul>
         </details>
       ))}
+    </section>
+  );
+}
+
+const urlBase64ToBytes = (b64: string) => {
+  const raw = atob((b64 + '='.repeat((4 - (b64.length % 4)) % 4)).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from(raw, (c) => c.charCodeAt(0));
+};
+
+function PhoneAlerts({ guard }: { guard: Guard }) {
+  const [state, setState] = useState<'unknown' | 'unsupported' | 'off' | 'on' | 'working' | 'blocked'>('unknown');
+  useEffect(() => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return setState('unsupported');
+    if (Notification.permission === 'denied') return setState('blocked');
+    navigator.serviceWorker.ready.then((reg) => reg.pushManager.getSubscription()).then((sub) => setState(sub ? 'on' : 'off'));
+  }, []);
+  const enable = async () => {
+    setState('working');
+    const key = guard(await admin.pushKey());
+    if (!key) return setState('off');
+    if ((await Notification.requestPermission()) !== 'granted') return setState('blocked');
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToBytes(key.key) });
+    const json = sub.toJSON() as { endpoint: string; keys: { p256dh: string; auth: string } };
+    setState(guard(await admin.pushSubscribe({ endpoint: json.endpoint, keys: json.keys })) ? 'on' : 'off');
+  };
+  const disable = async () => {
+    setState('working');
+    const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription();
+    if (sub) {
+      await admin.pushUnsubscribe(sub.endpoint);
+      await sub.unsubscribe();
+    }
+    setState('off');
+  };
+  return (
+    <div style={box}>
+      <h2 style={h2}>Phone alerts</h2>
+      <p style={small}>Only urgent Coach cards (a promise at risk or missed) are pushed. Everything else waits for the feed and the 08:30 summary email.</p>
+      {state === 'unsupported' && <p style={small}>This browser can’t receive push alerts. On iPhone, add /admin to the Home Screen first, then open it from there.</p>}
+      {state === 'blocked' && <p style={small}>Notifications are blocked for this site in the browser settings.</p>}
+      {state === 'off' && (
+        <button type="button" style={{ ...primary, justifySelf: 'start' }} onClick={enable}>
+          Enable phone alerts
+        </button>
+      )}
+      {state === 'on' && (
+        <button type="button" style={{ ...btn, justifySelf: 'start' }} onClick={disable}>
+          Turn off alerts on this device
+        </button>
+      )}
+      {state === 'working' && <p style={small}>Working…</p>}
+    </div>
+  );
+}
+
+function Settings({ guard }: { guard: Guard }) {
+  return (
+    <section style={{ display: 'grid', gap: 12 }}>
+      <PhoneAlerts guard={guard} />
     </section>
   );
 }

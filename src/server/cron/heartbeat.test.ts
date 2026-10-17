@@ -7,16 +7,19 @@ let mem: ReturnType<typeof memoryTicketStore>;
 let send: ReturnType<typeof vi.fn>;
 let now: Date;
 let handler: ReturnType<typeof createHeartbeat>;
+let push: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   mem = memoryTicketStore({ clock: () => now });
   send = vi.fn().mockResolvedValue({ data: {} });
+  push = vi.fn().mockResolvedValue({});
   now = new Date('2026-10-17T00:00:00Z');
   handler = createHeartbeat({
     store: () => mem.store,
     env: { CRON_SECRET: 's3cret', TICKETS_INBOX: 'me@example.com' },
     resend: { emails: { send } },
     now: () => now,
+    push,
   });
 });
 
@@ -124,5 +127,16 @@ describe('heartbeat: weekly and monthly cards', () => {
     now = new Date('2026-11-02T04:00:00Z');
     await run();
     expect(mem.feed.filter((f) => f.kind === 'ai_visibility_check')).toHaveLength(1);
+  });
+});
+
+describe('heartbeat push', () => {
+  it('pushes at-risk and missed cards once each', async () => {
+    await promise(19);
+    await promise(25);
+    await run();
+    await run();
+    expect(push).toHaveBeenCalledTimes(2);
+    expect(push.mock.calls.map((c) => c[1].url)).toEqual(mem.feed.filter((f) => f.urgent).map((f) => `/admin#card-${f.id}`));
   });
 });

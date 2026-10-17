@@ -69,6 +69,10 @@ export interface TicketStore {
   /** Closes every open card about `ref` (e.g. a draft once it's sent). */
   doneFeedFor(ref: string): Promise<void>;
   assignFeed(id: string, assignee: 'helper'): Promise<void>;
+  /** Anadi's phones/browsers for push alerts; saving an existing endpoint replaces its keys. */
+  savePushSubscription(s: { endpoint: string; keys: { p256dh: string; auth: string } }): Promise<void>;
+  removePushSubscription(endpoint: string): Promise<void>;
+  pushSubscriptions(): Promise<{ endpoint: string; p256dh: string; auth: string }[]>;
   /** Coach (master plan Phase 4). */
   openCommitment(c: { ticketId: string | null; promiseId: PromiseId; dueAt: string; openedAt?: string }): Promise<Commitment>;
   /** Open and at-risk commitments, soonest due first. */
@@ -450,6 +454,22 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async doneFeedFor(ref) {
       const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('ref', ref).is('done_at', null);
       if (error) fail('done feed for', error);
+    },
+
+    async savePushSubscription(sub) {
+      const { error } = await db.from('push_subscriptions').upsert({ endpoint: sub.endpoint, p256dh: sub.keys.p256dh, auth: sub.keys.auth }, { onConflict: 'endpoint' });
+      if (error) fail('save push subscription', error);
+    },
+
+    async removePushSubscription(endpoint) {
+      const { error } = await db.from('push_subscriptions').delete().eq('endpoint', endpoint);
+      if (error) fail('remove push subscription', error);
+    },
+
+    async pushSubscriptions() {
+      const { data, error } = await db.from('push_subscriptions').select('endpoint, p256dh, auth').limit(50);
+      if (error) fail('push subscriptions', error);
+      return data as { endpoint: string; p256dh: string; auth: string }[];
     },
 
     async assignFeed(id, assignee) {

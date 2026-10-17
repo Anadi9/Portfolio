@@ -14,6 +14,7 @@ import { computeNumbers } from '../lib/command/numbers.js';
 import { awaySummary, pickToday } from '../lib/command/today.js';
 import { parsePlan, summarisePlan } from '../lib/command/plan.js';
 import { MASTER_PLAN_MD } from '../data/plan.generated.js';
+import { pushConfigured } from '../lib/command/push.js';
 import { TICKET_STAGES } from '../lib/tickets/types.js';
 
 /**
@@ -39,6 +40,13 @@ const Op = z.discriminatedUnion('op', [
   z.object({ op: z.literal('numbers') }),
   z.object({ op: z.literal('today') }),
   z.object({ op: z.literal('plan') }),
+  z.object({ op: z.literal('pushKey') }),
+  z.object({
+    op: z.literal('pushSubscribe'),
+    endpoint: z.string().url().max(1000).refine((u) => u.startsWith('https://'), 'https only'),
+    keys: z.object({ p256dh: z.string().min(1).max(200), auth: z.string().min(1).max(100) }),
+  }),
+  z.object({ op: z.literal('pushUnsubscribe'), endpoint: z.string().max(1000) }),
   z.object({ op: z.literal('away'), since: z.string().datetime({ offset: true }) }),
   z.object({ op: z.literal('done'), feedId: z.string().min(1).max(80) }),
   z.object({ op: z.literal('helper'), feedId: z.string().min(1).max(80) }),
@@ -110,6 +118,17 @@ export function createAdminHandler(deps: AdminDeps) {
         const [tickets, commitments] = await Promise.all([store.listTickets({ limit: 2000 }), store.allCommitments()]);
         return res.status(200).json({ numbers: computeNumbers({ tickets, commitments, now: new Date() }) });
       }
+
+      case 'pushKey':
+        return pushConfigured(deps.env) ? res.status(200).json({ key: deps.env.VAPID_PUBLIC_KEY }) : res.status(501).json({ error: 'push not configured' });
+
+      case 'pushSubscribe':
+        await store.savePushSubscription({ endpoint: body.endpoint, keys: { p256dh: body.keys.p256dh as string, auth: body.keys.auth as string } });
+        return res.status(200).json({ ok: true });
+
+      case 'pushUnsubscribe':
+        await store.removePushSubscription(body.endpoint);
+        return res.status(200).json({ ok: true });
 
       case 'plan': {
         const items = parsePlan(MASTER_PLAN_MD);

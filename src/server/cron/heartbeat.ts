@@ -3,6 +3,7 @@ import { PROMISES } from '../../data/promises.js';
 import { keptRate, statusAt, weekStartIst } from '../../lib/coach/rules.js';
 import { parsePlan, summarisePlan } from '../../lib/command/plan.js';
 import { MASTER_PLAN_MD } from '../../data/plan.generated.js';
+import { sendPush, type PushPayload } from '../../lib/command/push.js';
 import { dispatch } from '../../lib/notify/dispatch.js';
 import type { ResendLike } from '../../lib/notify/email.js';
 import { liveDeps } from '../../lib/notify/live.js';
@@ -31,6 +32,8 @@ export type HeartbeatDeps = {
   env: Record<string, string | undefined>;
   resend: ResendLike | null;
   now: () => Date;
+  /** Phone alert for urgent cards; defaults to web push (skipped without VAPID keys). */
+  push?: (store: TicketStore, payload: PushPayload) => Promise<unknown>;
 };
 
 const IST = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -74,6 +77,9 @@ export function createHeartbeat(deps: HeartbeatDeps) {
           ref: c.id,
           urgent: true,
         });
+        await (deps.push ?? ((s, p) => sendPush(s, p, { env: deps.env })))(store, { title: card.title, body: card.body, url: `/admin#card-${card.id}` }).catch((err) =>
+          console.error('[heartbeat] push failed', err),
+        );
         if (c.ticketId) {
           const rows = await store.enqueueNotifications([
             { ticketId: c.ticketId, channel: 'email', template: 'promise_at_risk', payload: { number: label, promise, due: `${IST.format(new Date(c.dueAt))} IST`, hoursLeft, cardId: card.id } },
@@ -82,7 +88,7 @@ export function createHeartbeat(deps: HeartbeatDeps) {
         }
       } else if (next === 'missed') {
         missed += 1;
-        await store.postFeed({
+        const card = await store.postFeed({
           ticketId: c.ticketId,
           bot: 'coach',
           kind: 'promise_missed',
@@ -92,6 +98,9 @@ export function createHeartbeat(deps: HeartbeatDeps) {
           ref: c.id,
           urgent: true,
         });
+        await (deps.push ?? ((s, p) => sendPush(s, p, { env: deps.env })))(store, { title: card.title, url: `/admin#card-${card.id}` }).catch((err) =>
+          console.error('[heartbeat] push failed', err),
+        );
       }
       await store.updateCommitment(c.id, { alertedStatus: next });
     }

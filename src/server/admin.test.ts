@@ -267,3 +267,18 @@ describe('/api/admin helper', () => {
     expect(mem.feed[0].assignee).toBe('helper');
   });
 });
+
+describe('/api/admin push', () => {
+  it('needs VAPID keys for the public key, and saves subscriptions', async () => {
+    expect((await call({ op: 'pushKey' }, { cookie: authed() })).statusCode).toBe(501);
+    const withKeys = createAdminHandler({ store: () => mem.store, env: { ...env, VAPID_PUBLIC_KEY: 'pub', VAPID_PRIVATE_KEY: 'priv', VAPID_SUBJECT: 'mailto:a@b.c' }, resend: null, delay: async () => {} });
+    handler = withKeys;
+    expect((await call({ op: 'pushKey' }, { cookie: authed() })).body).toEqual({ key: 'pub' });
+    const sub = { endpoint: 'https://push.example/abc', keys: { p256dh: 'p', auth: 'a' } };
+    expect((await call({ op: 'pushSubscribe', ...sub }, { cookie: authed() })).statusCode).toBe(200);
+    expect(await mem.store.pushSubscriptions()).toHaveLength(1);
+    expect((await call({ op: 'pushSubscribe', ...sub, endpoint: 'http://insecure.example/x' }, { cookie: authed() })).statusCode).toBe(400);
+    await call({ op: 'pushUnsubscribe', endpoint: sub.endpoint }, { cookie: authed() });
+    expect(await mem.store.pushSubscriptions()).toHaveLength(0);
+  });
+});
