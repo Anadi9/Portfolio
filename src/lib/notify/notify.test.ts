@@ -18,7 +18,8 @@ vi.mock('../tickets/store.js', async (orig) => ({ ...(await orig<typeof import('
 import ticketHandler from '../../server/bit/ticket';
 import notifyCron from '../../server/cron/notify';
 import { dispatch } from './dispatch';
-import { renderNewTicketAdmin } from './email';
+import { ANSWER_LABEL, renderNewTicketAdmin, replyBy } from './email';
+import { ANSWER_KEYS } from '../bit/nodes';
 
 type FakeRes = {
   statusCode?: number;
@@ -310,5 +311,39 @@ describe('TicketStore type', () => {
   it('memory store satisfies the interface', () => {
     const s: TicketStore = mem.store;
     expect(typeof s.pendingNotifications).toBe('function');
+  });
+});
+
+describe('admin ticket email', () => {
+  it('renders answer keys as labels', () => {
+    const { html } = renderNewTicketAdmin({
+      number: 'A-1',
+      kind: 'first_bug',
+      answers: { live: 'Launching within 30 days', when: 'This month', users: 'Real users or a client', impact: 'It’s embarrassing' },
+    });
+    for (const l of ['Live status', 'Timeline', 'Users', 'Impact']) expect(html).toContain(l);
+    expect(html).not.toContain('>live<');
+  });
+
+  it('keeps unknown answer keys as they are', () => {
+    expect(renderNewTicketAdmin({ number: 'A-1', kind: 'audit', answers: { mystery: 'x' } }).html).toContain('mystery');
+  });
+
+  it('shows reply-by in IST', () => {
+    expect(replyBy('2026-10-17T18:13:00Z')).toBe('Sun 18 Oct, 23:43 IST');
+    const { html } = renderNewTicketAdmin({ number: 'A-1', kind: 'first_bug', createdAt: '2026-10-17T18:13:00Z' });
+    expect(html).toContain('Reply by');
+    expect(html).toContain('Sun 18 Oct, 23:43 IST');
+  });
+
+  it('labels every Bit answer key', () => {
+    for (const k of ANSWER_KEYS) expect(ANSWER_LABEL[k], k).toBeTruthy();
+  });
+
+  it('flags a WhatsApp number with no country code', () => {
+    expect(renderNewTicketAdmin({ number: 'A-1', kind: 'audit', whatsapp: '7466914279' }).html).toContain('7466914279 (no country code)');
+    const ok = renderNewTicketAdmin({ number: 'A-1', kind: 'audit', whatsapp: '+917466914279' }).html;
+    expect(ok).toContain('+917466914279');
+    expect(ok).not.toContain('no country code');
   });
 });

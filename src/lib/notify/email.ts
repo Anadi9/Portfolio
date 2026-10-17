@@ -1,4 +1,5 @@
 import type { Notification } from '../tickets/types.js';
+import { promiseHours } from '../../data/promises.js';
 
 /**
  * Email templates and the Resend adapter for the ticket pipeline.
@@ -45,13 +46,52 @@ const row = (k: string, v: string) =>
 
 const shell = (inner: string) => `<div style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.5;color:#1a1a1a">${inner}</div>`;
 
+/** Readable names for Bit's answer keys (`ANSWER_KEYS` in `bit/nodes.ts`); unknown keys show as they are. */
+export const ANSWER_LABEL: Record<string, string> = {
+  stack: 'Stack',
+  live: 'Live status',
+  scope: 'Scope',
+  asked: 'Asked for',
+  js: 'JavaScript rendering',
+  pd: 'Personal data',
+  consent: 'Consent',
+  kitTool: 'Kit tool',
+  users: 'Users',
+  impact: 'Impact',
+  when: 'Timeline',
+  aiwant: 'AI wanted',
+  aistage: 'AI stage',
+  budget: 'Budget',
+};
+
+const IST = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Asia/Kolkata',
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+});
+
+/** When the first reply is due, in IST: `Sun 18 Oct, 23:43 IST`. */
+export function replyBy(createdAt: string, hours = promiseHours('first_bug_video')): string {
+  return `${IST.format(new Date(Date.parse(createdAt) + hours * 3_600_000))} IST`;
+}
+
+/** A 10-digit number with no `+` is almost always an Indian mobile missing +91. */
+const whatsappCell = (raw: string) => {
+  if (!raw) return '<em>not given</em>';
+  return /^\d{10}$/.test(raw) ? `${esc(raw)} (no country code)` : esc(raw);
+};
+
 function answerRows(answers: unknown): string {
   if (!answers || typeof answers !== 'object') return '';
   return Object.entries(answers as Record<string, unknown>)
     .slice(0, 30)
     .map(([k, v]) => {
       const value = typeof v === 'string' ? v : JSON.stringify(v);
-      return row(k.slice(0, 60), `<span style="white-space:pre-wrap">${esc((value ?? '').slice(0, 1000))}</span>`);
+      return row(ANSWER_LABEL[k] ?? k.slice(0, 60), `<span style="white-space:pre-wrap">${esc((value ?? '').slice(0, 1000))}</span>`);
     })
     .join('');
 }
@@ -66,10 +106,11 @@ export function renderNewTicketAdmin(p: Record<string, unknown>): { subject: str
       `<h2 style="margin:0 0 12px">New ticket ${esc(number)}</h2>
 <table style="border-collapse:collapse">
 ${row('Kind', esc(kindLabel(kind)))}
+${typeof p.createdAt === 'string' ? row('Reply by', esc(replyBy(p.createdAt))) : ''}
 ${row('Source', esc(text(p.source, 40)))}
 ${row('Name', esc(text(p.name, 120)) || '<em>not given</em>')}
 ${row('Email', esc(text(p.email, 254)))}
-${row('WhatsApp', esc(text(p.whatsapp, 40)) || '<em>not given</em>')}
+${row('WhatsApp', whatsappCell(text(p.whatsapp, 40)))}
 ${row('App', appUrl ? esc(appUrl) : '<em>not given</em>')}
 ${row('Budget', esc(text(p.budget, 120)) || '<em>not given</em>')}
 ${row('Board', p.boardOptIn === true ? 'opted in' : 'not opted in')}

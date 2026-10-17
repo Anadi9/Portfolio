@@ -57,6 +57,7 @@ async function notifyFor(store: TicketStore, ticket: Ticket, input: NewTicket, p
       number: ticket.number,
       kind: ticket.kind,
       source: ticket.source,
+      createdAt: ticket.createdAt,
       name: input.name ?? '',
       email: input.email.trim().toLowerCase(),
       whatsapp: input.whatsapp ?? '',
