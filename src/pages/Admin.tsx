@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Form
 import { Seo } from '@/components/Seo';
 import { Bit, Coach } from '@/components/brand/Bit';
 import { admin } from '@/lib/admin/client';
-import { age, parseHash, snoozeHours, timeLeft, type SnoozeChoice, type Tone } from '@/lib/admin/view';
+import { age, dueLabel, parseHash, promiseLabel, snoozeHours, timeLeft, type SnoozeChoice, type Tone } from '@/lib/admin/view';
+import type { Commitment } from '@/lib/coach/types';
 import { hasPlaceholder, splitDraft } from '@/lib/brief/draft';
 import { ANSWER_LABEL, kindLabel } from '@/lib/notify/email';
 import type { FeedItem } from '@/lib/feed/types';
@@ -404,6 +405,8 @@ function TicketView({ id, focus, guard, back }: { id: string; focus?: string; gu
         <StagePicker ticket={t} guard={guard} onChanged={load} />
       </div>
 
+      <CoachBox ticket={t} guard={guard} onChanged={load} />
+
       {drafts.map((m) => (
         <DraftEditor key={m.id} ticketId={t.id} message={m} autoFocus={m.id === focus} guard={guard} onSent={load} />
       ))}
@@ -464,6 +467,105 @@ function TicketView({ id, focus, guard, back }: { id: string; focus?: string; gu
         </ol>
       </div>
     </section>
+  );
+}
+
+const STATUS_TEXT: Record<Commitment['status'], string> = { open: 'On track', at_risk: 'At risk', kept: 'Kept', missed: 'Missed' };
+
+function CoachBox({ ticket, guard, onChanged }: { ticket: TicketDetail; guard: Guard; onChanged: () => void }) {
+  const tasks = ticket.tasks.filter((x) => x.stage === ticket.stage);
+  if (!tasks.length && !ticket.commitments.length) return null;
+  return (
+    <div style={{ ...box, borderColor: 'var(--bq-ink)' }}>
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <Coach pose="calm" size={36} label="Coach" />
+        <h2 style={h2}>Coach · {STAGE_LABEL[ticket.stage]}</h2>
+      </div>
+      {tasks.length > 0 && (
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
+          {tasks.map((task) => (
+            <li key={task.id} style={{ display: 'flex', gap: 10, alignItems: 'start', flexWrap: 'wrap' }}>
+              <span aria-hidden style={{ font: '600 16px var(--bq-font-body)' }}>
+                {task.status === 'done' ? '✓' : '○'}
+              </span>
+              <span style={{ flex: 1, minWidth: 180 }}>
+                <span style={{ textDecoration: task.status === 'done' ? 'line-through' : undefined }}>{task.title}</span>
+                <span style={{ ...small, display: 'block' }}>
+                  {task.owner === 'coach' ? 'Coach' : task.owner === 'helper' ? 'Helper' : 'You'} · done when: {task.doneWhen}
+                </span>
+              </span>
+              {task.status === 'open' && task.owner !== 'coach' && (
+                <button
+                  type="button"
+                  style={{ ...btn, minHeight: 32 }}
+                  onClick={async () => {
+                    if (guard(await admin.taskDone(ticket.id, task.key))) onChanged();
+                  }}
+                >
+                  Done
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {ticket.commitments.length > 0 && (
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
+          {ticket.commitments.map((c) => (
+            <li key={c.id} style={{ display: 'grid', gap: 6 }}>
+              <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'baseline' }}>
+                <b>{promiseLabel(c.promiseId)}</b>
+                <span style={{ ...small, color: c.status === 'missed' || c.status === 'at_risk' ? 'var(--bq-brand)' : 'var(--bq-muted)', fontWeight: 600 }}>
+                  {STATUS_TEXT[c.status]}
+                </span>
+                {(c.status === 'open' || c.status === 'at_risk') && <span style={small}>{dueLabel(c.dueAt)}</span>}
+                {c.status === 'open' || c.status === 'at_risk' ? (
+                  c.promiseId === 'daily_update' && (
+                    <button
+                      type="button"
+                      style={{ ...btn, minHeight: 32 }}
+                      onClick={async () => {
+                        if (guard(await admin.keep(ticket.id, c.id))) onChanged();
+                      }}
+                    >
+                      Logged today’s update
+                    </button>
+                  )
+                ) : null}
+              </span>
+              {c.status === 'missed' &&
+                (c.missReason ? <span style={small}>Reason: {c.missReason}</span> : <MissReason ticketId={ticket.id} commitmentId={c.id} guard={guard} onSaved={onChanged} />)}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function MissReason({ ticketId, commitmentId, guard, onSaved }: { ticketId: string; commitmentId: string; guard: Guard; onSaved: () => void }) {
+  const [reason, setReason] = useState('');
+  return (
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (guard(await admin.missReason(ticketId, commitmentId, reason))) onSaved();
+      }}
+      style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}
+    >
+      <label style={{ flex: 1, minWidth: 200, ...small }}>
+        Why was it missed? (needed before the ticket can move)
+        <input
+          value={reason}
+          maxLength={1000}
+          onChange={(e) => setReason(e.target.value)}
+          style={{ display: 'block', width: '100%', boxSizing: 'border-box', minHeight: 40, padding: '0 10px', font: '15px var(--bq-font-body)', border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)' }}
+        />
+      </label>
+      <button type="submit" style={{ ...btn, alignSelf: 'end' }} disabled={!reason.trim()}>
+        Save reason
+      </button>
+    </form>
   );
 }
 

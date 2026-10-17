@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { age, parseHash, snoozeHours, timeLeft } from './view';
+import { age, dueLabel, parseHash, promiseLabel, snoozeHours, timeLeft } from './view';
 
 const created = '2026-10-18T00:00:00Z';
 const at = (h: number) => new Date(Date.parse(created) + h * 3_600_000);
@@ -42,5 +42,16 @@ describe('age', () => {
     expect(age('2026-10-18T11:15:00Z', now)).toBe('45m ago');
     expect(age('2026-10-18T07:00:00Z', now)).toBe('5h ago');
     expect(age('2026-10-15T12:00:00Z', now)).toBe('3d ago');
+  });
+});
+
+describe('promise labels', () => {
+  it('names a promise and says when it is due', () => {
+    expect(promiseLabel('first_bug_video')).toBe('Free first-bug video');
+    expect(promiseLabel('mystery')).toBe('mystery');
+    const now = new Date('2026-10-18T12:00:00Z');
+    expect(dueLabel('2026-10-18T17:00:00Z', now)).toBe('due in 5h');
+    expect(dueLabel('2026-10-18T12:20:00Z', now)).toBe('due in 20m');
+    expect(dueLabel('2026-10-18T10:00:00Z', now)).toBe('2h overdue');
   });
 });

@@ -1,4 +1,4 @@
-import { promiseHours } from '../../data/promises';
+import { PROMISES, promiseHours } from '../../data/promises';
 
 /** Pure helpers for the /admin page, kept here so they can be tested without a browser. */
 
@@ -48,4 +48,13 @@ export function age(iso: string, now = new Date()): string {
   if (ms < HOUR) return `${Math.floor(ms / 60_000)}m ago`;
   if (ms < 24 * HOUR) return `${Math.floor(ms / HOUR)}h ago`;
   return `${Math.floor(ms / (24 * HOUR))}d ago`;
+}
+
+export function promiseLabel(id: string): string {
+  return (PROMISES as Record<string, { what: string } | undefined>)[id]?.what ?? id;
+}
+
+export function dueLabel(dueAt: string, now = new Date()): string {
+  const ms = Date.parse(dueAt) - now.getTime();
+  return ms >= 0 ? `due in ${span(ms)}` : `${span(-ms)} overdue`;
 }
