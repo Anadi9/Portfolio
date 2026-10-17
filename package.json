@@ -13,7 +13,7 @@
     "covers": "node scripts/generate-covers.mjs",
     "covers:masters": "node scripts/generate-cover-masters.mjs",
     "prebuild": "node scripts/generate-banners.mjs && node scripts/generate-plan.mjs",
-    "build": "vite-react-ssg build && node scripts/generate-feeds.mjs && node scripts/generate-share-cards.mjs",
+    "build": "vite-react-ssg build && node scripts/generate-feeds.mjs && node scripts/generate-share-cards.mjs && node scripts/indexnow.mjs",
     "prebuild:dev": "node scripts/generate-banners.mjs && node scripts/generate-plan.mjs",
     "build:dev": "vite-react-ssg build --mode development && node scripts/generate-feeds.mjs && node scripts/generate-share-cards.mjs",
     "lint": "eslint .",

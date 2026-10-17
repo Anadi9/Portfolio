@@ -103,10 +103,10 @@ crawlable by the right bots, and put the answer where a machine can lift it.
 - [x] **Image sitemap entries or `<image:image>` on post URLs** so the covers in
       `public/covers/` are eligible for image search.
       > 16 Oct 2026 (Task 4): `<image:image>` on every post URL with a cover (OG card JPEG). Case-study and page URLs have none.
-- [ ] **IndexNow ping on deploy.** One POST to `api.indexnow.org` with the changed
+- [x] **IndexNow ping on deploy.** One POST to `api.indexnow.org` with the changed
       URLs after `npm run build` gets Bing (and therefore ChatGPT search)
       re-crawling in minutes instead of days. ~15 lines in a postbuild script.
-      > 16 Oct 2026 (Task 4): needs a key file Anadi generates; steps in `docs/launch-checklist.md`.
+      > 19 Oct 2026: wired. `scripts/indexnow.mjs` runs at the end of `npm run build`, writes `dist/<key>.txt` and pings on production builds when `INDEXNOW_KEY` is set.
 - [ ] **Cover images have `alt=""` + `aria-hidden`** (correct, they're
       decorative), but that means the site publishes zero indexable image alt
       text. If any cover is actually informative, give it real alt text.

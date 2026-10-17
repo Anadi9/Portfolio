@@ -250,7 +250,7 @@ and content items are Anadi's.
 
 - [ ] Search Console and Bing verified, sitemap submitted (launch checklist).
 - [x] `llms-full.txt` generated at build.
-- [ ] IndexNow ping after deploy.
+- [x] IndexNow ping after deploy (`scripts/indexnow.mjs`; needs `INDEXNOW_KEY`).
 - [ ] Self-host the brand fonts (Space Grotesk, Press Start 2P, Jersey 10).
 - [ ] FAQPage / HowTo where posts are already shaped that way.
 - [ ] About page for "who is Anadi Thakur".
