@@ -10,6 +10,7 @@ import { clientIp, createRateLimiter } from '../lib/scan/rate-limit.js';
 import { ticketStore, type TicketStore } from '../lib/tickets/store.js';
 import { keepCommitment, onReplySent, onStageEntered, onTaskDone } from '../lib/coach/hooks.js';
 import { gate } from '../lib/coach/stages.js';
+import { computeNumbers } from '../lib/command/numbers.js';
 import { TICKET_STAGES } from '../lib/tickets/types.js';
 
 /**
@@ -32,6 +33,7 @@ const Op = z.discriminatedUnion('op', [
   z.object({ op: z.literal('login'), password: z.string().max(200) }),
   z.object({ op: z.literal('logout') }),
   z.object({ op: z.literal('feed') }),
+  z.object({ op: z.literal('numbers') }),
   z.object({ op: z.literal('done'), feedId: z.string().min(1).max(80) }),
   z.object({ op: z.literal('snooze'), feedId: z.string().min(1).max(80), hours: z.number().min(1).max(168) }),
   z.object({ op: z.literal('list'), stage: z.enum(TICKET_STAGES).optional() }),
@@ -96,6 +98,11 @@ export function createAdminHandler(deps: AdminDeps) {
 
       case 'feed':
         return res.status(200).json({ items: await store.openFeed() });
+
+      case 'numbers': {
+        const [tickets, commitments] = await Promise.all([store.listTickets({ limit: 2000 }), store.allCommitments()]);
+        return res.status(200).json({ numbers: computeNumbers({ tickets, commitments, now: new Date() }) });
+      }
 
       case 'done':
         await store.markFeedDone(body.feedId);

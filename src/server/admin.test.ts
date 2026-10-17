@@ -229,3 +229,13 @@ describe('/api/admin gates and Coach ops', () => {
     void c;
   });
 });
+
+describe('/api/admin numbers', () => {
+  it('returns the numbers', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    const c = await mem.store.openCommitment({ ticketId: t.id, promiseId: 'first_bug_video', dueAt: '2030-01-01T00:00:00Z' });
+    await mem.store.updateCommitment(c.id, { status: 'kept' });
+    const res = await call({ op: 'numbers' }, { cookie: authed() });
+    expect(res.body.numbers).toMatchObject({ promisesKept: { kept: 1, missed: 0, rate: 1 }, pipeline: { inbox: 1 } });
+  });
+});

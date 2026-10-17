@@ -228,6 +228,13 @@ export function memoryTicketStore() {
       t.doneAt = now();
       return true;
     },
+    async allCommitments(since) {
+      return commitments
+        .filter((c) => !since || c.openedAt >= new Date(since).toISOString())
+        .slice()
+        .reverse()
+        .map((c) => ({ ...c }));
+    },
     async countTickets({ kind, since }) {
       return tickets.filter((t) => t.kind === kind && t.createdAt >= new Date(since).toISOString()).length;
     },

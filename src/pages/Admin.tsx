@@ -4,6 +4,7 @@ import { Bit, Coach } from '@/components/brand/Bit';
 import { admin } from '@/lib/admin/client';
 import { age, dueLabel, parseHash, promiseLabel, snoozeHours, timeLeft, type SnoozeChoice, type Tone } from '@/lib/admin/view';
 import type { Commitment } from '@/lib/coach/types';
+import type { Numbers } from '@/lib/command/numbers';
 import { hasPlaceholder, splitDraft } from '@/lib/brief/draft';
 import { ANSWER_LABEL, kindLabel } from '@/lib/notify/email';
 import type { FeedItem } from '@/lib/feed/types';
@@ -45,7 +46,7 @@ const small: CSSProperties = { margin: 0, font: '400 13px/1.4 var(--bq-font-body
 const h2: CSSProperties = { margin: 0, font: '600 18px/1.3 var(--bq-font-body)' };
 
 type Auth = 'checking' | 'out' | 'in';
-type View = { tab: 'feed' } | { tab: 'tickets' } | { tab: 'ticket'; id: string; focus?: string };
+type View = { tab: 'feed' } | { tab: 'tickets' } | { tab: 'numbers' } | { tab: 'ticket'; id: string; focus?: string };
 
 export default function Admin() {
   const [auth, setAuth] = useState<Auth>('checking');
@@ -97,15 +98,19 @@ export default function Admin() {
         {auth === 'out' && <Login onIn={() => setAuth('in')} />}
         {auth === 'in' && (
           <>
-            <nav aria-label="Command centre" style={{ display: 'flex', gap: 8 }}>
+            <nav aria-label="Command centre" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <TabButton active={view.tab === 'feed'} onClick={() => setView({ tab: 'feed' })}>
                 Feed
               </TabButton>
-              <TabButton active={view.tab !== 'feed'} onClick={() => setView({ tab: 'tickets' })}>
+              <TabButton active={view.tab === 'tickets' || view.tab === 'ticket'} onClick={() => setView({ tab: 'tickets' })}>
                 Tickets
+              </TabButton>
+              <TabButton active={view.tab === 'numbers'} onClick={() => setView({ tab: 'numbers' })}>
+                Numbers
               </TabButton>
             </nav>
             {view.tab === 'feed' && <Feed guard={guard} open={(id, focus) => setView({ tab: 'ticket', id, focus })} />}
+            {view.tab === 'numbers' && <NumbersView guard={guard} />}
             {view.tab === 'tickets' && <Tickets guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
             {view.tab === 'ticket' && <TicketView id={view.id} focus={view.focus} guard={guard} back={() => setView({ tab: 'tickets' })} />}
           </>
@@ -116,6 +121,48 @@ export default function Admin() {
 }
 
 type Guard = <T>(r: { ok: boolean; auth: boolean; error?: string; data?: T }) => T | null;
+
+function NumbersView({ guard }: { guard: Guard }) {
+  const [n, setN] = useState<Numbers | null>(null);
+  useEffect(() => {
+    admin.numbers().then((r) => {
+      const d = guard(r);
+      if (d) setN(d.numbers);
+    });
+  }, [guard]);
+  if (!n) return <p style={small}>Loading numbers…</p>;
+  const rate = n.promisesKept.rate;
+  const tiles: [string, string, string][] = [
+    ['Promises kept', rate == null ? '—' : `${Math.round(rate * 100)}%`, `${n.promisesKept.kept} kept · ${n.promisesKept.missed} missed`],
+    ['Average first reply', n.avgFirstReplyHours == null ? '—' : `${n.avgFirstReplyHours}h`, 'from ticket to first sent reply'],
+    ['Tickets', String(n.ticketsLast7), `last 7 days · ${n.ticketsLast30} in 30 days`],
+  ];
+  return (
+    <section style={{ display: 'grid', gap: 12 }}>
+      <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+        {tiles.map(([label, value, note]) => (
+          <div key={label} style={box}>
+            <p style={small}>{label}</p>
+            <p style={{ margin: 0, font: '400 44px/1 var(--bq-font-display)', fontVariantNumeric: 'tabular-nums' }}>{value}</p>
+            <p style={small}>{note}</p>
+          </div>
+        ))}
+      </div>
+      <div style={box}>
+        <h2 style={h2}>Pipeline</h2>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 4 }}>
+          {TICKET_STAGES.map((s) => (
+            <li key={s} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bq-rule)', padding: '4px 0' }}>
+              <span>{STAGE_LABEL[s]}</span>
+              <b style={{ fontVariantNumeric: 'tabular-nums' }}>{n.pipeline[s]}</b>
+            </li>
+          ))}
+        </ul>
+        <p style={small}>Chats and paid work aren’t tracked yet: chats aren’t stored, and payments link to tickets later.</p>
+      </div>
+    </section>
+  );
+}
 
 const TabButton = ({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) => (
   <button type="button" aria-pressed={active} onClick={onClick} style={active ? { ...btn, background: 'var(--bq-ink)', color: 'var(--bq-bg)' } : btn}>

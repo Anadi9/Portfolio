@@ -79,6 +79,8 @@ export interface TicketStore {
   /** False when the ticket has no open task with that key. */
   completeTask(ticketId: string, key: string): Promise<boolean>;
   countTickets(opts: { kind: TicketKind; since: string }): Promise<number>;
+  /** Every commitment opened since `since` (all when omitted), newest first, up to 2000. */
+  allCommitments(since?: string): Promise<Commitment[]>;
 }
 
 const closes = (s?: CommitmentStatus) => s === 'kept' || s === 'missed';
@@ -492,6 +494,14 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
         .select('id');
       if (error) fail('complete task', error);
       return (data ?? []).length > 0;
+    },
+
+    async allCommitments(since) {
+      let q = db.from('commitments').select('*').order('opened_at', { ascending: false }).limit(2000);
+      if (since) q = q.gte('opened_at', since);
+      const { data, error } = await q;
+      if (error) fail('all commitments', error);
+      return (data as Row[]).map(toCommitment);
     },
 
     async countTickets({ kind, since }) {
