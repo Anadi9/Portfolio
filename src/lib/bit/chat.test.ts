@@ -21,6 +21,10 @@ describe('Bit chat', () => {
     expect(qualify({ live: 'Just an idea for now', users: 'Only me and friends', impact: 'It’s embarrassing', when: 'This month' })).toBe('notyet');
   });
 
+  it('keeps the How-was-it-built options unchanged', () => {
+    expect(NODES.prod.opts.map((o) => o.label)).toEqual(['Hand-coded (React / Node)', 'Cursor or Claude Code', 'Lovable, Bolt or v0', 'Replit', 'Not sure']);
+  });
+
   it('walks the four questions to a real hand-off, never a fake ticket', () => {
     let s = pick(initial(), 'Find my app’s first bug — free');
     s = pick(s, 'Let’s go');

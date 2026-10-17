@@ -1,3 +1,4 @@
+import { BOARD_STACKS } from '../bit/stacks.js';
 import type { BoardTicket, TicketKind, TicketStage } from './types.js';
 
 /** The five stages the public board shows, left to right. `closed` never appears. */
@@ -30,7 +31,12 @@ export type BoardPayload = { columns: BoardColumn[]; total: number };
 
 /** Groups the public view into the five columns. Rows in any other stage are left out. An empty category falls back to a label for the kind. */
 export function boardColumns(tickets: BoardTicket[]): BoardPayload {
-  const labelled = tickets.map((t) => ({ ...t, category: t.category?.trim() || KIND_LABEL[t.kind] || null }));
+  const labelled = tickets.map((t) => ({
+    ...t,
+    category: t.category?.trim() || KIND_LABEL[t.kind] || null,
+    // Free text never reaches the public board: only the fixed answers do.
+    stack: t.stack && BOARD_STACKS.includes(t.stack) ? t.stack : null,
+  }));
   const columns = BOARD_STAGES.map((stage) => ({ stage, label: STAGE_LABEL[stage], tickets: labelled.filter((t) => t.stage === stage) }));
   return { columns, total: columns.reduce((n, c) => n + c.tickets.length, 0) };
 }

@@ -198,7 +198,7 @@ export const offers: Record<'fix' | 'build' | 'care', PricedOffer[]> = {
 export const board = {
   eyebrow: 'Request tracking',
   title: 'Every request, tracked.',
-  intro: 'Send a request through Bit or the form and you get a ticket number. Opt in and it shows here, anonymised.',
+  intro: 'Once your request is saved, you get a ticket number. Opt in and it shows here, anonymised.',
   emptyTitle: 'No live requests to show yet.',
   emptyNote: 'Live requests appear here, anonymised, once clients opt in.',
   ticket: {

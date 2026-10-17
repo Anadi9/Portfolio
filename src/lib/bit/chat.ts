@@ -10,6 +10,7 @@
  */
 import { site } from '@/data/portfolio';
 import type { AnswerKey, NodeId } from './nodes';
+import { BUILD_STACKS } from './stacks';
 import { classify } from './route';
 
 export type { NodeId } from './nodes';
@@ -91,7 +92,7 @@ export const NODES: Record<NodeId, Node> = {
   prod: {
     say: 'Got it. How was it built?',
     key: 'stack',
-    opts: ['Hand-coded (React / Node)', 'Cursor or Claude Code', 'Lovable, Bolt or v0', 'Replit', 'Not sure'].map((l) => o(l, to('prod2'))),
+    opts: [...BUILD_STACKS, 'Not sure'].map((l) => o(l, to('prod2'))),
   },
   prod2: { say: 'Is it live with real users?', key: 'live', opts: ['Not yet — launching soon', 'Yes, under 100 users', 'Yes, 100+ users'].map((l) => o(l, to('prod3'))) },
   prod3: { say: 'One known problem, or lots of small ones?', key: 'scope', opts: ['One specific thing', 'Lots, or not sure'].map((l) => o(l, to('prod4'))) },

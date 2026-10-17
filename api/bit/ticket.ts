@@ -5,6 +5,7 @@ import { withErrorLog } from '../../src/lib/monitoring/with-error-log.js';
 import { clientIp, createRateLimiter } from '../../src/lib/scan/rate-limit.js';
 import { ticketStore } from '../../src/lib/tickets/store.js';
 import { NewTicketSchema } from '../../src/lib/tickets/types.js';
+import { BUILD_STACKS } from '../../src/lib/bit/stacks.js';
 
 /**
  * POST /api/bit/ticket
@@ -24,14 +25,17 @@ const BodySchema = NewTicketSchema.pick({
   name: true,
   appUrl: true,
   kind: true,
-  stack: true,
   answers: true,
   budget: true,
   boardOptIn: true,
   whatsappOptIn: true,
   whatsapp: true,
 })
-  .extend({ hp: z.string().optional() })
+  .extend({
+    hp: z.string().optional(),
+    // Bit sends one of its fixed answers; anything else is dropped, not rejected.
+    stack: z.enum(BUILD_STACKS).optional().catch(undefined),
+  })
   .refine((b) => JSON.stringify(b.answers).length <= 8000, { path: ['answers'], message: 'answers too long' });
 
 export default withErrorLog('bit-ticket', async (req: VercelRequest, res: VercelResponse) => {

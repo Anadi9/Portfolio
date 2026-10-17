@@ -205,8 +205,8 @@ export default function AppAuditForm() {
               </h2>
               <p style={{ ...body, font: `400 17px/1.5 ${display}` }}>
                 I&apos;ll go through <strong style={{ color: p.ink }}>{status.host}</strong> myself and send it to{' '}
-                <strong style={{ color: p.ink }}>{status.email}</strong>, ranked Fix now, Risky and Can wait. A
-                confirmation is on its way to that address now. If it isn&apos;t there in a few minutes, check spam or email{' '}
+                <strong style={{ color: p.ink }}>{status.email}</strong>, ranked Fix now, Risky and Can wait. I&apos;ll
+                email you a confirmation shortly. If it isn&apos;t there in a few minutes, check spam or email{' '}
                 <a href={`mailto:${EMAIL}`} className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
                   {EMAIL}
                 </a>

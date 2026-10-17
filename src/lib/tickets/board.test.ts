@@ -20,11 +20,19 @@ const call = async (method = 'GET') => {
   return res;
 };
 
-const t = (number: string, stage: BoardTicket['stage']): BoardTicket => ({ number, kind: 'audit', category: 'Auth', stack: 'Next.js', stage, updatedAt: '2026-10-17T00:00:00Z' });
+const t = (number: string, stage: BoardTicket['stage']): BoardTicket => ({ number, kind: 'audit', category: 'Auth', stack: 'Lovable', stage, updatedAt: '2026-10-17T00:00:00Z' });
 
 afterEach(() => {
   holder.store = null;
   vi.restoreAllMocks();
+});
+
+describe('boardColumns stack allow-list', () => {
+  it('never outputs a stack outside the fixed answers', () => {
+    const stacks = ['John Smith https://x.com', 'Replit', 'Cursor', 'Next.js', null];
+    const b = boardColumns(stacks.map((s, i) => ({ ...t(`A-${1001 + i}`, 'inbox'), stack: s })));
+    expect(b.columns[0].tickets.map((x) => x.stack)).toEqual([null, 'Replit', 'Cursor', null, null]);
+  });
 });
 
 describe('boardColumns', () => {

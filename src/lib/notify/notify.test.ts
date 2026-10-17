@@ -111,6 +111,12 @@ describe('POST /api/bit/ticket', () => {
     expect(mem.tickets[0].stack).toBe('Replit');
   });
 
+  it('drops a free-text stack silently and still saves the ticket', async () => {
+    const res = await post({ ...valid, stack: 'John Smith https://x.com' });
+    expect(res.statusCode).toBe(200);
+    expect(mem.tickets[0].stack ?? null).toBeNull();
+  });
+
   it('accepts a JSON string body', async () => {
     expect((await post(JSON.stringify(valid))).statusCode).toBe(200);
   });

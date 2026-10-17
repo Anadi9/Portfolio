@@ -12,6 +12,7 @@ vi.mock('../tickets/store.js', async (orig) => ({ ...(await orig<typeof import('
 
 import auditHandler from '../../../api/audit';
 import rescueHandler from '../../../api/rescue-audit';
+import { recordFormTicket } from './ticket';
 
 const call = async (handler: typeof auditHandler, body: unknown) => {
   const res: { statusCode?: number; body?: unknown } & Record<string, unknown> = {};
@@ -134,5 +135,17 @@ describe('audit forms create a best-effort ticket', () => {
     expect(mem.tickets).toHaveLength(1);
     expect(mem.tickets[0].appUrl).toHaveLength(500);
     expect(mem.tickets[0].answers.appUrlTruncated).toBe(true);
+  });
+
+  it('a slow WhatsApp dispatch (just under the outer bound) still returns the saved number', async () => {
+    vi.useFakeTimers();
+    try {
+      holder.store = { ...mem.store, enqueueNotifications: () => new Promise<never>(() => {}) };
+      const pending = recordFormTicket({ email: 'a@b.co', kind: 'audit', answers: {}, source: 'audit_form' }, 2500);
+      await vi.advanceTimersByTimeAsync(2600);
+      expect(await pending).toBe('A-1001');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

@@ -215,7 +215,7 @@ export function Privacy() {
         <P>
           Requests are saved as tickets in my database (Supabase) with your contact details, so I can track the work and email you
           about it. When a new ticket arrives I get an alert by email and on my own WhatsApp (sent through Meta’s WhatsApp Cloud
-          API to my own number; your details are not sent to Meta for this). If you tick the WhatsApp box when you submit, I may
+          API to my own number; the alert contains only the ticket number, the type of request and your app’s domain, or your name if you didn’t give an app link). If you tick the WhatsApp box when you submit, I may
           message you by hand from my own WhatsApp about that request, and you can tell me to stop at any time. The site does not
           send WhatsApp messages to you automatically. My replies are otherwise emails, and anything about price, scope or
           findings is written and sent by me.

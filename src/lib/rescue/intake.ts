@@ -29,7 +29,8 @@ export const SYMPTOMS = [
   { line: "You're scared to show it to real customers.", area: 'The audit' },
 ] as const;
 
-export const TOOLS = ['Hand-coded', 'Lovable', 'Bolt', 'Cursor', 'v0', 'Replit', 'Something else'] as const;
+import { TOOLS } from '../bit/stacks.js';
+export { TOOLS };
 export type Tool = (typeof TOOLS)[number];
 
 /** The one follow-up the audit offers, quoted identically on the form and in the receipt. */

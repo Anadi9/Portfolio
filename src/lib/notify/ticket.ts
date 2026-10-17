@@ -113,7 +113,7 @@ export async function recordFormTicket(input: NewTicket, timeoutMs = 2500): Prom
     (async () => {
       const store = ticketStore();
       if (!store) return null;
-      return submitTicket(store, fit, { admin: false, receipt: false, whatsapp: true }, liveDeps(), timeoutMs);
+      return submitTicket(store, fit, { admin: false, receipt: false, whatsapp: true }, liveDeps(), Math.max(500, timeoutMs - 1000));
     })(),
     timeoutMs,
     'form ticket',

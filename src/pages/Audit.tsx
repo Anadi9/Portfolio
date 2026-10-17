@@ -205,7 +205,7 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
         </h2>
         <p style={lead}>
           I&apos;ll send your report to <strong style={{ color: p.ink }}>{status.email}</strong> within {TURNAROUND_HOURS} hours,
-          usually sooner. A confirmation is on its way now. If you&apos;d like to talk it through, just reply to that email
+          usually sooner. I&apos;ll email you a confirmation shortly. If you&apos;d like to talk it through, just reply to that email
           and we&apos;ll book a 20-minute call. No pressure either way.
         </p>
         {status.ticket && <p style={{ ...lead, margin: 0 }}>Your ticket: <strong style={{ color: p.ink }}>{status.ticket}</strong></p>}

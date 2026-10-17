@@ -88,6 +88,7 @@ const GRAPH = [
   'src/lib/bit/ai.ts',
   'src/lib/bit/knowledge.ts',
   'src/lib/bit/nodes.ts',
+  'src/lib/bit/stacks.ts',
   'src/lib/bit/prices.ts',
   'src/lib/bit/route.ts',
   'src/data/bitsQuestFacts.ts',
