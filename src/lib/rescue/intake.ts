@@ -30,15 +30,15 @@ export const SYMPTOMS = [
 ] as const;
 
 import { TOOLS } from '../bit/stacks.js';
+import { promiseHours } from '../../data/promises.js';
 export { TOOLS };
 export type Tool = (typeof TOOLS)[number];
 
 /** The one follow-up the audit offers, quoted identically on the form and in the receipt. */
 export const CALL_OFFER = "When the report arrives, reply if you'd like a 15-minute call to go through it.";
 
-/** The turnaround the homepage quotes. */
-/** The free first-bug review (Bit's Quest promise: 24h). The paid $349 audit is a separate 48-hour job. */
-export const TURNAROUND_HOURS = 24;
+/** The free first-bug review's turnaround, from the promise list. The paid $349 audit is a separate job (`audit_report`). */
+export const TURNAROUND_HOURS = promiseHours('first_bug_video');
 
 export const NOTES_MAX = 2000;
 

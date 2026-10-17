@@ -1,12 +1,14 @@
 /**
  * The homepage's facts — services, prices, guarantees, free tools, FAQ — with
- * no imports, so a serverless function can load them.
+ * no imports except the promise list, so a serverless function can load them.
  *
  * `bitsQuest.ts` builds the homepage content from these (adding icons and
  * links), and `lib/bit/knowledge.ts` builds Bit's AI prompt and its published
  * price list from the same arrays. `bitsQuest.ts` itself can't be loaded by a
  * function: it imports the portfolio data, which imports images.
  */
+
+import { promiseHours } from './promises.js';
 
 export type ServiceFacts = { tag: string; title: string; forYou: string; fixes: string[]; stats: string[][] };
 export type PackageFacts = { name: string; duration: string; price: string; detail: string; badge?: string };
@@ -45,7 +47,7 @@ export const SERVICES: ServiceFacts[] = [
 ];
 
 export const GUARANTEES: [string, string][] = [
-  ['First bug free', 'A real issue in your app, on video, in 24h.'],
+  ['First bug free', `A real issue in your app, on video, in ${promiseHours('first_bug_video')}h.`],
   ['Audit credited 100%', 'Every dollar counts toward the fix.'],
   ['Nothing found? Full refund', 'No real issues means you pay nothing.'],
   ['Pay the rest when it’s live', 'Half to start, half once it works.'],
@@ -58,9 +60,9 @@ export const PRICE_GROUPS: PriceGroupFacts[] = [
     blurb: 'Not sure what’s wrong? Get a clear, ranked diagnosis first.',
     style: 'dark',
     packages: [
-      { name: 'Production audit', duration: '48 hours', price: '$349', detail: 'Reliability, search visibility and privacy — one plain-English report, ranked by business impact.' },
+      { name: 'Production audit', duration: `${promiseHours('audit_report')} hours`, price: '$349', detail: 'Reliability, search visibility and privacy — one plain-English report, ranked by business impact.' },
     ],
-    includes: ['Your biggest risk found free, on video, in 24h', 'Credited 100% toward any package', 'Nothing found? Full refund'],
+    includes: [`Your biggest risk found free, on video, in ${promiseHours('first_bug_video')}h`, 'Credited 100% toward any package', 'Nothing found? Full refund'],
   },
   {
     label: 'Step 2 · fix',
@@ -100,7 +102,7 @@ export const FREE_CARDS: FreeCardFacts[] = [
   {
     kind: 'Free · service',
     title: 'Free first-bug video',
-    body: 'Send your app link. Anadi films a 3-minute video of the biggest risk he finds — within 24 hours. Five a week.',
+    body: `Send your app link. Anadi films a 3-minute video of the biggest risk he finds — within ${promiseHours('first_bug_video')} hours. Five a week.`,
     style: 'feature',
   },
   {
@@ -112,7 +114,7 @@ export const FREE_CARDS: FreeCardFacts[] = [
   {
     kind: 'Paid add-on · $149',
     title: 'Recorded teardown',
-    body: 'Took the Wrapper Test and want the fix? Anadi records a 15–20 minute walkthrough of your product, plus a written fix list, in 48 hours. The $149 is credited in full toward the $349 audit or an AI build within 30 days.',
+    body: `Took the Wrapper Test and want the fix? Anadi records a 15–20 minute walkthrough of your product, plus a written fix list, in ${promiseHours('teardown')} hours. The $149 is credited in full toward the $349 audit or an AI build within 30 days.`,
     style: 'dashed',
   },
   {

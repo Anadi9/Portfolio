@@ -154,7 +154,7 @@ Proof
 
 Plan: `docs/superpowers/plans/2026-10-18-ticket-pipeline-brief-and-admin.md`.
 
-- [ ] `src/data/promises.ts` from the table above; `TURNAROUND_HOURS` and the
+- [x] `src/data/promises.ts` from the table above; `TURNAROUND_HOURS` and the
       site copy read from it.
 - [ ] Readable admin email with the reply-by time.
 - [ ] Outside-in scan of the app URL on every new ticket.

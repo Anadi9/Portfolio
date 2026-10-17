@@ -96,6 +96,7 @@ const GRAPH = [
   'src/lib/bit/prices.ts',
   'src/lib/bit/route.ts',
   'src/data/bitsQuestFacts.ts',
+  'src/data/promises.ts',
 ];
 
 /** Relative specifiers only: bare ones are resolved from node_modules, not by path. */
