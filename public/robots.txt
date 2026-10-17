@@ -63,5 +63,6 @@ Allow: /
 Disallow: /api/
 Disallow: /kit/
 Disallow: /admin
+Disallow: /portal
 
 Sitemap: https://anadithakur.in/sitemap.xml

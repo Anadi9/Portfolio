@@ -228,6 +228,13 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/Legal.tsx',
       })),
 
+      // A client's own requests. Prerendered as the sign-in form only (noindex);
+      // ticket data comes from `/api/portal` after sign-in.
+      {
+        path: '/portal',
+        lazy: () => import('./pages/Portal').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Portal.tsx',
+      },
       // Anadi's command centre. The prerendered HTML is the empty shell (noindex,
       // not in the sitemap); all data comes from `/api/admin` after login.
       {
