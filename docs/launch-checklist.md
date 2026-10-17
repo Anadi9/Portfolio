@@ -26,6 +26,7 @@ Vercel dashboard, your project, Settings, Environment Variables. Add each to **P
 | `ADMIN_PASSWORD` | Choose a long passphrase (a password manager's generator is fine). Production only, or a different one on Preview | Required for `/admin` | The command centre login | `/api/admin` answers 501 and `/admin` can't log in |
 | `ADMIN_SESSION_SECRET` | Make one: `openssl rand -base64 32`, different per environment. Changing it logs you out | Required for `/admin` | Signs the 12-hour admin session cookie | Same as above |
 | `ADMIN_EMAIL` | Your email address | Required for `/admin` | Login checks it next to the password | `/api/admin` answers 501 |
+| `PORTAL_SESSION_SECRET` | Make one: `openssl rand -base64 32`, different from `ADMIN_SESSION_SECRET` and per environment. Changing it signs every client out | Required for `/portal` | Client sign-in links and sessions | `/api/portal` answers 501; `/portal` shows the sign-in form but links can't be sent |
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | Run `npx web-push generate-vapid-keys` once and paste both. Same pair on Production and Preview is fine; changing them later needs every phone to re-enable alerts | Optional | Phone push for urgent Coach cards | Push skipped; email and feed still work |
 | `VAPID_SUBJECT` | `mailto:` plus your email, e.g. `mailto:you@example.com` | With the two above | Identifies you to the push services | Push skipped |
 | `ADMIN_RP_ID`, `ADMIN_ORIGIN` | Leave unset on Vercel (taken from the request host). Set only if a passkey must work across hosts | Optional | Passkey domain | Request host |
@@ -70,6 +71,7 @@ Done when: every row you need is set in Production and Preview, and you have red
 6. Apply `supabase/migrations/20261019000000_feed_items.sql` the same way, **once, after** the tickets migration. It creates the command centre's `feed_items` table (RLS on, no policies). Check with the anon key as in point 5, using `feed_items?select=*`: it must not return rows.
 7. Apply `supabase/migrations/20261020000000_coach.sql` the same way, **once, after** the feed migration. It creates Coach's `commitments` and `tasks` tables. Check `commitments?select=*` and `tasks?select=*` with the anon key: no rows.
 8. Apply `supabase/migrations/20261021000000_command_v2.sql` the same way, **once, after** the Coach migration. It adds `feed_items.assignee` and the `push_subscriptions` and `admin_passkeys` tables. Check both new tables with the anon key: no rows.
+9. Apply `supabase/migrations/20261022000000_portal.sql` the same way, **once, after** the v2 migration. It creates `portal_links`. Check it with the anon key: no rows.
 
 ## 3. Resend domain check
 
@@ -162,6 +164,8 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
    **Coach.** On the first-bug test ticket's page in `/admin`: the Coach box lists "Scan, brief and draft" (ticked) and "Record the video and send the first reply", and "Free first-bug video" shows "On track, due in 23h". Try moving the ticket to Audit before replying: it must refuse with "Not done: …". `curl -s https://<preview-url>/api/cron/heartbeat -H "Authorization: Bearer $CRON_SECRET"` returns `{"ok":true,"checked":…}`.
 
    **Command centre v2.** Log in with `ADMIN_EMAIL` + `ADMIN_PASSWORD`. Settings: "Add a passkey on this device" (do it on your phone and laptop), log out, log in again and confirm it asks for the passkey after the password. On the phone, open `/admin`, add it to the Home Screen, open it from there, and tap "Enable phone alerts". Numbers, Plan and Today show; Give to helper labels a card. `curl -s https://<preview-url>/api/cron/summary -H "Authorization: Bearer $CRON_SECRET"` returns `{"ok":true,"sent":…}` and, with a ticket from the last day, the "Morning:" email arrives.
+
+   **Client portal.** With two test tickets under two of your own addresses: on `/portal` ask for a link for the first, open it from the email, and see only that ticket (stage, timeline, sent messages; no brief, no drafts). Ask for a link with an address that has no ticket: the page says "check your email" and nothing arrives. Open a used link again: it is refused. Sign in as the second address in another browser and confirm it can't see the first's ticket.
 
    **Live board.** In the chat on the preview create **3 test tickets** with "Show my request on the public board" ticked. `GET /api/board` returns the count in `total`; below 3 the board shows its honest empty state. The kanban appears once 3 exist (`/api/board` is cached 5 minutes via `s-maxage=300`, so it can take that long). Then **delete the 3 test tickets** in Supabase (`tickets`, and their `clients`/`ticket_events`/`messages`/`briefs`/`notifications`/`feed_items` rows; deleting the `tickets` rows cascades to all but `clients`), and confirm the board goes back to its empty state. If this is the same Supabase project as production, do not leave test tickets behind.
 

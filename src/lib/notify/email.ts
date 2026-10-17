@@ -126,7 +126,7 @@ export function renderTicketReceipt(p: Record<string, unknown>): { subject: stri
   const first = text(p.name, 120).split(/\s+/)[0];
   const promise =
     kind === 'first_bug'
-      ? `<p>I'll send your first-bug video within <strong>24 hours</strong>. It's free, and you owe nothing after it.</p>`
+      ? `<p>I'll send your first-bug video within <strong>${promiseHours('first_bug_video')} hours</strong>. It's free, and you owe nothing after it.</p>`
       : `<p>I'll read it and reply by email, usually within a working day.</p>`;
   return {
     subject: `Got it: your ticket is ${number}`,
@@ -134,7 +134,7 @@ export function renderTicketReceipt(p: Record<string, unknown>): { subject: stri
       `<p>${first ? `Hi ${esc(first)},` : 'Hi,'}</p>
 <p>Your request is in. Your ticket number is <strong>${esc(number)}</strong> (${esc(kindLabel(kind))}). It is only a label so we can both refer to it; it doesn't give anyone access to anything.</p>
 ${promise}
-<p>Reply to this email if you want to add something.</p>
+<p>Reply to this email if you want to add something. You can see where it is any time at <a href="https://anadithakur.in/portal">anadithakur.in/portal</a> (sign in with this email address).</p>
 <p>Anadi</p>`,
     ),
   };

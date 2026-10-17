@@ -187,7 +187,7 @@ export function Privacy() {
             <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below), with the buttons you tapped in the chat so far. Your name, email and app link are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
             <><strong>When you leave a review:</strong> your name, role, company, rating, review and an optional photo. Nothing is shown publicly until I approve it.</>,
             <><strong>When you use the free Supabase check:</strong> the project URL and public key you enter are used for that one check and not stored or logged.</>,
-            <><strong>When you browse:</strong> anonymous page views and events (which page, which button, rough country, device type), and technical error reports from your browser (the error message, file, line and page path, with nothing that identifies you). No cookies.</>,
+            <><strong>When you browse:</strong> anonymous page views and events (which page, which button, rough country, device type), and technical error reports from your browser (the error message, file, line and page path, with nothing that identifies you). No cookies, except one if you sign in to see your requests (below).</>,
           ]}
         />
       </Section>
@@ -227,6 +227,12 @@ export function Privacy() {
           message you by hand from my own WhatsApp about that request, and you can tell me to stop at any time. The site does not
           send WhatsApp messages to you automatically. My replies are otherwise emails, and anything about price, scope or
           findings is written and sent by me.
+        </P>
+        <P>
+          You can follow your own requests at /portal. You sign in with a link I email to the address you used; it works once and
+          expires after 15 minutes. While you are signed in, the site keeps one strictly necessary cookie that says which client you
+          are, for up to 7 days or until you sign out. The portal shows only your own tickets: where each one is, what has happened
+          and the messages I have sent you. My internal notes and drafts are not shown.
         </P>
         <P>
           There is an optional public tracking board. A ticket appears on it only if you tick the box to allow it, and then only

@@ -216,11 +216,12 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 
 ## Phase 6: client portal (`/portal`)
 
-- [ ] Login with an emailed link (Supabase Auth).
-- [ ] The client sees only their own tickets: stage, timeline, report, messages.
-- [ ] Covers the whole journey: enquiry → first-bug video → audit → fix → live →
+- [x] Login with an emailed link (our own signed, single-use link rather than
+      Supabase Auth, so the database stays closed to the browser).
+- [x] The client sees only their own tickets: stage, timeline, report, messages.
+- [x] Covers the whole journey: enquiry → first-bug video → audit → fix → live →
       Care.
-- [ ] Test that one client can never read another's data.
+- [x] Test that one client can never read another's data.
 
 ## Phase 7: one audit engine and money
 

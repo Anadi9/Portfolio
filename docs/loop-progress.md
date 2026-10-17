@@ -32,6 +32,9 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 5 · Give to helper + migration `20261021000000_command_v2.sql` (`18e48ab`); installable `/admin` (manifest + service worker) and web push for urgent cards (`710841b`); email check + passkey login (`3858dd6`); 60 s polling, plan served without a database (`5829c06`).
 - Phase 5 browser-checked locally without a database: email + password login, Settings (passkeys, phone alerts), Plan tab. Passkey and push need HTTPS and a real device: check on the preview.
 - Phase 5 complete; `npm run build` green.
+- Phase 6 plan: `docs/superpowers/plans/2026-10-19-client-portal.md`.
+- Phase 6 · `clientView` strips briefs, drafts, Coach data, internal events, budget and contact details (`b07ad67`); single-use `portal_links` + client-scoped store (`e9cbb98`); `/api/portal` (emailed link, same answer for unknown emails, per-IP and per-email limits, 7-day session, isolation tests) (`0e38330`); `/portal` page (`ca0f66b`); receipt email links the portal, privacy/data map/checklist (`PHASE6`). Browser-checked the sign-in form locally; the signed-in views need real data (preview).
+- Phase 6 complete; `npm run build` green.
 
 ## Manual steps for Anadi
 
@@ -44,9 +47,15 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Apply `supabase/migrations/20261021000000_command_v2.sql` once, after the Coach migration.
 - Set `ADMIN_EMAIL`; generate VAPID keys (`npx web-push generate-vapid-keys`) and set `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
 - On the preview: add a passkey on phone and laptop, add `/admin` to the phone's Home Screen and enable phone alerts (launch checklist step 8, "Command centre v2").
+- Apply `supabase/migrations/20261022000000_portal.sql` once, after the v2 migration; set `PORTAL_SESSION_SECRET`.
+- On the preview, run the "Client portal" smoke test with two of your own addresses (launch checklist step 8).
 - Create the hourly cron-job.org job for `/api/cron/heartbeat` (launch checklist step 9.8) and run the "Coach" smoke test (step 8).
 
 ## Decisions to confirm
+
+- The portal signs clients in with our own emailed, signed, single-use link instead of Supabase Auth, so the database stays closed to the browser (Supabase Auth would need the anon key and per-client policies).
+- Clients can read in the portal but not write; they reply by email.
+- The sign-in link lives in the URL fragment (`#token=`), so it never reaches server logs or other sites.
 
 - New briefs no longer send an email each; the feed card plus the 08:30 summary covers them. The new-ticket email (the record of every enquiry) and the at-risk email (urgent) stay.
 - No Supabase Realtime: it would mean opening the database to the browser. `/admin` polls every 60 s while visible.

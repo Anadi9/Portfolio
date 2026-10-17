@@ -390,3 +390,12 @@ describe('Coach on new tickets', () => {
     expect(mem.commitments.filter((c) => c.ticketId === t.id).map((c) => c.promiseId)).toEqual(['first_bug_video']);
   });
 });
+
+describe('ticket receipt', () => {
+  it('points to the portal and quotes the promise list', async () => {
+    const { renderTicketReceipt } = await import('./email');
+    const { html } = renderTicketReceipt({ number: 'A-1001', kind: 'first_bug', name: 'Jo' });
+    expect(html).toContain('https://anadithakur.in/portal');
+    expect(html).toContain('<strong>24 hours</strong>');
+  });
+});
