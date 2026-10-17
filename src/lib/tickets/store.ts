@@ -11,8 +11,13 @@ import {
   type Ticket,
   type TicketDetail,
   type TicketRow,
+  type TicketKind,
   type TicketStage,
 } from './types.js';
+import type { CoachTask, Commitment } from '../coach/types.js';
+import type { CommitmentStatus } from '../coach/rules.js';
+import type { TaskTemplate } from '../coach/stages.js';
+import type { PromiseId } from '../../data/promises.js';
 import { FEED_BODY_MAX, FEED_TITLE_MAX, feedOrder, type FeedItem, type NewFeedItem } from '../feed/types.js';
 
 /**
@@ -63,7 +68,20 @@ export interface TicketStore {
   snoozeFeed(id: string, until: Date): Promise<void>;
   /** Closes every open card about `ref` (e.g. a draft once it's sent). */
   doneFeedFor(ref: string): Promise<void>;
+  /** Coach (master plan Phase 4). */
+  openCommitment(c: { ticketId: string | null; promiseId: PromiseId; dueAt: string; openedAt?: string }): Promise<Commitment>;
+  /** Open and at-risk commitments, soonest due first. */
+  liveCommitments(): Promise<Commitment[]>;
+  /** `kept` or `missed` also stamps `closedAt`. */
+  updateCommitment(id: string, patch: { status?: CommitmentStatus; missReason?: string; alertedStatus?: string }): Promise<void>;
+  /** Ignores a task that already exists for this ticket, stage and key. */
+  addTasks(ticketId: string, stage: TicketStage, tasks: TaskTemplate[]): Promise<void>;
+  /** False when the ticket has no open task with that key. */
+  completeTask(ticketId: string, key: string): Promise<boolean>;
+  countTickets(opts: { kind: TicketKind; since: string }): Promise<number>;
 }
+
+const closes = (s?: CommitmentStatus) => s === 'kept' || s === 'missed';
 
 /** The row a new card becomes, shared so both stores clip alike. */
 export const feedRow = (item: NewFeedItem) => ({
@@ -128,6 +146,31 @@ const toFeed = (r: Row): FeedItem => ({
   createdAt: r.created_at,
   doneAt: r.done_at,
   snoozedUntil: r.snoozed_until,
+});
+
+const toCommitment = (r: Row): Commitment => ({
+  id: r.id,
+  ticketId: r.ticket_id,
+  promiseId: r.promise_id,
+  openedAt: r.opened_at,
+  dueAt: r.due_at,
+  status: r.status,
+  closedAt: r.closed_at,
+  missReason: r.miss_reason,
+  alertedStatus: r.alerted_status,
+});
+
+const toTask = (r: Row): CoachTask => ({
+  id: r.id,
+  ticketId: r.ticket_id,
+  stage: r.stage,
+  key: r.key,
+  owner: r.owner,
+  title: r.title,
+  doneWhen: r.done_when ?? '',
+  status: r.status,
+  createdAt: r.created_at,
+  doneAt: r.done_at,
 });
 
 const toMessage = (r: Row): Message => ({
@@ -269,7 +312,7 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
       if (!UUID.test(id)) return null;
       const { data, error } = await db
         .from('tickets')
-        .select('*, clients(name, email, whatsapp), ticket_events(type, data, at), messages(*), briefs(body, created_at)')
+        .select('*, clients(name, email, whatsapp), ticket_events(type, data, at), messages(*), briefs(body, created_at), commitments(*), tasks(*)')
         .eq('id', id)
         .maybeSingle();
       if (error) fail('get ticket', error);
@@ -281,6 +324,8 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
         events: ((data.ticket_events ?? []) as Row[]).map((e) => ({ type: e.type, data: e.data ?? {}, at: e.at })).sort((a, b) => a.at.localeCompare(b.at)),
         messages: ((data.messages ?? []) as Row[]).map(toMessage).sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
         brief: latest(data.briefs)?.body ?? null,
+        commitments: ((data.commitments ?? []) as Row[]).map(toCommitment).sort((a, b) => a.openedAt.localeCompare(b.openedAt)),
+        tasks: ((data.tasks ?? []) as Row[]).map(toTask).sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
       };
     },
 
@@ -399,6 +444,60 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async doneFeedFor(ref) {
       const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('ref', ref).is('done_at', null);
       if (error) fail('done feed for', error);
+    },
+
+    async openCommitment(c) {
+      const { data, error } = await db
+        .from('commitments')
+        .insert({ ticket_id: c.ticketId, promise_id: c.promiseId, due_at: c.dueAt, ...(c.openedAt ? { opened_at: c.openedAt } : {}) })
+        .select('*')
+        .single();
+      if (error) fail('open commitment', error);
+      return toCommitment(data);
+    },
+
+    async liveCommitments() {
+      const { data, error } = await db.from('commitments').select('*').in('status', ['open', 'at_risk']).order('due_at', { ascending: true }).limit(500);
+      if (error) fail('live commitments', error);
+      return (data as Row[]).map(toCommitment);
+    },
+
+    async updateCommitment(id, patch) {
+      const row: Row = {};
+      if (patch.status) row.status = patch.status;
+      if (closes(patch.status)) row.closed_at = new Date().toISOString();
+      if (patch.missReason !== undefined) row.miss_reason = patch.missReason.slice(0, 1000);
+      if (patch.alertedStatus !== undefined) row.alerted_status = patch.alertedStatus;
+      if (!Object.keys(row).length) return;
+      const { error } = await db.from('commitments').update(row).eq('id', id);
+      if (error) fail('update commitment', error);
+    },
+
+    async addTasks(ticketId, stage, tasks) {
+      if (!tasks.length) return;
+      const { error } = await db.from('tasks').upsert(
+        tasks.map((t) => ({ ticket_id: ticketId, stage, key: t.key, owner: t.owner, title: t.title, done_when: t.doneWhen })),
+        { onConflict: 'ticket_id,stage,key', ignoreDuplicates: true },
+      );
+      if (error) fail('add tasks', error);
+    },
+
+    async completeTask(ticketId, key) {
+      const { data, error } = await db
+        .from('tasks')
+        .update({ status: 'done', done_at: new Date().toISOString() })
+        .eq('ticket_id', ticketId)
+        .eq('key', key)
+        .eq('status', 'open')
+        .select('id');
+      if (error) fail('complete task', error);
+      return (data ?? []).length > 0;
+    },
+
+    async countTickets({ kind, since }) {
+      const { count, error } = await db.from('tickets').select('id', { count: 'exact', head: true }).eq('kind', kind).gte('created_at', since);
+      if (error) fail('count tickets', error);
+      return count ?? 0;
     },
   };
 }

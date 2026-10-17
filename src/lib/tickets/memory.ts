@@ -1,5 +1,6 @@
 import { feedRow, firstSent, MAX_ATTEMPTS, statusAfter, type TicketStore } from './store';
 import { feedOrder, isOpen, type FeedItem } from '../feed/types';
+import type { CoachTask, Commitment } from '../coach/types';
 import { NewTicketSchema, type BoardTicket, type Message, type Notification, type Scorecard, type Ticket } from './types';
 
 /**
@@ -18,6 +19,8 @@ export function memoryTicketStore() {
   const briefs: { ticketId: string; body: Record<string, unknown>; createdAt: string }[] = [];
   const scorecards: Scorecard[] = [];
   const feed: FeedItem[] = [];
+  const commitments: Commitment[] = [];
+  const tasks: CoachTask[] = [];
   const id = (p: string) => `${p}_${++n}`;
   const now = () => new Date(Date.UTC(2026, 9, 16) + n * 1000).toISOString();
 
@@ -102,6 +105,8 @@ export function memoryTicketStore() {
         events: events.filter((e) => e.ticketId === tid).map(({ type, data, at }) => ({ type, data, at })),
         messages: messages.filter((x) => x.ticketId === tid).map((x) => ({ ...x })),
         brief: b ? { ...b.body } : null,
+        commitments: commitments.filter((c) => c.ticketId === tid).map((c) => ({ ...c })),
+        tasks: tasks.filter((x) => x.ticketId === tid).map((x) => ({ ...x })),
       };
     },
     async listTickets(opts = {}) {
@@ -181,6 +186,51 @@ export function memoryTicketStore() {
     async doneFeedFor(ref) {
       for (const f of feed) if (f.ref === ref && !f.doneAt) f.doneAt = now();
     },
+    async openCommitment(c) {
+      const row: Commitment = {
+        id: id('commit'),
+        ticketId: c.ticketId,
+        promiseId: c.promiseId,
+        openedAt: c.openedAt ?? now(),
+        dueAt: new Date(c.dueAt).toISOString(),
+        status: 'open',
+        closedAt: null,
+        missReason: null,
+        alertedStatus: null,
+      };
+      commitments.push(row);
+      return { ...row };
+    },
+    async liveCommitments() {
+      return commitments
+        .filter((c) => c.status === 'open' || c.status === 'at_risk')
+        .sort((a, b) => a.dueAt.localeCompare(b.dueAt))
+        .map((c) => ({ ...c }));
+    },
+    async updateCommitment(cid, patch) {
+      const c = commitments.find((x) => x.id === cid);
+      if (!c) return;
+      if (patch.status) c.status = patch.status;
+      if (patch.status === 'kept' || patch.status === 'missed') c.closedAt = now();
+      if (patch.missReason !== undefined) c.missReason = patch.missReason.slice(0, 1000);
+      if (patch.alertedStatus !== undefined) c.alertedStatus = patch.alertedStatus;
+    },
+    async addTasks(ticketId, stage, list) {
+      for (const t of list) {
+        if (tasks.some((x) => x.ticketId === ticketId && x.stage === stage && x.key === t.key)) continue;
+        tasks.push({ id: id('task'), ticketId, stage, key: t.key, owner: t.owner, title: t.title, doneWhen: t.doneWhen, status: 'open', createdAt: now(), doneAt: null });
+      }
+    },
+    async completeTask(ticketId, key) {
+      const t = tasks.find((x) => x.ticketId === ticketId && x.key === key && x.status === 'open');
+      if (!t) return false;
+      t.status = 'done';
+      t.doneAt = now();
+      return true;
+    },
+    async countTickets({ kind, since }) {
+      return tickets.filter((t) => t.kind === kind && t.createdAt >= new Date(since).toISOString()).length;
+    },
   };
-  return { store, clients, tickets, events, notifications, messages, briefs, scorecards, feed };
+  return { store, clients, tickets, events, notifications, messages, briefs, scorecards, feed, commitments, tasks };
 }

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { CoachTask, Commitment } from '../coach/types.js';
 
 export const TICKET_KINDS = ['first_bug', 'audit', 'build', 'care', 'question', 'teardown'] as const;
 export const TICKET_STAGES = ['inbox', 'bug_review', 'audit', 'fixing', 'live', 'closed'] as const;
@@ -106,6 +107,8 @@ export type TicketDetail = Ticket & {
   messages: Message[];
   /** The latest brief's body, or null before `processTicket` has run. */
   brief: Record<string, unknown> | null;
+  commitments: Commitment[];
+  tasks: CoachTask[];
 };
 
 /** One line of the Tickets tab. */

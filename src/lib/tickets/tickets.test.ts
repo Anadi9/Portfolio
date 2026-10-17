@@ -214,3 +214,53 @@ describe('ticket detail methods', () => {
     expect(await m.store.ticketsMissingBrief()).toEqual([b.id]);
   });
 });
+
+describe('coach store methods', () => {
+  it('opens commitments and lists the live ones, soonest first', async () => {
+    const m = memoryTicketStore();
+    const t = await m.store.createTicket(base);
+    const late = await m.store.openCommitment({ ticketId: t.id, promiseId: 'audit_report', dueAt: '2026-10-21T00:00:00Z' });
+    const soon = await m.store.openCommitment({ ticketId: t.id, promiseId: 'first_bug_video', dueAt: '2026-10-19T00:00:00Z' });
+    const done = await m.store.openCommitment({ ticketId: null, promiseId: 'daily_scorecard', dueAt: '2026-10-19T00:00:00Z' });
+    expect(soon).toMatchObject({ status: 'open', closedAt: null, missReason: null, alertedStatus: null });
+    await m.store.updateCommitment(done.id, { status: 'kept' });
+    expect((await m.store.liveCommitments()).map((c) => c.id)).toEqual([soon.id, late.id]);
+    await m.store.updateCommitment(soon.id, { status: 'at_risk', alertedStatus: 'at_risk' });
+    expect((await m.store.liveCommitments())[0]).toMatchObject({ status: 'at_risk', alertedStatus: 'at_risk', closedAt: null });
+  });
+
+  it('stamps closedAt when kept or missed and keeps the reason', async () => {
+    const m = memoryTicketStore();
+    const t = await m.store.createTicket(base);
+    const c = await m.store.openCommitment({ ticketId: t.id, promiseId: 'first_bug_video', dueAt: '2026-10-19T00:00:00Z' });
+    await m.store.updateCommitment(c.id, { status: 'missed' });
+    await m.store.updateCommitment(c.id, { missReason: 'Down with flu' });
+    const d = await m.store.getTicket(t.id);
+    expect(d!.commitments).toMatchObject([{ id: c.id, status: 'missed', missReason: 'Down with flu' }]);
+    expect(d!.commitments[0].closedAt).not.toBeNull();
+  });
+
+  it('adds tasks once per ticket, stage and key, and completes them', async () => {
+    const m = memoryTicketStore();
+    const t = await m.store.createTicket(base);
+    const tpl = [{ key: 'brief', owner: 'coach' as const, title: 'Brief', doneWhen: 'It exists' }];
+    await m.store.addTasks(t.id, 'inbox', tpl);
+    await m.store.addTasks(t.id, 'inbox', tpl);
+    expect((await m.store.getTicket(t.id))!.tasks).toHaveLength(1);
+    expect(await m.store.completeTask(t.id, 'brief')).toBe(true);
+    expect(await m.store.completeTask(t.id, 'brief')).toBe(false);
+    expect(await m.store.completeTask(t.id, 'nope')).toBe(false);
+    const task = (await m.store.getTicket(t.id))!.tasks[0];
+    expect(task).toMatchObject({ status: 'done', stage: 'inbox', owner: 'coach' });
+    expect(task.doneAt).not.toBeNull();
+  });
+
+  it('counts tickets of a kind since a time', async () => {
+    const m = memoryTicketStore();
+    await m.store.createTicket(base);
+    await m.store.createTicket(base);
+    await m.store.createTicket({ ...base, kind: 'audit' });
+    expect(await m.store.countTickets({ kind: 'first_bug', since: '2000-01-01T00:00:00Z' })).toBe(2);
+    expect(await m.store.countTickets({ kind: 'first_bug', since: '2100-01-01T00:00:00Z' })).toBe(0);
+  });
+});
