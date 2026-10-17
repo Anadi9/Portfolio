@@ -114,6 +114,7 @@ const GRAPH = [
   'src/lib/coach/hooks.ts',
   'src/server/cron/heartbeat.ts',
   'src/server/cron/summary.ts',
+  'src/server/cron/care.ts',
   'src/lib/command/numbers.ts',
   'src/lib/command/today.ts',
   'src/lib/command/plan.ts',

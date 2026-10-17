@@ -154,6 +154,10 @@
       "schedule": "0 6 * * *"
     },
     {
+      "path": "/api/cron/care",
+      "schedule": "0 2 * * *"
+    },
+    {
       "path": "/api/cron/summary",
       "schedule": "0 3 * * *"
     },

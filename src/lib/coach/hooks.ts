@@ -23,6 +23,10 @@ async function safely(what: string, ticket: { number: string }, work: () => Prom
 export function onTicketCreated(store: TicketStore, ticket: Ticket, now = new Date()): Promise<void> {
   return safely('ticket created', ticket, async () => {
     await store.addTasks(ticket.id, 'inbox', STAGE_RULES.inbox.tasks);
+    if (ticket.kind === 'care') {
+      await store.openCommitment({ ticketId: ticket.id, promiseId: 'care_review', openedAt: ticket.createdAt, dueAt: dueFrom('care_review', ticket.createdAt) });
+      return;
+    }
     if (ticket.kind !== 'first_bug') return;
     await store.openCommitment({ ticketId: ticket.id, promiseId: 'first_bug_video', openedAt: ticket.createdAt, dueAt: dueFrom('first_bug_video', ticket.createdAt) });
     const thisWeek = await store.countTickets({ kind: 'first_bug', since: weekStartIst(now).toISOString() });
@@ -41,6 +45,12 @@ export function onTicketCreated(store: TicketStore, ticket: Ticket, now = new Da
 
 export function onReplySent(store: TicketStore, ticket: TicketDetail, messageKind: string, now = new Date()): Promise<void> {
   return safely('reply sent', ticket, async () => {
+    if (messageKind === 'care_review') {
+      const live = ticket.commitments.find((c) => c.promiseId === 'care_review' && (c.status === 'open' || c.status === 'at_risk'));
+      if (live) await store.updateCommitment(live.id, { status: 'kept' });
+      await store.openCommitment({ ticketId: ticket.id, promiseId: 'care_review', openedAt: now.toISOString(), dueAt: dueFrom('care_review', now) });
+      return;
+    }
     if (messageKind === 'audit_report') {
       if (await store.completeTask(ticket.id, 'audit_report')) await onTaskDone(store, ticket, 'audit_report', now);
       return;

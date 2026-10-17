@@ -19,6 +19,7 @@ export const JOURNEY: Record<TicketStage, { label: string; about: string }> = {
 const EVENT_LABEL: Record<string, (data: Record<string, unknown>) => string> = {
   created: () => 'Request received',
   reply_sent: () => 'Anadi replied',
+  care_check: (d) => (typeof d.overall === 'number' ? `Monthly health check: ${d.overall}/100` : 'Monthly health check'),
   stage: (d) => `Moved to ${JOURNEY[d.to as TicketStage]?.label ?? 'the next step'}`,
 };
 
