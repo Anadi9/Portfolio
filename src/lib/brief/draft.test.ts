@@ -46,6 +46,7 @@ describe('draftFirstReply', () => {
   it('spots unfilled placeholders', () => {
     expect(hasPlaceholder(`x ${VIDEO_PLACEHOLDER}`)).toBe(true);
     expect(hasPlaceholder(`x ${PRICE_PLACEHOLDER}`)).toBe(true);
+    expect(hasPlaceholder('Checked. [ANADI: confirm or remove]')).toBe(true);
     expect(hasPlaceholder('All filled in. See [1].')).toBe(false);
   });
 });

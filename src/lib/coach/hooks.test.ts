@@ -100,3 +100,14 @@ describe('onTaskDone and keepCommitment', () => {
     expect(m.commitments.filter((c) => c.promiseId === 'daily_update')).toHaveLength(1);
   });
 });
+
+describe('onReplySent for reports', () => {
+  it('sending the audit report ticks its task and keeps the 48h promise', async () => {
+    const m = memoryTicketStore();
+    const t = await ticket(m);
+    await onStageEntered(m.store, (await m.store.getTicket(t.id))!, 'audit', NOW);
+    await onReplySent(m.store, (await m.store.getTicket(t.id))!, 'audit_report', NOW);
+    expect(m.tasks.find((x) => x.key === 'audit_report')!.status).toBe('done');
+    expect(m.commitments.find((c) => c.promiseId === 'audit_report')!.status).toBe('kept');
+  });
+});

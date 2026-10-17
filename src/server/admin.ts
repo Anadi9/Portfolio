@@ -16,6 +16,10 @@ import { awaySummary, pickToday } from '../lib/command/today.js';
 import { parsePlan, summarisePlan } from '../lib/command/plan.js';
 import { MASTER_PLAN_MD } from '../data/plan.generated.js';
 import { pushConfigured } from '../lib/command/push.js';
+import { scanLead } from '../lib/brief/scan.js';
+import { fromLeadScan } from '../lib/engine/adapters.js';
+import { combine } from '../lib/engine/combine.js';
+import { draftReport } from '../lib/engine/report.js';
 import { TICKET_STAGES } from '../lib/tickets/types.js';
 
 /**
@@ -62,6 +66,7 @@ const Op = z.discriminatedUnion('op', [
   z.object({ op: z.literal('get'), id: z.string().min(1).max(80) }),
   z.object({ op: z.literal('stage'), id: z.string().min(1).max(80), stage: z.enum(TICKET_STAGES) }),
   z.object({ op: z.literal('saveDraft'), id: z.string().min(1).max(80), messageId: z.string().min(1).max(80), subject: z.string().max(200), body: z.string().max(5000) }),
+  z.object({ op: z.literal('draftReport'), id: z.string().min(1).max(80) }),
   z.object({ op: z.literal('taskDone'), id: z.string().min(1).max(80), key: z.string().min(1).max(60) }),
   z.object({ op: z.literal('keep'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80) }),
   z.object({ op: z.literal('missReason'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80), reason: z.string().trim().min(1).max(1000) }),
@@ -75,6 +80,8 @@ export type AdminDeps = {
   /** The fixed pause after a wrong password. */
   delay: (ms: number) => Promise<void>;
   passkeys?: PasskeyDeps;
+  /** The outside-in scan the report engine runs; injectable for tests. */
+  scan?: typeof scanLead;
 };
 
 const cookie = (value: string, maxAge: number, name = COOKIE) =>
@@ -255,6 +262,17 @@ export function createAdminHandler(deps: AdminDeps) {
           await dispatch(store, rows, { ...liveDeps(deps.env), resend: deps.resend });
         }
         return res.status(200).json({ ok: true });
+      }
+
+      case 'draftReport': {
+        const ticket = await store.getTicket(body.id);
+        if (!ticket) return res.status(404).json({ error: 'no such ticket' });
+        const scan = await (deps.scan ?? scanLead)(ticket.appUrl);
+        const result = combine(fromLeadScan(scan), 'error' in scan ? [] : ['visibility', 'security']);
+        const draft = draftReport({ number: ticket.number, appUrl: ticket.appUrl, result });
+        const messageId = await store.saveDraftMessage(ticket.id, 'audit_report', joinDraft(draft), 'email');
+        await store.postFeed({ ticketId: ticket.id, bot: 'bit', kind: 'draft_ready', title: `${ticket.number} · audit report drafted`, body: `${result.findings.length} findings; overall ${result.overall ?? '—'}/100`, action: 'approve_send', ref: messageId });
+        return res.status(200).json({ ok: true, messageId, overall: result.overall });
       }
 
       case 'taskDone': {

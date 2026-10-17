@@ -55,6 +55,7 @@ export const admin = {
   stage: (id: string, stage: TicketStage) => call<Ok>({ op: 'stage', id, stage }),
   saveDraft: (id: string, messageId: string, subject: string, body: string) => call<Ok>({ op: 'saveDraft', id, messageId, subject, body }),
   send: (id: string, messageId: string, subject: string, body: string) => call<Ok>({ op: 'send', id, messageId, subject, body }),
+  draftReport: (id: string) => call<{ ok: true; messageId: string; overall: number | null }>({ op: 'draftReport', id }),
   taskDone: (id: string, key: string) => call<Ok>({ op: 'taskDone', id, key }),
   keep: (id: string, commitmentId: string) => call<Ok>({ op: 'keep', id, commitmentId }),
   missReason: (id: string, commitmentId: string, reason: string) => call<Ok>({ op: 'missReason', id, commitmentId, reason }),

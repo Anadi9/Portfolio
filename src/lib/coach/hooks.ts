@@ -40,8 +40,11 @@ export function onTicketCreated(store: TicketStore, ticket: Ticket, now = new Da
 }
 
 export function onReplySent(store: TicketStore, ticket: TicketDetail, messageKind: string, now = new Date()): Promise<void> {
-  void now;
   return safely('reply sent', ticket, async () => {
+    if (messageKind === 'audit_report') {
+      if (await store.completeTask(ticket.id, 'audit_report')) await onTaskDone(store, ticket, 'audit_report', now);
+      return;
+    }
     if (messageKind !== 'first_reply') return;
     await store.completeTask(ticket.id, 'first_reply');
     for (const c of ticket.commitments) {

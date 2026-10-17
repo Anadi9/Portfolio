@@ -760,6 +760,17 @@ function TicketView({ id, focus, guard, back }: { id: string; focus?: string; gu
           {t.appUrl ? ` · ${t.appUrl}` : ''}
         </p>
         <StagePicker ticket={t} guard={guard} onChanged={load} />
+        {(t.stage === 'audit' || t.kind === 'audit') && (
+          <button
+            type="button"
+            style={{ ...btn, justifySelf: 'start' }}
+            onClick={async () => {
+              if (guard(await admin.draftReport(t.id))) load();
+            }}
+          >
+            Draft the audit report from a fresh scan
+          </button>
+        )}
       </div>
 
       <CoachBox ticket={t} guard={guard} onChanged={load} />
@@ -1006,7 +1017,7 @@ function DraftEditor({ ticketId, message, autoFocus, guard, onSent }: { ticketId
         Message
         <textarea ref={ref} value={body} onChange={(e) => setBody(e.target.value)} rows={12} style={field} />
       </label>
-      {hasPlaceholder(body) && <p style={{ ...small, color: 'var(--bq-brand)' }}>Fill in the [PASTE LOOM LINK] and [PRICE] placeholders before sending.</p>}
+      {hasPlaceholder(body) && <p style={{ ...small, color: 'var(--bq-brand)' }}>Fill in or delete every [PASTE …], [PRICE] and [ANADI: …] placeholder before sending.</p>}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button
           type="button"

@@ -359,3 +359,18 @@ describe('/api/admin plan without a database', () => {
     expect((await call({ op: 'plan' }, { cookie: authed() })).statusCode).toBe(200);
   });
 });
+
+describe('/api/admin draftReport', () => {
+  it('runs the engine and saves a report draft with a card', async () => {
+    const scan = vi.fn().mockResolvedValue({ ok: true, url: 'https://a.example/', readiness: { score: 40, topFixes: [{ id: 'r', label: 'Content is not in the HTML' }] }, headers: { present: [], missing: ['Content-Security-Policy'] }, ms: 1 });
+    handler = createAdminHandler({ store: () => mem.store, env, resend: null, delay: async () => {}, scan });
+    const t = await mem.store.createTicket({ ...ticketInput, kind: 'audit' });
+    const res = await call({ op: 'draftReport', id: t.id }, { cookie: authed() });
+    expect(res.statusCode).toBe(200);
+    expect(scan).toHaveBeenCalledWith('a.example');
+    expect(mem.messages).toMatchObject([{ kind: 'audit_report', status: 'draft' }]);
+    expect(mem.messages[0].body).toContain('Content is not in the HTML');
+    expect(mem.feed.at(-1)).toMatchObject({ kind: 'draft_ready', action: 'approve_send', ref: mem.messages[0].id });
+    expect((await call({ op: 'draftReport', id: 'nope' }, { cookie: authed() })).statusCode).toBe(404);
+  });
+});

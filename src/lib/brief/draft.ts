@@ -14,7 +14,7 @@ export const PRICE_PLACEHOLDER = '[PRICE]';
 
 const MAX_BODY = 1500;
 
-export const hasPlaceholder = (body: string) => body.includes('[PASTE') || body.includes(PRICE_PLACEHOLDER);
+export const hasPlaceholder = (body: string) => body.includes('[PASTE') || body.includes('[ANADI') || body.includes(PRICE_PLACEHOLDER);
 
 export function draftFirstReply(input: {
   number: string;
