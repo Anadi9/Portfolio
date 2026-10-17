@@ -168,3 +168,16 @@ describe('/api/admin operations', () => {
     expect(String(res.headers['set-cookie'])).toContain('Max-Age=0');
   });
 });
+
+describe('/api/admin and Coach', () => {
+  it('sending the first reply keeps the 24h promise and opens the next stage’s task', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    await mem.store.openCommitment({ ticketId: t.id, promiseId: 'first_bug_video', dueAt: new Date(Date.now() + 3_600_000).toISOString() });
+    await mem.store.addTasks(t.id, 'inbox', [{ key: 'first_reply', owner: 'anadi', title: 'Reply', doneWhen: 'Sent' }]);
+    const mid = await mem.store.saveDraftMessage(t.id, 'first_reply', 'x', 'email');
+    await call({ op: 'send', id: t.id, messageId: mid, subject: 'S', body: 'ok' }, { cookie: authed() });
+    expect(mem.commitments[0].status).toBe('kept');
+    expect(mem.tasks.find((x) => x.key === 'first_reply')!.status).toBe('done');
+    expect(mem.tasks.find((x) => x.key === 'next_step')).toMatchObject({ stage: 'bug_review', status: 'open' });
+  });
+});

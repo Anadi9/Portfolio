@@ -1,6 +1,7 @@
 import { ticketStore, type TicketStore } from '../tickets/store.js';
 import type { NewNotification, NewTicket, Ticket } from '../tickets/types.js';
 import { processInBackground } from '../brief/background.js';
+import { onTicketCreated } from '../coach/hooks.js';
 import { dispatch, type NotifyDeps } from './dispatch.js';
 import { kindLabel } from './email.js';
 import { liveDeps } from './live.js';
@@ -59,6 +60,7 @@ async function notifyFor(store: TicketStore, ticket: Ticket, input: NewTicket, p
       boardOptIn: input.boardOptIn ?? false,
       answers: input.answers,
     };
+    await onTicketCreated(store, ticket);
     await store
       .postFeed({
         ticketId: ticket.id,

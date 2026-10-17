@@ -8,6 +8,7 @@ import { liveDeps } from '../lib/notify/live.js';
 import { withErrorLog } from '../lib/monitoring/with-error-log.js';
 import { clientIp, createRateLimiter } from '../lib/scan/rate-limit.js';
 import { ticketStore, type TicketStore } from '../lib/tickets/store.js';
+import { onReplySent, onStageEntered } from '../lib/coach/hooks.js';
 import { TICKET_STAGES } from '../lib/tickets/types.js';
 
 /**
@@ -113,6 +114,7 @@ export function createAdminHandler(deps: AdminDeps) {
         if (ticket.stage === body.stage) return res.status(200).json({ ok: true });
         await store.setStage(ticket.id, body.stage);
         await store.addEvent(ticket.id, 'stage', { from: ticket.stage, to: body.stage });
+        await onStageEntered(store, ticket, body.stage);
         if (!SILENT_STAGES.has(body.stage)) {
           const rows = await store.enqueueNotifications([
             {
@@ -144,9 +146,11 @@ export function createAdminHandler(deps: AdminDeps) {
         await store.updateMessage(body.messageId, { body: joinDraft({ subject: body.subject, body: body.body }), status: 'sent' });
         await store.addEvent(ticket.id, 'reply_sent', { messageId: body.messageId });
         await store.doneFeedFor(body.messageId);
+        await onReplySent(store, ticket, found.message.kind);
         if (ticket.kind === 'first_bug' && ticket.stage === 'inbox') {
           await store.setStage(ticket.id, 'bug_review');
           await store.addEvent(ticket.id, 'stage', { from: 'inbox', to: 'bug_review' });
+          await onStageEntered(store, ticket, 'bug_review');
         }
         return res.status(200).json({ ok: true });
       }

@@ -381,3 +381,12 @@ describe('ticket background work', () => {
     expect(processMock).toHaveBeenCalledTimes(5);
   });
 });
+
+describe('Coach on new tickets', () => {
+  it('opens the inbox tasks and the first-bug promise', async () => {
+    await post({ ...valid, kind: 'first_bug' });
+    const t = mem.tickets.at(-1)!;
+    expect(mem.tasks.filter((x) => x.ticketId === t.id).map((x) => x.key)).toEqual(['brief', 'first_reply']);
+    expect(mem.commitments.filter((c) => c.ticketId === t.id).map((c) => c.promiseId)).toEqual(['first_bug_video']);
+  });
+});

@@ -41,6 +41,7 @@ export async function processTicket(store: TicketStore, ticketId: string, deps: 
   const draft = draftFirstReply({ number: ticket.number, kind: ticket.kind, name: ticket.client.name, appUrl: ticket.appUrl, brief });
   const messageId = await store.saveDraftMessage(ticket.id, 'first_reply', joinDraft(draft), 'email');
   await store.addEvent(ticket.id, 'brief_ready', { source: brief.source, scanOk: scan.ok });
+  await store.completeTask(ticket.id, 'brief').catch((err) => console.error('[coach] brief task', ticket.number, err));
 
   const card = await store.postFeed({
     ticketId: ticket.id,
