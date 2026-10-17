@@ -1,5 +1,7 @@
 # SEO / GEO / AEO — todo
 
+Part of `docs/master-plan.md` ("Running alongside"); the plan lists the items worth scheduling.
+
 Audited against the built `dist/` on 1 Sep 2026. The foundations are done: every
 route prerenders real HTML, `components/Seo.tsx` owns title/description/canonical/OG
 per page, `index.html` carries only invariants, `sitemap.xml` and `rss.xml` are
@@ -134,19 +136,20 @@ crawlable by the right bots, and put the answer where a machine can lift it.
       August 2026, priced at $X/M tokens" is liftable; "the new cheap model" is
       not. This is the difference between being read and being cited.
       > 16 Oct 2026 (Task 4): content writing.
-- [ ] **Keep the cheat sheet's `LAST VERIFIED` stamp current.** Already flagged
-      in `notes-plan.md` §4 as a maintenance risk; it's also an AEO risk, since
-      a stale-dated page is deprioritised for anything time-sensitive.
+- [ ] **Keep the cheat sheet's `LAST VERIFIED` stamp current.** A maintenance
+      risk and an AEO risk, since a stale-dated page is deprioritised for
+      anything time-sensitive.
       > 16 Oct 2026 (Task 4): recurring maintenance task.
 
 ## P4 — performance and measurement
 
-- [ ] **Self-host Archivo and JetBrains Mono.** `index.html` blocks render on a
-      Google Fonts stylesheet (external DNS + connection before first paint).
-      Preconnect helps but self-hosting with `font-display: swap` and a preload
-      of the two actual woff2 files removes the round trip. LCP is the CWV that
-      most affects ranking, and the H1 is huge display type.
-      > 16 Oct 2026 (Task 4): needs `index.html` (shared with the portfolio, off limits here); main-site pages load fonts through `Seo`.
+- [ ] **Self-host the brand fonts.** Main-site pages load Space Grotesk,
+      Press Start 2P and Jersey 10 from a Google Fonts stylesheet added by
+      `Seo` (`src/components/Seo.tsx`), so first paint waits on an external
+      DNS lookup and connection. Self-hosting the woff2 files with
+      `font-display: swap` and a preload removes the round trip. LCP is the CWV
+      that most affects ranking, and the hero is large display type.
+      > 18 Oct 2026: the site no longer uses Archivo. `index.html` (Instrument Sans, JetBrains Mono, Pixelify Sans, Silkscreen) is shared with the portfolio and stays off limits; do the brand fonts through `Seo` only.
 - [ ] **Measure real CWV**, not just Lighthouse. Vercel Analytics is wired
       (`a872b2f`); confirm Speed Insights is on and watch INP on the GSAP/Lenis
       front page specifically.
@@ -167,4 +170,4 @@ crawlable by the right bots, and put the answer where a machine can lift it.
 - `hreflang` — single language, single region.
 - `changefreq` in the sitemap — ignored by every major engine.
 - Keyword density / meta keywords — dead for a decade.
-- A subdomain for notes — already resolved against in `notes-plan.md` §1.
+- A subdomain for notes — decided against; notes stay at `/notes`.
