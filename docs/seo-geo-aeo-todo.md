@@ -65,12 +65,12 @@ crawlable by the right bots, and put the answer where a machine can lift it.
 - [x] **`BreadcrumbList` on every post.** Home → Notes → {stream} → post. Cheap,
       and it's what puts the readable breadcrumb trail under the result instead
       of a raw URL.
-- [ ] **`FAQPage` on the posts that are already Q&A shaped.** `ai-wrapper-tell`
+- [x] **`FAQPage` on the posts that are already Q&A shaped.** `ai-wrapper-tell`
       has literal question `<h2>`s ("What does it own that isn't the model?").
       Emitting those as FAQPage `mainEntity` is the most direct path to an
       extracted answer. Only where the H2s are genuinely questions — do not
       retrofit questions onto posts that aren't.
-      > 16 Oct 2026 (Task 4): needs written Q&A answer text; content work.
+      > 19 Oct 2026: generated from the posts' own `## …?` headings and the paragraph under each (`scripts/lib/faq.mjs` → `src/data/faq.generated.ts`), on posts with two or more; answers that are tables are skipped.
 - [ ] **`HowTo` on the procedural drops** (`system`, `automate`, `workflow`) if
       they have ordered steps. Same reasoning.
       > 16 Oct 2026 (Task 4): needs ordered-step copy per drop; content work.

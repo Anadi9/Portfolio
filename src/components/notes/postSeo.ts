@@ -1,6 +1,7 @@
 import { BYLINE, ORIGIN, PORTFOLIO_ORIGIN } from '@/components/Seo';
 import { hasCover, ogImageFor, streamPath, type Post, type Stream } from '@/data/notes';
 import { BUSINESS_REF, PERSON_ID } from '@/lib/schema';
+import { FAQ } from '@/data/faq.generated';
 
 export { PERSON_ID };
 
@@ -27,6 +28,8 @@ export const headOf = (post: Post) => ({
  */
 export const articleJsonLd = (post: Post, type: 'Article' | 'TechArticle' | 'NewsArticle') => {
   const url = `${ORIGIN}${post.path}`;
+  // Posts written as questions and answers also carry FAQPage, built from their own `## …?` headings.
+  const faq = FAQ[post.path];
   const author = { '@type': 'Person', '@id': PERSON_ID, name: 'Anadi Thakur', url: PORTFOLIO_ORIGIN };
   return {
     '@context': 'https://schema.org',
@@ -54,6 +57,15 @@ export const articleJsonLd = (post: Post, type: 'Article' | 'TechArticle' | 'New
           { name: post.seoTitle ?? post.title, item: url },
         ].map((crumb, i) => ({ '@type': 'ListItem', position: i + 1, ...crumb })),
       },
+      ...(faq
+        ? [
+            {
+              '@type': 'FAQPage',
+              '@id': `${url}#faq`,
+              mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+            },
+          ]
+        : []),
     ],
   };
 };

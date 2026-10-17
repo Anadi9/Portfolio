@@ -252,7 +252,10 @@ and content items are Anadi's.
 - [x] `llms-full.txt` generated at build.
 - [x] IndexNow ping after deploy (`scripts/indexnow.mjs`; needs `INDEXNOW_KEY`).
 - [x] Self-host the brand fonts (Space Grotesk, Press Start 2P, Jersey 10).
-- [ ] FAQPage / HowTo where posts are already shaped that way.
+- [x] FAQPage where posts are already shaped that way (built from their own
+      question headings, `scripts/lib/faq.mjs`).
+- [ ] HowTo on the procedural drops: needs ordered-step copy written per drop
+      (Anadi, content).
 - [ ] About page for "who is Anadi Thakur".
 - [x] Coach reminder on the 1st of each month to ask ChatGPT, Claude and Perplexity
       the buyers' questions (built in Phase 5).
