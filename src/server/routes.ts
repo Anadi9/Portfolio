@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import admin from './admin.js';
 import aiReadiness from './ai-readiness.js';
 import audit from './audit.js';
 import board from './board.js';
@@ -30,6 +31,7 @@ type Routes = Record<string, Handler>;
 
 /** `/api/<route>`. Static files in `api/` (the webhook, the download) win over this. */
 export const API_ROUTES: Routes = {
+  admin,
   'ai-readiness': aiReadiness,
   audit,
   board,

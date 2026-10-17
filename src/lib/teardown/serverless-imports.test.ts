@@ -98,6 +98,8 @@ const GRAPH = [
   'src/data/bitsQuestFacts.ts',
   'src/data/promises.ts',
   'src/lib/notify/live.ts',
+  'src/server/admin.ts',
+  'src/lib/admin/session.ts',
   'src/lib/feed/types.ts',
   'src/lib/brief/background.ts',
   'src/lib/brief/process.ts',

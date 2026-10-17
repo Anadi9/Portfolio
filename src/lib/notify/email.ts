@@ -220,3 +220,26 @@ export async function sendEmailNotification(
   }
   return { status: 'sent' };
 }
+
+/** A reply Anadi approved in /admin, to the client. Plain text plus the same text as simple HTML. */
+export async function sendClientMessage(
+  resend: ResendLike | null,
+  env: Record<string, string | undefined>,
+  msg: { to: string; subject: string; body: string },
+): Promise<SendResult> {
+  if (!resend) return { status: 'skipped', error: 'RESEND_API_KEY not set' };
+  if (!EMAIL.test(msg.to)) return { status: 'skipped', error: 'no recipient email' };
+  const inbox = env.TICKETS_INBOX || env.RESCUE_INBOX || INBOX_FALLBACK;
+  const html = shell(
+    msg.body
+      .split(/\n{2,}/)
+      .map((para) => `<p>${esc(para).replace(/\n/g, '<br>')}</p>`)
+      .join(''),
+  );
+  const sent = await resend.emails.send({ from: FROM, to: msg.to, replyTo: inbox, subject: msg.subject, text: msg.body, html });
+  if (sent.error) {
+    const e = sent.error as { message?: string };
+    return { status: 'failed', error: String(e.message ?? 'send failed').slice(0, 300) };
+  }
+  return { status: 'sent' };
+}
