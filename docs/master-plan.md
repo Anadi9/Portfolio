@@ -168,13 +168,13 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 
 - [x] `feed_items` table: one row per card, posted by Bit (client news) or Coach
       (deadlines, plan). Email and WhatsApp alerts are copies of feed items.
-- [ ] Login for Anadi only (password + signed cookie in v1; passkey in Phase 5).
+- [x] Login for Anadi only (password + signed cookie in v1; passkey in Phase 5).
       `noindex`, not prerendered, not in the sitemap; reads only through
       authenticated server routes.
-- [ ] Feed view: cards newest first, red Bit and green Coach, every card has an
+- [x] Feed view: cards newest first, red Bit and green Coach, every card has an
       action (Open, Approve & send, Edit, Mark done, Snooze). Done and snoozed
       cards leave the feed.
-- [ ] Tickets tab: list with stage filter and the 24 h clock; ticket view with
+- [x] Tickets tab: list with stage filter and the 24 h clock; ticket view with
       brief, scan, answers, timeline, drafts and stage change.
 
 ## Phase 4: Coach (promises, commitments, gates, heartbeat)

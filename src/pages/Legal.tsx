@@ -210,6 +210,14 @@ export function Privacy() {
           only which part of the chat the answer led to and how long it took, never the question. If you ask me to take a request
           further, only the ticket you submit is kept.
         </P>
+        <P>
+          When you submit a request, the site also looks at your app from the outside once, the way a visitor or a search engine
+          would: it fetches the public homepage and a few standard files (robots.txt, sitemap, llms.txt) and checks its security
+          headers. The result, your answers, the app link, the tech stack and the budget band you picked are then sent to the same
+          AI services to draft a short internal brief for me, so I can reply faster. Your name, email, phone number and company are
+          never sent, and nothing goes to a provider that trains on it. The brief and a draft reply are stored with your ticket;
+          I read and edit every reply before it reaches you, and nothing about price, scope or findings is sent automatically.
+        </P>
       </Section>
       <Section title="Tickets and alerts">
         <P>
@@ -234,7 +242,7 @@ export function Privacy() {
             <><strong>Supabase</strong>: the order records behind your downloads page, tickets, and reviews.</>,
             <><strong>Resend</strong>: sending delivery, receipt, report and reply emails.</>,
             <><strong>Vercel</strong>: hosting, anonymous analytics, logs and the AI Gateway.</>,
-            <><strong>Groq</strong>: AI fallback for Bit’s typed questions (the question text only).</>,
+            <><strong>Groq</strong>: AI fallback for Bit’s typed questions and the internal request brief (no name, email, phone or company).</>,
             <><strong>Meta (WhatsApp Cloud API)</strong>: alerts to my own number about new tickets. Nothing is sent to you through it.</>,
           ]}
         />
