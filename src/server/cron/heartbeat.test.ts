@@ -9,7 +9,7 @@ let now: Date;
 let handler: ReturnType<typeof createHeartbeat>;
 
 beforeEach(() => {
-  mem = memoryTicketStore();
+  mem = memoryTicketStore({ clock: () => now });
   send = vi.fn().mockResolvedValue({ data: {} });
   now = new Date('2026-10-17T00:00:00Z');
   handler = createHeartbeat({
@@ -93,5 +93,36 @@ describe('heartbeat', () => {
     mem.scorecards.push({ runAt: '2026-10-16T08:00:00Z', results: {} });
     await run();
     expect(mem.feed.filter((f) => f.kind === 'scorecard_stale')).toHaveLength(0);
+  });
+});
+
+describe('heartbeat: weekly and monthly cards', () => {
+  it('posts the weekly review once on a Monday (IST)', async () => {
+    now = new Date('2026-10-19T03:00:00Z'); // Mon 08:30 IST
+    await run();
+    await run();
+    const cards = mem.feed.filter((f) => f.kind === 'weekly_review');
+    expect(cards).toHaveLength(1);
+    expect(cards[0]).toMatchObject({ bot: 'coach', action: 'mark_done' });
+    expect(cards[0].body).toMatch(/Next:/);
+    await mem.store.markFeedDone(cards[0].id);
+    await run();
+    expect(mem.feed.filter((f) => f.kind === 'weekly_review')).toHaveLength(1);
+  });
+
+  it('posts nothing weekly on other days', async () => {
+    now = new Date('2026-10-20T03:00:00Z'); // Tuesday
+    await run();
+    expect(mem.feed.filter((f) => f.kind === 'weekly_review')).toHaveLength(0);
+  });
+
+  it('posts the AI-visibility check once on the 1st', async () => {
+    now = new Date('2026-11-01T04:00:00Z');
+    await run();
+    await run();
+    expect(mem.feed.filter((f) => f.kind === 'ai_visibility_check')).toHaveLength(1);
+    now = new Date('2026-11-02T04:00:00Z');
+    await run();
+    expect(mem.feed.filter((f) => f.kind === 'ai_visibility_check')).toHaveLength(1);
   });
 });

@@ -12,6 +12,8 @@ import { keepCommitment, onReplySent, onStageEntered, onTaskDone } from '../lib/
 import { gate } from '../lib/coach/stages.js';
 import { computeNumbers } from '../lib/command/numbers.js';
 import { awaySummary, pickToday } from '../lib/command/today.js';
+import { parsePlan, summarisePlan } from '../lib/command/plan.js';
+import { MASTER_PLAN_MD } from '../data/plan.generated.js';
 import { TICKET_STAGES } from '../lib/tickets/types.js';
 
 /**
@@ -36,6 +38,7 @@ const Op = z.discriminatedUnion('op', [
   z.object({ op: z.literal('feed') }),
   z.object({ op: z.literal('numbers') }),
   z.object({ op: z.literal('today') }),
+  z.object({ op: z.literal('plan') }),
   z.object({ op: z.literal('away'), since: z.string().datetime({ offset: true }) }),
   z.object({ op: z.literal('done'), feedId: z.string().min(1).max(80) }),
   z.object({ op: z.literal('snooze'), feedId: z.string().min(1).max(80), hours: z.number().min(1).max(168) }),
@@ -105,6 +108,11 @@ export function createAdminHandler(deps: AdminDeps) {
       case 'numbers': {
         const [tickets, commitments] = await Promise.all([store.listTickets({ limit: 2000 }), store.allCommitments()]);
         return res.status(200).json({ numbers: computeNumbers({ tickets, commitments, now: new Date() }) });
+      }
+
+      case 'plan': {
+        const items = parsePlan(MASTER_PLAN_MD);
+        return res.status(200).json({ items, ...summarisePlan(items) });
       }
 
       case 'today':

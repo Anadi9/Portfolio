@@ -81,6 +81,8 @@ export interface TicketStore {
   countTickets(opts: { kind: TicketKind; since: string }): Promise<number>;
   /** Every commitment opened since `since` (all when omitted), newest first, up to 2000. */
   allCommitments(since?: string): Promise<Commitment[]>;
+  /** Whether a card of this kind was posted since `since`, done or not (for once-a-week cards). */
+  postedSince(kind: string, since: string): Promise<boolean>;
 }
 
 const closes = (s?: CommitmentStatus) => s === 'kept' || s === 'missed';
@@ -494,6 +496,12 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
         .select('id');
       if (error) fail('complete task', error);
       return (data ?? []).length > 0;
+    },
+
+    async postedSince(kind, since) {
+      const { count, error } = await db.from('feed_items').select('id', { count: 'exact', head: true }).eq('kind', kind).gte('created_at', since);
+      if (error) fail('posted since', error);
+      return (count ?? 0) > 0;
     },
 
     async allCommitments(since) {

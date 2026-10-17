@@ -8,7 +8,8 @@ import { NewTicketSchema, type BoardTicket, type Message, type Notification, typ
  * (numbers from A-1001, one client per lower-cased email), everything
  * inspectable. Not imported by any page or function.
  */
-export function memoryTicketStore() {
+/** `clock` stands in for the database's `now()`; by default each write is one second after the last, from 16 Oct 2026. */
+export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
   let seq = 1000;
   let n = 0;
   const clients = new Map<string, { id: string; email: string; name?: string; company?: string; whatsapp?: string }>();
@@ -22,7 +23,7 @@ export function memoryTicketStore() {
   const commitments: Commitment[] = [];
   const tasks: CoachTask[] = [];
   const id = (p: string) => `${p}_${++n}`;
-  const now = () => new Date(Date.UTC(2026, 9, 16) + n * 1000).toISOString();
+  const now = () => (opts.clock ? opts.clock().toISOString() : new Date(Date.UTC(2026, 9, 16) + n * 1000).toISOString());
 
   const store: TicketStore = {
     async createTicket(raw) {
@@ -227,6 +228,9 @@ export function memoryTicketStore() {
       t.status = 'done';
       t.doneAt = now();
       return true;
+    },
+    async postedSince(kind, since) {
+      return feed.some((f) => f.kind === kind && Date.parse(f.createdAt) >= Date.parse(since));
     },
     async allCommitments(since) {
       return commitments

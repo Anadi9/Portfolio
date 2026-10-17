@@ -1,6 +1,7 @@
 import type { FeedItem } from '../feed/types';
 import type { Numbers } from '../command/numbers';
 import type { AwaySummary, TodayItem } from '../command/today';
+import type { PlanItem } from '../command/plan';
 import type { TicketDetail, TicketRow, TicketStage } from '../tickets/types';
 
 /** Browser wrappers for `/api/admin`. A 401 comes back as `auth: false` so the page can show the login form. */
@@ -35,6 +36,7 @@ export const admin = {
   logout: () => call<Ok>({ op: 'logout' }),
   feed: () => call<{ items: FeedItem[] }>({ op: 'feed' }),
   numbers: () => call<{ numbers: Numbers }>({ op: 'numbers' }),
+  plan: () => call<{ items: PlanItem[]; phases: { phase: string; done: number; total: number }[]; next: PlanItem[] }>({ op: 'plan' }),
   today: () => call<{ items: TodayItem[] }>({ op: 'today' }),
   away: (since: string) => call<{ away: AwaySummary }>({ op: 'away', since }),
   done: (feedId: string) => call<Ok>({ op: 'done', feedId }),

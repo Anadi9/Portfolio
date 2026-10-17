@@ -250,3 +250,12 @@ describe('/api/admin today and away', () => {
     expect((await call({ op: 'away', since: 'yesterday' }, { cookie: authed() })).statusCode).toBe(400);
   });
 });
+
+describe('/api/admin plan', () => {
+  it('returns the master plan as data', async () => {
+    const res = await call({ op: 'plan' }, { cookie: authed() });
+    expect(res.body.phases.length).toBeGreaterThan(5);
+    expect(res.body.phases[0].phase).toMatch(/^Phase 0/);
+    expect(res.body.next.length).toBeLessThanOrEqual(3);
+  });
+});

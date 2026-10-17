@@ -109,6 +109,8 @@ const GRAPH = [
   'src/server/cron/summary.ts',
   'src/lib/command/numbers.ts',
   'src/lib/command/today.ts',
+  'src/lib/command/plan.ts',
+  'src/data/plan.generated.ts',
   'src/lib/brief/background.ts',
   'src/lib/brief/process.ts',
   'src/lib/brief/scan.ts',

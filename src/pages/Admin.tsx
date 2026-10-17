@@ -6,6 +6,7 @@ import { age, dueLabel, parseHash, promiseLabel, snoozeHours, timeLeft, type Sno
 import type { Commitment } from '@/lib/coach/types';
 import type { Numbers } from '@/lib/command/numbers';
 import type { AwaySummary, TodayItem } from '@/lib/command/today';
+import type { PlanItem } from '@/lib/command/plan';
 import { hasPlaceholder, splitDraft } from '@/lib/brief/draft';
 import { ANSWER_LABEL, kindLabel } from '@/lib/notify/email';
 import type { FeedItem } from '@/lib/feed/types';
@@ -47,7 +48,7 @@ const small: CSSProperties = { margin: 0, font: '400 13px/1.4 var(--bq-font-body
 const h2: CSSProperties = { margin: 0, font: '600 18px/1.3 var(--bq-font-body)' };
 
 type Auth = 'checking' | 'out' | 'in';
-type View = { tab: 'feed' } | { tab: 'tickets' } | { tab: 'numbers' } | { tab: 'ticket'; id: string; focus?: string };
+type View = { tab: 'feed' } | { tab: 'tickets' } | { tab: 'numbers' } | { tab: 'plan' } | { tab: 'ticket'; id: string; focus?: string };
 
 export default function Admin() {
   const [auth, setAuth] = useState<Auth>('checking');
@@ -109,11 +110,15 @@ export default function Admin() {
               <TabButton active={view.tab === 'numbers'} onClick={() => setView({ tab: 'numbers' })}>
                 Numbers
               </TabButton>
+              <TabButton active={view.tab === 'plan'} onClick={() => setView({ tab: 'plan' })}>
+                Plan
+              </TabButton>
             </nav>
             {view.tab === 'feed' && <Away guard={guard} />}
             {view.tab === 'feed' && <Today guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
             {view.tab === 'feed' && <Feed guard={guard} open={(id, focus) => setView({ tab: 'ticket', id, focus })} />}
             {view.tab === 'numbers' && <NumbersView guard={guard} />}
+            {view.tab === 'plan' && <PlanView guard={guard} />}
             {view.tab === 'tickets' && <Tickets guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
             {view.tab === 'ticket' && <TicketView id={view.id} focus={view.focus} guard={guard} back={() => setView({ tab: 'tickets' })} />}
           </>
@@ -163,6 +168,47 @@ function NumbersView({ guard }: { guard: Guard }) {
         </ul>
         <p style={small}>Chats and paid work aren’t tracked yet: chats aren’t stored, and payments link to tickets later.</p>
       </div>
+    </section>
+  );
+}
+
+function PlanView({ guard }: { guard: Guard }) {
+  const [plan, setPlan] = useState<{ items: PlanItem[]; phases: { phase: string; done: number; total: number }[]; next: PlanItem[] } | null>(null);
+  useEffect(() => {
+    admin.plan().then((r) => {
+      const d = guard(r);
+      if (d) setPlan(d);
+    });
+  }, [guard]);
+  if (!plan) return <p style={small}>Loading the plan…</p>;
+  return (
+    <section style={{ display: 'grid', gap: 12 }}>
+      <div style={box}>
+        <h2 style={h2}>Next</h2>
+        <ol style={{ margin: 0, paddingLeft: 20 }}>
+          {plan.next.map((i) => (
+            <li key={i.text}>
+              {i.text} <span style={small}>· {i.phase}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+      {plan.phases.map((p) => (
+        <details key={p.phase} style={box}>
+          <summary style={{ cursor: 'pointer', font: '600 15px var(--bq-font-body)' }}>
+            {p.phase} · {p.done}/{p.total}
+          </summary>
+          <ul style={{ margin: '8px 0 0', paddingLeft: 20 }}>
+            {plan.items
+              .filter((i) => i.phase === p.phase)
+              .map((i) => (
+                <li key={i.text} style={{ ...small, color: i.done ? 'var(--bq-muted)' : 'var(--bq-ink)', textDecoration: i.done ? 'line-through' : undefined }}>
+                  {i.text}
+                </li>
+              ))}
+          </ul>
+        </details>
+      ))}
     </section>
   );
 }

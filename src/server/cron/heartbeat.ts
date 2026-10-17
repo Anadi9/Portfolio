@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { PROMISES } from '../../data/promises.js';
-import { statusAt } from '../../lib/coach/rules.js';
+import { keptRate, statusAt, weekStartIst } from '../../lib/coach/rules.js';
+import { parsePlan, summarisePlan } from '../../lib/command/plan.js';
+import { MASTER_PLAN_MD } from '../../data/plan.generated.js';
 import { dispatch } from '../../lib/notify/dispatch.js';
 import type { ResendLike } from '../../lib/notify/email.js';
 import { liveDeps } from '../../lib/notify/live.js';
@@ -14,7 +16,8 @@ import { ticketStore, type TicketStore } from '../../lib/tickets/store.js';
  * promise turns `at_risk`: an urgent green card and one email to Anadi. Past
  * due it turns `missed`: an urgent card saying a reason is needed before the
  * ticket can move. `alerted_status` keeps a second run from repeating either.
- * Also posts one card when the daily scorecard hasn't run for 26 hours.
+ * Also posts one card when the daily scorecard hasn't run for 26 hours, the
+ * weekly review on Mondays (IST) and the AI-visibility check on the 1st.
  *
  * Hobby crons are daily, so cron-job.org calls this hourly with
  * `Authorization: Bearer $CRON_SECRET`; vercel.json's daily run is the floor.
@@ -108,8 +111,48 @@ export function createHeartbeat(deps: HeartbeatDeps) {
       }
     }
 
+    await periodicCards(store, now);
+
     return res.status(200).json({ ok: true, checked: live.length, atRisk, missed });
   };
+}
+
+const IST_MS = 5.5 * 3_600_000;
+
+/** Coach's calendar: the Monday review and the monthly AI-visibility check, each posted once. */
+async function periodicCards(store: TicketStore, now: Date) {
+  const local = new Date(now.getTime() + IST_MS);
+  if (local.getUTCDay() === 1) {
+    const week = weekStartIst(now);
+    if (!(await store.postedSince('weekly_review', week.toISOString()))) {
+      const lastWeek = new Date(week.getTime() - 7 * 86_400_000).toISOString();
+      const closed = (await store.allCommitments(lastWeek)).filter((c) => c.closedAt && Date.parse(c.closedAt) < week.getTime());
+      const k = keptRate(closed);
+      const tickets = (await store.listTickets({ limit: 2000 })).filter((t) => Date.parse(t.createdAt) >= Date.parse(lastWeek) && Date.parse(t.createdAt) < week.getTime());
+      const plan = summarisePlan(parsePlan(MASTER_PLAN_MD));
+      await store.postFeed({
+        ticketId: null,
+        bot: 'coach',
+        kind: 'weekly_review',
+        title: `Weekly review · ${tickets.length} tickets, ${k.rate == null ? 'no promises closed' : `${Math.round(k.rate * 100)}% of promises kept`}`,
+        body: `Last week: ${k.kept} kept, ${k.missed} missed. Next: ${plan.next.map((i) => i.text).join(' · ') || 'the plan is done'}`.slice(0, 2000),
+        action: 'mark_done',
+      });
+    }
+  }
+  if (local.getUTCDate() === 1) {
+    const monthStart = new Date(Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), 1) - IST_MS).toISOString();
+    if (!(await store.postedSince('ai_visibility_check', monthStart))) {
+      await store.postFeed({
+        ticketId: null,
+        bot: 'coach',
+        kind: 'ai_visibility_check',
+        title: 'Monthly: are the AI assistants citing the site?',
+        body: 'Ask ChatGPT, Claude and Perplexity the questions buyers ask (e.g. "who can make my Lovable app production-ready?") and note whether anadithakur.in is mentioned. Tracked in docs/seo-geo-aeo-todo.md.',
+        action: 'mark_done',
+      });
+    }
+  }
 }
 
 export default withErrorLog(
