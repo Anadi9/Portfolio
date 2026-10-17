@@ -1,4 +1,6 @@
 import { Head } from 'vite-react-ssg';
+import jerseyLatin from '@fontsource/jersey-10/files/jersey-10-latin-400-normal.woff2?url';
+import spaceGroteskLatin from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 
 /** Canonical origin. Every notes URL is absolute against this; see `Seo`. */
 export const ORIGIN = 'https://anadithakur.in';
@@ -16,16 +18,19 @@ export const DEFAULT_ROBOTS = 'index,follow,max-snippet:-1,max-image-preview:lar
 
 export const BYLINE = '@the.anadi';
 
-/** Bit's Quest fonts. Loaded per page on the main site only; the portfolio keeps `index.html`'s set. */
-export const BRAND_FONTS =
-  'https://fonts.googleapis.com/css2?family=Jersey+10&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap';
+/**
+ * Bit's Quest fonts are self-hosted (Fontsource, imported in main.tsx). The two the
+ * first screen needs are preloaded on main-site pages so the hero's display type
+ * doesn't wait for the stylesheet; the portfolio keeps `index.html`'s set.
+ */
+export const BRAND_FONT_PRELOADS = [jerseyLatin, spaceGroteskLatin];
 
 /**
  * Bit favicons and brand fonts, for every main-site page (the 404 calls it too).
  * An array of plain tags, because Helmet rejects components and fragments as children.
  */
 export const brandHeadTags = () => [
-  <link key="bq-fonts" rel="stylesheet" href={BRAND_FONTS} />,
+  ...BRAND_FONT_PRELOADS.map((href) => <link key={`bq-font-${href}`} rel="preload" as="font" type="font/woff2" href={href} crossOrigin="anonymous" />),
   <link key="bq-icon" rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />,
   <link key="bq-icon32" rel="icon" href="/brand/favicon-32.png" sizes="32x32" type="image/png" />,
   <link key="bq-apple" rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />,

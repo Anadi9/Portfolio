@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error plain ESM build script, no types
 import { mdxToText } from '../../../scripts/lib/llms.mjs';
 
 const src = `---

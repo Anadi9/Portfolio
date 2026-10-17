@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error plain ESM build script, no types
 import { indexNowPayload, sitemapUrls, shouldPing } from '../../../scripts/lib/indexnow.mjs';
 
 describe('IndexNow', () => {

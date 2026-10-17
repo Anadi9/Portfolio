@@ -143,12 +143,13 @@ crawlable by the right bots, and put the answer where a machine can lift it.
 
 ## P4 — performance and measurement
 
-- [ ] **Self-host the brand fonts.** Main-site pages load Space Grotesk,
+- [x] **Self-host the brand fonts.** Main-site pages load Space Grotesk,
       Press Start 2P and Jersey 10 from a Google Fonts stylesheet added by
       `Seo` (`src/components/Seo.tsx`), so first paint waits on an external
       DNS lookup and connection. Self-hosting the woff2 files with
       `font-display: swap` and a preload removes the round trip. LCP is the CWV
       that most affects ranking, and the hero is large display type.
+      > 19 Oct 2026: done with Fontsource (`main.tsx`); the latin Jersey 10 and Space Grotesk files are preloaded by `Seo`.
       > 18 Oct 2026: the site no longer uses Archivo. `index.html` (Instrument Sans, JetBrains Mono, Pixelify Sans, Silkscreen) is shared with the portfolio and stays off limits; do the brand fonts through `Seo` only.
 - [ ] **Measure real CWV**, not just Lighthouse. Vercel Analytics is wired
       (`a872b2f`); confirm Speed Insights is on and watch INP on the GSAP/Lenis

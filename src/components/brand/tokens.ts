@@ -36,7 +36,7 @@ export const c = {
 
 export const mono = "'JetBrains Mono', ui-monospace, monospace";
 /** Reading face: body copy, card text. */
-export const display = "'Space Grotesk', system-ui, sans-serif";
+export const display = "'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif";
 /** Pixel display face for headings and prices. Weight 400 only, never synthesized bold. */
 export const pixel = "'Jersey 10', system-ui, sans-serif";
 /** Tiny uppercase labels, nav and button labels. Keep short. */

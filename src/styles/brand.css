@@ -24,7 +24,7 @@
   --bq-rule: rgba(10, 10, 10, 0.14);
 
   --bq-font-display: 'Jersey 10', system-ui, sans-serif;
-  --bq-font-body: 'Space Grotesk', system-ui, sans-serif;
+  --bq-font-body: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
   --bq-font-label: 'Press Start 2P', ui-monospace, monospace;
   --bq-h1: clamp(40px, 5.2vw, 74px);
   --bq-h2: clamp(34px, 4vw, 52px);
