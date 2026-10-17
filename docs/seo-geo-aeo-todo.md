@@ -114,11 +114,11 @@ crawlable by the right bots, and put the answer where a machine can lift it.
 
 ## P3 — content shape, the part that decides whether you get cited
 
-- [ ] **A `Person`/about page.** There is no dedicated author entity page. For
+- [x] **A `Person`/about page.** There is no dedicated author entity page. For
       E-E-A-T and for an engine answering "who is Anadi Thakur", one URL that
       states credentials, employer history (ZEISS), and links to GitHub/LinkedIn
       is worth more than any schema tweak.
-      > 16 Oct 2026 (Task 4): content page, not a config fix.
+      > 19 Oct 2026: `/about` (ProfilePage + the Person entity), using only facts already published on the site. Anadi to review the wording.
 - [ ] **Answer-first paragraph on every post.** Wisdom and Dispatch have a
       standfirst; make sure it *answers* rather than teases. The extractable
       unit is a 40–60 word self-contained paragraph immediately under the H1

@@ -138,7 +138,7 @@ Proof
       `briefs`, `notifications`), RLS on with no anon policies.
 - [x] Scripted chat: conversation tree, qualifying questions, recommendations,
       package builder, hero menu and "Talk to Bit".
-- [ ] Service picker (← → with the hopping Bit).
+- [x] Service picker (← → with the hopping Bit).
 - [x] `/api/bit/ticket`, the `/audit` form into the same table, the visitor's own
       card on the board.
 - [x] AI answers for typed questions (gateway + fallback, price guard, rate
@@ -236,12 +236,14 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 
 ## Phase 8: finish the homepage and the products
 
-- [ ] Carry the visitor's chat answers across the page ("BIT'S PICK" on the
+- [x] Carry the visitor's chat answers across the page ("BIT'S PICK" on the
       matching service and pricing card, "YOURS" on the matching bug and
       checklist column, blog filtered to their topic).
 - [x] Mini-Bit dock, Bit's tour, playable process run (rebrand).
-- [ ] Boot screen, scanlines, scroll reveals.
-- [ ] Paid self-serve scans; keep the Production Kit updated.
+- [x] Boot screen, scanlines, scroll reveals.
+- [ ] Paid self-serve scans. Needs a new Stripe price, and this build may not
+      change Stripe: blocked until Anadi decides the offer and creates the price.
+- [ ] Keep the Production Kit updated (Anadi, content).
 
 ## Running alongside: search and AI visibility
 
@@ -256,7 +258,8 @@ and content items are Anadi's.
       question headings, `scripts/lib/faq.mjs`).
 - [ ] HowTo on the procedural drops: needs ordered-step copy written per drop
       (Anadi, content).
-- [ ] About page for "who is Anadi Thakur".
+- [x] About page for "who is Anadi Thakur" (`/about`, built from facts already on
+      the site; Anadi to review the wording).
 - [x] Coach reminder on the 1st of each month to ask ChatGPT, Claude and Perplexity
       the buyers' questions (built in Phase 5).
 - [ ] Monthly: actually ask them and record whether the site is cited (Anadi).

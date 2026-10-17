@@ -71,6 +71,7 @@ const pages = [
   { path: '/build-with-ai' },
   { path: '/care' },
   { path: '/scorecard' },
+  { path: '/about' },
   { path: '/audit' },
   { path: '/ai-readiness' },
   { path: '/dpdp/check' },

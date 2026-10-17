@@ -228,6 +228,12 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/Legal.tsx',
       })),
 
+      // "Who is Anadi Thakur?": the entity page for people and answer engines.
+      {
+        path: '/about',
+        lazy: () => import('./pages/AboutPage').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/AboutPage.tsx',
+      },
       // A client's own requests. Prerendered as the sign-in form only (noindex);
       // ticket data comes from `/api/portal` after sign-in.
       {
