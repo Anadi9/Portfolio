@@ -264,3 +264,13 @@ describe('coach store methods', () => {
     expect(await m.store.countTickets({ kind: 'first_bug', since: '2100-01-01T00:00:00Z' })).toBe(0);
   });
 });
+
+describe('give to helper', () => {
+  it('labels a card and keeps it in the feed', async () => {
+    const m = memoryTicketStore();
+    const c = await m.store.postFeed({ bot: 'bit', kind: 'new_ticket', title: 'x', action: 'open' });
+    expect(c.assignee).toBeNull();
+    await m.store.assignFeed(c.id, 'helper');
+    expect(await m.store.openFeed()).toMatchObject([{ id: c.id, assignee: 'helper' }]);
+  });
+});

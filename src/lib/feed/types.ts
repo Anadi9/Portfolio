@@ -36,6 +36,8 @@ export type FeedItem = {
   createdAt: string;
   doneAt: string | null;
   snoozedUntil: string | null;
+  /** "Give to helper": a label until there is a helper. */
+  assignee: 'helper' | null;
 };
 
 export const FEED_TITLE_MAX = 140;

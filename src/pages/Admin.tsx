@@ -398,6 +398,9 @@ function Feed({ guard, open }: { guard: Guard; open: (ticketId: string, focus?: 
             onDone={async () => {
               if (guard(await admin.done(f.id))) drop(f.id);
             }}
+            onHelper={async () => {
+              if (guard(await admin.helper(f.id))) setItems((xs) => xs?.map((x) => (x.id === f.id ? { ...x, assignee: 'helper' } : x)) ?? null);
+            }}
             onSnooze={async (choice) => {
               if (guard(await admin.snooze(f.id, snoozeHours(choice)))) drop(f.id);
             }}
@@ -414,12 +417,14 @@ function Card({
   onOpen,
   onDone,
   onSnooze,
+  onHelper,
 }: {
   item: FeedItem;
   highlight: boolean;
   onOpen: () => void;
   onDone: () => void;
   onSnooze: (c: SnoozeChoice) => void;
+  onHelper: () => void;
 }) {
   const main =
     item.action === 'approve_send' ? (
@@ -447,6 +452,7 @@ function Card({
         {item.body && <p style={{ ...small, color: 'var(--bq-body-text)' }}>{item.body}</p>}
         <p style={small}>
           {item.urgent ? 'Urgent · ' : ''}
+          {item.assignee === 'helper' ? 'With helper · ' : ''}
           {age(item.createdAt)}
         </p>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -474,6 +480,11 @@ function Card({
               <option value="week">1 week</option>
             </select>
           </label>
+          {item.assignee !== 'helper' && (
+            <button type="button" style={btn} onClick={onHelper}>
+              Give to helper
+            </button>
+          )}
           <button type="button" style={btn} onClick={onDone}>
             Mark done
           </button>

@@ -41,6 +41,7 @@ const Op = z.discriminatedUnion('op', [
   z.object({ op: z.literal('plan') }),
   z.object({ op: z.literal('away'), since: z.string().datetime({ offset: true }) }),
   z.object({ op: z.literal('done'), feedId: z.string().min(1).max(80) }),
+  z.object({ op: z.literal('helper'), feedId: z.string().min(1).max(80) }),
   z.object({ op: z.literal('snooze'), feedId: z.string().min(1).max(80), hours: z.number().min(1).max(168) }),
   z.object({ op: z.literal('list'), stage: z.enum(TICKET_STAGES).optional() }),
   z.object({ op: z.literal('get'), id: z.string().min(1).max(80) }),
@@ -127,6 +128,10 @@ export function createAdminHandler(deps: AdminDeps) {
 
       case 'done':
         await store.markFeedDone(body.feedId);
+        return res.status(200).json({ ok: true });
+
+      case 'helper':
+        await store.assignFeed(body.feedId, 'helper');
         return res.status(200).json({ ok: true });
 
       case 'snooze':

@@ -13,7 +13,7 @@ const com = (o: Partial<Commitment>): Commitment => ({
   id: 'c', ticketId: 't', promiseId: 'first_bug_video', openedAt: '2026-10-20T00:00:00Z', dueAt: '2026-10-21T00:00:00Z', status: 'open', closedAt: null, missReason: null, alertedStatus: null, ...o,
 });
 const card = (o: Partial<FeedItem>): FeedItem => ({
-  id: 'f', ticketId: null, bot: 'bit', kind: 'new_ticket', title: 'x', body: '', action: 'open', ref: null, urgent: false, createdAt: '2026-10-20T10:00:00Z', doneAt: null, snoozedUntil: null, ...o,
+  id: 'f', ticketId: null, bot: 'bit', kind: 'new_ticket', title: 'x', body: '', action: 'open', ref: null, urgent: false, createdAt: '2026-10-20T10:00:00Z', doneAt: null, snoozedUntil: null, assignee: null, ...o,
 });
 
 describe('pickToday', () => {

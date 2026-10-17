@@ -259,3 +259,11 @@ describe('/api/admin plan', () => {
     expect(res.body.next.length).toBeLessThanOrEqual(3);
   });
 });
+
+describe('/api/admin helper', () => {
+  it('gives a card to the helper', async () => {
+    const c = await mem.store.postFeed({ bot: 'bit', kind: 'new_ticket', title: 'x', action: 'open' });
+    expect((await call({ op: 'helper', feedId: c.id }, { cookie: authed() })).statusCode).toBe(200);
+    expect(mem.feed[0].assignee).toBe('helper');
+  });
+});

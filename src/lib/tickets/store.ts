@@ -68,6 +68,7 @@ export interface TicketStore {
   snoozeFeed(id: string, until: Date): Promise<void>;
   /** Closes every open card about `ref` (e.g. a draft once it's sent). */
   doneFeedFor(ref: string): Promise<void>;
+  assignFeed(id: string, assignee: 'helper'): Promise<void>;
   /** Coach (master plan Phase 4). */
   openCommitment(c: { ticketId: string | null; promiseId: PromiseId; dueAt: string; openedAt?: string }): Promise<Commitment>;
   /** Open and at-risk commitments, soonest due first. */
@@ -150,6 +151,7 @@ const toFeed = (r: Row): FeedItem => ({
   createdAt: r.created_at,
   doneAt: r.done_at,
   snoozedUntil: r.snoozed_until,
+  assignee: r.assignee ?? null,
 });
 
 const toCommitment = (r: Row): Commitment => ({
@@ -448,6 +450,11 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async doneFeedFor(ref) {
       const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('ref', ref).is('done_at', null);
       if (error) fail('done feed for', error);
+    },
+
+    async assignFeed(id, assignee) {
+      const { error } = await db.from('feed_items').update({ assignee }).eq('id', id);
+      if (error) fail('assign feed', error);
     },
 
     async openCommitment(c) {

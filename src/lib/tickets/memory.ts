@@ -169,7 +169,7 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
       return last ? { ...last } : null;
     },
     async postFeed(item) {
-      const f: FeedItem = { id: id('feed'), ...feedRow(item), createdAt: now(), doneAt: null, snoozedUntil: null };
+      const f: FeedItem = { id: id('feed'), ...feedRow(item), createdAt: now(), doneAt: null, snoozedUntil: null, assignee: null };
       feed.push(f);
       return { ...f };
     },
@@ -186,6 +186,10 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
     },
     async doneFeedFor(ref) {
       for (const f of feed) if (f.ref === ref && !f.doneAt) f.doneAt = now();
+    },
+    async assignFeed(fid, assignee) {
+      const f = feed.find((x) => x.id === fid);
+      if (f) f.assignee = assignee;
     },
     async openCommitment(c) {
       const row: Commitment = {

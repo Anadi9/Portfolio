@@ -40,6 +40,7 @@ export const admin = {
   today: () => call<{ items: TodayItem[] }>({ op: 'today' }),
   away: (since: string) => call<{ away: AwaySummary }>({ op: 'away', since }),
   done: (feedId: string) => call<Ok>({ op: 'done', feedId }),
+  helper: (feedId: string) => call<Ok>({ op: 'helper', feedId }),
   snooze: (feedId: string, hours: number) => call<Ok>({ op: 'snooze', feedId, hours }),
   list: (stage?: TicketStage) => call<{ tickets: TicketRow[] }>(stage ? { op: 'list', stage } : { op: 'list' }),
   get: (id: string) => call<{ ticket: TicketDetail }>({ op: 'get', id }),
