@@ -16,7 +16,7 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 2 complete: `npm run build` green.
 - Phase 3 · Task 7: `/api/admin` (password + HMAC session cookie, JSON-only, login rate limit; ops feed/done/snooze/list/get/stage/saveDraft/send; send refuses placeholders and closes the card) (`0e4de1d`). Manual: set `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` in Vercel.
 - Phase 3 · Task 8: `/admin` page: feed first, red Bit / green Coach cards, Tickets tab with 24 h clock, ticket view, draft editor, stage picker; `Coach` sprite (Bit in `signal` green); noindex header + robots Disallow (`88f93ed`). Browser-checked login and layout locally without a database; the data views are covered by tests only. Manual: smoke-test `/admin` with real data on the preview (launch checklist step 8).
-- Phase 3 · Task 9: `/privacy`, `docs/data-map.md` and `docs/launch-checklist.md` cover the lead scan, the brief, `feed_items` and `/admin` (`DOCSCOMMIT`).
+- Phase 3 · Task 9: `/privacy`, `docs/data-map.md` and `docs/launch-checklist.md` cover the lead scan, the brief, `feed_items` and `/admin` (`9c61654`).
 - Phase 3 complete.
 
 ## Manual steps for Anadi
