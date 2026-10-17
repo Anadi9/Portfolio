@@ -22,9 +22,9 @@ const PRE = String.raw`(?:US\s?\$|USD\s?\$?|\$)`;
 const DASH = String.raw`\s*(?:-|–|—|to)\s*`;
 
 /** `$1,500`, `$1.5k`, `USD 349`, with an optional second amount after a dash or "to". */
-const PREFIXED = String.raw`${PRE}\s?(${NUM})(${MUL})(?:${DASH}(?:${PRE})?\s?(${NUM})(${MUL}))?`;
-/** `1500 dollars`, `1,500–2,500 USD`. */
-const SUFFIXED = String.raw`(?:(${NUM})(${MUL})${DASH})?(${NUM})(${MUL})\s?(?:dollars?|bucks|usd)\b`;
+const PREFIXED = String.raw`${PRE}\s*(${NUM})(${MUL})(?:${DASH}(?:${PRE})?\s*(${NUM})(${MUL}))?`;
+/** `1500 dollars`, `1,500–2,500 USD`, `500$` (a `$` after the number, unless another amount follows it). */
+const SUFFIXED = String.raw`(?:(${NUM})(${MUL})${DASH})?(${NUM})(${MUL})(?:\s?(?:dollars?|bucks|usd)\b|\s*\$(?!\s*\d))`;
 const MONEY = new RegExp(`${PREFIXED}|${SUFFIXED}`, 'gi');
 
 const MONTHLY = /^\s*(?:\/\s?mo(?:nth)?\b|per\s+month\b|a\s+month\b|each\s+month\b|every\s+month\b|monthly\b)/i;
@@ -53,7 +53,11 @@ function value(num: string, mul: string): number {
 }
 
 /** Every US-dollar amount in `text`, in order. */
-export function extractAmounts(text: string): Amount[] {
+/** The full-width dollar sign (U+FF04) reads as `$`. */
+const normalise = (text: string) => text.replace(/\uFF04/g, '$');
+
+export function extractAmounts(input: string): Amount[] {
+  const text = normalise(input);
   const out: Amount[] = [];
   for (const m of text.matchAll(MONEY)) {
     const [raw, a, am = '', b, bm = '', c, cm = '', d, dm = ''] = m;
@@ -118,13 +122,34 @@ export function isPublished(a: Amount, published: Amount[] = PUBLISHED): boolean
   });
 }
 
-export type GuardResult = { ok: true } | { ok: false; reason: 'foreign_currency' | 'unpublished_price'; amount?: string };
+export type GuardResult =
+  | { ok: true }
+  | { ok: false; reason: 'foreign_currency' | 'unpublished_price' | 'stray_dollar' | 'discount' | 'spelled_amount'; amount?: string };
 
-/** Pass only text whose every money amount is a published US-dollar price. */
-export function guardPrices(text: string): GuardResult {
+/** Bit never offers a discount: "20% off", "a discount", "% off". */
+const DISCOUNT = /\d+(?:\.\d+)?\s?%\s*(?:off|discount)|%\s*off\b|\bdiscount(?:s|ed)?\b/i;
+
+const NUMBER_WORD = String.raw`(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|grand|few|several)`;
+/** "fifty dollars", "two thousand dollars", "a few hundred bucks". */
+const SPELLED = new RegExp(String.raw`\b${NUMBER_WORD}(?:[\s-]+(?:${NUMBER_WORD}|and))*\s+(?:dollars?|bucks)\b`, 'i');
+
+const dollars = (s: string) => (s.match(/\$/g) ?? []).length;
+
+/**
+ * Pass only text whose every money amount is a published US-dollar price.
+ * Backstop: every `$` in the text must belong to a recognised amount, so an
+ * odd spelling the extractor misses fails closed instead of slipping through.
+ */
+export function guardPrices(input: string): GuardResult {
+  const text = normalise(input);
   if (hasForeignAmount(text)) return { ok: false, reason: 'foreign_currency' };
-  const bad = extractAmounts(text).find((a) => !isPublished(a));
-  return bad ? { ok: false, reason: 'unpublished_price', amount: bad.raw } : { ok: true };
+  if (DISCOUNT.test(text)) return { ok: false, reason: 'discount' };
+  if (SPELLED.test(text)) return { ok: false, reason: 'spelled_amount' };
+  const found = extractAmounts(text);
+  const bad = found.find((a) => !isPublished(a));
+  if (bad) return { ok: false, reason: 'unpublished_price', amount: bad.raw };
+  if (dollars(text) > found.reduce((n, a) => n + dollars(a.raw), 0)) return { ok: false, reason: 'stray_dollar' };
+  return { ok: true };
 }
 
 /** The price table injected into Bit's prompt, built from the same facts the page shows. */

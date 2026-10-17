@@ -123,6 +123,42 @@ describe('guardPrices', () => {
     }
   });
 
+  it('rejects trailing, spaced and full-width dollar signs, spelled-out dollars and discounts (review round 1)', () => {
+    for (const [t, reason] of [
+      ['That would be 500$.', 'unpublished_price'],
+      ['That would be 500 $.', 'unpublished_price'],
+      ['That is $  50.', 'unpublished_price'],
+      ['That would be ＄50.', 'unpublished_price'],
+      ['Anadi can do it for fifty dollars.', 'spelled_amount'],
+      ['About two thousand dollars.', 'spelled_amount'],
+      ['A few hundred bucks.', 'spelled_amount'],
+      ['You get 50% off the audit.', 'discount'],
+      ['There is a 10 % discount this week.', 'discount'],
+      ['We can discount the sprint.', 'discount'],
+      ['Prices are in $ but ask Anadi.', 'stray_dollar'],
+      ['It costs $ fifty.', 'stray_dollar'],
+    ]) {
+      expect(guardPrices(t), t).toMatchObject({ ok: false, reason });
+    }
+  });
+
+  it('still passes published prices written with trailing, spaced or full-width signs', () => {
+    for (const t of [
+      'Care is $299 a month.',
+      'Care is $299/month.',
+      'Care is $299 each month.',
+      'The audit is $349 and credited in full.',
+      'Fix work runs $1,500 to $6,000.',
+      'The audit is 349$.',
+      'The audit is $ 349.',
+      'The audit is ＄349.',
+      'Audit credited 100% toward the fix.',
+      'Step 2 $349 audit, then the fix.',
+    ]) {
+      expect(guardPrices(t), t).toEqual({ ok: true });
+    }
+  });
+
   it('reads shorthand the same as the full amount', () => {
     expect(guardPrices('Sprints start at $1.5k.')).toEqual({ ok: true });
     expect(guardPrices('Sprints are $1.5k–$2.5k.')).toEqual({ ok: true });
