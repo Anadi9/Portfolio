@@ -65,6 +65,7 @@ const GRAPH = [
   'src/lib/notify/email.ts',
   'src/lib/notify/whatsapp.ts',
   'src/lib/notify/ticket.ts',
+  'src/lib/notify/timeout.ts',
   'api/kit/[action].ts',
   'src/lib/kit/handlers.ts',
   'src/lib/kit/fulfil.ts',

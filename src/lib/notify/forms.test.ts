@@ -89,4 +89,29 @@ describe('audit forms create a best-effort ticket', () => {
     expect((await call(auditHandler, auditBody)).statusCode).toBe(502);
     expect(mem.tickets).toHaveLength(0);
   });
+
+  it.each([
+    ['audit', auditHandler, auditBody],
+    ['app', rescueHandler, rescueBody],
+  ] as const)('%s: a hung ticket write cannot delay or fail the response', async (_n, handler, body) => {
+    vi.useFakeTimers();
+    try {
+      holder.store = { createTicket: () => new Promise(() => {}) };
+      const pending = call(handler, body);
+      await vi.advanceTimersByTimeAsync(2600);
+      const res = await pending;
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toMatchObject({ ok: true });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a URL over the 500 cap (the form allows 500 plus the added https://) is truncated to the cap and the ticket is still created', async () => {
+    const url = 'myapp.lovable.app/' + 'a'.repeat(480); // 500 chars typed, 508 once normalised
+    expect((await call(rescueHandler, { ...rescueBody, appUrl: url })).statusCode).toBe(200);
+    expect(mem.tickets).toHaveLength(1);
+    expect(mem.tickets[0].appUrl).toHaveLength(500);
+    expect(mem.tickets[0].answers.appUrlTruncated).toBe(true);
+  });
 });

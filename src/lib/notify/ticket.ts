@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { ticketStore, type TicketStore } from '../tickets/store.js';
 import type { NewNotification, NewTicket, Ticket } from '../tickets/types.js';
 import { dispatch, type NotifyDeps } from './dispatch.js';
+import { withTimeout } from './timeout.js';
 import type { FetchLike } from './whatsapp.js';
 
 /** Real dependencies: Resend only if keyed, global fetch resolved at call time. */
@@ -43,8 +44,14 @@ function summaryOf(input: { appUrl?: string; name?: string }): string {
  * would double-send what the cron also sees). Once the ticket is saved,
  * nothing after it can throw to the caller.
  */
-export async function submitTicket(store: TicketStore, input: NewTicket, plan: NotifyPlan, deps: NotifyDeps): Promise<Ticket> {
+export async function submitTicket(store: TicketStore, input: NewTicket, plan: NotifyPlan, deps: NotifyDeps, dispatchTimeoutMs = 4000): Promise<Ticket> {
   const ticket = await store.createTicket(input);
+  // Bounded: if the backend hangs, the ticket is saved and unsent rows stay pending for the cron.
+  await withTimeout(notifyFor(store, ticket, input, plan, deps), dispatchTimeoutMs, 'dispatch');
+  return ticket;
+}
+
+async function notifyFor(store: TicketStore, ticket: Ticket, input: NewTicket, plan: NotifyPlan, deps: NotifyDeps): Promise<void> {
   try {
     const base = {
       number: ticket.number,
@@ -83,20 +90,31 @@ export async function submitTicket(store: TicketStore, input: NewTicket, plan: N
   } catch (err) {
     console.error('[notify] ticket saved but notifications failed', ticket.number, err);
   }
-  return ticket;
 }
+
+const clip = (v: string | undefined, max: number) => (v && v.length > max ? v.slice(0, max) : v);
 
 /**
  * For the audit forms, whose own emails (lead to Anadi, confirmation to the
  * visitor) have already gone: save a ticket and send only the WhatsApp alert.
  * Never throws and never changes the caller's response.
  */
-export async function recordFormTicket(input: NewTicket): Promise<void> {
-  try {
-    const store = ticketStore();
-    if (!store) return;
-    await submitTicket(store, input, { admin: false, receipt: false, whatsapp: true }, liveDeps());
-  } catch (err) {
-    console.error('[tickets] form ticket not saved', err);
-  }
+export async function recordFormTicket(input: NewTicket, timeoutMs = 2500): Promise<void> {
+  const fit: NewTicket = {
+    ...input,
+    name: clip(input.name, 120),
+    whatsapp: clip(input.whatsapp, 40),
+    stack: clip(input.stack, 120),
+    appUrl: clip(input.appUrl, 500),
+    answers: input.appUrl && input.appUrl.length > 500 ? { ...input.answers, appUrlTruncated: true } : input.answers,
+  };
+  await withTimeout(
+    (async () => {
+      const store = ticketStore();
+      if (!store) return;
+      await submitTicket(store, fit, { admin: false, receipt: false, whatsapp: true }, liveDeps(), timeoutMs);
+    })(),
+    timeoutMs,
+    'form ticket',
+  );
 }

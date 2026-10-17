@@ -212,6 +212,23 @@ describe('POST /api/bit/ticket', () => {
   });
 });
 
+describe('hung backend', () => {
+  it('returns { number } when the inline dispatch never resolves', async () => {
+    vi.useFakeTimers();
+    try {
+      const store = { ...mem.store, enqueueNotifications: () => new Promise<never>(() => {}) };
+      holder.store = store;
+      const pending = post(valid);
+      await vi.advanceTimersByTimeAsync(4100);
+      const res = await pending;
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({ number: 'A-1001' });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
 describe('policy', () => {
   it('stores draft kinds as message drafts and never sends them', async () => {
     const t = await mem.store.createTicket({ email: 'a@b.co', kind: 'question', answers: {}, source: 'bit' });
