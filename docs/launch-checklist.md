@@ -64,6 +64,7 @@ Done when: every row you need is set in Production and Preview, and you have red
 
    Done looks like: both answer **401/403** with a "permission denied" error (an empty `[]` also means no data leaks, but a permission error is what is expected). If either returns rows, stop and fix the grants before going on.
 6. Apply `supabase/migrations/20261019000000_feed_items.sql` the same way, **once, after** the tickets migration. It creates the command centre's `feed_items` table (RLS on, no policies). Check with the anon key as in point 5, using `feed_items?select=*`: it must not return rows.
+7. Apply `supabase/migrations/20261020000000_coach.sql` the same way, **once, after** the feed migration. It creates Coach's `commitments` and `tasks` tables. Check `commitments?select=*` and `tasks?select=*` with the anon key: no rows.
 
 ## 3. Resend domain check
 
@@ -153,6 +154,8 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
 
    **Brief, feed and `/admin`.** After the chat ticket above, within a minute: a `briefs` row, a `messages` row with `status = draft` and `kind = first_reply`, two `feed_items` rows (`new_ticket`, `draft_ready`), and a "Brief ready" email to your inbox whose link opens `/admin#card-…`. Open `/admin` on the phone and the laptop: log in with `ADMIN_PASSWORD`, see both cards, open the draft (Send stays disabled until `[PASTE LOOM LINK]` and `[PRICE]` are replaced), Snooze one card and Mark the other done. In the Tickets tab check the 24 h clock and the brief. Send one reply **to your own test address** and confirm it arrives from `tickets@anadithakur.in` and the ticket moves to First-bug video. `curl -s -X POST https://<preview-url>/api/admin -H 'content-type: application/json' -d '{"op":"feed"}'` must return 401. Vercel, AI Gateway, Usage: brief requests are tagged `lead-brief`.
 
+   **Coach.** On the first-bug test ticket's page in `/admin`: the Coach box lists "Scan, brief and draft" (ticked) and "Record the video and send the first reply", and "Free first-bug video" shows "On track, due in 23h". Try moving the ticket to Audit before replying: it must refuse with "Not done: …". `curl -s https://<preview-url>/api/cron/heartbeat -H "Authorization: Bearer $CRON_SECRET"` returns `{"ok":true,"checked":…}`.
+
    **Live board.** In the chat on the preview create **3 test tickets** with "Show my request on the public board" ticked. `GET /api/board` returns the count in `total`; below 3 the board shows its honest empty state. The kanban appears once 3 exist (`/api/board` is cached 5 minutes via `s-maxage=300`, so it can take that long). Then **delete the 3 test tickets** in Supabase (`tickets`, and their `clients`/`ticket_events`/`messages`/`briefs`/`notifications`/`feed_items` rows; deleting the `tickets` rows cascades to all but `clients`), and confirm the board goes back to its empty state. If this is the same Supabase project as production, do not leave test tickets behind.
 
    **Scorecard.** See step 9 for the first run. `GET /api/scorecard` returns `{ "run": null }` until a run exists (501 if Supabase is not configured). That `{run:null}` answer can be cached up to an hour.
@@ -170,6 +173,7 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
 5. **IndexNow (optional).** Generate a key (8 to 128 hex chars), add `public/<key>.txt` containing just the key, then POST changed URLs to `https://api.indexnow.org/indexnow` after each deploy. Not wired into the build yet.
 6. **Feed and sitemap.** Check `https://anadithakur.in/rss.xml` in a feed reader (full content) and view-source the sitemap for the trailing-slash root and `<image:image>` entries.
 7. **Uptime sentence.** Once the monitor exists (step 7), add a line on `/scorecard` such as "An uptime monitor checks /api/health every few minutes and emails us if it fails." The page currently says only that `/api/health` reports whether the backend is reachable.
-8. **Retention reminder.** Tickets and leads are deleted 24 months after last activity. This is manual until automated: set a recurring quarterly reminder to delete `tickets` and `clients` with no activity for 24 months.
-9. **Open SEO content items** in `docs/seo-geo-aeo-todo.md`.
-10. **Optional later:** remove `'unsafe-inline'` from `script-src`; Vercel Log Drains or Sentry.
+8. **Coach's hourly heartbeat.** Vercel runs `/api/cron/heartbeat` once a day (05:00 UTC) as a floor. For the hourly check, create a free job at https://cron-job.org: URL `https://anadithakur.in/api/cron/heartbeat`, every hour, method GET, request header `Authorization: Bearer <your CRON_SECRET>`, and turn on failure notifications to your email. Done when the job's history shows 200s.
+9. **Retention reminder.** Tickets and leads are deleted 24 months after last activity. This is manual until automated: set a recurring quarterly reminder to delete `tickets` and `clients` with no activity for 24 months.
+10. **Open SEO content items** in `docs/seo-geo-aeo-todo.md`.
+11. **Optional later:** remove `'unsafe-inline'` from `script-src`; Vercel Log Drains or Sentry.

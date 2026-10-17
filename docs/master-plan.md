@@ -179,21 +179,21 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 
 ## Phase 4: Coach (promises, commitments, gates, heartbeat)
 
-- [ ] **Commitments:** one row per promise per client, with a due time and
+- [x] **Commitments:** one row per promise per client, with a due time and
       status `open` / `at_risk` / `kept` / `missed`. Misses stay visible and feed
       an honest "promises kept" number.
-- [ ] **Tasks with owners:** Coach (automatic prep: scan, brief, draft), Anadi
+- [x] **Tasks with owners:** Coach (automatic prep: scan, brief, draft), Anadi
       (judgment: record the video, approve the price, send the report), helper (a
       label for future hand-offs). Each task has "done when".
-- [ ] **Stage gates:** per stage, the tasks it creates on entry, its exit
+- [x] **Stage gates:** per stage, the tasks it creates on entry, its exit
       conditions and the client email it sends. A ticket can't move on until the
       stage is really done, and a missed commitment blocks the gate until a
       reason is written.
-- [ ] **Heartbeat:** `/api/cron/heartbeat`, hourly from cron-job.org with a daily
+- [x] **Heartbeat:** `/api/cron/heartbeat`, hourly from cron-job.org with a daily
       Vercel cron as a floor. At 75% of a window → `at_risk`, a Coach card and an
       urgent alert; past due → `missed`, logged, top of tomorrow. This replaces
       the overdue alert (Task 8 of the Phase 2–3 plan).
-- [ ] Coach cards in the feed in green.
+- [x] Coach cards in the feed in green.
 
 ## Phase 5: command centre v2
 
