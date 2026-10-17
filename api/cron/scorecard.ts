@@ -43,6 +43,7 @@ export default withErrorLog('cron-scorecard', async (req: VercelRequest, res: Ve
     report,
     readinessError: report ? undefined : check && check.ok === false ? check.error : 'readiness check did not finish',
     headers: headers ?? null,
+    headersError: headers ? undefined : 'the site’s headers could not be read',
   });
   await store.saveScorecard(summary as unknown as Record<string, unknown>);
   return res.status(200).json({ ok: true, score: summary.readiness?.score ?? null, headersMissing: summary.headers?.missing ?? null });

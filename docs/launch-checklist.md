@@ -120,4 +120,4 @@ Data and training (please verify in each provider's current terms — this is wh
 - Until the first run the page says "No scan yet. First scan runs after launch." and `GET /api/scorecard` returns `{ "run": null }` (501 if Supabase isn't configured).
 - To trigger it once manually after deploy: `curl -s https://anadithakur.in/api/cron/scorecard -H "Authorization: Bearer $CRON_SECRET"` → `{"ok":true,"score":…}`. Then `/api/scorecard` shows it (cached up to 1 hour).
 - The expected header list lives in `src/lib/scorecard/headers.ts`; a test fails if it drifts from `vercel.json`.
-- The page says `/api/health` is monitored: only true once the uptime service from the monitoring checklist is set up.
+- Once the uptime monitor is set up, you can add a line on /scorecard such as "An uptime monitor checks /api/health every few minutes and emails us if it fails." (The page currently says only that /api/health reports whether the backend is reachable.)

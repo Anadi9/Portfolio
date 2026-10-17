@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { EXPECTED_HEADERS } from './headers';
-import { asSummary, checkHeaders, summarise } from './summary';
+import { asSummary, cardState, checkHeaders, summarise } from './summary';
 import { memoryTicketStore } from '../tickets/memory';
 
 const { holder } = vi.hoisted(() => ({ holder: { store: null as unknown } }));
@@ -75,6 +75,22 @@ describe('summarise', () => {
     expect(asSummary({})).toBeNull();
     expect(asSummary(null)).toBeNull();
     expect(asSummary(summarise({ ranAt: '2026-10-17T08:00:00Z', site: 's', report, headers: null }))).not.toBeNull();
+  });
+});
+
+describe('headersError and cardState', () => {
+  const base = { ranAt: '2026-10-17T08:00:00Z', site: 's' };
+  it('stores headersError', () => {
+    const s = summarise({ ...base, report: { score: 1, findings: [] }, headers: null, headersError: 'down' });
+    expect(s.headersError).toBe('down');
+  });
+  it('no run / partial / full', () => {
+    expect(cardState(null, 'headers')).toEqual({ kind: 'none' });
+    const partial = summarise({ ...base, report: { score: 1, findings: [] }, headers: null, headersError: 'down' });
+    expect(cardState(partial, 'headers')).toMatchObject({ kind: 'missing' });
+    expect(cardState(partial, 'readiness')).toEqual({ kind: 'ok' });
+    const noErr = summarise({ ...base, report: null, headers: { present: [], missing: [] } });
+    expect(cardState(noErr, 'readiness')).toMatchObject({ kind: 'missing', reason: 'The last scan could not run this check.' });
   });
 });
 

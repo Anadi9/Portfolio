@@ -20,6 +20,7 @@ export type ScorecardSummary = {
   readinessError?: string;
   /** Null when the site could not be fetched. */
   headers: HeaderCheck | null;
+  headersError?: string;
 };
 
 /** Case-insensitive; accepts a `Headers` or a plain name → value map. */
@@ -47,6 +48,7 @@ export function summarise(input: {
   report: ReportLike | null;
   readinessError?: string;
   headers: HeaderCheck | null;
+  headersError?: string;
 }): ScorecardSummary {
   const ranAt = typeof input.ranAt === 'string' ? input.ranAt : input.ranAt.toISOString();
   const by = (status: FindingLike['status']) => input.report?.findings.filter((f) => f.status === status).map((f) => f.label) ?? [];
@@ -57,7 +59,18 @@ export function summarise(input: {
     readiness: input.report ? { score: input.report.score, passed: by('pass'), warned: by('warn'), failed: by('fail') } : null,
     ...(input.readinessError ? { readinessError: input.readinessError } : {}),
     headers: input.headers,
+    ...(input.headersError ? { headersError: input.headersError } : {}),
   };
+}
+
+export type CardState = { kind: 'none' } | { kind: 'ok' } | { kind: 'missing'; reason: string };
+
+/** What a card should show: no run at all, the data, or a run whose check did not produce data. */
+export function cardState(run: ScorecardSummary | null, part: 'readiness' | 'headers'): CardState {
+  if (!run) return { kind: 'none' };
+  if (run[part]) return { kind: 'ok' };
+  const err = part === 'readiness' ? run.readinessError : run.headersError;
+  return { kind: 'missing', reason: err ? `The last scan could not run this check: ${err}` : 'The last scan could not run this check.' };
 }
 
 /** Narrow unknown stored JSON back to a summary; anything else is treated as no run. */

@@ -4,7 +4,7 @@ import { Seo } from '@/components/Seo';
 import { PixelIcon } from '@/components/brand/Bit';
 import { PaperPage, SiteHeader } from '@/components/site/kit';
 import { EXPECTED_HEADERS } from '@/lib/scorecard/headers';
-import { asSummary, type ScorecardSummary } from '@/lib/scorecard/summary';
+import { asSummary, cardState, type ScorecardSummary } from '@/lib/scorecard/summary';
 import '@/styles/home.css';
 
 /**
@@ -60,6 +60,9 @@ export default function Scorecard() {
     return () => ctl.abort();
   }, []);
 
+  const seo = cardState(run, 'readiness');
+  const sec = cardState(run, 'headers');
+
   return (
     <>
       <Seo title={TITLE} description={DESCRIPTION} path={PATH} type="website" />
@@ -92,8 +95,8 @@ export default function Scorecard() {
                   <List items={run.readiness.warned} mark="!" label="Could be better" />
                   <List items={run.readiness.failed} mark="✕" label="Failing" />
                 </>
-              ) : run?.readinessError ? (
-                <p className="hq-small" style={{ margin: 0 }}>The last scan could not read the site: {run.readinessError}</p>
+              ) : seo.kind === 'missing' ? (
+                <p className="hq-small" style={{ margin: 0 }}>{seo.reason}</p>
               ) : (
                 <NoScan />
               )}
@@ -108,14 +111,14 @@ export default function Scorecard() {
                 </>
               ) : (
                 <>
-                  <NoScan />
+                  {sec.kind === 'missing' ? <p className="hq-small" style={{ margin: 0 }}>{sec.reason}</p> : <NoScan />}
                   <p className="hq-small" style={{ margin: 0 }}>
                     We check for: {EXPECTED_HEADERS.join(', ')}.
                   </p>
                 </>
               )}
               <p className="hq-small" style={{ margin: 0 }}>
-                <code>/api/health</code> is monitored by an uptime service, so an outage pages us before it reaches you.
+                <code>/api/health</code> reports whether the site’s backend is reachable.
               </p>
             </Card>
 
