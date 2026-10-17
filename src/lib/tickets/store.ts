@@ -6,8 +6,12 @@ import {
   type NewNotification,
   type NewTicket,
   type Notification,
+  type Message,
   type Scorecard,
   type Ticket,
+  type TicketDetail,
+  type TicketRow,
+  type TicketStage,
 } from './types.js';
 import { FEED_BODY_MAX, FEED_TITLE_MAX, feedOrder, type FeedItem, type NewFeedItem } from '../feed/types.js';
 
@@ -36,8 +40,18 @@ export interface TicketStore {
    * `failed` once the last attempt is used. `error` is kept as `last_error`.
    */
   markNotification(id: string, result: MarkResult): Promise<void>;
-  /** Stores a message awaiting Anadi's approval (policy `draft` kinds). */
-  saveDraftMessage(ticketId: string, kind: string, body: string, channel: Channel): Promise<void>;
+  /** Stores a message awaiting Anadi's approval (policy `draft` kinds). Returns its id. */
+  saveDraftMessage(ticketId: string, kind: string, body: string, channel: Channel): Promise<string>;
+  /** Ticket + client contact + timeline + messages + latest brief; null when there's no such ticket. */
+  getTicket(id: string): Promise<TicketDetail | null>;
+  /** Newest first. */
+  listTickets(opts?: { stage?: TicketStage; limit?: number }): Promise<TicketRow[]>;
+  saveBrief(ticketId: string, body: Record<string, unknown>): Promise<void>;
+  setStage(ticketId: string, stage: TicketStage): Promise<void>;
+  /** `status: 'sent'` also stamps `sentAt`. */
+  updateMessage(id: string, patch: { body?: string; status?: 'sent' | 'failed' }): Promise<void>;
+  /** Ids of tickets from the last 7 days with no brief yet, oldest first. */
+  ticketsMissingBrief(limit?: number): Promise<string[]>;
   publicBoard(): Promise<BoardTicket[]>;
   saveScorecard(results: Record<string, unknown>): Promise<void>;
   latestScorecard(): Promise<Scorecard | null>;
@@ -115,6 +129,30 @@ const toFeed = (r: Row): FeedItem => ({
   doneAt: r.done_at,
   snoozedUntil: r.snoozed_until,
 });
+
+const toMessage = (r: Row): Message => ({
+  id: r.id,
+  ticketId: r.ticket_id,
+  direction: r.direction,
+  kind: r.kind,
+  status: r.status,
+  body: r.body,
+  channel: r.channel,
+  createdAt: r.created_at,
+  sentAt: r.sent_at,
+});
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** When the first outgoing message was sent, if any. Shared so both stores agree. */
+export const firstSent = (messages: Pick<Message, 'direction' | 'status' | 'sentAt'>[]): string | null =>
+  messages
+    .filter((m) => m.direction === 'out' && m.status === 'sent' && m.sentAt)
+    .map((m) => m.sentAt as string)
+    .sort()[0] ?? null;
+
+const latest = (rows: Row[] | null | undefined): Row | undefined =>
+  [...(rows ?? [])].sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))[0];
 
 const toNotification = (r: Row): Notification => ({
   id: r.id,
@@ -218,10 +256,90 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     },
 
     async saveDraftMessage(ticketId, kind, body, channel) {
-      const { error } = await db
+      const { data, error } = await db
         .from('messages')
-        .insert({ ticket_id: ticketId, direction: 'out', kind, status: 'draft', body, channel });
+        .insert({ ticket_id: ticketId, direction: 'out', kind, status: 'draft', body, channel })
+        .select('id')
+        .single();
       if (error) fail('save draft message', error);
+      return data.id as string;
+    },
+
+    async getTicket(id) {
+      if (!UUID.test(id)) return null;
+      const { data, error } = await db
+        .from('tickets')
+        .select('*, clients(name, email, whatsapp), ticket_events(type, data, at), messages(*), briefs(body, created_at)')
+        .eq('id', id)
+        .maybeSingle();
+      if (error) fail('get ticket', error);
+      if (!data) return null;
+      const c = data.clients ?? {};
+      return {
+        ...toTicket(data),
+        client: { name: c.name ?? null, email: c.email ?? '', whatsapp: c.whatsapp ?? null },
+        events: ((data.ticket_events ?? []) as Row[]).map((e) => ({ type: e.type, data: e.data ?? {}, at: e.at })).sort((a, b) => a.at.localeCompare(b.at)),
+        messages: ((data.messages ?? []) as Row[]).map(toMessage).sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+        brief: latest(data.briefs)?.body ?? null,
+      };
+    },
+
+    async listTickets(opts = {}) {
+      let q = db
+        .from('tickets')
+        .select('id, number, kind, stage, app_url, created_at, updated_at, clients(name, email), briefs(id), messages(direction, status, sent_at)')
+        .order('created_at', { ascending: false })
+        .limit(opts.limit ?? 200);
+      if (opts.stage) q = q.eq('stage', opts.stage);
+      const { data, error } = await q;
+      if (error) fail('list tickets', error);
+      return (data as Row[]).map((r) => ({
+        id: r.id,
+        number: r.number,
+        kind: r.kind,
+        stage: r.stage,
+        appUrl: r.app_url,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+        clientName: r.clients?.name ?? null,
+        clientEmail: r.clients?.email ?? '',
+        hasBrief: (r.briefs ?? []).length > 0,
+        firstReplySentAt: firstSent(((r.messages ?? []) as Row[]).map((m) => ({ direction: m.direction, status: m.status, sentAt: m.sent_at }))),
+      }));
+    },
+
+    async saveBrief(ticketId, body) {
+      const { error } = await db.from('briefs').insert({ ticket_id: ticketId, body });
+      if (error) fail('save brief', error);
+    },
+
+    async setStage(ticketId, stage) {
+      const { error } = await db.from('tickets').update({ stage }).eq('id', ticketId);
+      if (error) fail('set stage', error);
+    },
+
+    async updateMessage(id, patch) {
+      const row: Row = {};
+      if (patch.body !== undefined) row.body = patch.body;
+      if (patch.status) {
+        row.status = patch.status;
+        if (patch.status === 'sent') row.sent_at = new Date().toISOString();
+      }
+      if (!Object.keys(row).length) return;
+      const { error } = await db.from('messages').update(row).eq('id', id);
+      if (error) fail('update message', error);
+    },
+
+    async ticketsMissingBrief(limit = 5) {
+      const since = new Date(Date.now() - 7 * 24 * 3_600_000).toISOString();
+      const { data, error } = await db
+        .from('tickets')
+        .select('id, created_at, briefs(id)')
+        .gte('created_at', since)
+        .order('created_at', { ascending: true })
+        .limit(200);
+      if (error) fail('tickets missing brief', error);
+      return (data as Row[]).filter((r) => !(r.briefs ?? []).length).slice(0, limit).map((r) => r.id);
     },
 
     async publicBoard() {

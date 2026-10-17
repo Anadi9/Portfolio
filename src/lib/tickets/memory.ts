@@ -1,6 +1,6 @@
-import { feedRow, MAX_ATTEMPTS, statusAfter, type TicketStore } from './store';
+import { feedRow, firstSent, MAX_ATTEMPTS, statusAfter, type TicketStore } from './store';
 import { feedOrder, isOpen, type FeedItem } from '../feed/types';
-import { NewTicketSchema, type BoardTicket, type Notification, type Scorecard, type Ticket } from './types';
+import { NewTicketSchema, type BoardTicket, type Message, type Notification, type Scorecard, type Ticket } from './types';
 
 /**
  * An in-memory `TicketStore` for tests: same contract as the Supabase one
@@ -14,7 +14,8 @@ export function memoryTicketStore() {
   const tickets: Ticket[] = [];
   const events: { ticketId: string; type: string; data: Record<string, unknown>; at: string }[] = [];
   const notifications: Notification[] = [];
-  const messages: { ticketId: string; direction: 'out'; kind: string; status: 'draft'; body: string; channel: string }[] = [];
+  const messages: Message[] = [];
+  const briefs: { ticketId: string; body: Record<string, unknown>; createdAt: string }[] = [];
   const scorecards: Scorecard[] = [];
   const feed: FeedItem[] = [];
   const id = (p: string) => `${p}_${++n}`;
@@ -86,7 +87,67 @@ export function memoryTicketStore() {
       x.sentAt = result.status === 'sent' ? now() : null;
     },
     async saveDraftMessage(ticketId, kind, body, channel) {
-      messages.push({ ticketId, direction: 'out', kind, status: 'draft', body, channel });
+      const m: Message = { id: id('msg'), ticketId, direction: 'out', kind, status: 'draft', body, channel, createdAt: now(), sentAt: null };
+      messages.push(m);
+      return m.id;
+    },
+    async getTicket(tid) {
+      const t = tickets.find((x) => x.id === tid);
+      if (!t) return null;
+      const c = [...clients.values()].find((x) => x.id === t.clientId)!;
+      const b = briefs.filter((x) => x.ticketId === tid).at(-1);
+      return {
+        ...t,
+        client: { name: c.name ?? null, email: c.email, whatsapp: c.whatsapp ?? null },
+        events: events.filter((e) => e.ticketId === tid).map(({ type, data, at }) => ({ type, data, at })),
+        messages: messages.filter((x) => x.ticketId === tid).map((x) => ({ ...x })),
+        brief: b ? { ...b.body } : null,
+      };
+    },
+    async listTickets(opts = {}) {
+      return tickets
+        .filter((t) => !opts.stage || t.stage === opts.stage)
+        .slice()
+        .reverse()
+        .slice(0, opts.limit ?? 200)
+        .map((t) => {
+          const c = [...clients.values()].find((x) => x.id === t.clientId)!;
+          return {
+            id: t.id,
+            number: t.number,
+            kind: t.kind,
+            stage: t.stage,
+            appUrl: t.appUrl,
+            createdAt: t.createdAt,
+            updatedAt: t.updatedAt,
+            clientName: c.name ?? null,
+            clientEmail: c.email,
+            hasBrief: briefs.some((b) => b.ticketId === t.id),
+            firstReplySentAt: firstSent(messages.filter((x) => x.ticketId === t.id)),
+          };
+        });
+    },
+    async saveBrief(ticketId, body) {
+      briefs.push({ ticketId, body, createdAt: now() });
+    },
+    async setStage(ticketId, stage) {
+      const t = tickets.find((x) => x.id === ticketId);
+      if (t) {
+        t.stage = stage;
+        t.updatedAt = now();
+      }
+    },
+    async updateMessage(mid, patch) {
+      const m = messages.find((x) => x.id === mid);
+      if (!m) return;
+      if (patch.body !== undefined) m.body = patch.body;
+      if (patch.status) {
+        m.status = patch.status;
+        if (patch.status === 'sent') m.sentAt = now();
+      }
+    },
+    async ticketsMissingBrief(limit = 5) {
+      return tickets.filter((t) => !briefs.some((b) => b.ticketId === t.id)).slice(0, limit).map((t) => t.id);
     },
     async publicBoard() {
       return tickets
@@ -121,5 +182,5 @@ export function memoryTicketStore() {
       for (const f of feed) if (f.ref === ref && !f.doneAt) f.doneAt = now();
     },
   };
-  return { store, clients, tickets, events, notifications, messages, scorecards, feed };
+  return { store, clients, tickets, events, notifications, messages, briefs, scorecards, feed };
 }

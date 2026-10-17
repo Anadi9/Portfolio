@@ -82,3 +82,36 @@ export type BoardTicket = {
 };
 
 export type Scorecard = { runAt: string; results: Record<string, unknown> };
+
+export type TicketEvent = { type: string; data: Record<string, unknown>; at: string };
+
+export type MessageStatus = 'draft' | 'sent' | 'failed';
+
+export type Message = {
+  id: string;
+  ticketId: string;
+  direction: 'in' | 'out';
+  kind: string;
+  status: MessageStatus;
+  body: string;
+  channel: Channel;
+  createdAt: string;
+  sentAt: string | null;
+};
+
+/** Everything `/admin` shows for one ticket. Contact details never leave the server except to Anadi's session. */
+export type TicketDetail = Ticket & {
+  client: { name: string | null; email: string; whatsapp: string | null };
+  events: TicketEvent[];
+  messages: Message[];
+  /** The latest brief's body, or null before `processTicket` has run. */
+  brief: Record<string, unknown> | null;
+};
+
+/** One line of the Tickets tab. */
+export type TicketRow = Pick<Ticket, 'id' | 'number' | 'kind' | 'stage' | 'appUrl' | 'createdAt' | 'updatedAt'> & {
+  clientName: string | null;
+  clientEmail: string;
+  hasBrief: boolean;
+  firstReplySentAt: string | null;
+};

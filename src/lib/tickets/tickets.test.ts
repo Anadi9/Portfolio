@@ -99,7 +99,7 @@ describe('memory ticket store', () => {
     const m = memoryTicketStore();
     const t = await m.store.createTicket(base);
     await m.store.saveDraftMessage(t.id, 'quote', 'Hi', 'email');
-    expect(m.messages).toEqual([{ ticketId: t.id, direction: 'out', kind: 'quote', status: 'draft', body: 'Hi', channel: 'email' }]);
+    expect(m.messages).toMatchObject([{ ticketId: t.id, direction: 'out', kind: 'quote', status: 'draft', body: 'Hi', channel: 'email' }]);
   });
 
   it('shows only opted-in, open tickets on the board, without personal fields', async () => {
@@ -164,5 +164,53 @@ describe('feed items', () => {
     const c = await store.postFeed({ ...card, title: 'x'.repeat(500), body: 'y'.repeat(5000) });
     expect(c.title.length).toBe(140);
     expect(c.body.length).toBe(2000);
+  });
+});
+
+describe('ticket detail methods', () => {
+  it('gets a ticket with client, events, messages and brief', async () => {
+    const m = memoryTicketStore();
+    const t = await m.store.createTicket({ ...base, name: 'Ana', whatsapp: '+911234567890' });
+    const mid = await m.store.saveDraftMessage(t.id, 'first_reply', 'hello', 'email');
+    await m.store.saveBrief(t.id, { topRisk: 'x' });
+    const d = await m.store.getTicket(t.id);
+    expect(d).toMatchObject({ id: t.id, number: t.number, client: { name: 'Ana', email: 'ana@example.com', whatsapp: '+911234567890' }, brief: { topRisk: 'x' } });
+    expect(d!.events.map((e) => e.type)).toContain('created');
+    expect(d!.messages).toMatchObject([{ id: mid, kind: 'first_reply', status: 'draft', body: 'hello', sentAt: null }]);
+    expect(await m.store.getTicket('nope')).toBeNull();
+  });
+
+  it('lists tickets newest first with brief and reply flags', async () => {
+    const m = memoryTicketStore();
+    const a = await m.store.createTicket(base);
+    const b = await m.store.createTicket({ ...base, kind: 'audit' });
+    await m.store.saveBrief(a.id, {});
+    const mid = await m.store.saveDraftMessage(a.id, 'first_reply', 'x', 'email');
+    await m.store.updateMessage(mid, { status: 'sent' });
+    const rows = await m.store.listTickets();
+    expect(rows.map((r) => r.id)).toEqual([b.id, a.id]);
+    expect(rows[1]).toMatchObject({ hasBrief: true, clientEmail: 'ana@example.com' });
+    expect(rows[1].firstReplySentAt).not.toBeNull();
+    expect(rows[0]).toMatchObject({ hasBrief: false, firstReplySentAt: null });
+    expect((await m.store.listTickets({ stage: 'audit' })).length).toBe(0);
+  });
+
+  it('changes stage and edits messages', async () => {
+    const m = memoryTicketStore();
+    const t = await m.store.createTicket(base);
+    await m.store.setStage(t.id, 'audit');
+    const mid = await m.store.saveDraftMessage(t.id, 'first_reply', 'x', 'email');
+    await m.store.updateMessage(mid, { body: 'y' });
+    const d = await m.store.getTicket(t.id);
+    expect(d!.stage).toBe('audit');
+    expect(d!.messages[0]).toMatchObject({ body: 'y', status: 'draft', sentAt: null });
+  });
+
+  it('finds tickets with no brief', async () => {
+    const m = memoryTicketStore();
+    const a = await m.store.createTicket(base);
+    const b = await m.store.createTicket(base);
+    await m.store.saveBrief(a.id, {});
+    expect(await m.store.ticketsMissingBrief()).toEqual([b.id]);
   });
 });

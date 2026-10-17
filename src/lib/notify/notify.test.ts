@@ -250,7 +250,7 @@ describe('policy', () => {
     const out = await dispatch(mem.store, rows, { resend: { emails: { send: sendMock } }, fetch: fetchMock, env: { ...WA_ENV } });
     expect(sendMock).not.toHaveBeenCalled();
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(mem.messages).toEqual([{ ticketId: t.id, direction: 'out', kind: 'quote', status: 'draft', body: 'It is $349.', channel: 'email' }]);
+    expect(mem.messages).toMatchObject([{ ticketId: t.id, direction: 'out', kind: 'quote', status: 'draft', body: 'It is $349.', channel: 'email' }]);
     expect(out.drafted).toBe(1);
     expect(mem.notifications[0].status).toBe('skipped');
   });
