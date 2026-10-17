@@ -53,12 +53,9 @@ describe('processTicket', () => {
     expect(m.feed).toMatchObject([{ bot: 'bit', kind: 'draft_ready', action: 'approve_send', ref: m.messages[0].id, ticketId: t.id }]);
     expect(m.feed[0].title).toContain(t.number);
 
-    expect(send).toHaveBeenCalledTimes(1);
-    const mail = send.mock.calls[0][0];
-    expect(mail.to).toBe('me@example.com');
-    expect(mail.subject).toContain('Brief ready');
-    expect(mail.html).toContain(`/admin#card-${m.feed[0].id}`);
-    expect(mail.html).not.toContain('jo@example.com');
+    // Routine news: the card is the notice; the morning summary email covers it.
+    expect(send).not.toHaveBeenCalled();
+    expect(m.notifications).toEqual([]);
   });
 
   it('runs once per ticket', async () => {

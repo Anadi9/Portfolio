@@ -1,6 +1,4 @@
-import { dispatch, type NotifyDeps } from '../notify/dispatch.js';
-import { liveDeps } from '../notify/live.js';
-import { replyBy } from '../notify/email.js';
+import type { NotifyDeps } from '../notify/dispatch.js';
 import type { TicketStore } from '../tickets/store.js';
 import { fallbackBrief, writeBrief, type Brief, type BriefInput } from './brief.js';
 import { draftFirstReply, joinDraft } from './draft.js';
@@ -8,7 +6,8 @@ import { scanLead } from './scan.js';
 
 /**
  * The background work on a new ticket: scan the app, write the brief, draft
- * the first reply, post a card to the command centre and email Anadi a copy.
+ * the first reply and post a card to the command centre (routine news: no
+ * email; the morning summary covers it).
  * Runs from `waitUntil` after the ticket is saved, and from the daily cron for
  * any ticket that missed it. A ticket that already has a brief is skipped.
  * Nothing reaches the client: the reply stays a draft until Anadi sends it.
@@ -17,6 +16,7 @@ import { scanLead } from './scan.js';
 export type ProcessDeps = {
   scan?: typeof scanLead;
   brief?: typeof writeBrief;
+  /** Unused since briefs stopped emailing; kept so callers' deps still type-check. */
   notify?: NotifyDeps;
 };
 
@@ -43,7 +43,7 @@ export async function processTicket(store: TicketStore, ticketId: string, deps: 
   await store.addEvent(ticket.id, 'brief_ready', { source: brief.source, scanOk: scan.ok });
   await store.completeTask(ticket.id, 'brief').catch((err) => console.error('[coach] brief task', ticket.number, err));
 
-  const card = await store.postFeed({
+  await store.postFeed({
     ticketId: ticket.id,
     bot: 'bit',
     kind: 'draft_ready',
@@ -53,26 +53,5 @@ export async function processTicket(store: TicketStore, ticketId: string, deps: 
     ref: messageId,
   });
 
-  try {
-    const rows = await store.enqueueNotifications([
-      {
-        ticketId: ticket.id,
-        channel: 'email',
-        template: 'brief_ready',
-        payload: {
-          number: ticket.number,
-          kind: ticket.kind,
-          topRisk: brief.topRisk,
-          summary: brief.summary,
-          score: 'error' in scan ? null : scan.readiness.score,
-          replyBy: ticket.kind === 'first_bug' ? replyBy(ticket.createdAt) : null,
-          cardId: card.id,
-        },
-      },
-    ]);
-    await dispatch(store, rows, deps.notify ?? liveDeps());
-  } catch (err) {
-    console.error('[brief] card posted but email failed', ticket.number, err);
-  }
   return 'done';
 }

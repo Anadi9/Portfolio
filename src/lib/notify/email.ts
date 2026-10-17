@@ -157,30 +157,6 @@ export function renderStageChange(p: Record<string, unknown>): { subject: string
 
 export const ADMIN_URL = 'https://anadithakur.in/admin';
 
-/** To Anadi: the brief is ready and a draft waits on its card. No client contact details. */
-export function renderBriefReady(p: Record<string, unknown>): { subject: string; html: string } {
-  const number = text(p.number, 20);
-  const topRisk = text(p.topRisk, 400);
-  const cardId = text(p.cardId, 60);
-  const score = typeof p.score === 'number' ? `${p.score}/100` : 'not scanned';
-  const due = text(p.replyBy, 40);
-  const link = `${ADMIN_URL}#card-${encodeURIComponent(cardId)}`;
-  return {
-    subject: `Brief ready: ${number} · ${topRisk.slice(0, 60) || kindLabel(text(p.kind, 40))}`,
-    html: shell(
-      `<h2 style="margin:0 0 12px">Brief ready: ${esc(number)}</h2>
-<table style="border-collapse:collapse">
-${row('Kind', esc(kindLabel(text(p.kind, 40))))}
-${due ? row('Reply by', esc(due)) : ''}
-${row('Top risk', esc(topRisk) || '<em>none found</em>')}
-${row('Readiness', esc(score))}
-${row('Summary', esc(text(p.summary, 400)))}
-</table>
-<p><a href="${esc(link)}">Open the card</a> to review and send the drafted reply.</p>`,
-    ),
-  };
-}
-
 /** To Anadi, from Coach: a promise is three-quarters through its window. */
 export function renderPromiseAtRisk(p: Record<string, unknown>): { subject: string; html: string } {
   const number = text(p.number, 20);
@@ -215,9 +191,6 @@ export async function sendEmailNotification(
     rendered = renderNewTicketAdmin(p);
     const visitor = text(p.email, 254);
     if (EMAIL.test(visitor)) replyTo = visitor;
-  } else if (row.template === 'brief_ready') {
-    to = inbox;
-    rendered = renderBriefReady(p);
   } else if (row.template === 'promise_at_risk') {
     to = inbox;
     rendered = renderPromiseAtRisk(p);
