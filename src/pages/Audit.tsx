@@ -129,7 +129,7 @@ const Chip = ({ name, on, error, onChange, children }: { name: string; on: boole
 );
 
 type Form = { name: string; business: string; url: string; sells: string; market: Market | ''; email: string; whatsapp: string; worries: string };
-type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent'; due: Date; name: string; email: string } | { kind: 'failed' };
+type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent'; due: Date; name: string; email: string; ticket?: string } | { kind: 'failed' };
 
 const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
   const [form, setForm] = useState<Form>({ name: '', business: '', url: '', sells: '', market: '', email: '', whatsapp: '', worries: '' });
@@ -166,7 +166,7 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...parsed.intake, hp: honeypot }),
       });
-      const data = (await res.json().catch(() => ({}))) as { due?: string; field?: keyof AuditIntake; error?: string };
+      const data = (await res.json().catch(() => ({}))) as { due?: string; ticket?: string; field?: keyof AuditIntake; error?: string };
       if (res.status === 400 && data.field) {
         setErrors({ [data.field]: data.error });
         setStatus({ kind: 'idle' });
@@ -174,7 +174,7 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
       }
       if (!res.ok) throw new Error(String(res.status));
       trackRescue('audit_submitted', { tool: type, symptoms: 0 });
-      setStatus({ kind: 'sent', due: data.due ? new Date(data.due) : dueBy(new Date()), name: parsed.intake.name.split(/\s+/)[0], email: parsed.intake.email });
+      setStatus({ kind: 'sent', due: data.due ? new Date(data.due) : dueBy(new Date()), name: parsed.intake.name.split(/\s+/)[0], email: parsed.intake.email, ticket: data.ticket });
       window.scrollTo({ top: 0 });
     } catch {
       setStatus({ kind: 'failed' });
@@ -208,6 +208,7 @@ const LeadForm = ({ type }: { type: Exclude<AuditType, 'app'> }) => {
           usually sooner. A confirmation is on its way now. If you&apos;d like to talk it through, just reply to that email
           and we&apos;ll book a 20-minute call. No pressure either way.
         </p>
+        {status.ticket && <p style={{ ...lead, margin: 0 }}>Your ticket: <strong style={{ color: p.ink }}>{status.ticket}</strong></p>}
         <div style={{ display: 'grid', gap: s[3], padding: px(s[6], s[6]), background: p.panel }}>
           <span style={{ ...label(10, 700, 0.16), color: p.body }}>WHILE YOU WAIT</span>
           <p style={{ ...body, color: p.ink }}>

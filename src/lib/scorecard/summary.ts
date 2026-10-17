@@ -9,7 +9,8 @@ import { CSP_ALIASES, EXPECTED_HEADERS } from './headers.js';
 type FindingLike = { id: string; label: string; status: 'pass' | 'warn' | 'fail' };
 type ReportLike = { score: number; findings: FindingLike[] };
 
-export type HeaderCheck = { present: string[]; missing: string[] };
+/** `reportOnly` lists headers sent only in report-only mode: seen, but not enforced. They are in neither `present` nor `missing`. */
+export type HeaderCheck = { present: string[]; missing: string[]; reportOnly?: string[] };
 
 export type ScorecardSummary = {
   version: 1;
@@ -35,11 +36,13 @@ export function checkHeaders(
   };
   const present: string[] = [];
   const missing: string[] = [];
+  const reportOnly: string[] = [];
   for (const name of expected) {
-    const aliases = name === 'Content-Security-Policy' ? [name, ...CSP_ALIASES] : [name];
-    (aliases.some(has) ? present : missing).push(name);
+    if (has(name)) present.push(name);
+    else if (name === 'Content-Security-Policy' && CSP_ALIASES.some(has)) reportOnly.push(name);
+    else missing.push(name);
   }
-  return { present, missing };
+  return reportOnly.length ? { present, missing, reportOnly } : { present, missing };
 }
 
 export function summarise(input: {

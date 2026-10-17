@@ -134,7 +134,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   { q: 'Why is the audit paid when the first bug is free?', a: 'The video shows you one real problem. The audit checks everything and gives you a ranked plan — that takes a day or two of Anadi’s time. Book the fix within 30 days and every dollar is credited.' },
   { q: 'What if the audit finds nothing?', a: 'If there are no real, fixable issues, you get a full refund.' },
   { q: 'How does “pay when it’s live” work?', a: 'You pay half to start. The second half is due only once the fix is live and you’ve confirmed it works.' },
-  { q: 'How will I know what’s happening?', a: 'You get a ticket number the moment you send your request. Every step shows in request tracking and in your inbox, with a written update every day while work is in progress.' },
+  { q: 'How will I know what’s happening?', a: 'You get a ticket number when your request is saved. Anadi keeps you updated by email at every step, with a written update every day while work is in progress.' },
   { q: 'What if you can’t fix it?', a: 'The price is fixed. If something wasn’t in the quote, you’re not billed for it.' },
   { q: 'Do you rebuild my app from scratch?', a: 'No. Only the broken parts get rewritten, so your features and design stay as they are.' },
   { q: 'What if my app is too far gone?', a: 'The audit will say so plainly. Sometimes a partial rebuild is cheaper than patching — you’ll know before you pay for anything.' },

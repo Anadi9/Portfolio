@@ -10,7 +10,7 @@ AI answers, scorecard), pending the launch steps in `docs/launch-checklist.md`.
 Phases 2 to 5 are not started.
 
 **The idea behind the order:** one audit engine (scan + AI readiness + DPDP +
-teardown scoring) runs in three places: weekly on this site (public proof), on
+teardown scoring) runs in three places: daily on this site (public proof), on
 every new lead (pre-check for the brief) and monthly on Care clients
 (monitoring). Automation does the detection and paperwork; Anadi does the
 judgment and puts his name on everything that reaches a client.
@@ -38,7 +38,7 @@ Process: each phase gets a spec in `docs/superpowers/specs/`, a plan in
 - [x] **Public tracking board:** Answer: real tickets only, anonymised (category, stack, stage, updated date), only when the client opted in; under 3 visible tickets shows an honest empty state; sample tickets removed. Was: keep sample tickets, or real ones anonymised?
 - [x] **Pricing:** Answer: Bit only states published prices (and builder sums) and says Anadi confirms the fixed price after the free first-bug video; no custom quotes or discounts; optional budget question, never answered with a price. Was: Bit always says "Anadi confirms the final price", or may it
       quote custom prices?
-- [x] **Theme:** Answer: ship the dark toggle (done in phase 2). Was: light only, or ship a dark toggle? (Colour presets from the
+- [x] **Theme:** Done: ship the dark toggle (done in the rebrand, see docs/rebrand-progress.md). Was: light only, or ship a dark toggle? (Colour presets from the
       design tool are not needed.)
 
 ## Phase 0 — pass our own audit (~1 week)
@@ -48,7 +48,7 @@ Reliability & security
       X-Content-Type-Options, Referrer-Policy, Permissions-Policy, frame
       ancestors). Only `/kit/*` sets headers today.
 - [x] Error monitoring for the frontend and `/api/*`.
-- [x] Uptime checks and alerts on `/` and the API routes.
+- [ ] Uptime checks and alerts on `/` and the API routes. The `/api/health` endpoint is built; creating the monitor in an uptime service is a manual step (see `docs/launch-checklist.md`).
 
 Privacy & compliance
 - [x] Data map: what each form, Bit and Stripe collect, where it is stored and
@@ -63,7 +63,7 @@ Search & AI visibility
       whether they mention us.
 
 Proof
-- [x] Public "We audit ourselves" scorecard page, refreshed weekly by cron.
+- [x] Public "We audit ourselves" scorecard page, refreshed daily by cron.
 
 ## Phase 1 — Bit's chat and the ticket foundation
 
@@ -137,7 +137,7 @@ AI for typed questions
 - [ ] Carry the visitor's chat answers across the page: "BIT'S PICK" on the
       matching service and pricing card, "YOURS" on the matching bug and
       checklist column, blog filtered to their topic.
-- [x] Mini-Bit dock with a hint per section; Bit's tour. (done in phase 2)
-- [x] Playable process run (Bit carries the ticket, stamps, coins, live log). (done in phase 2)
-- [ ] Boot screen, scanlines, scroll reveals. (Dark toggle done in phase 2.)
+- [x] Mini-Bit dock with a hint per section; Bit's tour. (done in the rebrand, see docs/rebrand-progress.md)
+- [x] Playable process run (Bit carries the ticket, stamps, coins, live log). (done in the rebrand, see docs/rebrand-progress.md)
+- [ ] Boot screen, scanlines, scroll reveals. (Dark toggle done in the rebrand, see docs/rebrand-progress.md.)
 - [ ] Paid self-serve scans; keep the Production Kit updated.

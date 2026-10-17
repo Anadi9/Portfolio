@@ -73,6 +73,8 @@ export type Notification = {
 /** One row of the public board: nothing that identifies a person or a business. */
 export type BoardTicket = {
   number: string;
+  /** Non-identifying enum; the board derives a label from it when `category` is empty. */
+  kind: TicketKind;
   category: string | null;
   stack: string | null;
   stage: TicketStage;

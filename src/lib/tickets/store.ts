@@ -191,10 +191,10 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async publicBoard() {
       const { data, error } = await db
         .from('public_board')
-        .select('number, category, stack, stage, updated_at')
+        .select('number, kind, category, stack, stage, updated_at')
         .order('updated_at', { ascending: false });
       if (error) fail('public board', error);
-      return (data as Row[]).map((r) => ({ number: r.number, category: r.category, stack: r.stack, stage: r.stage, updatedAt: r.updated_at }));
+      return (data as Row[]).map((r) => ({ number: r.number, kind: r.kind, category: r.category, stack: r.stack, stage: r.stage, updatedAt: r.updated_at }));
     },
 
     async saveScorecard(results) {

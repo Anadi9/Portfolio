@@ -198,7 +198,7 @@ export const offers: Record<'fix' | 'build' | 'care', PricedOffer[]> = {
 export const board = {
   eyebrow: 'Request tracking',
   title: 'Every request, tracked.',
-  intro: 'The moment you hit send you get a ticket. Every step lands on this board — and in your inbox.',
+  intro: 'Send a request through Bit or the form and you get a ticket number. Opt in and it shows here, anonymised.',
   emptyTitle: 'No live requests to show yet.',
   emptyNote: 'Live requests appear here, anonymised, once clients opt in.',
   ticket: {
@@ -216,7 +216,7 @@ export const board = {
   },
   loopTitle: 'How you’re kept in the loop',
   loop: [
-    ['A ticket number', 'the second you hit send — no account needed.'],
+    ['A ticket number', 'when Bit or the form saves your request — no account needed.'],
     ['Your first-bug video', 'within 24 hours, with the fixed price to fix it.'],
     ['A written update every day', 'while work is in progress. No chasing.'],
     ['You confirm it’s live', 'before the second half is due.'],

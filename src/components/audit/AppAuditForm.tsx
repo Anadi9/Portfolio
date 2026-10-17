@@ -95,7 +95,7 @@ type Form = {
   email: string;
 };
 
-type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent'; due: Date; email: string; host: string } | { kind: 'failed' };
+type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent'; due: Date; email: string; host: string; ticket?: string } | { kind: 'failed' };
 
 const Field = ({
   id,
@@ -171,7 +171,7 @@ export default function AppAuditForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...parsed.intake, hp: honeypot }),
       });
-      const data = (await res.json().catch(() => ({}))) as { due?: string; field?: keyof Intake; error?: string };
+      const data = (await res.json().catch(() => ({}))) as { due?: string; ticket?: string; field?: keyof Intake; error?: string };
       if (res.status === 400 && data.field) {
         setErrors({ [data.field]: data.error });
         setStatus({ kind: 'idle' });
@@ -184,6 +184,7 @@ export default function AppAuditForm() {
         due: data.due ? new Date(data.due) : dueBy(new Date()),
         email: parsed.intake.email,
         host: new URL(parsed.intake.appUrl).hostname,
+        ticket: data.ticket,
       });
       window.scrollTo({ top: 0 });
     } catch {
@@ -211,6 +212,11 @@ export default function AppAuditForm() {
                 </a>
                 .
               </p>
+              {status.ticket && (
+                <p style={{ ...body, font: `400 17px/1.5 ${display}`, margin: 0 }}>
+                  Your ticket: <strong style={{ color: p.ink }}>{status.ticket}</strong>
+                </p>
+              )}
               <div style={{ display: 'grid', gap: s[3], padding: px(s[6], s[6]), background: p.panel }}>
                 <span style={{ ...label(10, 700, 0.16), color: p.body }}>WHILE YOU WAIT</span>
                 <p style={{ ...body, color: p.ink }}>

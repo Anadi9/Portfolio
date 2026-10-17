@@ -89,7 +89,7 @@ export function memoryTicketStore() {
     async publicBoard() {
       return tickets
         .filter((t) => t.boardOptIn && t.stage !== 'closed')
-        .map<BoardTicket>((t) => ({ number: t.number, category: t.category, stack: t.stack, stage: t.stage, updatedAt: t.updatedAt }))
+        .map<BoardTicket>((t) => ({ number: t.number, kind: t.kind, category: t.category, stack: t.stack, stage: t.stage, updatedAt: t.updatedAt }))
         .reverse();
     },
     async saveScorecard(results) {

@@ -107,6 +107,7 @@ export default function Scorecard() {
               {run?.headers ? (
                 <>
                   <List items={run.headers.present} mark="✓" label="Security headers present" />
+                  <List items={(run.headers.reportOnly ?? []).map((n) => `${n} (report-only, not enforced yet)`)} mark="!" label="Seen but not enforced" />
                   <List items={run.headers.missing} mark="✕" label="Missing" />
                 </>
               ) : (

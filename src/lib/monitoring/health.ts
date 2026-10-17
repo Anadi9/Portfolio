@@ -1,3 +1,5 @@
+import { aiEnabled } from '../bit/ai-env.js';
+
 export type Status = 'configured' | 'missing';
 export type HealthReport = {
   ok: boolean;
@@ -19,8 +21,10 @@ export async function healthReport(env: Env, fetchImpl: FetchLike): Promise<Heal
     checks: {
       resend: status(has(env.RESEND_API_KEY)),
       supabase: status(supabase),
-      whatsapp: status(has(env.WHATSAPP_TOKEN) && has(env.WHATSAPP_PHONE_NUMBER_ID)),
-      ai: status(env.BIT_AI === 'on' || has(env.AI_GATEWAY_API_KEY)),
+      whatsapp: status(
+        has(env.WHATSAPP_TOKEN) && has(env.WHATSAPP_PHONE_NUMBER_ID) && has(env.WHATSAPP_ALERT_TO) && has(env.WHATSAPP_TEMPLATE_NEW_TICKET),
+      ),
+      ai: status(aiEnabled(env)),
     },
   };
   if (supabase) {

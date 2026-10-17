@@ -98,7 +98,7 @@ create table public.notifications (
 create index notifications_status_idx on public.notifications (status, created_at);
 create index notifications_ticket_id_idx on public.notifications (ticket_id);
 
--- Monthly scorecard snapshots.
+-- Daily self-audit runs.
 create table public.scorecard_runs (
   id       uuid primary key default gen_random_uuid(),
   run_at   timestamptz not null default now(),
@@ -127,7 +127,7 @@ revoke all on sequence public.ticket_number_seq from anon, authenticated;
 -- A plain view runs as its owner (postgres), so it can read `tickets` despite
 -- RLS; nobody but the secret key can select from it.
 create view public.public_board as
-  select number, category, stack, stage, updated_at
+  select number, kind, category, stack, stage, updated_at
   from public.tickets
   where board_opt_in and stage <> 'closed';
 

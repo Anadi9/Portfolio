@@ -106,6 +106,11 @@ describe('POST /api/bit/ticket', () => {
     expect((await post(valid)).body).toEqual({ number: 'A-1002' });
   });
 
+  it('stores the stack answer when Bit sends one', async () => {
+    expect((await post({ ...valid, stack: 'Replit' })).statusCode).toBe(200);
+    expect(mem.tickets[0].stack).toBe('Replit');
+  });
+
   it('accepts a JSON string body', async () => {
     expect((await post(JSON.stringify(valid))).statusCode).toBe(200);
   });

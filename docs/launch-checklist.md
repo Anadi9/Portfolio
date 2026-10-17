@@ -52,7 +52,7 @@ Done when: every row you need is set in Production and Preview, and you have red
 1. Apply `supabase/migrations/20261016000000_tickets.sql`: paste it into the Supabase SQL editor and run it once, **or** run `supabase db push` from the repo (linked project). It creates the tickets tables, the `ticket_number_seq` sequence (first number `A-1001`), the `public_board` view, the `scorecard_runs` table and the `notifications` outbox, and turns RLS on with no policies. **Run it once only: it is not idempotent.**
 2. Confirm `SUPABASE_URL` and `SUPABASE_SECRET_KEY` are set (step 1).
 3. In the SQL editor: `select * from public.public_board;` returns no rows.
-4. Confirm `service_role` still has table privileges (the migration grants nothing explicitly and only revokes anon/authenticated). Quickest check: after step 8's first test ticket, the row appears in `tickets`. Or in SQL: `select has_table_privilege('service_role','public.tickets','INSERT');` returns `true`. If it is `false`, run `grant all on all tables in schema public to service_role;`.
+4. Confirm `service_role` still has table privileges (the migration grants nothing explicitly and only revokes anon/authenticated). Quickest check: after step 8's first test ticket, the row appears in `tickets`. Or in SQL: `select has_table_privilege('service_role','public.tickets','INSERT');` returns `true`. If it is `false`, run `grant all on all tables in schema public to service_role;` **and** `grant usage, select on all sequences in schema public to service_role;` (ticket numbers come from the `ticket_number_seq` sequence, so without the sequence grant every ticket insert fails).
 5. Confirm the anon key cannot read. Use your project's **anon/publishable** key (Project Settings, API Keys):
 
    ```sh

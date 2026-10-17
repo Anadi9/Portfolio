@@ -44,9 +44,16 @@ describe('checkHeaders', () => {
     expect(r.present).toEqual(['Strict-Transport-Security', 'X-Frame-Options']);
     expect(r.missing).toContain('Content-Security-Policy');
   });
-  it('counts report-only CSP as present, from a Headers object too', () => {
+  it('records a report-only CSP as reportOnly, not present or missing, from a Headers object too', () => {
     const r = checkHeaders(new Headers({ 'Content-Security-Policy-Report-Only': "default-src 'self'" }));
+    expect(r.present).not.toContain('Content-Security-Policy');
+    expect(r.missing).not.toContain('Content-Security-Policy');
+    expect(r.reportOnly).toEqual(['Content-Security-Policy']);
+  });
+  it('an enforced CSP is present, even alongside a report-only one, with no reportOnly key', () => {
+    const r = checkHeaders({ 'Content-Security-Policy': "default-src 'self'", 'Content-Security-Policy-Report-Only': "default-src 'self'" });
     expect(r.present).toEqual(['Content-Security-Policy']);
+    expect(r).not.toHaveProperty('reportOnly');
   });
 });
 

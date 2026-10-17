@@ -12,5 +12,5 @@ export const EXPECTED_HEADERS = [
   'Content-Security-Policy',
 ] as const;
 
-/** A CSP in report-only mode counts as present: it is how the policy is rolled out. */
+/** A CSP sent only in report-only mode is reported as such, never as an enforced header. */
 export const CSP_ALIASES = ['Content-Security-Policy-Report-Only'] as const;

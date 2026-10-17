@@ -137,7 +137,7 @@ export function BitTicketForm({
       </label>
       <label className="hq-tf-check">
         <input type="checkbox" checked={f.whatsappOptIn} onChange={(e) => set('whatsappOptIn', e.target.checked)} disabled={busy} />
-        <span>Send me WhatsApp updates about this request</span>
+        <span>Anadi may message me on WhatsApp about this request</span>
       </label>
       {f.whatsappOptIn && field('whatsapp', 'WhatsApp number', { type: 'tel', autoComplete: 'tel', inputMode: 'tel', maxLength: LIMITS.whatsapp, placeholder: '+1 555 123 4567' })}
 

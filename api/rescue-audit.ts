@@ -79,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Best-effort: a ticket failure (or no store) never changes the response.
-  await recordFormTicket({
+  const ticket = await recordFormTicket({
     email: intake.email,
     appUrl: intake.appUrl,
     kind: 'first_bug',
@@ -95,7 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     },
   });
 
-  return res.status(200).json({ ok: true, due: due.toISOString() });
+  return res.status(200).json({ ok: true, due: due.toISOString(), ...(ticket ? { ticket } : {}) });
 }
 
 function safeParse(s: string): unknown {

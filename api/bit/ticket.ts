@@ -24,6 +24,7 @@ const BodySchema = NewTicketSchema.pick({
   name: true,
   appUrl: true,
   kind: true,
+  stack: true,
   answers: true,
   budget: true,
   boardOptIn: true,

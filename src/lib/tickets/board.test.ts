@@ -20,7 +20,7 @@ const call = async (method = 'GET') => {
   return res;
 };
 
-const t = (number: string, stage: BoardTicket['stage']): BoardTicket => ({ number, category: 'Auth', stack: 'Next.js', stage, updatedAt: '2026-10-17T00:00:00Z' });
+const t = (number: string, stage: BoardTicket['stage']): BoardTicket => ({ number, kind: 'audit', category: 'Auth', stack: 'Next.js', stage, updatedAt: '2026-10-17T00:00:00Z' });
 
 afterEach(() => {
   holder.store = null;
@@ -35,6 +35,12 @@ describe('boardColumns', () => {
     expect(b.columns[4].tickets).toHaveLength(1);
     expect(b.total).toBe(3);
     expect(MIN_BOARD_TICKETS).toBe(3);
+  });
+  it('derives a card label from kind when category is empty, and keeps a real category', () => {
+    const kinds = { first_bug: 'First-bug review', audit: 'Audit', build: 'AI build', care: 'Care', question: 'Question', teardown: 'Teardown' } as const;
+    const rows = (Object.keys(kinds) as (keyof typeof kinds)[]).map((kind, i) => ({ ...t(`A-${2000 + i}`, 'inbox'), kind, category: i % 2 ? '  ' : null }));
+    const labels = boardColumns([...rows, { ...t('A-3000', 'inbox'), category: 'Auth' }]).columns[0].tickets.map((x) => x.category);
+    expect(labels).toEqual([...Object.values(kinds), 'Auth']);
   });
   it('is five empty columns for no tickets', () => {
     expect(boardColumns([])).toMatchObject({ total: 0, columns: expect.arrayContaining([expect.objectContaining({ tickets: [] })]) });

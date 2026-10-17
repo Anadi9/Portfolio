@@ -97,9 +97,10 @@ const clip = (v: string | undefined, max: number) => (v && v.length > max ? v.sl
 /**
  * For the audit forms, whose own emails (lead to Anadi, confirmation to the
  * visitor) have already gone: save a ticket and send only the WhatsApp alert.
- * Never throws and never changes the caller's response.
+ * Never throws. Returns the ticket number once the bounded work finishes, or
+ * null on timeout, failure or no store.
  */
-export async function recordFormTicket(input: NewTicket, timeoutMs = 2500): Promise<void> {
+export async function recordFormTicket(input: NewTicket, timeoutMs = 2500): Promise<string | null> {
   const fit: NewTicket = {
     ...input,
     name: clip(input.name, 120),
@@ -108,13 +109,14 @@ export async function recordFormTicket(input: NewTicket, timeoutMs = 2500): Prom
     appUrl: clip(input.appUrl, 500),
     answers: input.appUrl && input.appUrl.length > 500 ? { ...input.answers, appUrlTruncated: true } : input.answers,
   };
-  await withTimeout(
+  const ticket = await withTimeout(
     (async () => {
       const store = ticketStore();
-      if (!store) return;
-      await submitTicket(store, fit, { admin: false, receipt: false, whatsapp: true }, liveDeps(), timeoutMs);
+      if (!store) return null;
+      return submitTicket(store, fit, { admin: false, receipt: false, whatsapp: true }, liveDeps(), timeoutMs);
     })(),
     timeoutMs,
     'form ticket',
   );
+  return ticket?.number ?? null;
 }

@@ -75,11 +75,28 @@ describe('healthReport', () => {
   });
   it('checks supabase and never leaks values', async () => {
     const f = vi.fn(async () => ({ status: 200 }));
-    const env = { RESEND_API_KEY: 'k', SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SECRET_KEY: 'sekret', BIT_AI: 'on', WHATSAPP_TOKEN: 't' };
+    const env = { RESEND_API_KEY: 'k', SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SECRET_KEY: 'sekret', BIT_AI: 'on', AI_GATEWAY_API_KEY: 'g', WHATSAPP_TOKEN: 't' };
     const r = await healthReport(env, f);
     expect(r.checks).toEqual({ resend: 'configured', supabase: 'configured', whatsapp: 'missing', ai: 'configured' });
     expect(r.supabaseReachable).toBe('reachable');
     expect(JSON.stringify(r)).not.toContain('sekret');
+  });
+  it('whatsapp is configured only with all four variables', async () => {
+    const all = { WHATSAPP_TOKEN: 't', WHATSAPP_PHONE_NUMBER_ID: '1', WHATSAPP_ALERT_TO: '9', WHATSAPP_TEMPLATE_NEW_TICKET: 'n' };
+    expect((await healthReport(all, vi.fn())).checks.whatsapp).toBe('configured');
+    for (const k of Object.keys(all)) {
+      const partial: Record<string, string> = { ...all };
+      delete partial[k];
+      expect((await healthReport(partial, vi.fn())).checks.whatsapp, k).toBe('missing');
+    }
+  });
+  it('ai needs BIT_AI=on and gateway auth, the same rule Bit uses', async () => {
+    const ai = async (env: Record<string, string>) => (await healthReport(env, vi.fn())).checks.ai;
+    expect(await ai({ BIT_AI: 'on' })).toBe('missing');
+    expect(await ai({ AI_GATEWAY_API_KEY: 'g' })).toBe('missing');
+    expect(await ai({ BIT_AI: 'on', AI_GATEWAY_API_KEY: 'g' })).toBe('configured');
+    expect(await ai({ BIT_AI: 'on', VERCEL_OIDC_TOKEN: 'o' })).toBe('configured');
+    expect(await ai({ BIT_AI: 'on', VERCEL: '1' })).toBe('configured');
   });
   it('reports unreachable on failure', async () => {
     const r = await healthReport({ SUPABASE_URL: 'u', SUPABASE_SECRET_KEY: 'k' }, async () => { throw new Error('net'); });

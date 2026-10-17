@@ -56,6 +56,7 @@ const GRAPH = [
   'src/lib/monitoring/validate.ts',
   'src/lib/monitoring/with-error-log.ts',
   'src/lib/monitoring/health.ts',
+  'src/lib/bit/ai-env.ts',
   'src/lib/tickets/store.ts',
   'src/lib/tickets/types.ts',
   'src/lib/tickets/policy.ts',

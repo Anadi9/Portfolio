@@ -214,9 +214,11 @@ export function Privacy() {
       <Section title="Tickets and alerts">
         <P>
           Requests are saved as tickets in my database (Supabase) with your contact details, so I can track the work and email you
-          about it. When a new ticket arrives I get an alert by email and on my own WhatsApp. I only send you WhatsApp updates if
-          you tick the opt-in box when you submit, and you can opt out at any time. My replies to you are emails, and anything
-          about price, scope or findings is written and sent by me.
+          about it. When a new ticket arrives I get an alert by email and on my own WhatsApp (sent through Meta’s WhatsApp Cloud
+          API to my own number; your details are not sent to Meta for this). If you tick the WhatsApp box when you submit, I may
+          message you by hand from my own WhatsApp about that request, and you can tell me to stop at any time. The site does not
+          send WhatsApp messages to you automatically. My replies are otherwise emails, and anything about price, scope or
+          findings is written and sent by me.
         </P>
         <P>
           There is an optional public tracking board. A ticket appears on it only if you tick the box to allow it, and then only
@@ -233,7 +235,7 @@ export function Privacy() {
             <><strong>Resend</strong>: sending delivery, receipt, report and reply emails.</>,
             <><strong>Vercel</strong>: hosting, anonymous analytics, logs and the AI Gateway.</>,
             <><strong>Groq</strong>: AI fallback for Bit’s typed questions (the question text only).</>,
-            <><strong>Meta (WhatsApp Cloud API)</strong>: my own new-ticket alerts, and your updates if you opt in.</>,
+            <><strong>Meta (WhatsApp Cloud API)</strong>: alerts to my own number about new tickets. Nothing is sent to you through it.</>,
           ]}
         />
         <P>

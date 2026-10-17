@@ -37,6 +37,11 @@ describe('buildPayload', () => {
       budget: 'Under $2,000', boardOptIn: false, whatsappOptIn: false, hp: '',
     });
   });
+  it('sends the "How was it built?" answer as stack, except Not sure', () => {
+    expect(buildPayload('first_bug', { stack: 'Replit' }, form())).toMatchObject({ stack: 'Replit' });
+    expect(buildPayload('first_bug', { stack: 'Not sure' }, form())).not.toHaveProperty('stack');
+    expect(buildPayload('first_bug', {}, form())).not.toHaveProperty('stack');
+  });
   it('includes the WhatsApp number only when opted in, and the typed question', () => {
     const on = buildPayload('question', {}, form({ whatsappOptIn: true, whatsapp: '+1 555 123 4567', boardOptIn: true }), 'do you do Rails?');
     expect(on).toMatchObject({ whatsapp: '+1 555 123 4567', whatsappOptIn: true, boardOptIn: true, answers: { question: 'do you do Rails?' } });
@@ -83,6 +88,8 @@ describe('chat state around the form', () => {
     const text = s.log.filter((m) => m.who === 'bit').map((m) => (m as { text: string }).text).join(' ');
     expect(text).toContain('A-1042');
     expect(text).toContain('within 24 hours');
+    expect(text).toContain("I'll email a receipt to sam@example.com.");
+    expect(text).not.toContain('on its way');
   });
   it('501 / network / 200-without-number: says it was not saved and offers the app link and email', () => {
     const s = applyOutcome(atQurl(), 'first_bug', parseResponse(200, { ok: true }), 'sam@example.com');

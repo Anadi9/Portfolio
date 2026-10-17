@@ -14,6 +14,7 @@
  */
 import { gateway, generateText, Output, type LanguageModel } from 'ai';
 import { z } from 'zod';
+import { aiEnabled } from './ai-env.js';
 import { systemPrompt } from './knowledge.js';
 import { AI_ROUTES, ANSWER_KEYS, isAiRoute, MAX_QUESTION, NODE_IDS, type AiRoute } from './nodes.js';
 import { guardPrices } from './prices.js';
@@ -63,9 +64,8 @@ export type AskResult =
 
 /** Env, read once per request. On Vercel the gateway can authenticate with OIDC instead of a key. */
 export function aiConfig(env: Record<string, string | undefined> = process.env) {
-  const auth = Boolean(env.AI_GATEWAY_API_KEY?.trim() || env.VERCEL_OIDC_TOKEN?.trim() || env.VERCEL === '1');
   return {
-    on: env.BIT_AI === 'on' && auth,
+    on: aiEnabled(env),
     model: env.BIT_AI_MODEL?.trim() || DEFAULT_MODEL,
     fallbackModel: env.BIT_AI_FALLBACK_MODEL?.trim() || DEFAULT_FALLBACK_MODEL,
   };

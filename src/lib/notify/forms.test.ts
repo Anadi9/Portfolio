@@ -56,6 +56,27 @@ describe('audit forms create a best-effort ticket', () => {
     expect(sendMock).toHaveBeenCalledTimes(2); // lead + confirmation only
   });
 
+  it.each([
+    ['audit', auditHandler, auditBody],
+    ['app', rescueHandler, rescueBody],
+  ] as const)('%s: success JSON adds the ticket number, keeping existing fields', async (_n, handler, body) => {
+    const res = await call(handler, body);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({ ok: true, due: expect.any(String), ticket: mem.tickets[0].number });
+    expect((res.body as { ticket: string }).ticket).toMatch(/^A-\d+$/);
+  });
+
+  it.each([
+    ['audit', auditHandler, auditBody],
+    ['app', rescueHandler, rescueBody],
+  ] as const)('%s: no ticket field when the store is missing or fails', async (_n, handler, body) => {
+    holder.store = null;
+    expect(await call(handler, body)).toMatchObject({ statusCode: 200, body: { ok: true } });
+    expect((await call(handler, body)).body).not.toHaveProperty('ticket');
+    holder.store = { createTicket: async () => { throw new Error('db down'); } };
+    expect((await call(handler, body)).body).not.toHaveProperty('ticket');
+  });
+
   it('app form: first_bug ticket from app_form with readable symptoms', async () => {
     expect((await call(rescueHandler, rescueBody)).statusCode).toBe(200);
     expect(mem.tickets[0]).toMatchObject({ source: 'app_form', kind: 'first_bug', stack: 'Lovable' });

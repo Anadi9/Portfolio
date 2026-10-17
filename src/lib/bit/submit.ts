@@ -52,6 +52,7 @@ export type TicketPayload = {
   kind: FormKind;
   answers: Record<string, unknown>;
   budget?: string;
+  stack?: string;
   boardOptIn: boolean;
   whatsappOptIn: boolean;
   whatsapp?: string;
@@ -73,6 +74,8 @@ export function buildPayload(kind: FormKind, ans: Answers, f: TicketForm, questi
   if (f.name.trim()) p.name = f.name.trim();
   if (f.appUrl.trim()) p.appUrl = f.appUrl.trim();
   if (ans.budget) p.budget = ans.budget;
+  // "How was it built?": shown on the board only when the visitor opted in. "Not sure" says nothing.
+  if (ans.stack && ans.stack !== 'Not sure') p.stack = ans.stack.slice(0, 120);
   if (f.whatsappOptIn && f.whatsapp.trim()) p.whatsapp = f.whatsapp.trim();
   return p;
 }
@@ -115,7 +118,7 @@ export function applyOutcome(state: ChatState, kind: FormKind, outcome: Outcome,
       ...state,
       log: [
         ...withoutForm(state.log),
-        { who: 'bit', text: `Done. Your ticket is ${outcome.number}. A receipt is on its way to ${email}.` },
+        { who: 'bit', text: `Done. Your ticket is ${outcome.number}. I'll email a receipt to ${email}.` },
         { who: 'bit', text: next },
       ],
     };

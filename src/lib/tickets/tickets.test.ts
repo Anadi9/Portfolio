@@ -110,7 +110,7 @@ describe('memory ticket store', () => {
     m.tickets.find((t) => t.id === closed.id)!.stage = 'closed';
     const board = await m.store.publicBoard();
     expect(board).toHaveLength(1);
-    expect(Object.keys(board[0]).sort()).toEqual(['category', 'number', 'stack', 'stage', 'updatedAt']);
+    expect(Object.keys(board[0]).sort()).toEqual(['category', 'kind', 'number', 'stack', 'stage', 'updatedAt']);
     expect(board[0].number).toBe(shown.number);
   });
 
