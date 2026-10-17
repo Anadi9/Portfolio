@@ -197,22 +197,22 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 
 ## Phase 5: command centre v2
 
-- [ ] **"While you were away"** card at the top on login.
-- [ ] **Today panel:** never more than 3 items, picked by Coach.
-- [ ] **Numbers:** promises kept, chats → tickets → paid, average first reply,
+- [x] **"While you were away"** card at the top on login.
+- [x] **Today panel:** never more than 3 items, picked by Coach.
+- [x] **Numbers:** promises kept, chats → tickets → paid, average first reply,
       pipeline by stage. Tabs for Tickets, Numbers, Plan.
-- [ ] **Fewer emails:** urgent (promise at risk) → email + WhatsApp + push;
+- [x] **Fewer emails:** urgent (promise at risk) → email + WhatsApp + push;
       routine → feed only plus one daily summary email; every email links to its
       card.
-- [ ] **Phone first:** installable PWA with free web push.
-- [ ] **While Anadi is away** the bots prepare (scan, brief, draft, recompute
+- [x] **Phone first:** installable PWA with free web push.
+- [x] **While Anadi is away** the bots prepare (scan, brief, draft, recompute
       deadlines, scorecard, SEO checks, numbers, morning summary) and never send
       anything about price, scope or findings.
-- [ ] **Security:** passkey on top of the email check; Supabase Realtime only on
+- [x] **Security:** passkey on top of the email check; Supabase Realtime only on
       Anadi's session.
-- [ ] **Plan as data:** this plan's open items and the SEO list in a form Coach
+- [x] **Plan as data:** this plan's open items and the SEO list in a form Coach
       can read, so it can say what's next and post weekly progress.
-- [ ] "Give to helper" action (label only until there is a helper).
+- [x] "Give to helper" action (label only until there is a helper).
 
 ## Phase 6: client portal (`/portal`)
 
@@ -251,5 +251,6 @@ and content items are Anadi's.
 - [ ] Self-host the brand fonts (Space Grotesk, Press Start 2P, Jersey 10).
 - [ ] FAQPage / HowTo where posts are already shaped that way.
 - [ ] About page for "who is Anadi Thakur".
-- [ ] Monthly: ask ChatGPT, Claude and Perplexity the buyers' questions and record
-      whether the site is cited (a Coach reminder from Phase 5).
+- [x] Coach reminder on the 1st of each month to ask ChatGPT, Claude and Perplexity
+      the buyers' questions (built in Phase 5).
+- [ ] Monthly: actually ask them and record whether the site is cited (Anadi).

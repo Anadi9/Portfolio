@@ -148,6 +148,11 @@ export function createAdminHandler(deps: AdminDeps) {
 
     if (!verifySession(readCookie(req.headers?.cookie), secret)) return res.status(401).json({ error: 'unauthorized' });
     if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'invalid request' });
+    if (parsed.data.op === 'plan') {
+      // Read from the build, not the database, so it works before Supabase is set up.
+      const items = parsePlan(MASTER_PLAN_MD);
+      return res.status(200).json({ items, ...summarisePlan(items) });
+    }
     const store = deps.store();
     if (!store) return res.status(501).json({ error: 'tickets not configured' });
     const body = parsed.data;
@@ -198,11 +203,6 @@ export function createAdminHandler(deps: AdminDeps) {
       case 'pushUnsubscribe':
         await store.removePushSubscription(body.endpoint);
         return res.status(200).json({ ok: true });
-
-      case 'plan': {
-        const items = parsePlan(MASTER_PLAN_MD);
-        return res.status(200).json({ items, ...summarisePlan(items) });
-      }
 
       case 'today':
       case 'away': {

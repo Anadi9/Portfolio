@@ -352,3 +352,10 @@ describe('/api/admin email check and passkey', () => {
     expect(await mem.store.passkeys()).toEqual([]);
   });
 });
+
+describe('/api/admin plan without a database', () => {
+  it('still answers', async () => {
+    handler = createAdminHandler({ store: () => null, env, resend: null, delay: async () => {} });
+    expect((await call({ op: 'plan' }, { cookie: authed() })).statusCode).toBe(200);
+  });
+});

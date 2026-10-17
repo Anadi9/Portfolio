@@ -25,6 +25,10 @@ Vercel dashboard, your project, Settings, Environment Variables. Add each to **P
 | `CRON_SECRET` | Make one: `openssl rand -base64 32`. Vercel sends it as `Authorization: Bearer <value>` to cron paths automatically | Required for the crons | `/api/cron/notify` (alert retry), `/api/cron/scorecard`, `/api/kit/ping` | The two cron routes return 401 (they fail closed), so no retries and no scorecard runs |
 | `ADMIN_PASSWORD` | Choose a long passphrase (a password manager's generator is fine). Production only, or a different one on Preview | Required for `/admin` | The command centre login | `/api/admin` answers 501 and `/admin` can't log in |
 | `ADMIN_SESSION_SECRET` | Make one: `openssl rand -base64 32`, different per environment. Changing it logs you out | Required for `/admin` | Signs the 12-hour admin session cookie | Same as above |
+| `ADMIN_EMAIL` | Your email address | Required for `/admin` | Login checks it next to the password | `/api/admin` answers 501 |
+| `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | Run `npx web-push generate-vapid-keys` once and paste both. Same pair on Production and Preview is fine; changing them later needs every phone to re-enable alerts | Optional | Phone push for urgent Coach cards | Push skipped; email and feed still work |
+| `VAPID_SUBJECT` | `mailto:` plus your email, e.g. `mailto:you@example.com` | With the two above | Identifies you to the push services | Push skipped |
+| `ADMIN_RP_ID`, `ADMIN_ORIGIN` | Leave unset on Vercel (taken from the request host). Set only if a passkey must work across hosts | Optional | Passkey domain | Request host |
 | `WHATSAPP_TOKEN` | Meta System User permanent token (step 4) | Optional, all four WhatsApp vars together | WhatsApp new-ticket alert | WhatsApp skipped and logged if any of the four is missing |
 | `WHATSAPP_PHONE_NUMBER_ID` | Meta, WhatsApp, API setup: the sender's Phone number ID (not the number) | Same | Same | Same |
 | `WHATSAPP_ALERT_TO` | Your number, digits only with country code, e.g. `919876543210` | Same | Same | Same |
@@ -65,6 +69,7 @@ Done when: every row you need is set in Production and Preview, and you have red
    Done looks like: both answer **401/403** with a "permission denied" error (an empty `[]` also means no data leaks, but a permission error is what is expected). If either returns rows, stop and fix the grants before going on.
 6. Apply `supabase/migrations/20261019000000_feed_items.sql` the same way, **once, after** the tickets migration. It creates the command centre's `feed_items` table (RLS on, no policies). Check with the anon key as in point 5, using `feed_items?select=*`: it must not return rows.
 7. Apply `supabase/migrations/20261020000000_coach.sql` the same way, **once, after** the feed migration. It creates Coach's `commitments` and `tasks` tables. Check `commitments?select=*` and `tasks?select=*` with the anon key: no rows.
+8. Apply `supabase/migrations/20261021000000_command_v2.sql` the same way, **once, after** the Coach migration. It adds `feed_items.assignee` and the `push_subscriptions` and `admin_passkeys` tables. Check both new tables with the anon key: no rows.
 
 ## 3. Resend domain check
 
@@ -156,6 +161,8 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
 
    **Coach.** On the first-bug test ticket's page in `/admin`: the Coach box lists "Scan, brief and draft" (ticked) and "Record the video and send the first reply", and "Free first-bug video" shows "On track, due in 23h". Try moving the ticket to Audit before replying: it must refuse with "Not done: …". `curl -s https://<preview-url>/api/cron/heartbeat -H "Authorization: Bearer $CRON_SECRET"` returns `{"ok":true,"checked":…}`.
 
+   **Command centre v2.** Log in with `ADMIN_EMAIL` + `ADMIN_PASSWORD`. Settings: "Add a passkey on this device" (do it on your phone and laptop), log out, log in again and confirm it asks for the passkey after the password. On the phone, open `/admin`, add it to the Home Screen, open it from there, and tap "Enable phone alerts". Numbers, Plan and Today show; Give to helper labels a card. `curl -s https://<preview-url>/api/cron/summary -H "Authorization: Bearer $CRON_SECRET"` returns `{"ok":true,"sent":…}` and, with a ticket from the last day, the "Morning:" email arrives.
+
    **Live board.** In the chat on the preview create **3 test tickets** with "Show my request on the public board" ticked. `GET /api/board` returns the count in `total`; below 3 the board shows its honest empty state. The kanban appears once 3 exist (`/api/board` is cached 5 minutes via `s-maxage=300`, so it can take that long). Then **delete the 3 test tickets** in Supabase (`tickets`, and their `clients`/`ticket_events`/`messages`/`briefs`/`notifications`/`feed_items` rows; deleting the `tickets` rows cascades to all but `clients`), and confirm the board goes back to its empty state. If this is the same Supabase project as production, do not leave test tickets behind.
 
    **Scorecard.** See step 9 for the first run. `GET /api/scorecard` returns `{ "run": null }` until a run exists (501 if Supabase is not configured). That `{run:null}` answer can be cached up to an hour.
@@ -173,7 +180,8 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
 5. **IndexNow (optional).** Generate a key (8 to 128 hex chars), add `public/<key>.txt` containing just the key, then POST changed URLs to `https://api.indexnow.org/indexnow` after each deploy. Not wired into the build yet.
 6. **Feed and sitemap.** Check `https://anadithakur.in/rss.xml` in a feed reader (full content) and view-source the sitemap for the trailing-slash root and `<image:image>` entries.
 7. **Uptime sentence.** Once the monitor exists (step 7), add a line on `/scorecard` such as "An uptime monitor checks /api/health every few minutes and emails us if it fails." The page currently says only that `/api/health` reports whether the backend is reachable.
-8. **Coach's hourly heartbeat.** Vercel runs `/api/cron/heartbeat` once a day (05:00 UTC) as a floor. For the hourly check, create a free job at https://cron-job.org: URL `https://anadithakur.in/api/cron/heartbeat`, every hour, method GET, request header `Authorization: Bearer <your CRON_SECRET>`, and turn on failure notifications to your email. Done when the job's history shows 200s.
-9. **Retention reminder.** Tickets and leads are deleted 24 months after last activity. This is manual until automated: set a recurring quarterly reminder to delete `tickets` and `clients` with no activity for 24 months.
-10. **Open SEO content items** in `docs/seo-geo-aeo-todo.md`.
-11. **Optional later:** remove `'unsafe-inline'` from `script-src`; Vercel Log Drains or Sentry.
+8. **Morning summary.** `/api/cron/summary` runs daily at 03:00 UTC (08:30 IST) from `vercel.json`; nothing to set up beyond `CRON_SECRET`. It stays silent on a quiet day.
+9. **Coach's hourly heartbeat.** Vercel runs `/api/cron/heartbeat` once a day (05:00 UTC) as a floor. For the hourly check, create a free job at https://cron-job.org: URL `https://anadithakur.in/api/cron/heartbeat`, every hour, method GET, request header `Authorization: Bearer <your CRON_SECRET>`, and turn on failure notifications to your email. Done when the job's history shows 200s.
+10. **Retention reminder.** Tickets and leads are deleted 24 months after last activity. This is manual until automated: set a recurring quarterly reminder to delete `tickets` and `clients` with no activity for 24 months.
+11. **Open SEO content items** in `docs/seo-geo-aeo-todo.md`.
+12. **Optional later:** remove `'unsafe-inline'` from `script-src`; Vercel Log Drains or Sentry.

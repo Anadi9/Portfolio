@@ -514,7 +514,14 @@ function Feed({ guard, open }: { guard: Guard; open: (ticketId: string, focus?: 
     load();
     const onFocus = () => load();
     window.addEventListener('focus', onFocus);
-    return () => window.removeEventListener('focus', onFocus);
+    // No Realtime (it would need the database opened to the browser): poll while the tab is visible.
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === 'visible') load();
+    }, 60_000);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      window.clearInterval(timer);
+    };
   }, [load]);
 
   useEffect(() => {

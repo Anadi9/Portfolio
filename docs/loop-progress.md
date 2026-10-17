@@ -25,6 +25,13 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 4 · Task 5: `/api/cron/heartbeat`: at-risk card + one email, missed card, stale-scorecard card, idempotent; daily Vercel cron 05:00 UTC (`5bccd69`). Manual: cron-job.org hourly job with the bearer header.
 - Phase 4 · Tasks 6–7: `/api/admin` refuses stage moves while the gate is closed (409 + blockers); ops `taskDone`, `keep`, `missReason`; Coach box on the ticket view (`ebc5b35`, `f735890`). Not browser-checked (needs ticket data); covered by tests. Manual: check the Coach box on the preview.
 - Phase 4 · Task 8: data map and launch checklist (`483fad0`). Phase 4 complete; `npm run build` green.
+- Phase 5 plan: `docs/superpowers/plans/2026-10-19-command-centre-v2.md`.
+- Phase 5 · Numbers tab (promises kept, average first reply, tickets, pipeline) (`cad427c`); Today panel (max three) and While you were away card (`30522f0`).
+- Phase 5 · per-brief email dropped; one 08:30 IST morning summary email from `/api/cron/summary` (`88a7c9d`).
+- Phase 5 · plan as data (`scripts/generate-plan.mjs` → `src/data/plan.generated.ts`), Plan tab, Coach's Monday review and 1st-of-month AI-visibility card (`632d21e`).
+- Phase 5 · Give to helper + migration `20261021000000_command_v2.sql` (`18e48ab`); installable `/admin` (manifest + service worker) and web push for urgent cards (`710841b`); email check + passkey login (`3858dd6`); 60 s polling, plan served without a database (`PHASE5`).
+- Phase 5 browser-checked locally without a database: email + password login, Settings (passkeys, phone alerts), Plan tab. Passkey and push need HTTPS and a real device: check on the preview.
+- Phase 5 complete; `npm run build` green.
 
 ## Manual steps for Anadi
 
@@ -34,9 +41,18 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Set `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` in Vercel (Production; a different pair on Preview).
 - On the preview, run the new "Brief, feed and `/admin`" smoke test in `docs/launch-checklist.md` step 8.
 - Apply `supabase/migrations/20261020000000_coach.sql` once, after the feed migration.
+- Apply `supabase/migrations/20261021000000_command_v2.sql` once, after the Coach migration.
+- Set `ADMIN_EMAIL`; generate VAPID keys (`npx web-push generate-vapid-keys`) and set `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
+- On the preview: add a passkey on phone and laptop, add `/admin` to the phone's Home Screen and enable phone alerts (launch checklist step 8, "Command centre v2").
 - Create the hourly cron-job.org job for `/api/cron/heartbeat` (launch checklist step 9.8) and run the "Coach" smoke test (step 8).
 
 ## Decisions to confirm
+
+- New briefs no longer send an email each; the feed card plus the 08:30 summary covers them. The new-ticket email (the record of every enquiry) and the at-risk email (urgent) stay.
+- No Supabase Realtime: it would mean opening the database to the browser. `/admin` polls every 60 s while visible.
+- Numbers leave out "chats" (the site promises chats aren't stored) and "paid" (payments link to tickets in Phase 7).
+- With a passkey registered, login needs email + password + passkey (all three), not passkey alone.
+- "While you were away" uses this browser's last visit (kept in localStorage), so each device has its own.
 
 - Stage gates are tasks you tick by hand (e.g. "Confirm the $349 audit is paid") until payments are linked to tickets in Phase 7.
 - Closing a ticket or moving it back skips the open-task check; only a missed promise without a reason blocks those moves.
