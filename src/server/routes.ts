@@ -6,6 +6,7 @@ import board from './board.js';
 import clientError from './client-error.js';
 import health from './health.js';
 import kitPrice from './kit-price.js';
+import portal from './portal.js';
 import productionKitCheckout from './production-kit-checkout.js';
 import rescueAudit from './rescue-audit.js';
 import review from './review.js';
@@ -40,6 +41,7 @@ export const API_ROUTES: Routes = {
   'client-error': clientError,
   health,
   'kit-price': kitPrice,
+  portal,
   'production-kit-checkout': productionKitCheckout,
   'rescue-audit': rescueAudit,
   review,

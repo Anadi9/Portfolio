@@ -101,6 +101,8 @@ const GRAPH = [
   'src/server/admin.ts',
   'src/lib/admin/session.ts',
   'src/lib/admin/passkey.ts',
+  'src/server/portal.ts',
+  'src/lib/portal/view.ts',
   'src/lib/feed/types.ts',
   'src/lib/coach/types.ts',
   'src/lib/coach/rules.ts',
