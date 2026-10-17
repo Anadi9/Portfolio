@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { useLocation } from 'react-router-dom';
 import { BitChat } from './BitChat';
+import { ServicePicker } from './ServicePicker';
 import { PackageBuilder } from './BitGuide';
 import { LiveBoard } from './LiveBoard';
 import { Bit, PixelIcon } from '@/components/brand/Bit';
@@ -75,6 +76,8 @@ function Section({ id, label, children }: { id: string; label: string; children:
 /* 1 · Hero: Bit pointing at the menu board. Picking an option turns the hero into Bit's chat. */
 export function Hero() {
   const [chat, setChat] = useState<{ first?: string } | null>(null);
+  /** "Start with Bit" opens the service picker first, as in the design; the menu board and links go straight to the chat. */
+  const [picking, setPicking] = useState(false);
   const { search } = useLocation();
   // "Talk to Bit" from any page lands on `/?bit=1`; the homepage's own button fires `bq:chat`.
   useEffect(() => {
@@ -99,6 +102,14 @@ export function Hero() {
         <h1 id="h-top">{hero.title}</h1>
         {chat ? (
           <BitChat first={chat.first} onClose={() => setChat(null)} />
+        ) : picking ? (
+          <ServicePicker
+            onPick={(first) => {
+              trackRescue('cta_click', { page: 'home', location: `picker:${first ?? 'other'}` });
+              setPicking(false);
+              setChat({ first });
+            }}
+          />
         ) : (
           <>
             <div className="hq-stage">
@@ -117,7 +128,15 @@ export function Hero() {
               </nav>
             </div>
             <div className="hq-ctas">
-              <a href={hero.primary.href} className="bq-btn" onClick={start(undefined, 'hero')}>
+              <a
+                href={hero.primary.href}
+                className="bq-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  trackRescue('cta_click', { page: 'home', location: 'hero' });
+                  setPicking(true);
+                }}
+              >
                 <span aria-hidden>▶</span> {hero.primary.text}
               </a>
               <a href={hero.secondary.href} className="bq-btn-ghost" onClick={start(hero.secondary.start, 'hero-secondary')}>
