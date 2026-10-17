@@ -57,7 +57,7 @@ async function readCapped(res: Response): Promise<string> {
   return new TextDecoder().decode(Buffer.concat(chunks));
 }
 
-type Fetched = { url: string; status: number; type: string; body: string };
+type Fetched = { url: string; status: number; type: string; body: string; headers: Record<string, string> };
 
 /** GET with manual, re-validated redirects. Throws `BlockedError` for anything the guard refuses. */
 export async function safeGet(start: string): Promise<Fetched> {
@@ -76,7 +76,13 @@ export async function safeGet(start: string): Promise<Fetched> {
       current = new URL(location, url).toString();
       continue;
     }
-    return { url: url.toString(), status: res.status, type: res.headers.get('content-type') ?? '', body: await readCapped(res) };
+    return {
+      url: url.toString(),
+      status: res.status,
+      type: res.headers.get('content-type') ?? '',
+      headers: Object.fromEntries(res.headers.entries()),
+      body: await readCapped(res),
+    };
   }
   throw new BlockedError('That address redirects too many times.');
 }
