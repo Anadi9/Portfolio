@@ -249,7 +249,7 @@ Tracked in `docs/seo-geo-aeo-todo.md`. Code items can go into any phase; account
 and content items are Anadi's.
 
 - [ ] Search Console and Bing verified, sitemap submitted (launch checklist).
-- [ ] `llms-full.txt` generated at build.
+- [x] `llms-full.txt` generated at build.
 - [ ] IndexNow ping after deploy.
 - [ ] Self-host the brand fonts (Space Grotesk, Press Start 2P, Jersey 10).
 - [ ] FAQPage / HowTo where posts are already shaped that way.

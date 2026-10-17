@@ -1,5 +1,5 @@
 /**
- * `sitemap.xml`, `rss.xml` and `llms.txt`, written into `dist/` after the build.
+ * `sitemap.xml`, `rss.xml`, `llms.txt` and `llms-full.txt`, written into `dist/` after the build.
  *
  * Both read the corpus through `lib/content.mjs`, the same module the OG cards
  * use, so a draft can never be absent from the cards and present in the feed.
@@ -12,6 +12,7 @@
 import { existsSync, readdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ORIGIN, collect, root, streamPath } from './lib/content.mjs';
+import { mdxToText } from './lib/llms.mjs';
 
 const OUT = join(root, 'dist');
 
@@ -223,9 +224,20 @@ ${posts.map((p) => `- [${p.title}](${p.url}): ${p.summary}`).join('\n')}
 - [Case studies](${ORIGIN}/work): before-and-after write-ups of shipped work.
 - [Portfolio](https://portfolio.anadithakur.in/): past work and background.
 - [RSS feed](${ORIGIN}/rss.xml)
+- [Every note in full](${ORIGIN}/llms-full.txt): this file plus the full text of each note, as markdown.
 `;
 
 writeFileSync(join(OUT, 'llms.txt'), llms);
+
+// llms-full.txt: the same summary, then every note in full as markdown, so a
+// model can take the whole corpus in one request.
+const fullNotes = posts
+  .map((p) => {
+    const src = readFileSync(join(root, 'src', 'content', p.dir, `${p.slug}.mdx`), 'utf8');
+    return `---\n\n# ${p.title}\n\nURL: ${p.url}\nPublished: ${p.date}${p.lastVerified ? ` · last verified ${p.lastVerified}` : ''}\n\n${mdxToText(src)}`;
+  })
+  .join('\n');
+writeFileSync(join(OUT, 'llms-full.txt'), `${llms}\n## Full text of every note\n\n${fullNotes}`);
 
 /* --- robots -------------------------------------------------------------- */
 
@@ -246,3 +258,4 @@ console.log(`[feeds] dist/sitemap.xml  ${pages.length} urls`);
 console.log(`[feeds] dist/rss.xml      ${posts.length} items`);
 console.log(`[feeds] dist/robots.txt   sitemap declared`);
 console.log(`[feeds] dist/llms.txt     ${posts.length} notes`);
+console.log(`[feeds] dist/llms-full.txt ${posts.length} notes in full`);

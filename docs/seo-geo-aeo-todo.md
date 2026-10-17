@@ -31,14 +31,14 @@ crawlable by the right bots, and put the answer where a machine can lift it.
       `Perplexity`, `Claude-SearchBot`) are a different trade — retrieval ones
       are the ones that cite you back, so allow those at minimum.
       > 16 Oct 2026 (Task 4): already in `public/robots.txt`.
-- [ ] **Ship `public/llms.txt` and generate `dist/llms-full.txt`.** `llms.txt` is
+- [x] **Ship `public/llms.txt` and generate `dist/llms-full.txt`.** `llms.txt` is
       a short markdown index of the site (who, what, and a linked list of every
       note with its one-line summary); `llms-full.txt` is the whole corpus as
       plain markdown. Generate both in `scripts/generate-feeds.mjs` — it already
       has `collect()` and the MDX source, so this is ~30 lines next to the RSS
       block. This is the single highest-leverage GEO item: it hands a model the
       corpus without asking it to parse the inlined-style HTML the site emits.
-      > 16 Oct 2026 (Task 4): `llms.txt` is generated at build (`scripts/generate-feeds.mjs`). `llms-full.txt` is still not generated.
+      > 16 Oct 2026 (Task 4): `llms.txt` and `llms-full.txt` (19 Oct 2026: every note in full, via `scripts/lib/llms.mjs`) are generated at build.
 - [x] **Add `<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">` to `index.html`.**
       Without `max-snippet:-1` Google caps the snippet length it will extract,
       which directly suppresses featured-snippet and AI-overview eligibility.
