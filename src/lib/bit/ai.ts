@@ -72,8 +72,8 @@ export function aiConfig(env: Record<string, string | undefined> = process.env) 
 }
 
 /** Both providers through the AI Gateway; the fallback is pinned to Groq. Neither may train on the prompt. */
-export function gatewayAttempts(cfg: { model: string; fallbackModel: string }): Attempt[] {
-  const base = { disallowPromptTraining: true, tags: ['bit-ask'] };
+export function gatewayAttempts(cfg: { model: string; fallbackModel: string }, tag = 'bit-ask'): Attempt[] {
+  const base = { disallowPromptTraining: true, tags: [tag] };
   return [
     { label: cfg.model, model: gateway(cfg.model), providerOptions: { gateway: base } },
     { label: `${cfg.fallbackModel} (groq)`, model: gateway(cfg.fallbackModel), providerOptions: { gateway: { ...base, only: ['groq'] } } },
