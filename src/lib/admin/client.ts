@@ -15,7 +15,11 @@ async function call<T>(body: Record<string, unknown>): Promise<AdminResult<T>> {
     });
     const data = (await res.json().catch(() => ({}))) as T & { error?: string };
     if (res.status === 401) return { ok: false, auth: false, error: data.error ?? 'unauthorized' };
-    if (!res.ok) return { ok: false, auth: true, error: data.error ?? `HTTP ${res.status}` };
+    if (!res.ok) {
+      const blockers = (data as { blockers?: unknown }).blockers;
+      const detail = Array.isArray(blockers) && blockers.length ? `: ${blockers.join('; ')}` : '';
+      return { ok: false, auth: true, error: `${data.error ?? `HTTP ${res.status}`}${detail}` };
+    }
     return { ok: true, auth: true, data };
   } catch {
     return { ok: false, auth: true, error: 'Network error. Try again.' };
@@ -35,4 +39,7 @@ export const admin = {
   stage: (id: string, stage: TicketStage) => call<Ok>({ op: 'stage', id, stage }),
   saveDraft: (id: string, messageId: string, subject: string, body: string) => call<Ok>({ op: 'saveDraft', id, messageId, subject, body }),
   send: (id: string, messageId: string, subject: string, body: string) => call<Ok>({ op: 'send', id, messageId, subject, body }),
+  taskDone: (id: string, key: string) => call<Ok>({ op: 'taskDone', id, key }),
+  keep: (id: string, commitmentId: string) => call<Ok>({ op: 'keep', id, commitmentId }),
+  missReason: (id: string, commitmentId: string, reason: string) => call<Ok>({ op: 'missReason', id, commitmentId, reason }),
 };

@@ -8,7 +8,8 @@ import { liveDeps } from '../lib/notify/live.js';
 import { withErrorLog } from '../lib/monitoring/with-error-log.js';
 import { clientIp, createRateLimiter } from '../lib/scan/rate-limit.js';
 import { ticketStore, type TicketStore } from '../lib/tickets/store.js';
-import { onReplySent, onStageEntered } from '../lib/coach/hooks.js';
+import { keepCommitment, onReplySent, onStageEntered, onTaskDone } from '../lib/coach/hooks.js';
+import { gate } from '../lib/coach/stages.js';
 import { TICKET_STAGES } from '../lib/tickets/types.js';
 
 /**
@@ -21,6 +22,7 @@ import { TICKET_STAGES } from '../lib/tickets/types.js';
  *
  * Nothing is sent to a client except `stage` (the automatic stage email) and
  * `send` (a draft Anadi approved, refused while a placeholder is left).
+ * `stage` answers 409 with the blockers while Coach's gate is closed.
  */
 
 /** Stages whose entry doesn't email the client (the video reply is the message). */
@@ -36,6 +38,9 @@ const Op = z.discriminatedUnion('op', [
   z.object({ op: z.literal('get'), id: z.string().min(1).max(80) }),
   z.object({ op: z.literal('stage'), id: z.string().min(1).max(80), stage: z.enum(TICKET_STAGES) }),
   z.object({ op: z.literal('saveDraft'), id: z.string().min(1).max(80), messageId: z.string().min(1).max(80), subject: z.string().max(200), body: z.string().max(5000) }),
+  z.object({ op: z.literal('taskDone'), id: z.string().min(1).max(80), key: z.string().min(1).max(60) }),
+  z.object({ op: z.literal('keep'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80) }),
+  z.object({ op: z.literal('missReason'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80), reason: z.string().trim().min(1).max(1000) }),
   z.object({ op: z.literal('send'), id: z.string().min(1).max(80), messageId: z.string().min(1).max(80), subject: z.string().min(1).max(200), body: z.string().min(1).max(5000) }),
 ]);
 
@@ -112,6 +117,8 @@ export function createAdminHandler(deps: AdminDeps) {
         const ticket = await store.getTicket(body.id);
         if (!ticket) return res.status(404).json({ error: 'no such ticket' });
         if (ticket.stage === body.stage) return res.status(200).json({ ok: true });
+        const check = gate({ stage: ticket.stage, to: body.stage, tasks: ticket.tasks, commitments: ticket.commitments });
+        if (!check.ok) return res.status(409).json({ error: 'gate closed', blockers: check.blockers });
         await store.setStage(ticket.id, body.stage);
         await store.addEvent(ticket.id, 'stage', { from: ticket.stage, to: body.stage });
         await onStageEntered(store, ticket, body.stage);
@@ -126,6 +133,31 @@ export function createAdminHandler(deps: AdminDeps) {
           ]);
           await dispatch(store, rows, { ...liveDeps(deps.env), resend: deps.resend });
         }
+        return res.status(200).json({ ok: true });
+      }
+
+      case 'taskDone': {
+        const ticket = await store.getTicket(body.id);
+        if (!ticket || !(await store.completeTask(ticket.id, body.key))) return res.status(404).json({ error: 'no open task' });
+        await onTaskDone(store, ticket, body.key);
+        return res.status(200).json({ ok: true });
+      }
+
+      case 'keep':
+      case 'missReason': {
+        const ticket = await store.getTicket(body.id);
+        const c = ticket?.commitments.find((x) => x.id === body.commitmentId);
+        if (!ticket || !c) return res.status(404).json({ error: 'no such commitment' });
+        if (body.op === 'keep') {
+          if (c.status !== 'open' && c.status !== 'at_risk') return res.status(409).json({ error: `already ${c.status}` });
+          await keepCommitment(store, ticket, c.id);
+          await store.doneFeedFor(c.id);
+          return res.status(200).json({ ok: true });
+        }
+        if (c.status !== 'missed') return res.status(409).json({ error: 'only a missed promise takes a reason' });
+        await store.updateCommitment(c.id, { missReason: body.reason });
+        await store.addEvent(ticket.id, 'miss_reason', { commitmentId: c.id, promiseId: c.promiseId });
+        await store.doneFeedFor(c.id);
         return res.status(200).json({ ok: true });
       }
 

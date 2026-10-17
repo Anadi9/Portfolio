@@ -39,3 +39,10 @@ describe('admin client', () => {
     expect(await admin.feed()).toEqual({ ok: false, auth: true, error: 'Network error. Try again.' });
   });
 });
+
+describe('gate errors', () => {
+  it('folds the blockers into the error', async () => {
+    reply(409, { error: 'gate closed', blockers: ['Not done: Ship the fix', 'Write a reason'] });
+    expect(await admin.stage('t', 'live')).toEqual({ ok: false, auth: true, error: 'gate closed: Not done: Ship the fix; Write a reason' });
+  });
+});

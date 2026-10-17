@@ -50,7 +50,7 @@ export const STAGE_RULES: Record<TicketStage, StageRule> = {
 export type GateInput = {
   stage: TicketStage;
   to: TicketStage;
-  tasks: { key: string; stage: TicketStage; status: 'open' | 'done' }[];
+  tasks: { key: string; stage: TicketStage; status: 'open' | 'done'; title?: string }[];
   commitments: { promiseId: PromiseId; status: CommitmentStatus; missReason: string | null }[];
 };
 
@@ -64,7 +64,7 @@ export function gate(input: GateInput): { ok: boolean; blockers: string[] } {
   const forward = input.to !== 'closed' && order(input.to) > order(input.stage);
   if (forward) {
     const titles = new Map(STAGE_RULES[input.stage].tasks.map((t) => [t.key, t.title]));
-    for (const t of input.tasks) if (t.stage === input.stage && t.status === 'open') blockers.push(`Not done: ${titles.get(t.key) ?? t.key}`);
+    for (const t of input.tasks) if (t.stage === input.stage && t.status === 'open') blockers.push(`Not done: ${t.title ?? titles.get(t.key) ?? t.key}`);
   }
   return { ok: blockers.length === 0, blockers };
 }

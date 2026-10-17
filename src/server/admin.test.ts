@@ -109,6 +109,7 @@ describe('/api/admin operations', () => {
     const t = await mem.store.createTicket(ticketInput);
     await call({ op: 'stage', id: t.id, stage: 'bug_review' }, { cookie: authed() });
     expect(send).not.toHaveBeenCalled();
+    await mem.store.completeTask(t.id, 'next_step');
     const res = await call({ op: 'stage', id: t.id, stage: 'audit' }, { cookie: authed() });
     expect(res.statusCode).toBe(200);
     expect(mem.tickets[0].stage).toBe('audit');
@@ -179,5 +180,52 @@ describe('/api/admin and Coach', () => {
     expect(mem.commitments[0].status).toBe('kept');
     expect(mem.tasks.find((x) => x.key === 'first_reply')!.status).toBe('done');
     expect(mem.tasks.find((x) => x.key === 'next_step')).toMatchObject({ stage: 'bug_review', status: 'open' });
+  });
+});
+
+describe('/api/admin gates and Coach ops', () => {
+  it('refuses a stage change while the gate is closed', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    await mem.store.addTasks(t.id, 'inbox', [{ key: 'first_reply', owner: 'anadi', title: 'Send the first reply', doneWhen: 'Sent' }]);
+    const res = await call({ op: 'stage', id: t.id, stage: 'audit' }, { cookie: authed() });
+    expect(res.statusCode).toBe(409);
+    expect(res.body).toMatchObject({ error: 'gate closed', blockers: ['Not done: Send the first reply'] });
+    expect(mem.tickets[0].stage).toBe('inbox');
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it('a miss needs a reason before any move, then the move goes through', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    const c = await mem.store.openCommitment({ ticketId: t.id, promiseId: 'first_bug_video', dueAt: '2026-01-01T00:00:00Z' });
+    await mem.store.updateCommitment(c.id, { status: 'missed' });
+    expect((await call({ op: 'stage', id: t.id, stage: 'closed' }, { cookie: authed() })).statusCode).toBe(409);
+    expect((await call({ op: 'missReason', id: t.id, commitmentId: c.id, reason: '' }, { cookie: authed() })).statusCode).toBe(400);
+    expect((await call({ op: 'missReason', id: t.id, commitmentId: c.id, reason: 'Client’s site was down all day' }, { cookie: authed() })).statusCode).toBe(200);
+    expect(mem.commitments[0]).toMatchObject({ status: 'missed', missReason: 'Client’s site was down all day' });
+    expect(mem.events.map((e) => e.type)).toContain('miss_reason');
+    expect((await call({ op: 'stage', id: t.id, stage: 'closed' }, { cookie: authed() })).statusCode).toBe(200);
+  });
+
+  it('only a missed commitment takes a reason, and a missed one can’t be kept', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    const open = await mem.store.openCommitment({ ticketId: t.id, promiseId: 'first_bug_video', dueAt: '2030-01-01T00:00:00Z' });
+    expect((await call({ op: 'missReason', id: t.id, commitmentId: open.id, reason: 'x' }, { cookie: authed() })).statusCode).toBe(409);
+    await mem.store.updateCommitment(open.id, { status: 'missed' });
+    expect((await call({ op: 'keep', id: t.id, commitmentId: open.id }, { cookie: authed() })).statusCode).toBe(409);
+    expect((await call({ op: 'keep', id: t.id, commitmentId: 'nope' }, { cookie: authed() })).statusCode).toBe(404);
+  });
+
+  it('marks a task done and keeps a commitment by hand', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    await mem.store.setStage(t.id, 'audit');
+    await mem.store.addTasks(t.id, 'audit', [{ key: 'audit_report', owner: 'anadi', title: 'Send the report', doneWhen: 'Sent' }]);
+    const c = await mem.store.openCommitment({ ticketId: t.id, promiseId: 'audit_report', dueAt: '2030-01-01T00:00:00Z' });
+    expect((await call({ op: 'taskDone', id: t.id, key: 'audit_report' }, { cookie: authed() })).statusCode).toBe(200);
+    expect(mem.commitments[0].status).toBe('kept');
+    expect((await call({ op: 'taskDone', id: t.id, key: 'audit_report' }, { cookie: authed() })).statusCode).toBe(404);
+    const d = await mem.store.openCommitment({ ticketId: t.id, promiseId: 'daily_update', dueAt: '2030-01-01T00:00:00Z' });
+    expect((await call({ op: 'keep', id: t.id, commitmentId: d.id }, { cookie: authed() })).statusCode).toBe(200);
+    expect(mem.commitments.find((x) => x.id === d.id)!.status).toBe('kept');
+    void c;
   });
 });
