@@ -33,7 +33,7 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 - Phase 5 browser-checked locally without a database: email + password login, Settings (passkeys, phone alerts), Plan tab. Passkey and push need HTTPS and a real device: check on the preview.
 - Phase 5 complete; `npm run build` green.
 - Phase 6 plan: `docs/superpowers/plans/2026-10-19-client-portal.md`.
-- Phase 6 · `clientView` strips briefs, drafts, Coach data, internal events, budget and contact details (`b07ad67`); single-use `portal_links` + client-scoped store (`e9cbb98`); `/api/portal` (emailed link, same answer for unknown emails, per-IP and per-email limits, 7-day session, isolation tests) (`0e38330`); `/portal` page (`ca0f66b`); receipt email links the portal, privacy/data map/checklist (`PHASE6`). Browser-checked the sign-in form locally; the signed-in views need real data (preview).
+- Phase 6 · `clientView` strips briefs, drafts, Coach data, internal events, budget and contact details (`b07ad67`); single-use `portal_links` + client-scoped store (`e9cbb98`); `/api/portal` (emailed link, same answer for unknown emails, per-IP and per-email limits, 7-day session, isolation tests) (`0e38330`); `/portal` page (`ca0f66b`); receipt email links the portal, privacy/data map/checklist (`61b2df0`). Browser-checked the sign-in form locally; the signed-in views need real data (preview).
 - Phase 6 complete; `npm run build` green.
 
 ## Manual steps for Anadi
