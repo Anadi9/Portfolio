@@ -41,6 +41,7 @@
 .hq-msg { margin: 0; padding: 10px 14px; max-width: 85%; font: 400 15px/1.45 var(--bq-font-body); }
 .hq-msg.bit { background: #1f1f1f; border: 2px solid var(--bq-dark-line); justify-self: start; }
 .hq-msg.you { background: var(--bq-brand); color: #fff; justify-self: end; }
+.hq-msg-ai { display: block; margin-bottom: 4px; color: var(--bq-secondary); font-size: 9px; letter-spacing: 0.04em; }
 .hq-msg-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .hq-rec { display: grid; gap: 8px; padding: 14px; border: 2px solid var(--bq-secondary); max-width: 92%; }
 .hq-chat-opts { display: flex; flex-wrap: wrap; gap: 8px; }

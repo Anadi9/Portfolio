@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'vite-react-ssg';
 import { Bit } from '@/components/brand/Bit';
-import { ask, choose, initial, optionsFor, type ChatState, type Message, type Option } from '@/lib/bit/chat';
+import { answerWith, ask, asking, choose, initial, optionsFor, type ChatState, type Message, type Option } from '@/lib/bit/chat';
+import { askPayload, canAskAi, requestAiAnswer } from '@/lib/bit/ask-client';
 import { activeFormIndex, applyOutcome, questionFor, rememberTicket, type Outcome } from '@/lib/bit/submit';
 import { trackRescue } from '@/lib/rescue/track';
 import { BitTicketForm } from './BitTicketForm';
@@ -45,7 +46,15 @@ function OptionButton({ opt, onPick, primary }: { opt: Option; onPick: (o: Optio
 
 function Bubble({ m, onPick }: { m: Message; onPick: (o: Option) => void }) {
   if (m.who === 'you') return <p className="hq-msg you">{m.text}</p>;
-  if (m.who === 'bit') return <p className="hq-msg bit">{m.text}</p>;
+  if (m.who === 'bit')
+    return m.ai ? (
+      <p className="hq-msg bit">
+        <span className="hq-lab hq-msg-ai">Bit · AI answer</span>
+        {m.text}
+      </p>
+    ) : (
+      <p className="hq-msg bit">{m.text}</p>
+    );
   if (m.who === 'form') return null;
   if (m.who === 'links')
     return (
@@ -86,6 +95,11 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
   const formAt = typing ? -1 : activeFormIndex(state);
   /** Set when a reply is picked, so focus can follow into the new replies instead of dropping to <body>. */
   const refocus = useRef(false);
+  /** AI answers so far in this chat (the API caps it too), and whether the API said AI is off. */
+  const aiCount = useRef(0);
+  const aiOff = useRef(false);
+  /** Aborts an AI request in flight when the chat closes. */
+  const aiAbort = useRef<AbortController>();
 
   // Bit "types" for a moment before answering; instant under reduced motion.
   const commit = (next: ChatState) => {
@@ -120,7 +134,13 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(
+    () => () => {
+      clearTimeout(timer.current);
+      aiAbort.current?.abort();
+    },
+    [],
+  );
   useEffect(() => {
     const el = logRef.current;
     if (el) el.scrollTop = el.scrollHeight;
@@ -138,12 +158,33 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
     setState((s) => applyOutcome(s, kind, out, email));
   };
 
-  const submit = (e: FormEvent) => {
+  // A typed question: try the AI answer first; any failure plays the scripted keyword reply instead.
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (typing) return;
     const r = ask(state, q);
     setQ('');
     if (r === 'tour') return goSection('services', { name: 'bq:tour' });
-    if (r !== state) commit(r);
+    if (r === state) return;
+    if (!canAskAi(aiCount.current, aiOff.current)) return commit(r);
+
+    const base = state;
+    const text = q.trim();
+    clearTimeout(timer.current);
+    setState(asking(base, text));
+    setTyping(true);
+    const ctl = new AbortController();
+    aiAbort.current = ctl;
+    const out = await requestAiAnswer(askPayload(base, text, aiCount.current), { signal: ctl.signal });
+    if (ctl.signal.aborted) return;
+    setTyping(false);
+    if (out.type === 'answer') {
+      aiCount.current += 1;
+      setState(answerWith(base, text, out.reply));
+    } else {
+      if (out.type === 'off') aiOff.current = true;
+      setState(r);
+    }
   };
 
   const opts = optionsFor(state.node);
@@ -187,7 +228,7 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
           </button>
         </form>
         <p className="hq-lab" style={{ color: '#a3a3a3', margin: 0, fontSize: 9 }}>
-          Bit is a scripted AI assistant. Anadi reads every request.
+          Bit is an AI assistant: scripted replies, plus answers marked “AI answer”. Anadi reads every request.
         </p>
       </div>
     </section>

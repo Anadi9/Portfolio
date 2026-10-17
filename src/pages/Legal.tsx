@@ -184,7 +184,7 @@ export function Privacy() {
             <><strong>When you buy:</strong> your email address, name and country, and a record of what you bought. Card details go to Stripe and never reach me.</>,
             <><strong>When you ask for an audit, a first-bug review or a teardown report:</strong> what you type into the form, usually your name, email, a link to your project, its tech stack and a description of the problem. Optionally a WhatsApp number and a budget.</>,
             <><strong>When you send a request through Bit:</strong> Bit, the assistant on the site, runs its scripted questions in your browser and sends nothing until you submit. If you do, the answers and your contact details are saved as a ticket (a number like A-1001) so I can track your request.</>,
-            <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below). Your name and email are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
+            <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below), with the buttons you tapped in the chat so far. Your name, email and app link are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
             <><strong>When you leave a review:</strong> your name, role, company, rating, review and an optional photo. Nothing is shown publicly until I approve it.</>,
             <><strong>When you use the free Supabase check:</strong> the project URL and public key you enter are used for that one check and not stored or logged.</>,
             <><strong>When you browse:</strong> anonymous page views and events (which page, which button, rough country, device type), and technical error reports from your browser (the error message, file, line and page path, with nothing that identifies you). No cookies.</>,
@@ -202,10 +202,13 @@ export function Privacy() {
       <Section title="Bit and AI answers">
         <P>
           Bit has two parts. The scripted flows (the questions, the quote builder, the tour) run in your browser. When you type a
-          free-text question, only that question is sent to an AI service so it can write a reply. The services are the Vercel AI
-          Gateway, with Groq as a fallback. They do not use this data to train models, and I send no personal data to them beyond
-          what you type into the question, so please don’t type secrets or personal details there. AI answers are not stored. If
-          you ask me to take a request further, only the ticket you submit is kept.
+          free-text question, that question is sent to an AI service so it can write a reply, together with where you are in the chat
+          and the buttons you tapped (for example “Replit” or “Launching soon”). Email addresses and phone numbers typed into the
+          question are masked first. The services are the Vercel AI Gateway, with Groq as a fallback, and requests are only routed to
+          providers that have agreed not to train on them. I send no personal data to them beyond what you type into the question, so
+          please don’t type secrets or personal details there. AI answers are labelled “AI answer” and are not stored; the site logs
+          only which part of the chat the answer led to and how long it took, never the question. If you ask me to take a request
+          further, only the ticket you submit is kept.
         </P>
       </Section>
       <Section title="Tickets and alerts">

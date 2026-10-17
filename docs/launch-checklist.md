@@ -86,3 +86,29 @@ The sender is `Anadi Thakur <tickets@anadithakur.in>`. The `anadithakur.in` doma
 No new env vars. Both features need the Task 5/6 setup (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`, the tickets migration applied). Until then the chat form says it could not save the request and offers the first-bug form and email, and the homepage board shows its empty state.
 - After applying the migration, submit one test request in Bit's chat with "Show my request on the public board" ticked. The board stays on its empty state until 3 opted-in tickets exist (`GET /api/board` returns the count in `total`).
 - `/api/board` is cached for 5 minutes (`s-maxage=300`), so a new ticket can take up to that long to appear.
+
+## Bit AI answers (Task 8)
+
+Typed questions in Bit's chat go to `POST /api/bit/ask` (AI SDK 7 through the Vercel AI Gateway). Until `BIT_AI=on` is set the endpoint returns 501 and the chat keeps its keyword routing, exactly as before.
+
+Env vars (Vercel → Project → Settings → Environment Variables, Preview first, then Production):
+- `BIT_AI` = `on` — the switch. Anything else (or unset) keeps AI answers off.
+- Gateway auth: nothing to set on Vercel — deployments authenticate to the AI Gateway with OIDC automatically. Enable AI Gateway for the team (Vercel dashboard → AI Gateway) and add credit or a payment method. Outside Vercel (or to use a key instead), set `AI_GATEWAY_API_KEY` from Vercel → AI Gateway → API keys. For local testing run `vercel env pull` (the OIDC token in `.env.local` expires after 12 hours; the one there now has expired).
+- `BIT_AI_MODEL` (optional) — primary model, default `anthropic/claude-haiku-5.5` (small, fast, structured output, no prompt training on all its gateway providers).
+- `BIT_AI_FALLBACK_MODEL` (optional) — fallback model, default `openai/gpt-oss-20b`. It goes through the same gateway with routing pinned to Groq (`only: ['groq']`), so it must be a model Groq serves on the gateway (`openai/gpt-oss-120b` also works).
+- `GROQ_API_KEY` — **not needed**: the fallback reaches Groq through the gateway. Only if you want Groq billed to your own Groq account, add your Groq key as BYOK in the AI Gateway settings (not as an env var).
+
+Limits built in: 10 questions/min and 30 AI answers/hour per IP, 6 AI answers per chat, 500-character questions, 8 s per answer (5 s for the primary before the fallback gets the rest). Any failure — error, timeout, an answer naming a price that isn't published in `src/data/bitsQuestFacts.ts` ($349, $149, $299/mo and the package ranges), any ₹/€/£ amount — falls back to the scripted reply.
+
+Test on the preview after setting the vars:
+1. `curl -s -X POST https://<preview-url>/api/bit/ask -H 'content-type: application/json' -d '{"question":"How much is the audit?"}'` → `{"answer":"…","route":"…"}`. (Preview protection: use the share link or a bypass token.) With `BIT_AI` unset it returns 501.
+2. Open `/?bit=1`, type "how much is the audit?" — Bit answers with a small "Bit · AI answer" label, then shows that topic's buttons.
+3. Type "can I get the sprint for $500?" — the answer must not contain $500; if the model names it, the scripted reply shows instead.
+4. Vercel → Logs, filter `[bit-ask]`: one line per question with `outcome`, `route`, `model`, `ms` — never the question text.
+5. Vercel → AI Gateway → Usage: requests are tagged `bit-ask`.
+
+Data and training (please verify in each provider's current terms — this is what the code assumes):
+- Every request sets the gateway option `disallowPromptTraining: true`, so the gateway only routes to providers with no-training agreements; if none is available the request fails and the scripted reply shows. Vercel AI Gateway: https://vercel.com/docs/ai-gateway (see the "Disallow prompt training" and zero-data-retention sections).
+- Anthropic (primary): https://www.anthropic.com/legal/commercial-terms and https://privacy.anthropic.com.
+- Groq (fallback): https://console.groq.com/docs/your-data and https://groq.com/privacy-policy/.
+- Only the question (emails and phone numbers masked), the chat node and the tapped button labels are sent; nothing from the ticket form. `/privacy` and `docs/data-map.md` say this.

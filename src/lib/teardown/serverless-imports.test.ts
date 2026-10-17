@@ -78,6 +78,14 @@ const GRAPH = [
   'src/data/kit/types.ts',
   'src/data/kit/releases/1.2.1.ts',
   'src/data/kit/releases/1.2.0.ts',
+  'api/bit/ask.ts',
+  'src/lib/bit/ask-handler.ts',
+  'src/lib/bit/ai.ts',
+  'src/lib/bit/knowledge.ts',
+  'src/lib/bit/nodes.ts',
+  'src/lib/bit/prices.ts',
+  'src/lib/bit/route.ts',
+  'src/data/bitsQuestFacts.ts',
 ];
 
 /** Relative specifiers only: bare ones are resolved from node_modules, not by path. */
@@ -91,6 +99,13 @@ describe('serverless import graph: ESM resolvability', () => {
     for (const specifier of specifiers) {
       expect(specifier, `${file} imports '${specifier}' without an extension`).toMatch(/\.js$/);
     }
+  });
+
+  // `@/` is a Vite/tsconfig alias; Node has never heard of it. Type-only imports are erased, so they are fine.
+  it.each(GRAPH)('%s has no runtime `@/` alias import', (file) => {
+    const source = readFileSync(join(ROOT, file), 'utf8');
+    const aliased = [...source.matchAll(/^import\s+(?!type\b)[^;]*?from\s+'(@\/[^']*)'/gm)].map((m) => m[1]);
+    expect(aliased, `${file} imports ${aliased.join(', ')} through the @/ alias`).toEqual([]);
   });
 
   it('covers the whole graph: no listed module imports one that is missing', () => {

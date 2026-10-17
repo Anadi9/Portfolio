@@ -9,11 +9,11 @@
  * section), and says which.
  */
 import { site } from '@/data/portfolio';
+import type { AnswerKey, NodeId } from './nodes';
+import { classify } from './route';
 
-export type NodeId =
-  | 'start' | 'prod' | 'prod2' | 'prod3' | 'prod4' | 'vis' | 'vis2' | 'dpdp' | 'dpdp2' | 'free' | 'teardown' | 'kit'
-  | 'ask' | 'contact' | 'recProd' | 'recVis' | 'recDpdp' | 'recAi' | 'recKit' | 'blog' | 'hunt'
-  | 'q1' | 'q2' | 'q3' | 'q4' | 'qurl' | 'notyet' | 'ai' | 'ai2' | 'ai3' | 'care';
+export type { NodeId } from './nodes';
+export { classify } from './route';
 
 /** Where an option leads: another node, the qualification check, or a real action outside the chat. */
 export type Target =
@@ -24,12 +24,13 @@ export type Target =
 
 export type Option = { label: string; to: Target };
 
-export type Answers = Partial<Record<'stack' | 'live' | 'scope' | 'asked' | 'js' | 'pd' | 'consent' | 'kitTool' | 'users' | 'impact' | 'when' | 'aiwant' | 'aistage' | 'budget', string>>;
+export type Answers = Partial<Record<AnswerKey, string>>;
 
 export type Rec = { title: string; price: string; notes: string[]; actions: Option[] };
 
 export type Message =
-  | { who: 'bit'; text: string }
+  /** `ai`: written by the language model (`/api/bit/ask`), labelled as such in the chat. */
+  | { who: 'bit'; text: string; ai?: boolean }
   | { who: 'you'; text: string }
   | { who: 'rec'; rec: Rec }
   | { who: 'links'; links: Option[] }
@@ -272,27 +273,6 @@ export function reply(id: NodeId, ans: Answers): Message[] {
   return out;
 }
 
-/** Free-text routing: the first matching topic wins; anything unrecognised goes to Anadi. */
-const ROUTES: [RegExp, NodeId | 'tour', string][] = [
-  [/tour|show me around|explore|look around/, 'tour', 'Sure — let’s take a walk.'],
-  [/dpdp|consent|privacy|personal data|gdpr|complian|cookie|delete/, 'dpdp', 'That’s a privacy question — two quick taps and I’ll point you right.'],
-  [/add ai|ai feature|chatbot|agent|automat|\brag\b|llm|assistant|openai|ai model|copilot/, 'ai', 'You want AI in your product — two quick questions:'],
-  [/maintain|maintenance|retainer|monitor|care plan|ongoing|look after/, 'care', 'Ongoing care — here’s how it works:'],
-  [/chatgpt|perplexity|gemini|claude|\bai\b|seo|cited|citation|visib|google|rank|llms/, 'vis', 'Sounds like AI visibility. Two quick questions:'],
-  [/wrapper|teardown|defensib/, 'teardown', 'You’re after the Wrapper Test or the teardown:'],
-  [/kit|rules|checklist|template|diy|myself/, 'kit', 'Doing it yourself? That’s what the Production Kit is for.'],
-  [/blog|post|article|read/, 'blog', 'Here are Anadi’s field notes:'],
-  [/price|cost|budget|package|quote|how much|cheap/, 'start', 'Prices are fixed and public — the pricing table has all six. Or tell me what’s going on:'],
-  [/free|tool|test|try/, 'free', 'Free things first — smart.'],
-  [/bug|broke|break|crash|auth|login|supabase|firebase|deploy|slow|launch|lovable|cursor|bolt|v0|error|leak|security|hack/, 'prod', 'Sounds like a production problem. A few quick taps:'],
-];
-
-export function classify(q: string): { node: NodeId | 'tour'; say: string } {
-  const s = q.toLowerCase();
-  for (const [re, node, say] of ROUTES) if (re.test(s)) return { node, say };
-  return { node: 'contact', say: 'Good question — that one’s for Anadi himself.' };
-}
-
 export type ChatState = { node: NodeId; ans: Answers; log: Message[] };
 
 export const initial = (): ChatState => ({ node: 'start', ans: {}, log: reply('start', {}) });
@@ -312,14 +292,29 @@ export function choose(state: ChatState, opt: Option): ChatState | null {
   return { node: next, ans, log };
 }
 
+/** Bit's say for a typed question, then the node it routes to. The menu and the contact form drop their own opener. */
+function land(state: ChatState, q: string, say: Message, node: NodeId): ChatState {
+  const body = node === 'contact' || node === 'start' ? reply(node, state.ans).filter((m) => m.who !== 'bit') : reply(node, state.ans);
+  return { node, ans: state.ans, log: [...state.log, { who: 'you', text: q }, say, ...body] };
+}
+
 /** Apply free text typed into the chat. `tour` is returned for the component to start the tour. */
 export function ask(state: ChatState, text: string): ChatState | 'tour' {
   const q = text.trim();
   if (!q) return state;
   const c = classify(q);
   if (c.node === 'tour') return 'tour';
-  const body = c.node === 'contact' || c.node === 'start' ? reply(c.node, state.ans).filter((m) => m.who !== 'bit') : reply(c.node, state.ans);
-  return { node: c.node, ans: state.ans, log: [...state.log, { who: 'you', text: q }, { who: 'bit', text: c.say }, ...body] };
+  return land(state, q, { who: 'bit', text: c.say }, c.node);
+}
+
+/** An AI answer from `/api/bit/ask` (checked there and in `ask-client`): Bit says it, then the routed node continues with its buttons. */
+export function answerWith(state: ChatState, text: string, ai: { answer: string; route: NodeId }): ChatState {
+  return land(state, text.trim(), { who: 'bit', text: ai.answer, ai: true }, ai.route);
+}
+
+/** The visitor's question on screen while the AI answer is on its way. */
+export function asking(state: ChatState, text: string): ChatState {
+  return { ...state, log: [...state.log, { who: 'you', text: text.trim() }] };
 }
 
 /** The options to show under the last message. */
