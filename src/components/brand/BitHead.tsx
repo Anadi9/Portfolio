@@ -11,7 +11,8 @@ export type THMode = 'signal' | 'night' | 'mono' | 'phosphor';
 /**
  * Drop-in for the old `TerminalHead` that draws Bit instead, so every page
  * that used the old mascot rebrands by changing its import. Faces map onto
- * Bit's poses; `shape`, `prop` and `mode` are accepted and ignored.
+ * Bit's poses; `shape`, `prop` and `mode` are accepted and ignored. The
+ * portfolio's testimonials still draw the original Terminal Head.
  */
 const POSE: Record<THFace, BitPose> = {
   prompt: 'calm',
