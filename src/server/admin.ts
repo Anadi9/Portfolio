@@ -20,6 +20,7 @@ import { scanLead } from '../lib/brief/scan.js';
 import { fromLeadScan } from '../lib/engine/adapters.js';
 import { combine } from '../lib/engine/combine.js';
 import { draftReport } from '../lib/engine/report.js';
+import { planInvoices } from '../lib/money/invoices.js';
 import { TICKET_STAGES } from '../lib/tickets/types.js';
 
 /**
@@ -67,6 +68,16 @@ const Op = z.discriminatedUnion('op', [
   z.object({ op: z.literal('stage'), id: z.string().min(1).max(80), stage: z.enum(TICKET_STAGES) }),
   z.object({ op: z.literal('saveDraft'), id: z.string().min(1).max(80), messageId: z.string().min(1).max(80), subject: z.string().max(200), body: z.string().max(5000) }),
   z.object({ op: z.literal('draftReport'), id: z.string().min(1).max(80) }),
+  z.object({
+    op: z.literal('planInvoices'),
+    id: z.string().min(1).max(80),
+    work: z.enum(['audit', 'fix', 'build']),
+    priceCents: z.number().int().positive().max(100_000_000).optional(),
+    currency: z.enum(['usd', 'inr']),
+    teardownPaidAt: z.string().datetime({ offset: true }).optional(),
+  }),
+  z.object({ op: z.literal('invoices'), id: z.string().min(1).max(80) }),
+  z.object({ op: z.literal('invoiceStatus'), id: z.string().min(1).max(80), invoiceId: z.string().min(1).max(80), status: z.enum(['planned', 'sent', 'paid', 'void']), stripeInvoiceId: z.string().max(100).optional() }),
   z.object({ op: z.literal('taskDone'), id: z.string().min(1).max(80), key: z.string().min(1).max(60) }),
   z.object({ op: z.literal('keep'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80) }),
   z.object({ op: z.literal('missReason'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80), reason: z.string().trim().min(1).max(1000) }),
@@ -261,6 +272,32 @@ export function createAdminHandler(deps: AdminDeps) {
           ]);
           await dispatch(store, rows, { ...liveDeps(deps.env), resend: deps.resend });
         }
+        return res.status(200).json({ ok: true });
+      }
+
+      case 'planInvoices': {
+        const ticket = await store.getTicket(body.id);
+        if (!ticket) return res.status(404).json({ error: 'no such ticket' });
+        if (body.work !== 'audit' && !body.priceCents) return res.status(400).json({ error: 'a fixed price is needed for fix and build work' });
+        const auditPaidAt = ticket.tasks.find((x) => x.key === 'audit_paid' && x.status === 'done')?.doneAt ?? null;
+        const plans = planInvoices({ work: body.work, priceCents: body.priceCents, now: new Date(), auditPaidAt, teardownPaidAt: body.teardownPaidAt ?? null });
+        const invoices = await store.planInvoices(ticket.id, plans, body.currency);
+        await store.addEvent(ticket.id, 'invoices_planned', { work: body.work, count: invoices.length });
+        return res.status(200).json({ invoices });
+      }
+
+      case 'invoices':
+        return res.status(200).json({ invoices: await store.invoicesFor(body.id) });
+
+      case 'invoiceStatus': {
+        const ticket = await store.getTicket(body.id);
+        const inv = ticket && (await store.invoicesFor(ticket.id)).find((x) => x.id === body.invoiceId);
+        if (!ticket || !inv) return res.status(404).json({ error: 'no such invoice' });
+        const confirmed = ticket.tasks.some((x) => x.key === 'client_confirmed' && x.status === 'done');
+        if (inv.afterConfirm && (body.status === 'sent' || body.status === 'paid') && !confirmed) {
+          return res.status(409).json({ error: 'The second half is due only after the client confirms it works (tick "Client confirms it works" first).' });
+        }
+        await store.updateInvoice(inv.id, { status: body.status, ...(body.stripeInvoiceId !== undefined ? { stripeInvoiceId: body.stripeInvoiceId || null } : {}) });
         return res.status(200).json({ ok: true });
       }
 

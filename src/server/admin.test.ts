@@ -374,3 +374,29 @@ describe('/api/admin draftReport', () => {
     expect((await call({ op: 'draftReport', id: 'nope' }, { cookie: authed() })).statusCode).toBe(404);
   });
 });
+
+describe('/api/admin invoices', () => {
+  it('plans a fix with the audit credit and holds the second half until the client confirms', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    await mem.store.addTasks(t.id, 'audit', [{ key: 'audit_paid', owner: 'anadi', title: 'Paid', doneWhen: 'x' }]);
+    await mem.store.completeTask(t.id, 'audit_paid');
+    const res = await call({ op: 'planInvoices', id: t.id, work: 'fix', priceCents: 200000, currency: 'usd' }, { cookie: authed() });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.invoices.map((i: { totalCents: number }) => i.totalCents)).toEqual([65100, 100000]);
+    const live = res.body.invoices[1];
+    expect((await call({ op: 'invoiceStatus', id: t.id, invoiceId: live.id, status: 'sent' }, { cookie: authed() })).statusCode).toBe(409);
+    await mem.store.addTasks(t.id, 'live', [{ key: 'client_confirmed', owner: 'anadi', title: 'Confirmed', doneWhen: 'x' }]);
+    await mem.store.completeTask(t.id, 'client_confirmed');
+    expect((await call({ op: 'invoiceStatus', id: t.id, invoiceId: live.id, status: 'sent', stripeInvoiceId: 'in_123' }, { cookie: authed() })).statusCode).toBe(200);
+    expect(mem.invoices.find((i) => i.id === live.id)).toMatchObject({ status: 'sent', stripeInvoiceId: 'in_123' });
+    expect((await call({ op: 'invoices', id: t.id }, { cookie: authed() })).body.invoices).toHaveLength(2);
+  });
+
+  it('refuses fix work without a price and an invoice from another ticket', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    expect((await call({ op: 'planInvoices', id: t.id, work: 'fix', currency: 'usd' }, { cookie: authed() })).statusCode).toBe(400);
+    const other = await mem.store.createTicket({ ...ticketInput, email: 'o@example.com' });
+    const [inv] = await mem.store.planInvoices(other.id, [{ key: 'audit', label: 'A', lines: [], totalCents: 1, afterConfirm: false }], 'usd');
+    expect((await call({ op: 'invoiceStatus', id: t.id, invoiceId: inv.id, status: 'paid' }, { cookie: authed() })).statusCode).toBe(404);
+  });
+});

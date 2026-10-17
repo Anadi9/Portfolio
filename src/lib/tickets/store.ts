@@ -19,6 +19,8 @@ import type { CommitmentStatus } from '../coach/rules.js';
 import type { TaskTemplate } from '../coach/stages.js';
 import type { PromiseId } from '../../data/promises.js';
 import type { StoredPasskey } from '../admin/passkey.js';
+import type { InvoicePlan } from '../money/invoices.js';
+import type { Invoice, InvoiceStatus } from '../money/types.js';
 import { FEED_BODY_MAX, FEED_TITLE_MAX, feedOrder, type FeedItem, type NewFeedItem } from '../feed/types.js';
 
 /**
@@ -77,6 +79,10 @@ export interface TicketStore {
   /** Anadi's passkeys for /admin. */
   passkeys(): Promise<StoredPasskey[]>;
   /** Client portal (Phase 6). */
+  /** Invoice plans (Phase 7). Replaces the ticket's still-`planned` rows. */
+  planInvoices(ticketId: string, plans: InvoicePlan[], currency: 'usd' | 'inr'): Promise<Invoice[]>;
+  invoicesFor(ticketId: string): Promise<Invoice[]>;
+  updateInvoice(id: string, patch: { status?: InvoiceStatus; stripeInvoiceId?: string | null }): Promise<void>;
   clientByEmail(email: string): Promise<{ id: string; email: string } | null>;
   /** The client's own tickets, newest first. */
   ticketsForClient(clientId: string): Promise<TicketRow[]>;
@@ -194,6 +200,20 @@ const toTask = (r: Row): CoachTask => ({
   status: r.status,
   createdAt: r.created_at,
   doneAt: r.done_at,
+});
+
+const toInvoice = (r: Row): Invoice => ({
+  id: r.id,
+  ticketId: r.ticket_id,
+  key: r.key,
+  label: r.label,
+  lines: r.lines ?? [],
+  totalCents: r.total_cents,
+  currency: r.currency,
+  afterConfirm: r.after_confirm,
+  status: r.status,
+  stripeInvoiceId: r.stripe_invoice_id,
+  createdAt: r.created_at,
 });
 
 const toMessage = (r: Row): Message => ({
@@ -467,6 +487,31 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async doneFeedFor(ref) {
       const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('ref', ref).is('done_at', null);
       if (error) fail('done feed for', error);
+    },
+
+    async planInvoices(ticketId, plans, currency) {
+      const del = await db.from('invoices').delete().eq('ticket_id', ticketId).eq('status', 'planned');
+      if (del.error) fail('clear planned invoices', del.error);
+      const { data, error } = await db
+        .from('invoices')
+        .insert(plans.map((p) => ({ ticket_id: ticketId, key: p.key, label: p.label, lines: p.lines, total_cents: p.totalCents, currency, after_confirm: p.afterConfirm })))
+        .select('*');
+      if (error) fail('plan invoices', error);
+      return (data as Row[]).map(toInvoice);
+    },
+
+    async invoicesFor(ticketId) {
+      const { data, error } = await db.from('invoices').select('*').eq('ticket_id', ticketId).order('created_at', { ascending: true });
+      if (error) fail('invoices', error);
+      return (data as Row[]).map(toInvoice);
+    },
+
+    async updateInvoice(id, patch) {
+      const row: Row = { updated_at: new Date().toISOString() };
+      if (patch.status) row.status = patch.status;
+      if (patch.stripeInvoiceId !== undefined) row.stripe_invoice_id = patch.stripeInvoiceId;
+      const { error } = await db.from('invoices').update(row).eq('id', id);
+      if (error) fail('update invoice', error);
     },
 
     async clientByEmail(email) {

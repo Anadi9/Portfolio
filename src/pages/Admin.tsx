@@ -9,6 +9,7 @@ import type { Commitment } from '@/lib/coach/types';
 import type { Numbers } from '@/lib/command/numbers';
 import type { AwaySummary, TodayItem } from '@/lib/command/today';
 import type { PlanItem } from '@/lib/command/plan';
+import type { Invoice, InvoiceStatus } from '@/lib/money/types';
 import { hasPlaceholder, splitDraft } from '@/lib/brief/draft';
 import { ANSWER_LABEL, kindLabel } from '@/lib/notify/email';
 import type { FeedItem } from '@/lib/feed/types';
@@ -774,6 +775,7 @@ function TicketView({ id, focus, guard, back }: { id: string; focus?: string; gu
       </div>
 
       <CoachBox ticket={t} guard={guard} onChanged={load} />
+      <Invoices ticket={t} guard={guard} />
 
       {drafts.map((m) => (
         <DraftEditor key={m.id} ticketId={t.id} message={m} autoFocus={m.id === focus} guard={guard} onSent={load} />
@@ -907,6 +909,103 @@ function CoachBox({ ticket, guard, onChanged }: { ticket: TicketDetail; guard: G
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+const money = (cents: number, currency: string) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(cents / 100);
+
+/** Planned invoices with credits applied. Anadi creates each in Stripe and pastes the id back. */
+function Invoices({ ticket, guard }: { ticket: TicketDetail; guard: Guard }) {
+  const [list, setList] = useState<Invoice[] | null>(null);
+  const [work, setWork] = useState<'audit' | 'fix' | 'build'>(ticket.kind === 'build' ? 'build' : ticket.stage === 'audit' ? 'audit' : 'fix');
+  const [price, setPrice] = useState('');
+  const [currency, setCurrency] = useState<'usd' | 'inr'>('usd');
+  const load = useCallback(async () => {
+    const d = guard(await admin.invoices(ticket.id));
+    if (d) setList(d.invoices);
+  }, [guard, ticket.id]);
+  useEffect(() => {
+    load();
+  }, [load]);
+  if (ticket.stage === 'inbox') return null;
+  const field: CSSProperties = { minHeight: 40, padding: '0 10px', font: '15px var(--bq-font-body)', border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)' };
+  return (
+    <div style={box}>
+      <h2 style={h2}>Invoices</h2>
+      <p style={small}>Planned here with the audit and teardown credits applied. Create each one in Stripe, then paste its id and mark it sent.</p>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const cents = Math.round(Number(price.replace(/[^\d.]/g, '')) * 100);
+          const d = guard(await admin.planInvoices(ticket.id, work, currency, work === 'audit' ? undefined : cents));
+          if (d) setList(d.invoices);
+        }}
+        style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'end' }}
+      >
+        <label style={small}>
+          Work
+          <select value={work} onChange={(e) => setWork(e.target.value as typeof work)} style={{ ...field, display: 'block', appearance: 'auto' }}>
+            <option value="audit">Audit ($349)</option>
+            <option value="fix">Fix</option>
+            <option value="build">AI build</option>
+          </select>
+        </label>
+        {work !== 'audit' && (
+          <label style={small}>
+            Fixed price you quoted
+            <input inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="1500" style={{ ...field, display: 'block', width: 120 }} />
+          </label>
+        )}
+        <label style={small}>
+          Currency
+          <select value={currency} onChange={(e) => setCurrency(e.target.value as 'usd' | 'inr')} style={{ ...field, display: 'block', appearance: 'auto' }}>
+            <option value="usd">USD</option>
+            <option value="inr">INR</option>
+          </select>
+        </label>
+        <button type="submit" style={btn} disabled={work !== 'audit' && !Number(price.replace(/[^\d.]/g, ''))}>
+          Plan invoices
+        </button>
+      </form>
+      {list?.map((inv) => (
+        <InvoiceRow key={inv.id} inv={inv} ticketId={ticket.id} guard={guard} onChanged={load} />
+      ))}
+    </div>
+  );
+}
+
+function InvoiceRow({ inv, ticketId, guard, onChanged }: { inv: Invoice; ticketId: string; guard: Guard; onChanged: () => void }) {
+  const [stripeId, setStripeId] = useState(inv.stripeInvoiceId ?? '');
+  const set = async (status: InvoiceStatus) => {
+    if (guard(await admin.invoiceStatus(ticketId, inv.id, status, stripeId.trim()))) onChanged();
+  };
+  return (
+    <div style={{ borderTop: '1px solid var(--bq-rule)', paddingTop: 8, display: 'grid', gap: 6 }}>
+      <b>
+        {inv.label} · {money(inv.totalCents, inv.currency)} · <span style={{ fontWeight: 400 }}>{inv.status}</span>
+      </b>
+      <ul style={{ margin: 0, paddingLeft: 20 }}>
+        {inv.lines.map((l) => (
+          <li key={l.label} style={small}>
+            {l.label}: {money(l.cents, inv.currency)}
+          </li>
+        ))}
+      </ul>
+      {inv.afterConfirm && <p style={small}>Only after the client confirms it works.</p>}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <input aria-label="Stripe invoice id" value={stripeId} onChange={(e) => setStripeId(e.target.value)} placeholder="in_…" style={{ minHeight: 36, padding: '0 8px', border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)' }} />
+        {inv.status !== 'sent' && inv.status !== 'paid' && (
+          <button type="button" style={{ ...btn, minHeight: 36 }} onClick={() => set('sent')}>
+            Mark sent
+          </button>
+        )}
+        {inv.status !== 'paid' && (
+          <button type="button" style={{ ...btn, minHeight: 36 }} onClick={() => set('paid')}>
+            Mark paid
+          </button>
+        )}
+      </div>
     </div>
   );
 }

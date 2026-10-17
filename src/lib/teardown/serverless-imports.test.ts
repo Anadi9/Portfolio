@@ -107,6 +107,8 @@ const GRAPH = [
   'src/lib/engine/adapters.ts',
   'src/lib/engine/combine.ts',
   'src/lib/engine/report.ts',
+  'src/lib/money/invoices.ts',
+  'src/lib/money/types.ts',
   'src/lib/feed/types.ts',
   'src/lib/coach/types.ts',
   'src/lib/coach/rules.ts',

@@ -1,6 +1,7 @@
 import { feedRow, firstSent, MAX_ATTEMPTS, statusAfter, type TicketStore } from './store';
 import { feedOrder, isOpen, type FeedItem } from '../feed/types';
 import type { CoachTask, Commitment } from '../coach/types';
+import type { Invoice } from '../money/types';
 import { NewTicketSchema, type BoardTicket, type Message, type Notification, type Scorecard, type Ticket } from './types';
 
 /**
@@ -22,6 +23,7 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
   const feed: FeedItem[] = [];
   const commitments: Commitment[] = [];
   const tasks: CoachTask[] = [];
+  const invoices: Invoice[] = [];
   const portalLinks = new Map<string, { email: string; usedAt: string | null }>();
   const passkeys: { id: string; publicKey: string; counter: number; transports: string[]; createdAt: string }[] = [];
   const pushSubs = new Map<string, { endpoint: string; p256dh: string; auth: string }>();
@@ -190,6 +192,21 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
     async doneFeedFor(ref) {
       for (const f of feed) if (f.ref === ref && !f.doneAt) f.doneAt = now();
     },
+    async planInvoices(ticketId, plans, currency) {
+      for (let i = invoices.length - 1; i >= 0; i--) if (invoices[i].ticketId === ticketId && invoices[i].status === 'planned') invoices.splice(i, 1);
+      const made = plans.map<Invoice>((p) => ({ ...p, id: id('inv'), ticketId, currency, status: 'planned', stripeInvoiceId: null, createdAt: now() }));
+      invoices.push(...made);
+      return made.map((x) => ({ ...x }));
+    },
+    async invoicesFor(ticketId) {
+      return invoices.filter((x) => x.ticketId === ticketId).map((x) => ({ ...x }));
+    },
+    async updateInvoice(iid, patch) {
+      const x = invoices.find((y) => y.id === iid);
+      if (!x) return;
+      if (patch.status) x.status = patch.status;
+      if (patch.stripeInvoiceId !== undefined) x.stripeInvoiceId = patch.stripeInvoiceId;
+    },
     async clientByEmail(email) {
       const c = clients.get(email.trim().toLowerCase());
       return c ? { id: c.id, email: c.email } : null;
@@ -290,5 +307,5 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
       return tickets.filter((t) => t.kind === kind && t.createdAt >= new Date(since).toISOString()).length;
     },
   };
-  return { store, clients, tickets, events, notifications, messages, briefs, scorecards, feed, commitments, tasks };
+  return { store, clients, tickets, events, notifications, messages, briefs, scorecards, feed, commitments, tasks, invoices };
 }
