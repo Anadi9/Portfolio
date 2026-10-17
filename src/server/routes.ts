@@ -16,6 +16,7 @@ import bitAsk from './bit/ask.js';
 import bitTicket from './bit/ticket.js';
 import cronNotify from './cron/notify.js';
 import cronScorecard from './cron/scorecard.js';
+import cronHeartbeat from './cron/heartbeat.js';
 
 /**
  * The handlers behind the three dispatchers in `api/`.
@@ -50,7 +51,7 @@ export const API_ROUTES: Routes = {
 export const BIT_ROUTES: Routes = { ask: bitAsk, ticket: bitTicket };
 
 /** `/api/cron/<job>`, the paths `vercel.json` schedules. */
-export const CRON_ROUTES: Routes = { notify: cronNotify, scorecard: cronScorecard };
+export const CRON_ROUTES: Routes = { heartbeat: cronHeartbeat, notify: cronNotify, scorecard: cronScorecard };
 
 /** Runs the handler `routes[segment]`, or 404s. Own keys only, so `/api/constructor` is not a route. */
 export function dispatch(routes: Routes, segment: unknown, req: VercelRequest, res: VercelResponse) {

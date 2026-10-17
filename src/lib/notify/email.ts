@@ -181,6 +181,20 @@ ${row('Summary', esc(text(p.summary, 400)))}
   };
 }
 
+/** To Anadi, from Coach: a promise is three-quarters through its window. */
+export function renderPromiseAtRisk(p: Record<string, unknown>): { subject: string; html: string } {
+  const number = text(p.number, 20);
+  const promise = text(p.promise, 120);
+  const link = `${ADMIN_URL}#card-${encodeURIComponent(text(p.cardId, 60))}`;
+  return {
+    subject: `At risk: ${number} · ${promise} due in ${typeof p.hoursLeft === 'number' ? p.hoursLeft : '?'}h`,
+    html: shell(
+      `<p><strong>${esc(promise)}</strong> for ${esc(number)} is due ${esc(text(p.due, 40))}.</p>
+<p><a href="${esc(link)}">Open the card</a>.</p>`,
+    ),
+  };
+}
+
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Sends one email notification row. Missing key => skipped; a bad address => skipped. */
@@ -204,6 +218,9 @@ export async function sendEmailNotification(
   } else if (row.template === 'brief_ready') {
     to = inbox;
     rendered = renderBriefReady(p);
+  } else if (row.template === 'promise_at_risk') {
+    to = inbox;
+    rendered = renderPromiseAtRisk(p);
   } else if (row.template === 'ticket_receipt' || row.template === 'stage_change') {
     to = text(p.to, 254);
     if (!EMAIL.test(to)) return { status: 'skipped', error: 'no recipient email' };

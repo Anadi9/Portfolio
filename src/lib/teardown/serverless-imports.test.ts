@@ -105,6 +105,7 @@ const GRAPH = [
   'src/lib/coach/rules.ts',
   'src/lib/coach/stages.ts',
   'src/lib/coach/hooks.ts',
+  'src/server/cron/heartbeat.ts',
   'src/lib/brief/background.ts',
   'src/lib/brief/process.ts',
   'src/lib/brief/scan.ts',

@@ -10,6 +10,7 @@ export const MESSAGE_POLICY: Record<string, SendPolicy> = {
   new_ticket_admin: 'auto',
   stage_change: 'auto',
   brief_ready: 'auto',
+  promise_at_risk: 'auto',
   followup: 'draft',
   quote: 'draft',
   findings: 'draft',
