@@ -9,8 +9,8 @@ import { memoryTicketStore } from '../tickets/memory';
 const { holder } = vi.hoisted(() => ({ holder: { store: null as unknown } }));
 vi.mock('../tickets/store.js', async (orig) => ({ ...(await orig<typeof import('../tickets/store')>()), ticketStore: () => holder.store }));
 
-import scorecard from '../../../api/scorecard';
-import cron from '../../../api/cron/scorecard';
+import scorecard from '../../server/scorecard';
+import cron from '../../server/cron/scorecard';
 
 const call = async (h: (a: VercelRequest, b: VercelResponse) => unknown, headers: Record<string, string> = {}, method = 'GET') => {
   const res: { statusCode?: number; body?: any; headers: Record<string, string> } = { headers: {} }; // eslint-disable-line @typescript-eslint/no-explicit-any

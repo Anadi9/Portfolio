@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { parseScanInput } from '../src/lib/scan/validate.js';
-import { runScan } from '../src/lib/scan/scan.js';
-import { clientIp, createRateLimiter } from '../src/lib/scan/rate-limit.js';
+import { parseScanInput } from '../lib/scan/validate.js';
+import { runScan } from '../lib/scan/scan.js';
+import { clientIp, createRateLimiter } from '../lib/scan/rate-limit.js';
 
 /**
  * POST /api/scan

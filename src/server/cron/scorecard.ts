@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { withErrorLog } from '../../src/lib/monitoring/with-error-log.js';
-import { runCheck } from '../../src/lib/readiness/check.js';
-import { withTimeout } from '../../src/lib/notify/timeout.js';
-import { checkHeaders, summarise, type HeaderCheck } from '../../src/lib/scorecard/summary.js';
-import { ticketStore } from '../../src/lib/tickets/store.js';
+import { withErrorLog } from '../../lib/monitoring/with-error-log.js';
+import { runCheck } from '../../lib/readiness/check.js';
+import { withTimeout } from '../../lib/notify/timeout.js';
+import { checkHeaders, summarise, type HeaderCheck } from '../../lib/scorecard/summary.js';
+import { ticketStore } from '../../lib/tickets/store.js';
 
 const SITE = 'https://anadithakur.in/';
 

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { withErrorLog } from '../src/lib/monitoring/with-error-log.js';
-import { boardColumns } from '../src/lib/tickets/board.js';
-import { ticketStore } from '../src/lib/tickets/store.js';
+import { withErrorLog } from '../lib/monitoring/with-error-log.js';
+import { boardColumns } from '../lib/tickets/board.js';
+import { ticketStore } from '../lib/tickets/store.js';
 
 /**
  * GET /api/board

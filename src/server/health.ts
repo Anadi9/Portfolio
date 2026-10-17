@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { healthReport } from '../src/lib/monitoring/health.js';
-import { withErrorLog } from '../src/lib/monitoring/with-error-log.js';
+import { healthReport } from '../lib/monitoring/health.js';
+import { withErrorLog } from '../lib/monitoring/with-error-log.js';
 
 /**
  * GET /api/health

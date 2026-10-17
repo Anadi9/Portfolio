@@ -15,8 +15,8 @@ vi.mock('resend', () => ({
 }));
 vi.mock('../tickets/store.js', async (orig) => ({ ...(await orig<typeof import('../tickets/store')>()), ticketStore: () => holder.store }));
 
-import ticketHandler from '../../../api/bit/ticket';
-import notifyCron from '../../../api/cron/notify';
+import ticketHandler from '../../server/bit/ticket';
+import notifyCron from '../../server/cron/notify';
 import { dispatch } from './dispatch';
 import { renderNewTicketAdmin } from './email';
 

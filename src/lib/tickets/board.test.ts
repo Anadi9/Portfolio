@@ -7,7 +7,7 @@ import type { BoardTicket } from './types';
 const { holder } = vi.hoisted(() => ({ holder: { store: null as unknown } }));
 vi.mock('./store.js', async (orig) => ({ ...(await orig<typeof import('./store')>()), ticketStore: () => holder.store }));
 
-import handler from '../../../api/board';
+import handler from '../../server/board';
 
 const call = async (method = 'GET') => {
   const res: { statusCode?: number; body?: any; headers: Record<string, string> } = { headers: {} }; // eslint-disable-line @typescript-eslint/no-explicit-any

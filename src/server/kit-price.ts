@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { visitorCountry } from '../src/lib/kit/geo.js';
-import { currencyFor } from '../src/lib/kit/product.js';
+import { visitorCountry } from '../lib/kit/geo.js';
+import { currencyFor } from '../lib/kit/product.js';
 
 /**
  * GET /api/kit-price

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { runCheck } from '../src/lib/readiness/check.js';
-import { checkUrl } from '../src/lib/readiness/url.js';
-import { clientIp, createRateLimiter } from '../src/lib/scan/rate-limit.js';
+import { runCheck } from '../lib/readiness/check.js';
+import { checkUrl } from '../lib/readiness/url.js';
+import { clientIp, createRateLimiter } from '../lib/scan/rate-limit.js';
 
 /**
  * POST /api/ai-readiness

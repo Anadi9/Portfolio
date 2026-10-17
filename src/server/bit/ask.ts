@@ -1,5 +1,5 @@
-import { createAskHandler } from '../../src/lib/bit/ask-handler.js';
-import { withErrorLog } from '../../src/lib/monitoring/with-error-log.js';
+import { createAskHandler } from '../../lib/bit/ask-handler.js';
+import { withErrorLog } from '../../lib/monitoring/with-error-log.js';
 
 /**
  * POST /api/bit/ask — Bit's AI answer to a typed question.

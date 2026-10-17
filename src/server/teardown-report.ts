@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
-import { renderEmail } from '../src/lib/teardown/email.js';
-import { report } from '../src/lib/teardown/report.js';
-import { isValidAnswers } from '../src/lib/teardown/score.js';
+import { renderEmail } from '../lib/teardown/email.js';
+import { report } from '../lib/teardown/report.js';
+import { isValidAnswers } from '../lib/teardown/score.js';
 
 /**
  * POST /api/teardown-report

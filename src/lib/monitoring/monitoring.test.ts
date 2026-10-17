@@ -116,7 +116,7 @@ describe('healthReport outage and handler status', () => {
     }
   });
   it('maps to 503 when unreachable and 200 when missing env', async () => {
-    const { default: handler } = await import('../../../api/health');
+    const { default: handler } = await import('../../server/health');
     const mkRes = () => {
       const res: any = { headersSent: false, setHeader: vi.fn(), status: vi.fn(() => res), json: vi.fn(() => res) };
       return res;

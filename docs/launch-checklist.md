@@ -37,7 +37,7 @@ Vercel dashboard, your project, Settings, Environment Variables. Add each to **P
 | `KIT_DEV_COUNTRY` | `IN` | Local `.env.local` only, **never on Vercel** | Pretend to be an Indian visitor in dev | Dollars |
 | `VERCEL_OIDC_TOKEN`, `VERCEL` | Set by Vercel | Automatic, do not set | AI Gateway auth (`ai.ts` treats either, or `VERCEL=1`, as "authenticated"); `VERCEL_ENV` is read by the kit-price build script | n/a |
 
-Where each is read, for reference: tickets/board/scorecard store `src/lib/tickets/store.ts`; kit store `src/lib/kit/store.ts`; reviews `api/review.ts`; emails `api/audit.ts`, `api/rescue-audit.ts`, `api/review.ts`, `api/stripe-webhook.ts`, `api/teardown-report.ts`, `src/lib/notify/*`; WhatsApp `src/lib/notify/whatsapp.ts`; AI `src/lib/bit/ai.ts`; crons `api/cron/notify.ts`, `api/cron/scorecard.ts`, `src/lib/kit/handlers.ts`; Stripe `src/lib/kit/handlers.ts`, `api/stripe-webhook.ts`, `api/production-kit-download.ts`, `scripts/fetch-kit-prices.mjs`; health report `src/lib/monitoring/health.ts`.
+Where each is read, for reference: tickets/board/scorecard store `src/lib/tickets/store.ts`; kit store `src/lib/kit/store.ts`; reviews `src/server/review.ts`; emails `src/server/audit.ts`, `src/server/rescue-audit.ts`, `src/server/review.ts`, `api/stripe-webhook.ts`, `src/server/teardown-report.ts`, `src/lib/notify/*`; WhatsApp `src/lib/notify/whatsapp.ts`; AI `src/lib/bit/ai.ts`; crons `src/server/cron/notify.ts`, `src/server/cron/scorecard.ts`, `src/lib/kit/handlers.ts`; Stripe `src/lib/kit/handlers.ts`, `api/stripe-webhook.ts`, `api/production-kit-download.ts`, `scripts/fetch-kit-prices.mjs`; health report `src/lib/monitoring/health.ts`.
 
 Notes:
 

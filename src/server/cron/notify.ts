@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { dispatch } from '../../src/lib/notify/dispatch.js';
-import { liveDeps } from '../../src/lib/notify/ticket.js';
-import { withErrorLog } from '../../src/lib/monitoring/with-error-log.js';
-import { ticketStore } from '../../src/lib/tickets/store.js';
+import { dispatch } from '../../lib/notify/dispatch.js';
+import { liveDeps } from '../../lib/notify/ticket.js';
+import { withErrorLog } from '../../lib/monitoring/with-error-log.js';
+import { ticketStore } from '../../lib/tickets/store.js';
 
 /**
  * GET /api/cron/notify

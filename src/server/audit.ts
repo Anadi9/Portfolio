@@ -1,26 +1,24 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
-import { recordFormTicket } from '../src/lib/notify/ticket.js';
-import { SYMPTOMS, dueBy, parseIntake, renderConfirmEmail, renderLeadEmail } from '../src/lib/rescue/intake.js';
+import { recordFormTicket } from '../lib/notify/ticket.js';
+import { dueBy, parseAuditIntake, renderAuditConfirmEmail, renderAuditLeadEmail } from '../lib/audit/intake.js';
 
 /**
- * POST /api/rescue-audit
+ * POST /api/audit
  *
- * The app-audit form (`/audit?type=app`; formerly `/rescue/audit`). Unlike `/api/teardown-report`, the email here is not
- * a copy of something the reader already has: it is the request itself. So the
- * page awaits this call, and the order of the two sends matters. The lead to
- * Anadi goes first and must succeed, or the visitor is told it failed and given
- * the mailto fallback. The confirmation to the visitor goes second and a
- * failure there is logged, not surfaced: the request has already landed.
+ * The `/audit` form for AI Visibility and DPDP audits. App audits post to
+ * `/api/rescue-audit` instead. Same contract as that function, for the same
+ * reasons: the lead to Anadi goes first and must succeed, or the visitor is
+ * told it failed and given the mailto fallback; the confirmation goes second
+ * and a failure there is only logged.
  *
- * The visitor is not added to the Resend audience. They asked for an audit,
- * not a newsletter.
- *
- * Imports carry explicit `.js` extensions for the same reason as the teardown
- * function; `serverless-imports.test.ts` asserts it.
+ * The visitor is not added to any audience. Once the ticket work lands, the
+ * request is also saved as a ticket (after the emails go) so Anadi can track
+ * it: that is what the form's "saved as a ticket so I can track this request,
+ * used only for it, and deleted on request" line promises. See docs/data-map.md.
  */
 
-const FROM = 'Anadi Thakur <rescue@anadithakur.in>';
+const FROM = 'Anadi Thakur <audit@anadithakur.in>';
 const INBOX_FALLBACK = 'anadithakur99@gmail.com';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -31,7 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    console.warn('[rescue] RESEND_API_KEY not set: request not delivered');
+    console.warn('[audit] RESEND_API_KEY not set: request not delivered');
     return res.status(501).json({ error: 'email not configured' });
   }
 
@@ -43,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ ok: true });
   }
 
-  const parsed = parseIntake(body);
+  const parsed = parseAuditIntake(body);
   if (parsed.ok === false) {
     return res.status(400).json({ error: parsed.error, field: parsed.field });
   }
@@ -51,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { intake } = parsed;
   const due = dueBy(new Date());
   const resend = new Resend(key);
-  const lead = renderLeadEmail(intake, due);
+  const lead = renderAuditLeadEmail(intake, due);
 
   try {
     const sent = await resend.emails.send({
@@ -62,37 +60,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       html: lead.html,
     });
     if (sent.error) {
-      console.error('[rescue] lead send failed', sent.error);
+      console.error('[audit] lead send failed', sent.error);
       return res.status(502).json({ error: 'send failed' });
     }
   } catch (err) {
-    console.error('[rescue] lead send threw', err);
+    console.error('[audit] lead send threw', err);
     return res.status(502).json({ error: 'send failed' });
   }
 
-  const confirm = renderConfirmEmail(intake, due);
+  const confirm = renderAuditConfirmEmail(intake, due);
   try {
     const sent = await resend.emails.send({ from: FROM, to: intake.email, subject: confirm.subject, html: confirm.html });
-    if (sent.error) console.warn('[rescue] confirmation send failed', sent.error);
+    if (sent.error) console.warn('[audit] confirmation send failed', sent.error);
   } catch (err) {
-    console.warn('[rescue] confirmation send threw', err);
+    console.warn('[audit] confirmation send threw', err);
   }
 
   // Best-effort: a ticket failure (or no store) never changes the response.
   const ticket = await recordFormTicket({
     email: intake.email,
-    appUrl: intake.appUrl,
-    kind: 'first_bug',
-    source: 'app_form',
-    stack: intake.tool,
+    name: intake.name,
+    whatsapp: intake.whatsapp ?? undefined,
+    appUrl: intake.url,
+    kind: 'audit',
+    source: 'audit_form',
     boardOptIn: false,
     whatsappOptIn: false,
-    answers: {
-      repoUrl: intake.repoUrl,
-      tool: intake.tool,
-      symptoms: intake.symptoms.map((i) => SYMPTOMS[i]?.line).filter(Boolean),
-      notes: intake.notes,
-    },
+    answers: { type: intake.type, business: intake.business, sells: intake.sells, market: intake.market, worries: intake.worries },
   });
 
   return res.status(200).json({ ok: true, due: due.toISOString(), ...(ticket ? { ticket } : {}) });

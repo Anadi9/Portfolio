@@ -21,18 +21,22 @@ const ROOT = join(import.meta.dirname, '../../..');
 
 /** Every module Node loads when the function cold-starts, function first. */
 const GRAPH = [
-  'api/teardown-report.ts',
-  'api/rescue-audit.ts',
+  'api/[route].ts',
+  'api/bit/[action].ts',
+  'api/cron/[job].ts',
+  'src/server/routes.ts',
+  'src/server/teardown-report.ts',
+  'src/server/rescue-audit.ts',
   'src/lib/rescue/intake.ts',
-  'api/audit.ts',
+  'src/server/audit.ts',
   'src/lib/audit/intake.ts',
-  'api/ai-readiness.ts',
+  'src/server/ai-readiness.ts',
   'src/lib/readiness/check.ts',
   'src/lib/readiness/analyze.ts',
   'src/lib/readiness/url.ts',
-  'api/review.ts',
+  'src/server/review.ts',
   'src/lib/review/intake.ts',
-  'api/scan.ts',
+  'src/server/scan.ts',
   'src/lib/scan/validate.ts',
   'src/lib/scan/report.ts',
   'src/lib/scan/scan.ts',
@@ -42,17 +46,17 @@ const GRAPH = [
   'src/lib/teardown/report.ts',
   'src/lib/teardown/score.ts',
   'src/lib/teardown/questions.ts',
-  'api/production-kit-checkout.ts',
+  'src/server/production-kit-checkout.ts',
   'api/production-kit-download.ts',
   'api/stripe-webhook.ts',
   'src/lib/kit/stripe.ts',
   'src/lib/kit/archive.ts',
   'src/lib/kit/email.ts',
   'src/lib/kit/product.ts',
-  'api/kit-price.ts',
+  'src/server/kit-price.ts',
   'src/lib/kit/geo.ts',
-  'api/client-error.ts',
-  'api/health.ts',
+  'src/server/client-error.ts',
+  'src/server/health.ts',
   'src/lib/monitoring/validate.ts',
   'src/lib/monitoring/with-error-log.ts',
   'src/lib/monitoring/health.ts',
@@ -60,12 +64,12 @@ const GRAPH = [
   'src/lib/tickets/store.ts',
   'src/lib/tickets/types.ts',
   'src/lib/tickets/policy.ts',
-  'api/bit/ticket.ts',
-  'api/board.ts',
+  'src/server/bit/ticket.ts',
+  'src/server/board.ts',
   'src/lib/tickets/board.ts',
-  'api/cron/notify.ts',
-  'api/cron/scorecard.ts',
-  'api/scorecard.ts',
+  'src/server/cron/notify.ts',
+  'src/server/cron/scorecard.ts',
+  'src/server/scorecard.ts',
   'src/lib/scorecard/summary.ts',
   'src/lib/scorecard/headers.ts',
   'src/lib/notify/dispatch.ts',
@@ -83,7 +87,7 @@ const GRAPH = [
   'src/data/kit/types.ts',
   'src/data/kit/releases/1.2.1.ts',
   'src/data/kit/releases/1.2.0.ts',
-  'api/bit/ask.ts',
+  'src/server/bit/ask.ts',
   'src/lib/bit/ask-handler.ts',
   'src/lib/bit/ai.ts',
   'src/lib/bit/knowledge.ts',
@@ -136,23 +140,12 @@ describe('api/ directory: deployable files only', () => {
 
   it('contains nothing but the function entrypoints', () => {
     expect([...entries].sort()).toEqual([
-      'ai-readiness.ts',
-      'audit.ts',
+      '[route].ts',
       'bit',
-      'board.ts',
-      'client-error.ts',
       'cron',
-      'health.ts',
       'kit',
-      'kit-price.ts',
-      'production-kit-checkout.ts',
       'production-kit-download.ts',
-      'rescue-audit.ts',
-      'review.ts',
-      'scan.ts',
-      'scorecard.ts',
       'stripe-webhook.ts',
-      'teardown-report.ts',
     ]);
   });
 
@@ -160,7 +153,19 @@ describe('api/ directory: deployable files only', () => {
     expect(entries.filter((f) => /\.test\.[cm]?[jt]sx?$/.test(f))).toEqual([]);
   });
 
-  it('has only the one dispatcher in api/kit', () => {
-    expect(readdirSync(join(ROOT, 'api', 'kit'))).toEqual(['[action].ts']);
+  it.each([
+    ['kit', '[action].ts'],
+    ['bit', '[action].ts'],
+    ['cron', '[job].ts'],
+  ])('has only the one dispatcher in api/%s', (dir, file) => {
+    expect(readdirSync(join(ROOT, 'api', dir))).toEqual([file]);
+  });
+
+  // The Hobby plan refuses a deployment with more than 12 functions, after the
+  // build has passed, with nothing in the build log to say why.
+  it('stays within the Hobby plan function limit', () => {
+    const count = (dir: string): number =>
+      readdirSync(dir, { withFileTypes: true }).reduce((n, e) => n + (e.isDirectory() ? count(join(dir, e.name)) : 1), 0);
+    expect(count(join(ROOT, 'api'))).toBeLessThanOrEqual(12);
   });
 });

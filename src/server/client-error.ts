@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { parseClientError } from '../src/lib/monitoring/validate.js';
-import { withErrorLog } from '../src/lib/monitoring/with-error-log.js';
-import { clientIp, createRateLimiter } from '../src/lib/scan/rate-limit.js';
+import { parseClientError } from '../lib/monitoring/validate.js';
+import { withErrorLog } from '../lib/monitoring/with-error-log.js';
+import { clientIp, createRateLimiter } from '../lib/scan/rate-limit.js';
 
 /**
  * POST /api/client-error

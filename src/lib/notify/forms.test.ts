@@ -10,8 +10,8 @@ vi.mock('resend', () => ({
 }));
 vi.mock('../tickets/store.js', async (orig) => ({ ...(await orig<typeof import('../tickets/store')>()), ticketStore: () => holder.store }));
 
-import auditHandler from '../../../api/audit';
-import rescueHandler from '../../../api/rescue-audit';
+import auditHandler from '../../server/audit';
+import rescueHandler from '../../server/rescue-audit';
 import { recordFormTicket } from './ticket';
 
 const call = async (handler: typeof auditHandler, body: unknown) => {

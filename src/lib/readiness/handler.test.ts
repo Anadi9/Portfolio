@@ -5,7 +5,7 @@ const { runCheck } = vi.hoisted(() => ({ runCheck: vi.fn() }));
 vi.mock('./check.js', () => ({ runCheck }));
 vi.mock('./check', () => ({ runCheck }));
 
-import handler from '../../../api/ai-readiness';
+import handler from '../../server/ai-readiness';
 
 type FakeRes = { statusCode?: number; headers: Record<string, string>; body?: unknown; status: (c: number) => FakeRes; json: (b: unknown) => FakeRes; setHeader: (k: string, v: string) => FakeRes };
 const makeRes = () => {

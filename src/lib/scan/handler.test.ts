@@ -2,10 +2,10 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import handler from '../../../api/scan';
+import handler from '../../server/scan';
 
 /**
- * `api/scan.ts` against a fake Supabase, via a stubbed global `fetch`. Lives
+ * `src/server/scan.ts` against a fake Supabase, via a stubbed global `fetch`. Lives
  * here rather than in `api/` because everything under `api/` deploys.
  */
 
@@ -189,7 +189,7 @@ describe('api/scan', () => {
  */
 describe('api/scan import graph', () => {
   const ROOT = join(import.meta.dirname, '../../..');
-  it.each(['api/scan.ts', 'src/lib/scan/validate.ts', 'src/lib/scan/report.ts', 'src/lib/scan/scan.ts', 'src/lib/scan/rate-limit.ts'])(
+  it.each(['src/server/scan.ts', 'src/lib/scan/validate.ts', 'src/lib/scan/report.ts', 'src/lib/scan/scan.ts', 'src/lib/scan/rate-limit.ts'])(
     '%s gives every relative import a .js extension',
     (file) => {
       const source = readFileSync(join(ROOT, file), 'utf8');

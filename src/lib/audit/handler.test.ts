@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import handler from '../../../api/audit';
+import handler from '../../server/audit';
 
 /** `api/audit.ts`, with the same fakes and mocked `resend` as the rescue handler's tests. */
 

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import { PHOTO_BUCKET, PHOTO_TYPES, parseReview, renderReviewEmail, toPublicReview, type ReviewRow } from '../src/lib/review/intake.js';
+import { PHOTO_BUCKET, PHOTO_TYPES, parseReview, renderReviewEmail, toPublicReview, type ReviewRow } from '../lib/review/intake.js';
 
 /**
  * GET /api/review: the approved reviews, newest first, for `<Testimonials />`.

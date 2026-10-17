@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { QUESTIONS } from './questions';
-import handler from '../../../api/teardown-report';
+import handler from '../../server/teardown-report';
 
 /**
  * `api/teardown-report.ts` is the only server-side code and the only public

@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
-import { liveDeps, submitTicket } from '../../src/lib/notify/ticket.js';
-import { withErrorLog } from '../../src/lib/monitoring/with-error-log.js';
-import { clientIp, createRateLimiter } from '../../src/lib/scan/rate-limit.js';
-import { ticketStore } from '../../src/lib/tickets/store.js';
-import { NewTicketSchema } from '../../src/lib/tickets/types.js';
-import { BUILD_STACKS } from '../../src/lib/bit/stacks.js';
+import { liveDeps, submitTicket } from '../../lib/notify/ticket.js';
+import { withErrorLog } from '../../lib/monitoring/with-error-log.js';
+import { clientIp, createRateLimiter } from '../../lib/scan/rate-limit.js';
+import { ticketStore } from '../../lib/tickets/store.js';
+import { NewTicketSchema } from '../../lib/tickets/types.js';
+import { BUILD_STACKS } from '../../lib/bit/stacks.js';
 
 /**
  * POST /api/bit/ticket

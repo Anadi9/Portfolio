@@ -46,23 +46,24 @@ export function vercelApiDev(): Plugin {
 }
 
 /**
- * `/api/scan` → `api/scan.ts`; `/api/kit/prices` → `api/kit/prices.ts`, or
- * `api/kit/[action].ts` with `action=prices`, the way Vercel resolves a
- * dynamic segment. One folder deep is all the site uses.
+ * `/api/scan` → `api/scan.ts`, or `api/[route].ts` with `route=scan`;
+ * `/api/kit/prices` → `api/kit/prices.ts`, or `api/kit/[action].ts` with
+ * `action=prices`, the way Vercel resolves a dynamic segment. One folder deep
+ * is all the site uses.
  */
 function resolveFunction(apiDir: string, pathname: string): { file: string; params: Record<string, string> } | null {
   const m = /^\/api\/([\w-]+)(?:\/([\w-]+))?\/?$/.exec(pathname);
   if (!m) return null;
   const [, first, second] = m;
-  if (!second) {
-    const file = join(apiDir, `${first}.ts`);
-    return existsSync(file) ? { file, params: {} } : null;
-  }
-  const exact = join(apiDir, first, `${second}.ts`);
+  return second ? resolveIn(join(apiDir, first), second) : resolveIn(apiDir, first);
+}
+
+/** `<dir>/<name>.ts` if it exists, else the folder's `[param].ts` with `param=name`. */
+function resolveIn(dir: string, name: string): { file: string; params: Record<string, string> } | null {
+  const exact = join(dir, `${name}.ts`);
   if (existsSync(exact)) return { file: exact, params: {} };
-  const dir = join(apiDir, first);
   const dynamic = existsSync(dir) ? readdirSync(dir).find((f) => /^\[\w+\]\.ts$/.test(f)) : undefined;
-  return dynamic ? { file: join(dir, dynamic), params: { [dynamic.slice(1, -4)]: second } } : null;
+  return dynamic ? { file: join(dir, dynamic), params: { [dynamic.slice(1, -4)]: name } } : null;
 }
 
 function helpers(res: ServerResponse) {
