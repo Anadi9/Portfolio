@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { draftFirstReply, hasPlaceholder, VIDEO_PLACEHOLDER, PRICE_PLACEHOLDER } from './draft';
+import { draftFirstReply, hasPlaceholder, joinDraft, splitDraft, VIDEO_PLACEHOLDER, PRICE_PLACEHOLDER } from './draft';
 import type { Brief } from './brief';
 
 const brief: Brief = {
@@ -47,5 +47,15 @@ describe('draftFirstReply', () => {
     expect(hasPlaceholder(`x ${VIDEO_PLACEHOLDER}`)).toBe(true);
     expect(hasPlaceholder(`x ${PRICE_PLACEHOLDER}`)).toBe(true);
     expect(hasPlaceholder('All filled in. See [1].')).toBe(false);
+  });
+});
+
+describe('splitDraft', () => {
+  it('round-trips subject and body', () => {
+    const stored = joinDraft({ subject: 'Hello there', body: 'Hi,\n\nBody' });
+    expect(splitDraft(stored)).toEqual({ subject: 'Hello there', body: 'Hi,\n\nBody' });
+  });
+  it('treats a body with no subject line as body only', () => {
+    expect(splitDraft('Hi,\nBody')).toEqual({ subject: '', body: 'Hi,\nBody' });
   });
 });

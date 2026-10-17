@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
 import { liveDeps, submitTicket } from '../../lib/notify/ticket.js';
+import { processInBackground } from '../../lib/brief/background.js';
 import { withErrorLog } from '../../lib/monitoring/with-error-log.js';
 import { clientIp, createRateLimiter } from '../../lib/scan/rate-limit.js';
 import { ticketStore } from '../../lib/tickets/store.js';
@@ -12,8 +13,9 @@ import { BUILD_STACKS } from '../../lib/bit/stacks.js';
  *
  * Bit's chat form. Saves a ticket (client upserted by email), queues the
  * admin email, the visitor's receipt and the WhatsApp alert, and sends those
- * rows now. Once the ticket is saved, a failed notification never fails the
- * request; the daily cron retries it.
+ * rows now, then briefs the ticket in the background. Once the ticket is
+ * saved, a failed notification never fails the request; the daily cron
+ * retries it.
  *
  * 200 { number } | 400 { error, field } | 405 | 429 | 501 { error: 'tickets not configured' }
  */
@@ -72,6 +74,7 @@ export default withErrorLog('bit-ticket', async (req: VercelRequest, res: Vercel
     console.error('[bit-ticket] save failed', err);
     return res.status(500).json({ error: 'could not save the ticket' });
   }
+  processInBackground(store, ticket.id);
   return res.status(200).json({ number: ticket.number });
 });
 

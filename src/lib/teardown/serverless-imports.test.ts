@@ -97,6 +97,13 @@ const GRAPH = [
   'src/lib/bit/route.ts',
   'src/data/bitsQuestFacts.ts',
   'src/data/promises.ts',
+  'src/lib/notify/live.ts',
+  'src/lib/feed/types.ts',
+  'src/lib/brief/background.ts',
+  'src/lib/brief/process.ts',
+  'src/lib/brief/scan.ts',
+  'src/lib/brief/brief.ts',
+  'src/lib/brief/draft.ts',
 ];
 
 /** Relative specifiers only: bare ones are resolved from node_modules, not by path. */

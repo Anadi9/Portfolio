@@ -7,7 +7,7 @@ const base = { email: 'Ana@Example.com', kind: 'first_bug', answers: { q: 'a' },
 
 describe('policyFor', () => {
   it('sends transactional kinds automatically', () => {
-    for (const k of ['ticket_receipt', 'new_ticket_admin', 'stage_change']) expect(policyFor(k)).toBe('auto');
+    for (const k of ['ticket_receipt', 'new_ticket_admin', 'stage_change', 'brief_ready']) expect(policyFor(k)).toBe('auto');
   });
   it('drafts anything about price, scope, findings, fit or follow-up', () => {
     for (const k of ['followup', 'quote', 'findings', 'fit']) expect(policyFor(k)).toBe('draft');
@@ -15,7 +15,7 @@ describe('policyFor', () => {
   it('drafts unknown kinds, including prototype keys', () => {
     expect(policyFor('mystery')).toBe('draft');
     expect(policyFor('toString')).toBe('draft');
-    expect(Object.keys(MESSAGE_POLICY)).toHaveLength(7);
+    expect(Object.keys(MESSAGE_POLICY)).toHaveLength(8);
   });
 });
 

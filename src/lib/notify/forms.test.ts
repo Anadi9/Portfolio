@@ -2,7 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { memoryTicketStore } from '../tickets/memory';
 
-const { sendMock, holder } = vi.hoisted(() => ({ sendMock: vi.fn(), holder: { store: null as unknown } }));
+const { sendMock, holder, background } = vi.hoisted(() => ({ sendMock: vi.fn(), holder: { store: null as unknown }, background: vi.fn() }));
+vi.mock('../brief/background.js', () => ({ processInBackground: background }));
 vi.mock('resend', () => ({
   Resend: class {
     emails = { send: sendMock };
@@ -147,5 +148,14 @@ describe('audit forms create a best-effort ticket', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe('form tickets in the background', () => {
+  it('starts the brief for a form ticket', async () => {
+    background.mockClear();
+    const number = await recordFormTicket({ email: 'f@example.com', kind: 'first_bug', answers: {}, source: 'app_form', appUrl: 'a.example' });
+    expect(number).toMatch(/^A-/);
+    expect(background).toHaveBeenCalledWith(mem.store, mem.tickets.at(-1)!.id);
   });
 });

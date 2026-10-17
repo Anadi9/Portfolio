@@ -57,3 +57,11 @@ export function draftFirstReply(input: {
   ].join('\n');
   return { subject: `Your request ${input.number}: a few questions`, body: body.slice(0, MAX_BODY) };
 }
+
+/** `messages` has no subject column, so a stored draft is `Subject: …` + blank line + body. */
+export const joinDraft = (d: { subject: string; body: string }) => `Subject: ${d.subject.replace(/\s+/g, ' ').trim()}\n\n${d.body}`;
+
+export function splitDraft(stored: string): { subject: string; body: string } {
+  const m = /^Subject: (.*)\n\n([\s\S]*)$/.exec(stored);
+  return m ? { subject: m[1], body: m[2] } : { subject: '', body: stored };
+}

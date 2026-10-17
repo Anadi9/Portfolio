@@ -9,6 +9,7 @@ export const MESSAGE_POLICY: Record<string, SendPolicy> = {
   ticket_receipt: 'auto',
   new_ticket_admin: 'auto',
   stage_change: 'auto',
+  brief_ready: 'auto',
   followup: 'draft',
   quote: 'draft',
   findings: 'draft',

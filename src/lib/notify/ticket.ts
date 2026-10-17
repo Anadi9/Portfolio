@@ -1,19 +1,12 @@
-import { Resend } from 'resend';
 import { ticketStore, type TicketStore } from '../tickets/store.js';
 import type { NewNotification, NewTicket, Ticket } from '../tickets/types.js';
+import { processInBackground } from '../brief/background.js';
 import { dispatch, type NotifyDeps } from './dispatch.js';
+import { kindLabel } from './email.js';
+import { liveDeps } from './live.js';
 import { withTimeout } from './timeout.js';
-import type { FetchLike } from './whatsapp.js';
 
-/** Real dependencies: Resend only if keyed, global fetch resolved at call time. */
-export function liveDeps(env: Record<string, string | undefined> = process.env): NotifyDeps {
-  const key = env.RESEND_API_KEY;
-  return {
-    resend: key ? (new Resend(key) as unknown as NotifyDeps['resend']) : null,
-    fetch: ((url, init) => fetch(url, init)) as FetchLike,
-    env,
-  };
-}
+export { liveDeps };
 
 export type NotifyPlan = {
   /** Email to Anadi with the full ticket. */
@@ -66,6 +59,15 @@ async function notifyFor(store: TicketStore, ticket: Ticket, input: NewTicket, p
       boardOptIn: input.boardOptIn ?? false,
       answers: input.answers,
     };
+    await store
+      .postFeed({
+        ticketId: ticket.id,
+        bot: 'bit',
+        kind: 'new_ticket',
+        title: `${ticket.number} · ${kindLabel(ticket.kind)} · ${summaryOf(input)}`,
+        action: 'open',
+      })
+      .catch((err) => console.error('[notify] could not post the new-ticket card', ticket.number, err));
     const rows: NewNotification[] = [];
     if (plan.admin) rows.push({ ticketId: ticket.id, channel: 'email', template: 'new_ticket_admin', payload: base });
     if (plan.receipt) {
@@ -114,7 +116,9 @@ export async function recordFormTicket(input: NewTicket, timeoutMs = 2500): Prom
     (async () => {
       const store = ticketStore();
       if (!store) return null;
-      return submitTicket(store, fit, { admin: false, receipt: false, whatsapp: true }, liveDeps(), Math.max(500, timeoutMs - 1000));
+      const ticket = await submitTicket(store, fit, { admin: false, receipt: false, whatsapp: true }, liveDeps(), Math.max(500, timeoutMs - 1000));
+      processInBackground(store, ticket.id);
+      return ticket;
     })(),
     timeoutMs,
     'form ticket',

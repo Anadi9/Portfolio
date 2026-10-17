@@ -3,10 +3,15 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { memoryTicketStore } from '../tickets/memory';
 import type { TicketStore } from '../tickets/store';
 
-const { sendMock, holder } = vi.hoisted(() => ({
+const { sendMock, holder, background, processMock } = vi.hoisted(() => ({
   sendMock: vi.fn(),
   holder: { store: null as unknown },
+  background: vi.fn(),
+  processMock: vi.fn(),
 }));
+
+vi.mock('../brief/background.js', () => ({ processInBackground: background }));
+vi.mock('../brief/process.js', () => ({ processTicket: processMock }));
 
 vi.mock('resend', () => ({
   Resend: class {
@@ -345,5 +350,34 @@ describe('admin ticket email', () => {
     const ok = renderNewTicketAdmin({ number: 'A-1', kind: 'audit', whatsapp: '+917466914279' }).html;
     expect(ok).toContain('+917466914279');
     expect(ok).not.toContain('no country code');
+  });
+});
+
+describe('ticket background work', () => {
+  beforeEach(() => {
+    process.env.CRON_SECRET = 's3cret';
+  });
+  afterEach(() => {
+    delete process.env.CRON_SECRET;
+  });
+
+  it('posts a new-ticket card and starts the brief in the background', async () => {
+    background.mockClear();
+    const res = await post(valid);
+    expect(res.statusCode).toBe(200);
+    const t = mem.tickets.at(-1)!;
+    expect(background).toHaveBeenCalledWith(mem.store, t.id);
+    expect(mem.feed.at(-1)).toMatchObject({ bot: 'bit', kind: 'new_ticket', action: 'open', ticketId: t.id });
+    expect(mem.feed.at(-1)!.title).toContain(t.number);
+    expect(mem.feed.at(-1)!.title).toContain('myapp.lovable.app');
+  });
+
+  it('the cron backfills up to 5 tickets that have no brief', async () => {
+    for (let i = 0; i < 7; i++) await mem.store.createTicket({ email: `x${i}@example.com`, kind: 'audit', answers: {}, source: 'bit' });
+    processMock.mockReset();
+    processMock.mockResolvedValue('done');
+    const res = await cron('Bearer s3cret');
+    expect(res.body).toMatchObject({ ok: true, briefed: 5 });
+    expect(processMock).toHaveBeenCalledTimes(5);
   });
 });
