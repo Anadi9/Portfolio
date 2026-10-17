@@ -62,5 +62,6 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /kit/
+Disallow: /admin
 
 Sitemap: https://anadithakur.in/sitemap.xml

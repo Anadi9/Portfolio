@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { SPRITES, type SpriteName } from './sprites';
+import { c } from './tokens';
 
 /**
  * Bit, the site's assistant, and the pixel icon set, drawn from
@@ -48,12 +49,15 @@ function Sprite({
   label,
   className,
   style,
+  swap,
 }: {
   name: SpriteName;
   size: number;
   label?: string;
   className?: string;
   style?: CSSProperties;
+  /** Replace one fill with another (Coach is Bit in green). */
+  swap?: [from: string, to: string];
 }) {
   const { size: grid, paths } = SPRITES[name];
   const a11y = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true };
@@ -69,7 +73,7 @@ function Sprite({
       xmlns="http://www.w3.org/2000/svg"
     >
       {paths.map(([fill, d], i) => (
-        <path key={i} d={d} fill={fill} />
+        <path key={i} d={d} fill={swap && fill.toLowerCase() === swap[0].toLowerCase() ? swap[1] : fill} />
       ))}
     </svg>
   );
@@ -100,6 +104,17 @@ export function Bit({
       style={style}
     />
   );
+}
+
+/** Coach's body colour: the site's status green (`signal`). */
+export const COACH_GREEN = c.signal;
+
+/**
+ * Coach, the mentor that talks only to Anadi in `/admin`: the same sprite as
+ * Bit with the red body in green, so the two are never confused.
+ */
+export function Coach({ pose = 'calm', size = 72, label, style }: { pose?: BitPose; size?: number; label?: string; style?: CSSProperties }) {
+  return <Sprite name={BIT_POSES[pose]} size={size} label={label} style={style} swap={[c.shell, COACH_GREEN]} />;
 }
 
 export function PixelIcon({ name, size = 27, label, style }: { name: IconName; size?: number; label?: string; style?: CSSProperties }) {

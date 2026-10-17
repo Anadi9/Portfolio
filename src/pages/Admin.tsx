@@ -1,0 +1,579 @@
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
+import { Seo } from '@/components/Seo';
+import { Bit, Coach } from '@/components/brand/Bit';
+import { admin } from '@/lib/admin/client';
+import { age, parseHash, snoozeHours, timeLeft, type SnoozeChoice, type Tone } from '@/lib/admin/view';
+import { hasPlaceholder, splitDraft } from '@/lib/brief/draft';
+import { ANSWER_LABEL, kindLabel } from '@/lib/notify/email';
+import type { FeedItem } from '@/lib/feed/types';
+import { TICKET_STAGES, type Message, type TicketDetail, type TicketRow, type TicketStage } from '@/lib/tickets/types';
+
+/**
+ * `/admin`: Anadi's command centre. The prerendered HTML is an empty shell
+ * (noindex, not in the sitemap); everything else comes from `/api/admin`
+ * after login, so no ticket data ever sits in a static file.
+ *
+ * Opens on the feed: one card per thing that needs Anadi, red Bit for client
+ * news, green Coach for deadlines (Phase 4). Done and snoozed cards leave. The
+ * Tickets tab has the list with the 24 h clock and the ticket view.
+ */
+
+const STAGE_LABEL: Record<TicketStage, string> = {
+  inbox: 'Enquiry',
+  bug_review: 'First-bug video',
+  audit: 'Audit',
+  fixing: 'Fix',
+  live: 'Live',
+  closed: 'Done',
+};
+
+const TONE: Record<Tone, string> = { ok: 'var(--bq-muted)', warn: 'var(--bq-brand)', late: 'var(--bq-brand)' };
+
+const box: CSSProperties = { border: 'var(--bq-border-thin)', background: 'var(--bq-panel)', padding: 16, display: 'grid', gap: 10 };
+const btn: CSSProperties = {
+  font: '600 14px/1 var(--bq-font-body)',
+  minHeight: 40,
+  padding: '0 14px',
+  border: 'var(--bq-border-thin)',
+  background: 'var(--bq-panel)',
+  color: 'var(--bq-ink)',
+  cursor: 'pointer',
+};
+const primary: CSSProperties = { ...btn, background: 'var(--bq-brand)', color: 'var(--bq-brand-text)', borderColor: 'var(--bq-brand)' };
+const small: CSSProperties = { margin: 0, font: '400 13px/1.4 var(--bq-font-body)', color: 'var(--bq-muted)' };
+const h2: CSSProperties = { margin: 0, font: '600 18px/1.3 var(--bq-font-body)' };
+
+type Auth = 'checking' | 'out' | 'in';
+type View = { tab: 'feed' } | { tab: 'tickets' } | { tab: 'ticket'; id: string; focus?: string };
+
+export default function Admin() {
+  const [auth, setAuth] = useState<Auth>('checking');
+  const [view, setView] = useState<View>({ tab: 'feed' });
+  const [error, setError] = useState<string | null>(null);
+
+  const guard = useCallback(<T,>(r: { ok: boolean; auth: boolean; error?: string; data?: T }) => {
+    if (!r.auth) setAuth('out');
+    else if (!r.ok) setError(r.error ?? 'Something went wrong.');
+    return r.ok ? (r.data as T) : null;
+  }, []);
+
+  useEffect(() => {
+    admin.feed().then((r) => setAuth(r.auth ? 'in' : 'out'));
+  }, []);
+
+  return (
+    <div className="bq-page" style={{ minHeight: '100vh', color: 'var(--bq-ink)' }}>
+      <Seo title="Command centre" description="Private." path="/admin" type="website" robots="noindex, nofollow" />
+      <div style={{ maxWidth: 880, margin: '0 auto', padding: '24px var(--bq-gutter) 64px', display: 'grid', gap: 20 }}>
+        <header style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <Bit pose="calm" size={36} />
+          <Coach pose="calm" size={36} />
+          <h1 style={{ margin: 0, font: '400 34px/1 var(--bq-font-display)', textTransform: 'uppercase', flex: 1 }}>Command centre</h1>
+          {auth === 'in' && (
+            <button
+              type="button"
+              style={btn}
+              onClick={async () => {
+                await admin.logout();
+                setAuth('out');
+              }}
+            >
+              Log out
+            </button>
+          )}
+        </header>
+
+        {error && (
+          <p role="alert" style={{ ...box, margin: 0, borderColor: 'var(--bq-brand)' }}>
+            {error}{' '}
+            <button type="button" style={{ ...btn, minHeight: 32 }} onClick={() => setError(null)}>
+              Dismiss
+            </button>
+          </p>
+        )}
+
+        {auth === 'checking' && <p style={small}>Loading…</p>}
+        {auth === 'out' && <Login onIn={() => setAuth('in')} />}
+        {auth === 'in' && (
+          <>
+            <nav aria-label="Command centre" style={{ display: 'flex', gap: 8 }}>
+              <TabButton active={view.tab === 'feed'} onClick={() => setView({ tab: 'feed' })}>
+                Feed
+              </TabButton>
+              <TabButton active={view.tab !== 'feed'} onClick={() => setView({ tab: 'tickets' })}>
+                Tickets
+              </TabButton>
+            </nav>
+            {view.tab === 'feed' && <Feed guard={guard} open={(id, focus) => setView({ tab: 'ticket', id, focus })} />}
+            {view.tab === 'tickets' && <Tickets guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
+            {view.tab === 'ticket' && <TicketView id={view.id} focus={view.focus} guard={guard} back={() => setView({ tab: 'tickets' })} />}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type Guard = <T>(r: { ok: boolean; auth: boolean; error?: string; data?: T }) => T | null;
+
+const TabButton = ({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) => (
+  <button type="button" aria-pressed={active} onClick={onClick} style={active ? { ...btn, background: 'var(--bq-ink)', color: 'var(--bq-bg)' } : btn}>
+    {children}
+  </button>
+);
+
+function Login({ onIn }: { onIn: () => void }) {
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const r = await admin.login(password);
+    setBusy(false);
+    if (r.ok) onIn();
+    else setMsg('error' in r && r.error === 'too many attempts' ? 'Too many attempts. Wait a minute.' : 'Wrong password.');
+  };
+  return (
+    <form onSubmit={submit} style={{ ...box, maxWidth: 360 }}>
+      <label htmlFor="admin-pw" style={h2}>
+        Password
+      </label>
+      <input
+        id="admin-pw"
+        type="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        style={{ font: '16px var(--bq-font-body)', minHeight: 44, padding: '0 10px', border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)' }}
+      />
+      {msg && (
+        <p role="alert" style={{ ...small, color: 'var(--bq-brand)' }}>
+          {msg}
+        </p>
+      )}
+      <button type="submit" style={primary} disabled={busy || !password}>
+        {busy ? 'Checking…' : 'Log in'}
+      </button>
+    </form>
+  );
+}
+
+function Feed({ guard, open }: { guard: Guard; open: (ticketId: string, focus?: string) => void }) {
+  const [items, setItems] = useState<FeedItem[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [highlight, setHighlight] = useState<string | undefined>();
+
+  const load = useCallback(async () => {
+    const d = guard(await admin.feed());
+    setFailed(!d);
+    if (d) setItems(d.items);
+  }, [guard]);
+
+  useEffect(() => {
+    load();
+    const onFocus = () => load();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [load]);
+
+  useEffect(() => {
+    if (!items) return;
+    const { card } = parseHash(window.location.hash);
+    if (!card) return;
+    setHighlight(card);
+    document.getElementById(`card-${card}`)?.scrollIntoView({ block: 'center' });
+  }, [items]);
+
+  const drop = (id: string) => setItems((xs) => xs?.filter((x) => x.id !== id) ?? null);
+
+  if (!items)
+    return failed ? (
+      <button type="button" style={{ ...btn, justifySelf: 'start' }} onClick={load}>
+        Couldn’t load the feed. Retry
+      </button>
+    ) : (
+      <p style={small}>Loading the feed…</p>
+    );
+  if (!items.length)
+    return (
+      <div style={{ ...box, justifyItems: 'center', textAlign: 'center', padding: 32 }}>
+        <Bit pose="happy" size={54} />
+        <p style={h2}>Nothing needs you.</p>
+      </div>
+    );
+
+  return (
+    <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 12 }}>
+      {items.map((f) => (
+        <li key={f.id} id={`card-${f.id}`}>
+          <Card
+            item={f}
+            highlight={f.id === highlight}
+            onOpen={() => f.ticketId && open(f.ticketId, f.action === 'approve_send' ? (f.ref ?? undefined) : undefined)}
+            onDone={async () => {
+              if (guard(await admin.done(f.id))) drop(f.id);
+            }}
+            onSnooze={async (choice) => {
+              if (guard(await admin.snooze(f.id, snoozeHours(choice)))) drop(f.id);
+            }}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Card({
+  item,
+  highlight,
+  onOpen,
+  onDone,
+  onSnooze,
+}: {
+  item: FeedItem;
+  highlight: boolean;
+  onOpen: () => void;
+  onDone: () => void;
+  onSnooze: (c: SnoozeChoice) => void;
+}) {
+  const main =
+    item.action === 'approve_send' ? (
+      <button type="button" style={primary} onClick={onOpen} disabled={!item.ticketId}>
+        Approve &amp; send
+      </button>
+    ) : item.action === 'open' ? (
+      <button type="button" style={primary} onClick={onOpen} disabled={!item.ticketId}>
+        Open
+      </button>
+    ) : null;
+  return (
+    <article
+      style={{
+        ...box,
+        gridTemplateColumns: 'auto 1fr',
+        alignItems: 'start',
+        borderColor: item.urgent ? 'var(--bq-brand)' : undefined,
+        boxShadow: highlight ? 'var(--bq-shadow-brand)' : undefined,
+      }}
+    >
+      {item.bot === 'coach' ? <Coach pose="calm" size={36} label="Coach" /> : <Bit pose="calm" size={36} label="Bit" />}
+      <div style={{ display: 'grid', gap: 8, minWidth: 0 }}>
+        <p style={{ ...h2, overflowWrap: 'anywhere' }}>{item.title}</p>
+        {item.body && <p style={{ ...small, color: 'var(--bq-body-text)' }}>{item.body}</p>}
+        <p style={small}>
+          {item.urgent ? 'Urgent · ' : ''}
+          {age(item.createdAt)}
+        </p>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {main}
+          {item.action === 'approve_send' && (
+            <button type="button" style={btn} onClick={onOpen}>
+              Edit
+            </button>
+          )}
+          <label style={{ display: 'inline-flex' }}>
+            <span className="sr-only" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+              Snooze
+            </span>
+            <select
+              aria-label="Snooze"
+              defaultValue=""
+              onChange={(e) => e.target.value && onSnooze(e.target.value as SnoozeChoice)}
+              style={{ ...btn, appearance: 'auto' }}
+            >
+              <option value="" disabled>
+                Snooze…
+              </option>
+              <option value="3h">3 hours</option>
+              <option value="tomorrow">Tomorrow 09:00</option>
+              <option value="week">1 week</option>
+            </select>
+          </label>
+          <button type="button" style={btn} onClick={onDone}>
+            Mark done
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function Tickets({ guard, open }: { guard: Guard; open: (id: string) => void }) {
+  const [stage, setStage] = useState<TicketStage | ''>('');
+  const [rows, setRows] = useState<TicketRow[] | null>(null);
+
+  useEffect(() => {
+    setRows(null);
+    admin.list(stage || undefined).then((r) => {
+      const d = guard(r);
+      if (!d) return;
+      setRows(d.tickets);
+      const { ticket } = parseHash(window.location.hash);
+      const hit = ticket && d.tickets.find((t) => t.number === ticket);
+      if (hit) open(hit.id);
+    });
+  }, [stage, guard, open]);
+
+  return (
+    <section style={{ display: 'grid', gap: 12 }}>
+      <label style={{ display: 'flex', gap: 8, alignItems: 'center', ...small }}>
+        Stage
+        <select value={stage} onChange={(e) => setStage(e.target.value as TicketStage | '')} style={{ ...btn, appearance: 'auto' }}>
+          <option value="">All</option>
+          {TICKET_STAGES.map((s) => (
+            <option key={s} value={s}>
+              {STAGE_LABEL[s]}
+            </option>
+          ))}
+        </select>
+      </label>
+      {!rows && <p style={small}>Loading tickets…</p>}
+      {rows && !rows.length && <p style={small}>No tickets.</p>}
+      <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
+        {rows?.map((t) => {
+          const clock = t.kind === 'first_bug' && !t.firstReplySentAt ? timeLeft(t.createdAt) : null;
+          return (
+            <li key={t.id}>
+              <button type="button" onClick={() => open(t.id)} style={{ ...box, width: '100%', textAlign: 'left', cursor: 'pointer', color: 'inherit', font: 'inherit' }}>
+                <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'baseline' }}>
+                  <b style={{ font: '600 16px var(--bq-font-body)' }}>{t.number}</b>
+                  <span style={small}>{kindLabel(t.kind)}</span>
+                  <span style={small}>· {STAGE_LABEL[t.stage]}</span>
+                  {t.hasBrief && <span style={small}>· brief</span>}
+                  {clock && <span style={{ ...small, color: TONE[clock.tone], fontWeight: 600 }}>· {clock.label}</span>}
+                </span>
+                <span style={{ ...small, overflowWrap: 'anywhere' }}>
+                  {t.clientName ?? t.clientEmail}
+                  {t.appUrl ? ` · ${t.appUrl}` : ''}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+const asText = (v: unknown) => (typeof v === 'string' ? v : Array.isArray(v) ? v.join('; ') : v == null ? '' : JSON.stringify(v));
+const hasCountryCode = (n: string) => n.trim().startsWith('+');
+
+function TicketView({ id, focus, guard, back }: { id: string; focus?: string; guard: Guard; back: () => void }) {
+  const [t, setT] = useState<TicketDetail | null>(null);
+  const load = useCallback(async () => {
+    const d = guard(await admin.get(id));
+    if (d) setT(d.ticket);
+  }, [id, guard]);
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (!t) return <p style={small}>Loading ticket…</p>;
+  const brief = (t.brief ?? {}) as Record<string, unknown>;
+  const scan = (brief.scan ?? null) as { ok?: boolean; error?: string; readiness?: { score: number; topFixes: { label: string; fix?: string }[] }; headers?: { missing: string[] } | null } | null;
+  const clock = t.kind === 'first_bug' && !t.messages.some((m) => m.status === 'sent') ? timeLeft(t.createdAt) : null;
+  const drafts = t.messages.filter((m) => m.direction === 'out');
+
+  return (
+    <section style={{ display: 'grid', gap: 16 }}>
+      <button type="button" style={{ ...btn, justifySelf: 'start' }} onClick={back}>
+        ← Tickets
+      </button>
+      <div style={box}>
+        <h2 style={{ ...h2, fontSize: 24 }}>
+          {t.number} · {kindLabel(t.kind)}
+        </h2>
+        {clock && <p style={{ ...small, color: TONE[clock.tone], fontWeight: 600 }}>First reply: {clock.label}</p>}
+        <p style={{ ...small, overflowWrap: 'anywhere' }}>
+          {t.client.name ? `${t.client.name} · ` : ''}
+          <a href={`mailto:${t.client.email}`}>{t.client.email}</a>
+          {t.client.whatsapp &&
+            (hasCountryCode(t.client.whatsapp) ? (
+              <>
+                {' · '}
+                <a href={`https://wa.me/${t.client.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
+                  WhatsApp
+                </a>
+              </>
+            ) : (
+              ` · ${t.client.whatsapp} (no country code)`
+            ))}
+          {t.appUrl ? ` · ${t.appUrl}` : ''}
+        </p>
+        <StagePicker ticket={t} guard={guard} onChanged={load} />
+      </div>
+
+      {drafts.map((m) => (
+        <DraftEditor key={m.id} ticketId={t.id} message={m} autoFocus={m.id === focus} guard={guard} onSent={load} />
+      ))}
+
+      {t.brief && (
+        <div style={box}>
+          <h2 style={h2}>Brief {brief.source === 'fallback' ? '(no AI)' : ''}</h2>
+          {(['summary', 'situation', 'topRisk', 'approach', 'likelyPackage'] as const).map((k) =>
+            asText(brief[k]) ? (
+              <p key={k} style={{ margin: 0 }}>
+                <b>{BRIEF_LABEL[k]}:</b> {asText(brief[k])}
+              </p>
+            ) : null,
+          )}
+          {(['risks', 'redFlags', 'missingInfo', 'questions'] as const).map((k) =>
+            Array.isArray(brief[k]) && (brief[k] as unknown[]).length ? (
+              <div key={k}>
+                <b>{BRIEF_LABEL[k]}</b>
+                <ul style={{ margin: '4px 0 0', paddingLeft: 20 }}>
+                  {(brief[k] as string[]).map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null,
+          )}
+          {scan && (
+            <p style={small}>
+              {scan.ok && scan.readiness
+                ? `Readiness ${scan.readiness.score}/100. ${scan.readiness.topFixes.map((f) => f.label).join(' · ')}${scan.headers ? `. Missing headers: ${scan.headers.missing.join(', ') || 'none'}` : ''}`
+                : `Not scanned: ${scan.error ?? 'unknown'}`}
+            </p>
+          )}
+        </div>
+      )}
+
+      <div style={box}>
+        <h2 style={h2}>Answers</h2>
+        {Object.keys(t.answers).length === 0 && <p style={small}>None.</p>}
+        <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'minmax(100px, auto) 1fr', gap: '4px 12px' }}>
+          {Object.entries(t.answers).map(([k, v]) => (
+            <Pair key={k} k={ANSWER_LABEL[k] ?? k} v={asText(v)} />
+          ))}
+          {t.stack && <Pair k="Stack" v={t.stack} />}
+          {t.budget && <Pair k="Budget" v={t.budget} />}
+        </dl>
+      </div>
+
+      <div style={box}>
+        <h2 style={h2}>Timeline</h2>
+        <ol style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 4 }}>
+          {t.events.map((e, i) => (
+            <li key={i} style={small}>
+              {new Date(e.at).toLocaleString('en-GB', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })} · {e.type}
+              {e.type === 'stage' ? ` → ${STAGE_LABEL[(e.data as { to: TicketStage }).to] ?? ''}` : ''}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+const BRIEF_LABEL: Record<string, string> = {
+  summary: 'Summary',
+  situation: 'Situation',
+  topRisk: 'Top risk',
+  approach: 'Approach',
+  likelyPackage: 'Likely package',
+  risks: 'Risks',
+  redFlags: 'Red flags',
+  missingInfo: 'Missing information',
+  questions: 'Questions to ask',
+};
+
+const Pair = ({ k, v }: { k: string; v: string }) => (
+  <>
+    <dt style={small}>{k}</dt>
+    <dd style={{ margin: 0, overflowWrap: 'anywhere' }}>{v}</dd>
+  </>
+);
+
+function StagePicker({ ticket, guard, onChanged }: { ticket: TicketDetail; guard: Guard; onChanged: () => void }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <label style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', ...small }}>
+      Stage
+      <select
+        value={ticket.stage}
+        disabled={busy}
+        onChange={async (e) => {
+          const next = e.target.value as TicketStage;
+          const emails = next !== 'inbox' && next !== 'bug_review';
+          if (emails && !window.confirm(`Move to ${STAGE_LABEL[next]}? This emails the client.`)) return;
+          setBusy(true);
+          if (guard(await admin.stage(ticket.id, next))) onChanged();
+          setBusy(false);
+        }}
+        style={{ ...btn, appearance: 'auto' }}
+      >
+        {TICKET_STAGES.map((s) => (
+          <option key={s} value={s}>
+            {STAGE_LABEL[s]}
+          </option>
+        ))}
+      </select>
+      <span>Audit, Fix, Live and Done email the client.</span>
+    </label>
+  );
+}
+
+function DraftEditor({ ticketId, message, autoFocus, guard, onSent }: { ticketId: string; message: Message; autoFocus: boolean; guard: Guard; onSent: () => void }) {
+  const initial = splitDraft(message.body);
+  const [subject, setSubject] = useState(initial.subject);
+  const [body, setBody] = useState(initial.body);
+  const [state, setState] = useState<'idle' | 'saving' | 'saved' | 'sending'>('idle');
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (autoFocus) ref.current?.focus();
+  }, [autoFocus]);
+
+  if (message.status === 'sent')
+    return (
+      <div style={box}>
+        <h2 style={h2}>Sent: {initial.subject || message.kind}</h2>
+        <p style={small}>{message.sentAt ? new Date(message.sentAt).toLocaleString('en-GB', { timeZone: 'Asia/Kolkata' }) : ''}</p>
+        <pre style={{ margin: 0, whiteSpace: 'pre-wrap', font: '14px/1.5 var(--bq-font-body)' }}>{initial.body}</pre>
+      </div>
+    );
+
+  const blocked = hasPlaceholder(body) || hasPlaceholder(subject) || !subject.trim() || !body.trim();
+  const field: CSSProperties = { font: '15px/1.5 var(--bq-font-body)', padding: 10, border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)', width: '100%', boxSizing: 'border-box' };
+  return (
+    <div style={{ ...box, borderColor: 'var(--bq-brand)' }}>
+      <h2 style={h2}>Draft reply</h2>
+      <label style={small}>
+        Subject
+        <input value={subject} onChange={(e) => setSubject(e.target.value)} style={field} />
+      </label>
+      <label style={small}>
+        Message
+        <textarea ref={ref} value={body} onChange={(e) => setBody(e.target.value)} rows={12} style={field} />
+      </label>
+      {hasPlaceholder(body) && <p style={{ ...small, color: 'var(--bq-brand)' }}>Fill in the [PASTE LOOM LINK] and [PRICE] placeholders before sending.</p>}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          style={btn}
+          disabled={state !== 'idle' && state !== 'saved'}
+          onClick={async () => {
+            setState('saving');
+            setState(guard(await admin.saveDraft(ticketId, message.id, subject, body)) ? 'saved' : 'idle');
+          }}
+        >
+          {state === 'saving' ? 'Saving…' : state === 'saved' ? 'Saved' : 'Save'}
+        </button>
+        <button
+          type="button"
+          style={primary}
+          disabled={blocked || state === 'sending'}
+          onClick={async () => {
+            if (!window.confirm('Send this to the client now?')) return;
+            setState('sending');
+            if (guard(await admin.send(ticketId, message.id, subject, body))) onSent();
+            else setState('idle');
+          }}
+        >
+          {state === 'sending' ? 'Sending…' : 'Send to client'}
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -228,6 +228,14 @@ export const routes: RouteRecord[] = [
         entry: 'src/pages/Legal.tsx',
       })),
 
+      // Anadi's command centre. The prerendered HTML is the empty shell (noindex,
+      // not in the sitemap); all data comes from `/api/admin` after login.
+      {
+        path: '/admin',
+        lazy: () => import('./pages/Admin').then((m) => ({ Component: m.default })),
+        entry: 'src/pages/Admin.tsx',
+      },
+
       // ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE
       {
         path: '*',
