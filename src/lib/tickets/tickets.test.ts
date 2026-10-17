@@ -274,3 +274,24 @@ describe('give to helper', () => {
     expect(await m.store.openFeed()).toMatchObject([{ id: c.id, assignee: 'helper' }]);
   });
 });
+
+describe('portal store methods', () => {
+  it('finds a client by email and lists only their tickets', async () => {
+    const m = memoryTicketStore();
+    const a = await m.store.createTicket({ ...base, email: 'jo@example.com' });
+    await m.store.createTicket({ ...base, email: 'sam@example.com' });
+    const a2 = await m.store.createTicket({ ...base, email: 'JO@example.com', kind: 'audit' });
+    const jo = await m.store.clientByEmail(' Jo@Example.com ');
+    expect(jo).toMatchObject({ id: a.clientId, email: 'jo@example.com' });
+    expect(await m.store.clientByEmail('nobody@example.com')).toBeNull();
+    expect((await m.store.ticketsForClient(jo!.id)).map((t) => t.id)).toEqual([a2.id, a.id]);
+  });
+
+  it('uses a sign-in link once', async () => {
+    const m = memoryTicketStore();
+    await m.store.createPortalLink('n'.repeat(20), 'jo@example.com');
+    expect(await m.store.usePortalLink('n'.repeat(20))).toBe(true);
+    expect(await m.store.usePortalLink('n'.repeat(20))).toBe(false);
+    expect(await m.store.usePortalLink('x'.repeat(20))).toBe(false);
+  });
+});

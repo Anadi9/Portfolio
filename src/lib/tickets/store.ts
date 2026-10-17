@@ -76,6 +76,13 @@ export interface TicketStore {
   pushSubscriptions(): Promise<{ endpoint: string; p256dh: string; auth: string }[]>;
   /** Anadi's passkeys for /admin. */
   passkeys(): Promise<StoredPasskey[]>;
+  /** Client portal (Phase 6). */
+  clientByEmail(email: string): Promise<{ id: string; email: string } | null>;
+  /** The client's own tickets, newest first. */
+  ticketsForClient(clientId: string): Promise<TicketRow[]>;
+  createPortalLink(nonce: string, email: string): Promise<void>;
+  /** True the first time only; false when the link is unknown or already used. */
+  usePortalLink(nonce: string): Promise<boolean>;
   savePasskey(p: Omit<StoredPasskey, 'createdAt'>): Promise<void>;
   setPasskeyCounter(id: string, counter: number): Promise<void>;
   removePasskey(id: string): Promise<void>;
@@ -460,6 +467,46 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async doneFeedFor(ref) {
       const { error } = await db.from('feed_items').update({ done_at: new Date().toISOString() }).eq('ref', ref).is('done_at', null);
       if (error) fail('done feed for', error);
+    },
+
+    async clientByEmail(email) {
+      const { data, error } = await db.from('clients').select('id, email').eq('email', email.trim().toLowerCase()).maybeSingle();
+      if (error) fail('client by email', error);
+      return data ? { id: data.id as string, email: data.email as string } : null;
+    },
+
+    async ticketsForClient(clientId) {
+      const { data, error } = await db
+        .from('tickets')
+        .select('id, number, kind, stage, app_url, created_at, updated_at, clients(name, email), briefs(id), messages(direction, status, sent_at)')
+        .eq('client_id', clientId)
+        .order('created_at', { ascending: false })
+        .limit(100);
+      if (error) fail('tickets for client', error);
+      return (data as Row[]).map((r) => ({
+        id: r.id,
+        number: r.number,
+        kind: r.kind,
+        stage: r.stage,
+        appUrl: r.app_url,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+        clientName: r.clients?.name ?? null,
+        clientEmail: r.clients?.email ?? '',
+        hasBrief: (r.briefs ?? []).length > 0,
+        firstReplySentAt: firstSent(((r.messages ?? []) as Row[]).map((m) => ({ direction: m.direction, status: m.status, sentAt: m.sent_at }))),
+      }));
+    },
+
+    async createPortalLink(nonce, email) {
+      const { error } = await db.from('portal_links').insert({ nonce, email: email.trim().toLowerCase() });
+      if (error) fail('create portal link', error);
+    },
+
+    async usePortalLink(nonce) {
+      const { data, error } = await db.from('portal_links').update({ used_at: new Date().toISOString() }).eq('nonce', nonce).is('used_at', null).select('nonce');
+      if (error) fail('use portal link', error);
+      return (data ?? []).length > 0;
     },
 
     async passkeys() {

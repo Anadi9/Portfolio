@@ -22,6 +22,7 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
   const feed: FeedItem[] = [];
   const commitments: Commitment[] = [];
   const tasks: CoachTask[] = [];
+  const portalLinks = new Map<string, { email: string; usedAt: string | null }>();
   const passkeys: { id: string; publicKey: string; counter: number; transports: string[]; createdAt: string }[] = [];
   const pushSubs = new Map<string, { endpoint: string; p256dh: string; auth: string }>();
   const id = (p: string) => `${p}_${++n}`;
@@ -188,6 +189,23 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
     },
     async doneFeedFor(ref) {
       for (const f of feed) if (f.ref === ref && !f.doneAt) f.doneAt = now();
+    },
+    async clientByEmail(email) {
+      const c = clients.get(email.trim().toLowerCase());
+      return c ? { id: c.id, email: c.email } : null;
+    },
+    async ticketsForClient(clientId) {
+      const mine = new Set(tickets.filter((t) => t.clientId === clientId).map((t) => t.id));
+      return (await store.listTickets({ limit: 1000 })).filter((r) => mine.has(r.id));
+    },
+    async createPortalLink(nonce, email) {
+      portalLinks.set(nonce, { email: email.trim().toLowerCase(), usedAt: null });
+    },
+    async usePortalLink(nonce) {
+      const l = portalLinks.get(nonce);
+      if (!l || l.usedAt) return false;
+      l.usedAt = now();
+      return true;
     },
     async passkeys() {
       return passkeys.map((p) => ({ ...p }));

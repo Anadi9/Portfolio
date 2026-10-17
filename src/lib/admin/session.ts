@@ -13,7 +13,8 @@ const sign = (payload: string, secret: string) => createHmac('sha256', secret).u
 export const PENDING_COOKIE = 'admin_pending';
 export const PENDING_SECONDS = 5 * 60;
 
-type Claims = { exp: number; kind: 'session' | 'pending'; [k: string]: unknown };
+/** `portal_link` and `portal` are the client portal's emailed link and session; they never pass as admin tokens. */
+type Claims = { exp: number; kind: 'session' | 'pending' | 'portal_link' | 'portal'; [k: string]: unknown };
 
 /** A signed, expiring token. `kind` keeps a pending (passkey challenge) token from ever passing as a session. */
 export function signToken(claims: Omit<Claims, 'exp'>, secret: string, ttlSeconds: number, now = Date.now()): string {
