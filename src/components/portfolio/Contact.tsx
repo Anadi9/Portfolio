@@ -24,7 +24,7 @@ const HEAD = ['Send me', 'your app'];
 const doors = [
   {
     kind: 'MY AI-BUILT APP IS BROKEN',
-    value: 'Built with Lovable, Bolt, Cursor or v0 and falling over in production. Free audit, fixed price.',
+    value: 'Built with Lovable, Bolt, Cursor or v0 and falling over in production. First bug found free on video, then one fixed price.',
     to: `${ORIGIN}/`,
   },
   {
@@ -127,8 +127,8 @@ const Contact = () => (
         </h2>
       </div>
       <p data-contact-copy="1" style={{ margin: `0 0 ${s[3]}px`, font: `400 16px/1.5 ${display}`, color: 'rgba(10,10,10,.78)', textWrap: 'pretty' }}>
-        Fastest route is the free audit: send the link and you get a ranked report in 48 hours. Email works too; I
-        answer within a day, usually with questions.
+        Fastest route is the free first-bug review: send the link and within 24 hours you get a short video of its
+        biggest risk, with the fixed price to fix it. Email works too; I answer within a day, usually with questions.
       </p>
     </div>
 
