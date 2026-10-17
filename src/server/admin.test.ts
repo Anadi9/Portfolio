@@ -239,3 +239,14 @@ describe('/api/admin numbers', () => {
     expect(res.body.numbers).toMatchObject({ promisesKept: { kept: 1, missed: 0, rate: 1 }, pipeline: { inbox: 1 } });
   });
 });
+
+describe('/api/admin today and away', () => {
+  it('lists today’s items and what happened since a time', async () => {
+    const t = await mem.store.createTicket(ticketInput);
+    const today = await call({ op: 'today' }, { cookie: authed() });
+    expect(today.body.items).toMatchObject([{ key: `reply:${t.id}`, ticketId: t.id }]);
+    const away = await call({ op: 'away', since: '2000-01-01T00:00:00Z' }, { cookie: authed() });
+    expect(away.body.away).toMatchObject({ newTickets: 1, any: true });
+    expect((await call({ op: 'away', since: 'yesterday' }, { cookie: authed() })).statusCode).toBe(400);
+  });
+});

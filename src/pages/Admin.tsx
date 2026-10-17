@@ -5,6 +5,7 @@ import { admin } from '@/lib/admin/client';
 import { age, dueLabel, parseHash, promiseLabel, snoozeHours, timeLeft, type SnoozeChoice, type Tone } from '@/lib/admin/view';
 import type { Commitment } from '@/lib/coach/types';
 import type { Numbers } from '@/lib/command/numbers';
+import type { AwaySummary, TodayItem } from '@/lib/command/today';
 import { hasPlaceholder, splitDraft } from '@/lib/brief/draft';
 import { ANSWER_LABEL, kindLabel } from '@/lib/notify/email';
 import type { FeedItem } from '@/lib/feed/types';
@@ -109,6 +110,8 @@ export default function Admin() {
                 Numbers
               </TabButton>
             </nav>
+            {view.tab === 'feed' && <Away guard={guard} />}
+            {view.tab === 'feed' && <Today guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
             {view.tab === 'feed' && <Feed guard={guard} open={(id, focus) => setView({ tab: 'ticket', id, focus })} />}
             {view.tab === 'numbers' && <NumbersView guard={guard} />}
             {view.tab === 'tickets' && <Tickets guard={guard} open={(id) => setView({ tab: 'ticket', id })} />}
@@ -204,6 +207,93 @@ function Login({ onIn }: { onIn: () => void }) {
         {busy ? 'Checking…' : 'Log in'}
       </button>
     </form>
+  );
+}
+
+const LAST_SEEN = 'admin:lastSeen';
+
+const readLastSeen = () => {
+  try {
+    return window.localStorage.getItem(LAST_SEEN);
+  } catch {
+    return null;
+  }
+};
+
+const writeLastSeen = (iso: string) => {
+  try {
+    window.localStorage.setItem(LAST_SEEN, iso);
+  } catch {
+    // private mode: the away card just won't remember
+  }
+};
+
+/** "While you were away": what changed since this browser last opened /admin. */
+function Away({ guard }: { guard: Guard }) {
+  const [away, setAway] = useState<AwaySummary | null>(null);
+  useEffect(() => {
+    const since = readLastSeen();
+    writeLastSeen(new Date().toISOString());
+    if (!since) return;
+    admin.away(since).then((r) => {
+      const d = guard(r);
+      if (d?.away.any) setAway(d.away);
+    });
+  }, [guard]);
+  if (!away) return null;
+  const parts = [
+    away.newTickets && `${away.newTickets} new ticket${away.newTickets > 1 ? 's' : ''}`,
+    away.briefsReady && `${away.briefsReady} brief${away.briefsReady > 1 ? 's' : ''} ready`,
+    away.kept && `${away.kept} promise${away.kept > 1 ? 's' : ''} kept`,
+    away.missed && `${away.missed} missed`,
+    away.atRisk && `${away.atRisk} at risk now`,
+    away.newCards && `${away.newCards} new card${away.newCards > 1 ? 's' : ''}`,
+  ].filter(Boolean);
+  return (
+    <section aria-label="While you were away" style={{ ...box, gridTemplateColumns: 'auto 1fr', alignItems: 'center' }}>
+      <Coach pose="wave" size={36} />
+      <div>
+        <p style={h2}>While you were away</p>
+        <p style={small}>{parts.join(' · ')}</p>
+      </div>
+    </section>
+  );
+}
+
+/** Never more than three things. */
+function Today({ guard, open }: { guard: Guard; open: (ticketId: string) => void }) {
+  const [items, setItems] = useState<TodayItem[] | null>(null);
+  useEffect(() => {
+    admin.today().then((r) => {
+      const d = guard(r);
+      if (d) setItems(d.items);
+    });
+  }, [guard]);
+  if (!items) return null;
+  return (
+    <section aria-labelledby="h-today" style={box}>
+      <h2 id="h-today" style={h2}>
+        Today
+      </h2>
+      {items.length === 0 ? (
+        <p style={small}>Nothing pressing. Good.</p>
+      ) : (
+        <ol style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 8 }}>
+          {items.map((i) => (
+            <li key={i.key}>
+              {i.ticketId ? (
+                <button type="button" onClick={() => open(i.ticketId as string)} style={{ all: 'unset', cursor: 'pointer', textDecoration: 'underline', font: '600 15px var(--bq-font-body)' }}>
+                  {i.title}
+                </button>
+              ) : (
+                <b>{i.title}</b>
+              )}
+              <span style={{ ...small, display: 'block' }}>{i.why}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   );
 }
 
