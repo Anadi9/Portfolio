@@ -22,7 +22,13 @@ import { checkUrl, isPrivateAddress } from './url.js';
 
 const UA = 'Mozilla/5.0 (compatible; AnadiReadinessCheck/1.0; +https://anadithakur.in/ai-readiness)';
 const TIMEOUT_MS = 8000;
-const MAX_BYTES = 2_000_000;
+/**
+ * Read at most this much of each response. 600 KB is far more HTML than the
+ * checks need (the head, the text, the JSON-LD), and it keeps the analysis
+ * inside the 10 ms of CPU a Cloudflare Workers Free request gets: a 2 MB page
+ * took ~28 ms, a 300 KB one ~3.5 ms.
+ */
+const MAX_BYTES = 600_000;
 const MAX_REDIRECTS = 3;
 
 export class BlockedError extends Error {}

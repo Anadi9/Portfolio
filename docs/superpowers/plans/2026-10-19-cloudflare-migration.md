@@ -139,9 +139,9 @@
   - `cf:deploy`: `wrangler deploy`
   - `cf:deploy:preview`: `wrangler deploy --env preview`
 
-- [ ] Step 1: Tests: cron (hour 5 → heartbeat only; hour 2 → heartbeat + care; hour 6 includes kit ping; every hour includes heartbeat); host (the three cases plus `pass`); event (400 on a bad name, 400 on 9 props, 400 on a long value, 405 on GET, 501 without a DB, 204 + insert called with no IP field).
-- [ ] Step 2: FAIL → implement → `npm test`, `npm run lint`, `npx tsc --noEmit -p .` green.
-- [ ] Step 3: Commit `feat(cf): Worker entry, hourly cron dispatch, first-party events`.
+- [x] Step 1: Tests: cron (hour 5 → heartbeat only; hour 2 → heartbeat + care; hour 6 includes kit ping; every hour includes heartbeat); host (the three cases plus `pass`); event (400 on a bad name, 400 on 9 props, 400 on a long value, 405 on GET, 501 without a DB, 204 + insert called with no IP field).
+- [x] Step 2: FAIL → implement → `npm test`, `npm run lint`, `npx tsc --noEmit -p .` green.
+- [x] Step 3: Commit `feat(cf): Worker entry, hourly cron dispatch, first-party events`.
 
 ### Task 6: Build, bundle size and local smoke on workerd
 

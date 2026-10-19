@@ -22,7 +22,7 @@
     "test:watch": "vitest",
     "check": "node scripts/check-notes.mjs",
     "cf:dev": "npm run build && wrangler dev",
-    "cf:deploy": "wrangler deploy",
+    "cf:deploy": "wrangler deploy --env=\"\"",
     "cf:deploy:preview": "wrangler deploy --env preview",
     "typecheck:worker": "tsc -p tsconfig.worker.json"
   },
