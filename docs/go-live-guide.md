@@ -50,12 +50,26 @@ Vercel in minutes.**
 
 ### 1.1 Write down your DNS
 
-- [ ] GoDaddy → **My Products** → `anadithakur.in` → **DNS** → **DNS Records**.
-      Screenshot every record. You'll compare against it in Part 5 and need it
-      for a rollback.
-- [ ] Same page, **DNSSEC**. If it's **on**, turn it **off** now and wait at
-      least 1 hour before Part 5. Changing nameservers with DNSSEC on takes the
-      whole domain offline, email included.
+GoDaddy is only where the domain is **registered**. Its DNS is run by
+**Vercel** (nameservers `ns1.vercel-dns.com` and `ns2.vercel-dns.com`), so
+GoDaddy's DNS page shows "DNS is currently managed elsewhere". That's expected.
+
+- [ ] Vercel → **Domains** (team level, not the project) → `anadithakur.in` →
+      **DNS Records**. Screenshot every record. On 19 Oct 2026 a public lookup
+      showed these (Vercel may also list extra records such as `CAA`):
+
+  | Name | Type | Value | What it's for |
+  | --- | --- | --- | --- |
+  | `@` | A | `64.29.17.65`, `216.198.79.1` | The site on Vercel |
+  | `www` | A | `64.29.17.65`, `216.198.79.1` | The site on Vercel |
+  | `portfolio` | A | `216.198.79.1`, `64.29.17.1` | The portfolio on Vercel |
+  | `resend._domainkey` | TXT | `p=MIGf…` (long key) | Resend signing (DKIM) |
+  | `send` | MX | `10 feedback-smtp.ap-northeast-1.amazonses.com` | Resend bounces |
+  | `send` | TXT | `v=spf1 include:amazonses.com ~all` | Resend sender check (SPF) |
+
+  There is **no MX on the main domain**, so no mailbox receives mail at
+  `@anadithakur.in`; only Resend sends from it.
+- [ ] DNSSEC is **off** (no DS record), so nothing to do there.
 
 ### 1.2 Collect the values you already have
 
@@ -224,30 +238,31 @@ Nothing changes for visitors in this part.
 
 - [ ] Sign up at <https://dash.cloudflare.com/sign-up> (free).
 - [ ] **Add a domain** → `anadithakur.in` → **Free** plan → Continue.
-- [ ] Cloudflare imports your records. Compare with your Part 1 screenshot and
-      add anything missing, especially:
-  - **Email:** every `MX`, the SPF `TXT` (`v=spf1 …`), DKIM `TXT`s (names like
-    `resend._domainkey`), `_dmarc`, and Resend's records on the `send`
-    subdomain
-  - **Verification:** `google-site-verification=…` and any other `TXT`
+- [ ] Cloudflare imports your records. Compare with the table in Part 1.1 and
+      add anything missing. The three Resend records (`resend._domainkey` TXT,
+      `send` MX, `send` TXT) matter most: copy the DKIM value in full from
+      Vercel or from Resend → Domains.
 - [ ] Set **every** record's proxy status to **DNS only** (grey cloud),
-      including the ones pointing at Vercel (`76.76.21.21`,
-      `cname.vercel-dns.com`). Email and verification records stay grey
-      forever.
+      including the `A` records pointing at Vercel. Email and verification
+      records stay grey forever.
 - [ ] Copy the two Cloudflare nameservers (like `xxx.ns.cloudflare.com`).
 
-### 5.2 Point GoDaddy at Cloudflare
+### 5.2 Point the domain at Cloudflare
 
-- [ ] GoDaddy → `anadithakur.in` → **DNS** → **Nameservers** → **Change
-      Nameservers** → **I'll use my own nameservers** → paste both → **Save**.
+Nameservers are changed where the domain is registered, which is GoDaddy.
+
+- [ ] GoDaddy → **Domains** → `anadithakur.in` → **DNS** → **Nameservers** →
+      **Change Nameservers** → **I'll use my own nameservers**. It shows
+      `ns1.vercel-dns.com` and `ns2.vercel-dns.com`: replace both with the two
+      Cloudflare ones → **Save**. (Don't pick "GoDaddy's default nameservers".)
 - [ ] Wait for Cloudflare's "your domain is now active" email (usually under
-      an hour, at most 24).
-- [ ] Send yourself a test email to an `@anadithakur.in` address (if you
-      receive mail there), and submit `/audit?type=app` once to confirm Resend
-      still sends.
+      an hour, at most 24). Until then some visitors get Vercel's DNS and some
+      Cloudflare's; both point at the same Vercel site, so nobody notices.
+- [ ] Submit `/audit?type=app` once to confirm Resend still sends.
+- [ ] Resend → **Domains** → `anadithakur.in` still shows **Verified**.
 
-From now on, **DNS changes happen in Cloudflare, not GoDaddy** (including any
-new Search Console TXT record).
+From now on, **DNS changes happen in Cloudflare**, not Vercel or GoDaddy
+(including any new Search Console TXT record).
 
 ### 5.3 Cloudflare settings for the domain
 
@@ -458,9 +473,9 @@ Done when: every box in Part 7 is ticked.
 
 Pick a quiet hour.
 
-- [ ] Cloudflare → **DNS → Records**: delete only the records pointing at
-      Vercel: `anadithakur.in` (`A` → `76.76.21.21`), `www` and `portfolio`
-      (`CNAME` → Vercel). **Don't touch MX or TXT records.**
+- [ ] Cloudflare → **DNS → Records**: delete only the `A` records pointing at
+      Vercel, for `anadithakur.in`, `www` and `portfolio` (the IPs in Part
+      1.1). **Don't touch the `send` or `resend._domainkey` records.**
 - [ ] **Workers & Pages** → **anadi-site** → **Settings → Domains & Routes** →
       **Add → Custom domain** → `anadithakur.in`. Again for
       `portfolio.anadithakur.in`. Certificates appear in a few minutes.
@@ -564,9 +579,11 @@ Pick a quiet hour.
 - [ ] **HSTS preload:** submit `anadithakur.in` at <https://hstspreload.org>
       (both the main site and `portfolio.` are HTTPS by then). Hard to undo:
       every future subdomain must serve HTTPS too.
-- [ ] **Re-enable DNSSEC** (if you turned it off in Part 1): Cloudflare → DNS →
+- [ ] **Turn on DNSSEC** (optional, it was never on): Cloudflare → DNS →
       Settings → **Enable DNSSEC**, then add the DS record it shows in GoDaddy
       → DNS → DNSSEC.
+- [ ] **Vercel domain:** once Vercel is disconnected, remove `anadithakur.in`
+      from Vercel → Domains too, so two places don't both claim its DNS.
 
 ### Recurring
 
@@ -581,9 +598,10 @@ Pick a quiet hour.
 ## Part 12 · Rollback (only if something is wrong after Part 8)
 
 1. **anadi-site → Domains & Routes**: remove both custom domains.
-2. **DNS**: re-add the Vercel records from your Part 1 screenshot (usually `A`
-   `@` → `76.76.21.21`, `CNAME` `www` and `portfolio` →
-   `cname.vercel-dns.com`), all **DNS only** (grey).
+2. **DNS**: re-add the Vercel `A` records from Part 1.1 for `@`, `www` and
+   `portfolio`, all **DNS only** (grey). Slower but complete alternative:
+   switch the nameservers in GoDaddy back to `ns1.vercel-dns.com` and
+   `ns2.vercel-dns.com`, since Vercel still holds the old records.
 3. **Rules → Redirect Rules**: turn both rules off.
 4. **Vercel → Settings → Cron Jobs**: enable.
 5. The live site is back on Vercel within minutes. It won't have the
@@ -604,4 +622,4 @@ Pick a quiet hour.
 | Button events | Supabase `events` table | Free tier |
 | AI answers and briefs | Vercel AI Gateway (key) | Free monthly credit |
 | Database, email | Supabase, Resend | Free tiers |
-| Domain | GoDaddy (registration), Cloudflare (DNS) | Yearly renewal only |
+| Domain | GoDaddy (registration), Cloudflare (DNS; was Vercel) | Yearly renewal only |
