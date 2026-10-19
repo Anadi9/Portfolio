@@ -1,5 +1,8 @@
 # Launch checklist
 
+> **Follow `docs/go-live-guide.md` instead.** It merges this list with the
+> Cloudflare migration into one ordered path. This file stays as reference.
+
 > **Hosting:** the site moves from Vercel to Cloudflare Workers. Wherever this
 > list says "Vercel" for env vars, crons or logs, follow
 > `docs/cloudflare-migration-guide.md` instead.

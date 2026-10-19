@@ -149,10 +149,9 @@ Proof
 
 ## Launch
 
-- [ ] Work through `docs/launch-checklist.md` and
-      `docs/cloudflare-migration-guide.md` (env vars, migrations including
-      `events` and `invoice_ref`, Resend, WhatsApp template, AI Gateway, uptime,
-      preview smoke test, deploy, after-launch steps).
+- [ ] Work through `docs/go-live-guide.md` (one ordered path: secrets,
+      migrations, WhatsApp, AI Gateway key, Cloudflare DNS and Worker, preview
+      smoke test, switch, uptime, search engines).
 
 ## Phase 2: the promise list and lead processing
 

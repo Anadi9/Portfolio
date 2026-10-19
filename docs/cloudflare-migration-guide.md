@@ -1,5 +1,8 @@
 # Moving anadithakur.in to Cloudflare: your steps
 
+> **Follow `docs/go-live-guide.md` instead.** It merges this guide with the
+> launch checklist into one ordered path. This file stays as reference.
+
 The code is ready on the `cloudflare-migration` branch. These are the steps only you
 can do, in order. Plan about 1–2 hours, plus waiting for DNS (usually minutes,
 up to 24 hours).
