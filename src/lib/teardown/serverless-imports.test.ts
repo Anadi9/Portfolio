@@ -123,6 +123,7 @@ const GRAPH = [
   'src/lib/command/push.ts',
   'src/data/plan.generated.ts',
   'src/lib/brief/background.ts',
+  'src/lib/runtime/wait-until.ts',
   'src/lib/brief/process.ts',
   'src/lib/brief/scan.ts',
   'src/lib/brief/brief.ts',

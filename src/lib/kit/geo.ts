@@ -1,7 +1,8 @@
 import type { IncomingHttpHeaders } from 'node:http';
 
 /**
- * The visitor's country, from the header Vercel's edge adds to every request.
+ * The visitor's country, from the header Vercel's edge adds to every request
+ * (on Cloudflare the Worker sets it from `request.cf.country`, see `worker/adapter.ts`).
  * The browser never gets a say: it is what decides which currency the checkout
  * charges, so a client-supplied value would be a discount switch.
  *

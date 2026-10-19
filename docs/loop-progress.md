@@ -98,3 +98,9 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 
 - Paid self-serve scans: needs you to decide the offer and create a Stripe price; this build may not change Stripe.
 - Creating invoices in Stripe automatically: this build may not change Stripe. Invoice plans are ready in `/admin`; automating the Stripe step needs your OK and a restricted Stripe key with invoice write access.
+
+## Cloudflare migration
+
+Plan: `docs/superpowers/plans/2026-10-19-cloudflare-migration.md`. Manual steps: `docs/cloudflare-migration-guide.md`.
+
+- Task 1: `worker/adapter.ts` runs the Vercel-style handlers on Fetch requests (raw body, every Set-Cookie, trusted forwarding headers, 500 on throw or no response) (`0434d7b`). Manual: none.
