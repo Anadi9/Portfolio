@@ -37,13 +37,14 @@ Controller: Anadi Thakur (sole proprietor, India). Contact and deletion requests
 | `/scan` (Supabase check) via `src/server/scan.ts` | The project URL and public anon key typed in, used for the one check | **Stores nothing.** Not logged | Nobody | None | Visitor-initiated; no persistence |
 | `/ai-readiness` via `src/server/ai-readiness.ts` | A public URL to analyse | Not stored | Nobody | None | Visitor-initiated |
 | `scorecard_runs` | The site's own daily self-audit results. No personal data | Supabase | Anadi | 24 months | Legitimate interest |
-| Error reports, `POST /api/client-error` (Task 3) | Browser error message, source file, line, page path. No personal data | Vercel logs (`[client-error]`) | Anadi | Vercel log retention | Legitimate interest (keeping the site working) |
-| Analytics (Vercel Analytics) | Page views and events, rough country, device type. No cookies, not personally identifying | Vercel | Anadi | Per Vercel | Legitimate interest |
+| Error reports, `POST /api/client-error` (Task 3) | Browser error message, source file, line, page path. No personal data | Cloudflare Workers logs (`[client-error]`) | Anadi | Cloudflare Workers Logs retention (3 days on the free plan) | Legitimate interest (keeping the site working) |
+| Page views (Cloudflare Web Analytics) | Page, referrer, rough country, device type. No cookies, not personally identifying | Cloudflare | Anadi | Per Cloudflare | Legitimate interest |
+| Funnel events, `POST /api/event` (`src/server/event.ts`) | Event name (e.g. `audit_cta_click`), up to 8 small props (button location, pack, counts), page path, rough country. **No IP, cookie or visitor id** | Supabase `events` | Anadi | 24 months | Legitimate interest (knowing which pages lead to requests) |
 | Email to the address on the site | Whatever the sender writes | Anadi's mailbox | Anadi | 24 months after last contact, then deleted | Legitimate interest / contract |
 
 ## Processors
 
-Stripe (payments), Supabase (database, review photos), Resend (email), Vercel (hosting, analytics, AI Gateway), Groq (AI fallback: question text, and the request brief with no name, email, phone or company), Meta WhatsApp Cloud API (alerts to Anadi's own number only; client numbers and emails are never sent to it; the alert holds only the ticket number, request type and app domain, or name if no app link). Some store data outside India. No data is sold or used for advertising.
+Stripe (payments), Supabase (database, review photos), Resend (email), Cloudflare (hosting, CDN, page-view analytics, logs), Vercel (AI Gateway only), Groq (AI fallback: question text, and the request brief with no name, email, phone or company), Meta WhatsApp Cloud API (alerts to Anadi's own number only; client numbers and emails are never sent to it; the alert holds only the ticket number, request type and app domain, or name if no app link). Some store data outside India. No data is sold or used for advertising.
 
 ## Deletion procedure
 

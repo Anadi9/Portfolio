@@ -145,9 +145,9 @@
 
 ### Task 6: Build, bundle size and local smoke on workerd
 
-- [ ] Step 1: `npm run build` green; `dist/_headers`, `dist/_redirects` present; `worker/generated/production-kit.zip` present.
-- [ ] Step 2: `npx wrangler deploy --dry-run --outdir .wrangler/dry` → gzipped size under 3 MB (record it). If it's over, find the heavy imports and lazy-load them per route.
-- [ ] Step 3: `npx wrangler dev --test-scheduled` with `.dev.vars` copied from `.env.local` (git-ignored). curl checks, results recorded in loop-progress:
+- [x] Step 1: `npm run build` green; `dist/_headers`, `dist/_redirects` present; `worker/generated/production-kit.zip` present.
+- [x] Step 2: `npx wrangler deploy --dry-run --outdir .wrangler/dry` → gzipped size under 3 MB (record it). If it's over, find the heavy imports and lazy-load them per route.
+- [x] Step 3: `npx wrangler dev --test-scheduled` with `.dev.vars` copied from `.env.local` (git-ignored). curl checks, results recorded in loop-progress:
   - `/` 200, `/about` 200 with no redirect, `/about/` → redirect to `/about`
   - `/work-with-me` 301 `/`, `/rescue/audit` 301, `/kit/downloads/abc` 200
   - HSTS and CSP-Report-Only present on a page and on `/api/health`
@@ -156,8 +156,8 @@
   - `-H 'Host: portfolio.anadithakur.in' /` → the portfolio page; `/portfolio` on the main host → 301
   - `/cdn-cgi/handler/scheduled?cron=0+*+*+*+*` → the heartbeat runs
   - `/api/event` POST → 204 or 501
-- [ ] Step 4: Browser check through `wrangler dev`: home, a note, `/production-ready`, `/audit?type=app` form, Bit chat opens, `/admin` login page renders. No console errors from missing `/_vercel/insights`.
-- [ ] Step 5: Commit any fixes `fix(cf): …`.
+- [x] Step 4: Browser check through `wrangler dev`: home, a note, `/production-ready`, `/audit?type=app` form, Bit chat opens, `/admin` login page renders. No console errors from missing `/_vercel/insights`.
+- [x] Step 5: Commit any fixes `fix(cf): …`.
 
 ### Task 7: Privacy, docs and the manual guide
 

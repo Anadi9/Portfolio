@@ -187,7 +187,7 @@ export function Privacy() {
             <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below), with the buttons you tapped in the chat so far. Your name, email and app link are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
             <><strong>When you leave a review:</strong> your name, role, company, rating, review and an optional photo. Nothing is shown publicly until I approve it.</>,
             <><strong>When you use the free Supabase check:</strong> the project URL and public key you enter are used for that one check and not stored or logged.</>,
-            <><strong>When you browse:</strong> anonymous page views and events (which page, which button, rough country, device type), and technical error reports from your browser (the error message, file, line and page path, with nothing that identifies you). No cookies, except one if you sign in to see your requests (below).</>,
+            <><strong>When you browse:</strong> anonymous page views (which page, rough country, device type), button events the site counts itself (which button, which page, rough country; your IP address is not stored), and technical error reports from your browser (the error message, file, line and page path, with nothing that identifies you). No cookies, except one if you sign in to see your requests (below).</>,
           ]}
         />
       </Section>
@@ -247,7 +247,8 @@ export function Privacy() {
             <><strong>Stripe</strong>: payments and receipts.</>,
             <><strong>Supabase</strong>: the order records behind your downloads page, tickets, and reviews.</>,
             <><strong>Resend</strong>: sending delivery, receipt, report and reply emails.</>,
-            <><strong>Vercel</strong>: hosting, anonymous analytics, logs and the AI Gateway.</>,
+            <><strong>Cloudflare</strong>: hosting, content delivery, anonymous page-view analytics and logs.</>,
+            <><strong>Vercel</strong>: the AI Gateway that sends Bit’s typed questions and the internal request brief to the AI model.</>,
             <><strong>Groq</strong>: AI fallback for Bit’s typed questions and the internal request brief (no name, email, phone or company).</>,
             <><strong>Meta (WhatsApp Cloud API)</strong>: alerts to my own number about new tickets. Nothing is sent to you through it.</>,
           ]}

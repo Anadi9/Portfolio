@@ -5,7 +5,7 @@ import spaceGroteskLatin from '@fontsource-variable/space-grotesk/files/space-gr
 /** Canonical origin. Every notes URL is absolute against this; see `Seo`. */
 export const ORIGIN = 'https://anadithakur.in';
 
-/** The portfolio's own host. `vercel.json` serves `/portfolio` as its root. */
+/** The portfolio's own host, which serves `/portfolio` as its root (`worker/host.ts`; `middleware.ts` on Vercel). */
 export const PORTFOLIO_ORIGIN = 'https://portfolio.anadithakur.in';
 
 /**

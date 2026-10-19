@@ -22,6 +22,11 @@ next to real ones (they're marked by `cs_test_` session ids).
 
 ## Environment variables
 
+> **Hosting moved to Cloudflare** (`docs/cloudflare-migration-guide.md`). The same
+> variables are now Worker secrets: "Production" below means the `anadi-site` Worker,
+> "Preview" the `anadi-site-preview` Worker. Locally they live in `.env.local`
+> (for `npm run dev`) and `.dev.vars` (for `wrangler dev`).
+
 All server-only. None of them may start with `VITE_`.
 
 | Variable | Production | Preview + Development |

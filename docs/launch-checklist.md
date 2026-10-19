@@ -1,5 +1,9 @@
 # Launch checklist
 
+> **Hosting:** the site moves from Vercel to Cloudflare Workers. Wherever this
+> list says "Vercel" for env vars, crons or logs, follow
+> `docs/cloudflare-migration-guide.md` instead.
+
 One ordered list. Do the steps in order; each ends with what "done" looks like. Nothing here is done by code: these are the accounts, keys and clicks only you can do.
 
 Read this first:
