@@ -1,10 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import routeFn from '../api/[route]';
-import kitFn from '../api/kit/[action]';
 import bitFn from '../api/bit/[action]';
 import cronFn from '../api/cron/[job]';
-import webhookFn from '../api/stripe-webhook';
-import downloadFn from '../api/production-kit-download';
 import { resolveApi } from './router';
 
 describe('resolveApi', () => {
@@ -13,14 +10,13 @@ describe('resolveApi', () => {
   });
 
   it('resolves the folders by their param name', () => {
-    expect(resolveApi('/api/kit/prices')).toEqual({ handler: kitFn, query: { action: 'prices' }, raw: false });
     expect(resolveApi('/api/bit/ask')).toEqual({ handler: bitFn, query: { action: 'ask' }, raw: false });
     expect(resolveApi('/api/cron/heartbeat')).toEqual({ handler: cronFn, query: { job: 'heartbeat' }, raw: false });
   });
 
-  it('prefers an exact file, and honours bodyParser: false', () => {
-    expect(resolveApi('/api/stripe-webhook')).toEqual({ handler: webhookFn, query: {}, raw: true });
-    expect(resolveApi('/api/production-kit-download')).toEqual({ handler: downloadFn, query: {}, raw: false });
+  it('sends the removed kit and Stripe paths nowhere a handler would answer', () => {
+    expect(resolveApi('/api/kit/prices')).toBeNull();
+    expect(resolveApi('/api/stripe-webhook')?.query).toEqual({ route: 'stripe-webhook' });
   });
 
   it('allows one trailing slash, as Vercel does', () => {

@@ -27,7 +27,7 @@ export const STAGE_RULES: Record<TicketStage, StageRule> = {
   },
   audit: {
     tasks: [
-      { key: 'audit_paid', owner: 'anadi', title: 'Confirm the $349 audit is paid', doneWhen: 'The payment shows in Stripe' },
+      { key: 'audit_paid', owner: 'anadi', title: 'Confirm the $349 audit is paid', doneWhen: 'The payment has arrived' },
       { key: 'audit_report', owner: 'anadi', title: 'Send the audit report', doneWhen: 'The report is in the client’s inbox' },
       { key: 'refund_check', owner: 'anadi', title: 'Real issues found? If not, refund in full', doneWhen: 'Issues are listed in the report, or the refund is issued' },
     ],

@@ -9,9 +9,8 @@ const site = config.headers.find((h) => h.source === '/(.*)');
 const get = (key: string) => site?.headers.find((h) => h.key === key)?.value;
 
 describe('site-wide security headers', () => {
-  it('has a site-wide entry and keeps the /kit entry', () => {
+  it('has a site-wide entry', () => {
     expect(site).toBeDefined();
-    expect(config.headers.some((h) => h.source === '/kit/(.*)')).toBe(true);
   });
 
   it.each([
@@ -20,7 +19,7 @@ describe('site-wide security headers', () => {
     ['Referrer-Policy', 'strict-origin-when-cross-origin'],
     [
       'Permissions-Policy',
-      'camera=(), microphone=(), geolocation=(), payment=(self "https://checkout.stripe.com")',
+      'camera=(), microphone=(), geolocation=(), payment=()',
     ],
     ['X-Frame-Options', 'DENY'],
   ])('%s', (key, value) => {
@@ -37,9 +36,6 @@ describe('site-wide security headers', () => {
       'https://fonts.gstatic.com',
       'https://static.cloudflareinsights.com',
       'https://cloudflareinsights.com',
-      'https://js.stripe.com',
-      'https://checkout.stripe.com',
-      'https://api.stripe.com',
       'https://*.supabase.co',
     ]) {
       expect(csp).toContain(part);

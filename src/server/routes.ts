@@ -6,9 +6,7 @@ import board from './board.js';
 import clientError from './client-error.js';
 import event from './event.js';
 import health from './health.js';
-import kitPrice from './kit-price.js';
 import portal from './portal.js';
-import productionKitCheckout from './production-kit-checkout.js';
 import rescueAudit from './rescue-audit.js';
 import review from './review.js';
 import scan from './scan.js';
@@ -21,6 +19,7 @@ import cronScorecard from './cron/scorecard.js';
 import cronHeartbeat from './cron/heartbeat.js';
 import cronSummary from './cron/summary.js';
 import cronCare from './cron/care.js';
+import cronPing from './cron/ping.js';
 
 /**
  * The handlers behind the three dispatchers in `api/`.
@@ -43,9 +42,7 @@ export const API_ROUTES: Routes = {
   'client-error': clientError,
   event,
   health,
-  'kit-price': kitPrice,
   portal,
-  'production-kit-checkout': productionKitCheckout,
   'rescue-audit': rescueAudit,
   review,
   scan,
@@ -57,7 +54,7 @@ export const API_ROUTES: Routes = {
 export const BIT_ROUTES: Routes = { ask: bitAsk, ticket: bitTicket };
 
 /** `/api/cron/<job>`, the paths `vercel.json` schedules. */
-export const CRON_ROUTES: Routes = { care: cronCare, heartbeat: cronHeartbeat, notify: cronNotify, scorecard: cronScorecard, summary: cronSummary };
+export const CRON_ROUTES: Routes = { care: cronCare, heartbeat: cronHeartbeat, notify: cronNotify, ping: cronPing, scorecard: cronScorecard, summary: cronSummary };
 
 /** Runs the handler `routes[segment]`, or 404s. Own keys only, so `/api/constructor` is not a route. */
 export function dispatch(routes: Routes, segment: unknown, req: VercelRequest, res: VercelResponse) {

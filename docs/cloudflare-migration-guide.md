@@ -8,7 +8,7 @@ up to 24 hours).
 the site. If anything goes wrong at any point, Part 9 puts it back on Vercel
 in minutes.
 
-What you need open: GoDaddy (your domain), Vercel, Stripe, Supabase, and
+What you need open: GoDaddy (your domain), Vercel, Supabase, and
 `.env.local` (for the values you already use).
 
 ---
@@ -71,19 +71,17 @@ npm run cf:deploy             # creates the "anadi-site" Worker (no domain yet)
 ```
 
 Now add the production secrets. Use the same **Production** values as on
-Vercel: live Stripe keys, the live webhook secret, the real Supabase project.
+Vercel, with the real Supabase project.
 
 Workers & Pages → **anadi-site** → **Settings → Variables and Secrets** → **Add**.
 Choose type **Secret** for each:
 
 | Name | Value |
 | --- | --- |
-| `STRIPE_SECRET_KEY` | live key (`sk_live_…` or `rk_live_…`) |
-| `STRIPE_WEBHOOK_SECRET` | the live endpoint's `whsec_…` (unchanged; same URL) |
 | `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | production project |
 | `RESEND_API_KEY`, `RESEND_AUDIENCE_ID` | as on Vercel |
 | `RESCUE_INBOX`, `TICKETS_INBOX` | as on Vercel (if set) |
-| `KIT_TOKEN_SECRET`, `CRON_SECRET` | as on Vercel (keep them the same, or old download links stop working) |
+| `CRON_SECRET` | as on Vercel |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | as on Vercel |
 | `PORTAL_SESSION_SECRET` | as on Vercel |
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | as on Vercel (if set) |
@@ -91,10 +89,12 @@ Choose type **Secret** for each:
 | `AI_GATEWAY_API_KEY` | **new.** Vercel → **AI Gateway → API Keys → Create key**. On Vercel the gateway signed in by itself; off Vercel it needs this key. It's the same free monthly credit |
 | `WHATSAPP_*` | only if you use WhatsApp alerts |
 
-Don't add `KIT_DEV_COUNTRY`, `VERCEL_OIDC_TOKEN` or anything starting with `VERCEL`.
+Don't add anything starting with `STRIPE_`, `KIT_` or `VERCEL`: Stripe and the paid kit are gone from the code.
 
-Then apply the new table. Supabase → **SQL Editor** → paste
-`supabase/migrations/20261024000000_events.sql` → **Run**. If any earlier
+Then apply the new migrations. Supabase → **SQL Editor** → paste
+`supabase/migrations/20261024000000_events.sql` → **Run**, then
+`supabase/migrations/20261025000000_invoice_ref.sql` → **Run** (it renames the
+invoice's Stripe id column to `invoice_ref`; skip it if the `invoices` table doesn't exist yet). If any earlier
 migration from `docs/launch-checklist.md` is not applied yet (for example
 `20261020000000_coach.sql`), run those first, in date order.
 
@@ -125,14 +125,14 @@ npm run cf:deploy:preview     # creates "anadi-site-preview" on *.workers.dev
 ```
 
 Give it test secrets in the dashboard (**anadi-site-preview → Settings →
-Variables and Secrets**): `sk_test_…`, the test `whsec_…`, ideally a test
-Supabase project, and the same Resend key. Then open the printed
+Variables and Secrets**): ideally a test Supabase project, and the same
+Resend key. Then open the printed
 `https://anadi-site-preview.<you>.workers.dev` and check:
 
 - [ ] Home, a note, `/production-ready`, `/about`, `/portfolio` load
 - [ ] Bit chat opens; a typed question gets an answer (if `BIT_AI=on`)
 - [ ] The free first-bug form (`/audit?type=app`) submits; the email arrives
-- [ ] `/production-kit` → checkout with Stripe's test card `4242 4242 4242 4242` → thank-you page → download works
+- [ ] `/products/production-kit` → **Download the kit, free** gives the zip; `/kit/thanks` redirects to the kit page
 - [ ] `/api/health` shows `"ok":true` and `supabaseReachable: reachable`
 - [ ] In Terminal, `curl -sI https://anadi-site-preview.<you>.workers.dev/ | grep -i robots` prints `noindex, nofollow` (preview only; production doesn't send it)
 
@@ -176,7 +176,7 @@ Cloudflare will build it; Vercel stays live until the next step.
    - <https://anadithakur.in/api/health> shows `"ok":true`
    - `/admin`: sign in with your passkey
 
-## Part 8 · Search engines, Stripe and housekeeping (15 min)
+## Part 8 · Search engines and housekeeping (15 min)
 
 1. **Don't let Cloudflare block crawlers.** This is the SEO and GEO step.
    In Cloudflare for the domain, look under **Security → Bots** and **AI Crawl
@@ -192,10 +192,10 @@ Cloudflare will build it; Vercel stays live until the next step.
    resubmit `https://anadithakur.in/sitemap.xml`. **URL Inspection** → **Test
    live URL** on the home page and one note: both should say "URL is available
    to Google". **Bing Webmaster Tools**: resubmit the sitemap there too.
-3. **Stripe** → Developers → Webhooks → your endpoint
-   `https://anadithakur.in/api/stripe-webhook` (unchanged) → open a past
-   successful event → **Resend**. It should show **200** with
-   `"duplicate":true`: the new host has the secret, and nothing is delivered twice.
+3. **Stripe** (optional tidy-up): Developers → Webhooks → delete the endpoint
+   `https://anadithakur.in/api/stripe-webhook`, and archive the kit Products.
+   The site no longer has that endpoint, so Stripe would only log failed
+   deliveries. Your Stripe account itself can stay; it costs nothing.
 4. **cron-job.org**: turn off the hourly heartbeat job. Cloudflare now runs the
    heartbeat every hour, plus the daily jobs at their usual times.
 5. **Logs**: Workers & Pages → anadi-site → **Logs** is where `console` output
@@ -229,4 +229,4 @@ Vercel serves the site again within minutes. The code on `main` runs on both.
 | Page views | Cloudflare Web Analytics | free |
 | Button events | Supabase `events` table | free tier |
 | AI answers | Vercel AI Gateway (key) | free monthly credit |
-| Database, email, payments | Supabase, Resend, Stripe | as before |
+| Database, email | Supabase, Resend | as before |

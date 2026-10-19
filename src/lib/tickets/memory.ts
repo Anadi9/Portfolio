@@ -194,7 +194,7 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
     },
     async planInvoices(ticketId, plans, currency) {
       for (let i = invoices.length - 1; i >= 0; i--) if (invoices[i].ticketId === ticketId && invoices[i].status === 'planned') invoices.splice(i, 1);
-      const made = plans.map<Invoice>((p) => ({ ...p, id: id('inv'), ticketId, currency, status: 'planned', stripeInvoiceId: null, createdAt: now() }));
+      const made = plans.map<Invoice>((p) => ({ ...p, id: id('inv'), ticketId, currency, status: 'planned', invoiceRef: null, createdAt: now() }));
       invoices.push(...made);
       return made.map((x) => ({ ...x }));
     },
@@ -205,7 +205,7 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
       const x = invoices.find((y) => y.id === iid);
       if (!x) return;
       if (patch.status) x.status = patch.status;
-      if (patch.stripeInvoiceId !== undefined) x.stripeInvoiceId = patch.stripeInvoiceId;
+      if (patch.invoiceRef !== undefined) x.invoiceRef = patch.invoiceRef;
     },
     async clientByEmail(email) {
       const c = clients.get(email.trim().toLowerCase());

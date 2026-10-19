@@ -8,7 +8,6 @@ import { body, cta, hint, p } from '@/components/kit/styles';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/brand/tokens';
 import portrait from '@/assets/portrait.webp';
 import { FREE_KIT, LATEST, PACK_IDS, pack } from '@/data/kit';
-import { parsePageParams } from '@/lib/kit/packs';
 import { KIT } from '@/lib/kit/product';
 
 /**
@@ -26,7 +25,7 @@ import { KIT } from '@/lib/kit/product';
  *
  * Old links still land well: `?pack=<id>` from the free check just opens the
  * page, and `?upgrade=1` (the kit's README) says the full kit is now free. The
- * paid packs, checkout and buyers' downloads pages are untouched server-side.
+ * old thank-you and downloads pages redirect here (`vercel.json`).
  */
 
 const TITLE = 'The Production Kit: free rules and checks for AI-built apps';
@@ -157,7 +156,7 @@ export default function ProductionKit() {
   const [upgradeNote, setUpgradeNote] = useState(false);
 
   // Read after mount: the prerendered HTML has no note, so hydration matches.
-  useEffect(() => setUpgradeNote(parsePageParams(window.location.search).upgrade), []);
+  useEffect(() => setUpgradeNote(new URLSearchParams(window.location.search).get('upgrade') === '1'), []);
 
   return (
     <KitShell>
@@ -198,8 +197,7 @@ export default function ProductionKit() {
               </p>
               {upgradeNote && (
                 <p role="note" style={{ ...body, fontSize: 15, padding: px(s[4], s[5]), background: c.accent, color: p.ink }}>
-                  Bought a pack earlier? The full kit is now free for everyone, and this download is it. Your downloads page
-                  still works.
+                  Looking for the full kit? It’s now free for everyone, and this download is it.
                 </p>
               )}
             </div>

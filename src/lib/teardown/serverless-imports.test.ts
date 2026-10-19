@@ -46,18 +46,9 @@ const GRAPH = [
   'src/lib/teardown/report.ts',
   'src/lib/teardown/score.ts',
   'src/lib/teardown/questions.ts',
-  'src/server/production-kit-checkout.ts',
-  'api/production-kit-download.ts',
-  'api/stripe-webhook.ts',
-  'src/lib/kit/stripe.ts',
-  'src/lib/kit/archive-source.ts',
-  'src/lib/kit/archive.ts',
-  'src/lib/kit/email.ts',
-  'src/lib/kit/product.ts',
-  'src/server/kit-price.ts',
-  'src/lib/kit/geo.ts',
   'src/server/client-error.ts',
   'src/server/event.ts',
+  'src/server/cron/ping.ts',
   'src/server/health.ts',
   'src/lib/monitoring/validate.ts',
   'src/lib/monitoring/with-error-log.ts',
@@ -79,16 +70,6 @@ const GRAPH = [
   'src/lib/notify/whatsapp.ts',
   'src/lib/notify/ticket.ts',
   'src/lib/notify/timeout.ts',
-  'api/kit/[action].ts',
-  'src/lib/kit/handlers.ts',
-  'src/lib/kit/fulfil.ts',
-  'src/lib/kit/packs.ts',
-  'src/lib/kit/store.ts',
-  'src/lib/kit/tokens.ts',
-  'src/data/kit/index.ts',
-  'src/data/kit/types.ts',
-  'src/data/kit/releases/1.2.1.ts',
-  'src/data/kit/releases/1.2.0.ts',
   'src/server/bit/ask.ts',
   'src/lib/bit/ask-handler.ts',
   'src/lib/bit/ai.ts',
@@ -177,9 +158,6 @@ describe('api/ directory: deployable files only', () => {
       '[route].ts',
       'bit',
       'cron',
-      'kit',
-      'production-kit-download.ts',
-      'stripe-webhook.ts',
     ]);
   });
 
@@ -188,7 +166,6 @@ describe('api/ directory: deployable files only', () => {
   });
 
   it.each([
-    ['kit', '[action].ts'],
     ['bit', '[action].ts'],
     ['cron', '[job].ts'],
   ])('has only the one dispatcher in api/%s', (dir, file) => {

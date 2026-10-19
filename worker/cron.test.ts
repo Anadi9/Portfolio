@@ -9,7 +9,7 @@ describe('jobsForHour', () => {
   it('keeps the daily jobs at their vercel.json hours (UTC)', () => {
     expect(jobsForHour(2)).toEqual(['/api/cron/heartbeat', '/api/cron/care']);
     expect(jobsForHour(3)).toEqual(['/api/cron/heartbeat', '/api/cron/summary']);
-    expect(jobsForHour(6)).toEqual(['/api/cron/heartbeat', '/api/kit/ping']);
+    expect(jobsForHour(6)).toEqual(['/api/cron/heartbeat', '/api/cron/ping']);
     expect(jobsForHour(7)).toEqual(['/api/cron/heartbeat', '/api/cron/notify']);
     expect(jobsForHour(8)).toEqual(['/api/cron/heartbeat', '/api/cron/scorecard']);
   });

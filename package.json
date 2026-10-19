@@ -9,10 +9,9 @@
   "scripts": {
     "predev": "node scripts/generate-banners.mjs && node scripts/generate-plan.mjs && node scripts/generate-faq.mjs",
     "dev": "vite-react-ssg dev",
-    "stripe:listen": "stripe listen --events checkout.session.completed,checkout.session.async_payment_succeeded,charge.refunded --forward-to localhost:8080/api/stripe-webhook",
     "covers": "node scripts/generate-covers.mjs",
     "covers:masters": "node scripts/generate-cover-masters.mjs",
-    "prebuild": "node scripts/generate-banners.mjs && node scripts/generate-plan.mjs && node scripts/generate-faq.mjs && vite-node scripts/build-kit-archive.ts",
+    "prebuild": "node scripts/generate-banners.mjs && node scripts/generate-plan.mjs && node scripts/generate-faq.mjs",
     "build": "vite-react-ssg build && node scripts/generate-feeds.mjs && node scripts/generate-share-cards.mjs && node scripts/generate-cf-static.mjs && node scripts/indexnow.mjs",
     "prebuild:dev": "node scripts/generate-banners.mjs && node scripts/generate-plan.mjs && node scripts/generate-faq.mjs",
     "build:dev": "vite-react-ssg build --mode development && node scripts/generate-feeds.mjs && node scripts/generate-share-cards.mjs",

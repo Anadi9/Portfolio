@@ -1,8 +1,8 @@
 import { promiseHours } from '../../data/promises.js';
 
 /**
- * Invoice plans with the site's credits applied. Planned here, created in
- * Stripe by Anadi (this build doesn't write to Stripe).
+ * Invoice plans with the site's credits applied. Planned here; Anadi sends
+ * each invoice himself and records its reference (`invoiceRef`).
  *
  * - Audit: $349, less the $149 teardown if paid within 30 days.
  * - Fix: half to start, half once it's live and the client confirms it works;

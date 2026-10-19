@@ -915,7 +915,7 @@ function CoachBox({ ticket, guard, onChanged }: { ticket: TicketDetail; guard: G
 
 const money = (cents: number, currency: string) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(cents / 100);
 
-/** Planned invoices with credits applied. Anadi creates each in Stripe and pastes the id back. */
+/** Planned invoices with credits applied. Anadi sends each one from his invoicing tool and pastes its reference back. */
 function Invoices({ ticket, guard }: { ticket: TicketDetail; guard: Guard }) {
   const [list, setList] = useState<Invoice[] | null>(null);
   const [work, setWork] = useState<'audit' | 'fix' | 'build'>(ticket.kind === 'build' ? 'build' : ticket.stage === 'audit' ? 'audit' : 'fix');
@@ -933,7 +933,7 @@ function Invoices({ ticket, guard }: { ticket: TicketDetail; guard: Guard }) {
   return (
     <div style={box}>
       <h2 style={h2}>Invoices</h2>
-      <p style={small}>Planned here with the audit and teardown credits applied. Create each one in Stripe, then paste its id and mark it sent.</p>
+      <p style={small}>Planned here with the audit and teardown credits applied. Send each one from your invoicing tool, then paste its reference and mark it sent.</p>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -976,9 +976,9 @@ function Invoices({ ticket, guard }: { ticket: TicketDetail; guard: Guard }) {
 }
 
 function InvoiceRow({ inv, ticketId, guard, onChanged }: { inv: Invoice; ticketId: string; guard: Guard; onChanged: () => void }) {
-  const [stripeId, setStripeId] = useState(inv.stripeInvoiceId ?? '');
+  const [reference, setReference] = useState(inv.invoiceRef ?? '');
   const set = async (status: InvoiceStatus) => {
-    if (guard(await admin.invoiceStatus(ticketId, inv.id, status, stripeId.trim()))) onChanged();
+    if (guard(await admin.invoiceStatus(ticketId, inv.id, status, reference.trim()))) onChanged();
   };
   return (
     <div style={{ borderTop: '1px solid var(--bq-rule)', paddingTop: 8, display: 'grid', gap: 6 }}>
@@ -994,7 +994,7 @@ function InvoiceRow({ inv, ticketId, guard, onChanged }: { inv: Invoice; ticketI
       </ul>
       {inv.afterConfirm && <p style={small}>Only after the client confirms it works.</p>}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <input aria-label="Stripe invoice id" value={stripeId} onChange={(e) => setStripeId(e.target.value)} placeholder="in_…" style={{ minHeight: 36, padding: '0 8px', border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)' }} />
+        <input aria-label="Invoice reference" value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Invoice reference" style={{ minHeight: 36, padding: '0 8px', border: 'var(--bq-border-thin)', background: 'var(--bq-bg)', color: 'var(--bq-ink)' }} />
         {inv.status !== 'sent' && inv.status !== 'paid' && (
           <button type="button" style={{ ...btn, minHeight: 36 }} onClick={() => set('sent')}>
             Mark sent

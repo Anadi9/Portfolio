@@ -10,7 +10,7 @@
 const DAILY: Record<number, string> = {
   2: '/api/cron/care',
   3: '/api/cron/summary',
-  6: '/api/kit/ping',
+  6: '/api/cron/ping',
   7: '/api/cron/notify',
   8: '/api/cron/scorecard',
 };

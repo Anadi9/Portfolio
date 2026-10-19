@@ -133,32 +133,12 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/Scan').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Scan.tsx',
       },
-      // The kit's sales page, and where the old single-product checkout returned
-      // buyers (kept: its download links are in earlier buyers' inboxes).
+      // The kit's page: a free download. The old thank-you and downloads pages
+      // (from when it was sold) redirect here, see `vercel.json`.
       {
         path: '/products/production-kit',
         lazy: () => import('./pages/ProductionKit').then((m) => ({ Component: m.default })),
         entry: 'src/pages/ProductionKit.tsx',
-      },
-      {
-        path: '/products/production-kit/thanks',
-        lazy: () => import('./pages/ProductionKitThanks').then((m) => ({ Component: m.default })),
-        entry: 'src/pages/ProductionKitThanks.tsx',
-      },
-      // Pack purchases. Where Stripe returns a buyer, and the downloads page
-      // their email links to. `/kit/downloads/:token` prerenders once, as
-      // `/kit/downloads/_`, and `vercel.json` rewrites every token to that shell;
-      // the page reads the token from the URL after mount.
-      {
-        path: '/kit/thanks',
-        lazy: () => import('./pages/KitThanks').then((m) => ({ Component: m.default })),
-        entry: 'src/pages/KitThanks.tsx',
-      },
-      {
-        path: '/kit/downloads/:token',
-        lazy: () => import('./pages/KitDownloads').then((m) => ({ Component: m.default })),
-        entry: 'src/pages/KitDownloads.tsx',
-        getStaticPaths: () => ['/kit/downloads/_'],
       },
       {
         path: '/notes',
@@ -221,7 +201,7 @@ export const routes: RouteRecord[] = [
         },
       },
 
-      // The policy pages Stripe India asks for before it activates payments.
+      // The policy pages: support, terms, privacy, refunds.
       ...(['Support', 'Terms', 'Privacy', 'Refunds'] as const).map((name) => ({
         path: `/${name.toLowerCase()}`,
         lazy: () => import('./pages/Legal').then((m) => ({ Component: m[name] })),

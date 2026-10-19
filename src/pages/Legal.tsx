@@ -8,8 +8,7 @@ import { BUSINESS, LEGAL_PATHS } from '@/data/legal';
 import { KIT } from '@/lib/kit/product';
 
 /**
- * `/support`, `/terms`, `/privacy`, `/refunds`: the pages Stripe India asks for
- * before it activates payments. Plain text on the kit's shell, prerendered and
+ * `/support`, `/terms`, `/privacy`, `/refunds`: the site's policy pages. Plain text on the kit's shell, prerendered and
  * indexable, with every business detail read from `data/legal`.
  */
 
@@ -91,7 +90,7 @@ export function Support() {
           items={[
             <>Lost your download link? It’s in the inbox of the email address you paid with. Check spam, or email me from that address and I’ll resend it.</>,
             <>Want a refund? See the <Link to={LEGAL_PATHS.refunds} style={a}>refund &amp; cancellation policy</Link>, then email me with the address you paid with.</>,
-            <>Include your order email and, if you have it, the Stripe receipt number. It makes things faster.</>,
+            <>Include your order email and, if you have it, the receipt or invoice number. It makes things faster.</>,
           ]}
         />
       </Section>
@@ -118,8 +117,8 @@ export function Terms() {
       </Section>
       <Section title="Prices and payment">
         <P>
-          Prices are shown in US dollars, or in Indian rupees if you are in India, and include any fees. Payments are processed by
-          Stripe; I never see or store your card details. You’re charged once, at checkout.
+          Prices are shown in US dollars, or in Indian rupees if you are in India, and include any fees. Payments are made through
+          the payment provider named on your invoice; I never see or store your card details.
         </P>
       </Section>
       <Section title="Delivery">
@@ -181,7 +180,7 @@ export function Privacy() {
       <Section title="What I collect">
         <List
           items={[
-            <><strong>When you buy:</strong> your email address, name and country, and a record of what you bought. Card details go to Stripe and never reach me.</>,
+            <><strong>When you buy:</strong> your email address, name and country, and a record of what you bought. Card details go to the payment provider and never reach me.</>,
             <><strong>When you ask for an audit, a first-bug review or a teardown report:</strong> what you type into the form, usually your name, email, a link to your project, its tech stack and a description of the problem. Optionally a WhatsApp number and a budget.</>,
             <><strong>When you send a request through Bit:</strong> Bit, the assistant on the site, runs its scripted questions in your browser and sends nothing until you submit. If you do, the answers and your contact details are saved as a ticket (a number like A-1001) so I can track your request.</>,
             <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below), with the buttons you tapped in the chat so far. Your name, email and app link are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
@@ -244,7 +243,6 @@ export function Privacy() {
         <P>Your data is shared only with the services that run the site, each under its own privacy and security terms:</P>
         <List
           items={[
-            <><strong>Stripe</strong>: payments and receipts.</>,
             <><strong>Supabase</strong>: the order records behind your downloads page, tickets, and reviews.</>,
             <><strong>Resend</strong>: sending delivery, receipt, report and reply emails.</>,
             <><strong>Cloudflare</strong>: hosting, content delivery, anonymous page-view analytics and logs.</>,
@@ -301,7 +299,7 @@ export function Refunds() {
         <List
           items={[
             <>I confirm your refund by email within 2 business days of your request.</>,
-            <>The money goes back to the card or account you paid with, through Stripe. It usually arrives within 5–10 business days, depending on your bank.</>,
+            <>The money goes back to the card or account you paid with. It usually arrives within 5–10 business days, depending on your bank.</>,
             <>Once refunded, your download link stops working.</>,
           ]}
         />

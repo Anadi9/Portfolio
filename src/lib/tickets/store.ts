@@ -82,7 +82,7 @@ export interface TicketStore {
   /** Invoice plans (Phase 7). Replaces the ticket's still-`planned` rows. */
   planInvoices(ticketId: string, plans: InvoicePlan[], currency: 'usd' | 'inr'): Promise<Invoice[]>;
   invoicesFor(ticketId: string): Promise<Invoice[]>;
-  updateInvoice(id: string, patch: { status?: InvoiceStatus; stripeInvoiceId?: string | null }): Promise<void>;
+  updateInvoice(id: string, patch: { status?: InvoiceStatus; invoiceRef?: string | null }): Promise<void>;
   clientByEmail(email: string): Promise<{ id: string; email: string } | null>;
   /** The client's own tickets, newest first. */
   ticketsForClient(clientId: string): Promise<TicketRow[]>;
@@ -212,7 +212,7 @@ const toInvoice = (r: Row): Invoice => ({
   currency: r.currency,
   afterConfirm: r.after_confirm,
   status: r.status,
-  stripeInvoiceId: r.stripe_invoice_id,
+  invoiceRef: r.invoice_ref,
   createdAt: r.created_at,
 });
 
@@ -509,7 +509,7 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
     async updateInvoice(id, patch) {
       const row: Row = { updated_at: new Date().toISOString() };
       if (patch.status) row.status = patch.status;
-      if (patch.stripeInvoiceId !== undefined) row.stripe_invoice_id = patch.stripeInvoiceId;
+      if (patch.invoiceRef !== undefined) row.invoice_ref = patch.invoiceRef;
       const { error } = await db.from('invoices').update(row).eq('id', id);
       if (error) fail('update invoice', error);
     },

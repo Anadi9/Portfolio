@@ -10,7 +10,7 @@ import { loadEnv, type Plugin } from 'vite';
  * It fills in the slice of Vercel's request/response helpers these functions
  * use (`req.query`, `req.body`, `res.status().json()/.send()`) and nothing more.
  * `.env.local` and friends are loaded into `process.env` the way Vercel would
- * provide them, and so are the `x-forwarded-*` headers Vercel's edge adds. A function exporting `config.api.bodyParser = false` (the Stripe
+ * provide them, and so are the `x-forwarded-*` headers Vercel's edge adds. A function exporting `config.api.bodyParser = false` (a
  * webhook) gets the untouched stream, since its signature is over the raw bytes.
  * Dev only: production still runs these as Vercel Functions.
  */

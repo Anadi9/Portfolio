@@ -77,7 +77,7 @@ const Op = z.discriminatedUnion('op', [
     teardownPaidAt: z.string().datetime({ offset: true }).optional(),
   }),
   z.object({ op: z.literal('invoices'), id: z.string().min(1).max(80) }),
-  z.object({ op: z.literal('invoiceStatus'), id: z.string().min(1).max(80), invoiceId: z.string().min(1).max(80), status: z.enum(['planned', 'sent', 'paid', 'void']), stripeInvoiceId: z.string().max(100).optional() }),
+  z.object({ op: z.literal('invoiceStatus'), id: z.string().min(1).max(80), invoiceId: z.string().min(1).max(80), status: z.enum(['planned', 'sent', 'paid', 'void']), invoiceRef: z.string().max(100).optional() }),
   z.object({ op: z.literal('taskDone'), id: z.string().min(1).max(80), key: z.string().min(1).max(60) }),
   z.object({ op: z.literal('keep'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80) }),
   z.object({ op: z.literal('missReason'), id: z.string().min(1).max(80), commitmentId: z.string().min(1).max(80), reason: z.string().trim().min(1).max(1000) }),
@@ -297,7 +297,7 @@ export function createAdminHandler(deps: AdminDeps) {
         if (inv.afterConfirm && (body.status === 'sent' || body.status === 'paid') && !confirmed) {
           return res.status(409).json({ error: 'The second half is due only after the client confirms it works (tick "Client confirms it works" first).' });
         }
-        await store.updateInvoice(inv.id, { status: body.status, ...(body.stripeInvoiceId !== undefined ? { stripeInvoiceId: body.stripeInvoiceId || null } : {}) });
+        await store.updateInvoice(inv.id, { status: body.status, ...(body.invoiceRef !== undefined ? { invoiceRef: body.invoiceRef || null } : {}) });
         return res.status(200).json({ ok: true });
       }
 

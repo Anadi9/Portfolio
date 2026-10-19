@@ -8,7 +8,7 @@ export type Pack = {
   tagline: string;
   /** The problem the pack answers, in the buyer's words. The pain cards' headline. */
   problem: string;
-  /** A suggestion only. What a buyer pays comes from Stripe. */
+  /** From the manifest, from when the packs were sold. Not shown or charged. */
   priceUsdCents: number;
   zip: string;
   bytes: number;

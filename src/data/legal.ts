@@ -1,10 +1,9 @@
 /**
- * The business details the policy pages publish. Stripe India requires the
- * registered address and a domestic phone number on the support page, and its
- * reviewers compare them against the account, so they live in one place.
+ * The business details the policy pages publish (registered address and a
+ * domestic phone number on the support page), in one place.
  */
 export const BUSINESS = {
-  /** Legal name of the sole proprietor, as on the Stripe account. */
+  /** Legal name of the sole proprietor. */
   legalName: 'Anadi Thakur',
   /** Registered address, one line per entry. */
   address: ['TODO: street address', 'TODO: city, state, PIN code', 'India'],

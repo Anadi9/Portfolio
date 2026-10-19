@@ -59,8 +59,8 @@ export const admin = {
   planInvoices: (id: string, work: 'audit' | 'fix' | 'build', currency: 'usd' | 'inr', priceCents?: number, teardownPaidAt?: string) =>
     call<{ invoices: Invoice[] }>({ op: 'planInvoices', id, work, currency, ...(priceCents ? { priceCents } : {}), ...(teardownPaidAt ? { teardownPaidAt } : {}) }),
   invoices: (id: string) => call<{ invoices: Invoice[] }>({ op: 'invoices', id }),
-  invoiceStatus: (id: string, invoiceId: string, status: InvoiceStatus, stripeInvoiceId?: string) =>
-    call<Ok>({ op: 'invoiceStatus', id, invoiceId, status, ...(stripeInvoiceId !== undefined ? { stripeInvoiceId } : {}) }),
+  invoiceStatus: (id: string, invoiceId: string, status: InvoiceStatus, invoiceRef?: string) =>
+    call<Ok>({ op: 'invoiceStatus', id, invoiceId, status, ...(invoiceRef !== undefined ? { invoiceRef } : {}) }),
   draftReport: (id: string) => call<{ ok: true; messageId: string; overall: number | null }>({ op: 'draftReport', id }),
   taskDone: (id: string, key: string) => call<Ok>({ op: 'taskDone', id, key }),
   keep: (id: string, commitmentId: string) => call<Ok>({ op: 'keep', id, commitmentId }),

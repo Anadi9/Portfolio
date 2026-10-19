@@ -1,6 +1,4 @@
-import kitZip from './generated/production-kit.zip';
 import { SECURITY_HEADERS } from '../scripts/lib/cf-static.mjs';
-import { setKitArchive } from '../src/lib/kit/archive-source';
 import { runWithContext } from '../src/lib/runtime/wait-until';
 import { runVercelHandler } from './adapter';
 import { jobsForHour } from './cron';
@@ -17,8 +15,6 @@ import { resolveApi } from './router';
  * rules from `worker/host.ts`. Off production (`SITE_ENV`), every response is
  * marked noindex, the way Vercel treats preview deployments.
  */
-
-setKitArchive(new Uint8Array(kitZip));
 
 const SITE = 'https://anadithakur.in';
 

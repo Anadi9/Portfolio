@@ -14,8 +14,10 @@ describe('toCloudflareStatic: redirects', () => {
     expect(lines).toContain('/rescue /production-ready 301');
   });
 
-  it('turns the downloads rewrite into a 200 rewrite', () => {
-    expect(lines).toContain('/kit/downloads/:token /kit/downloads/_ 200');
+  it('sends the retired kit purchase pages to the kit page', () => {
+    expect(lines).toContain('/kit/downloads/:token /products/production-kit 301');
+    expect(lines).toContain('/kit/thanks /products/production-kit 301');
+    expect(lines).toContain('/products/production-kit/thanks /products/production-kit 301');
   });
 
   it('skips every host-conditioned rule (the Worker and a Redirect Rule handle those)', () => {
@@ -38,10 +40,6 @@ describe('toCloudflareStatic: headers', () => {
     expect(Object.keys(SECURITY_HEADERS)).toHaveLength(6);
   });
 
-  it('maps /kit/(.*) to /kit/*', () => {
-    expect(block('/kit/*')).toContain('  X-Robots-Tag: noindex');
-  });
-
   it('keeps the exact-path blocks', () => {
     expect(block('/admin')).toContain('  Cache-Control: no-store');
     expect(block('/portal')).toContain('  X-Robots-Tag: noindex, nofollow');
@@ -53,6 +51,7 @@ describe('toCloudflareStatic: headers', () => {
     expect(csp).toContain('https://static.cloudflareinsights.com');
     expect(csp).toContain('https://cloudflareinsights.com');
     expect(csp).not.toContain('vercel-scripts');
+    expect(csp).not.toContain('stripe');
   });
 });
 

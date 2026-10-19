@@ -42,18 +42,14 @@ Vercel dashboard, your project, Settings, Environment Variables. Add each to **P
 | `AI_GATEWAY_API_KEY` | Vercel, AI Gateway, API keys | Optional | Gateway auth outside Vercel, or if you prefer a key | On Vercel, deployments authenticate to the AI Gateway by OIDC automatically; no key needed |
 | `BIT_AI_MODEL` | A gateway model id | Optional | Primary model | `anthropic/claude-haiku-5.5` |
 | `BIT_AI_FALLBACK_MODEL` | A model Groq serves on the gateway (`openai/gpt-oss-120b` also works) | Optional | Fallback model (routing pinned to Groq) | `openai/gpt-oss-20b` |
-| `STRIPE_SECRET_KEY` | Stripe, Developers, API keys: live key `sk_live_...` (or restricted `rk_live_...`) on Production, `sk_test_...` on Preview | Required for the **production build** | Kit prices fetched at build; legacy kit checkout/downloads/webhook | Production build **fails** without it (so guessed prices never ship). Preview/dev fall back to manifest prices |
-| `STRIPE_WEBHOOK_SECRET` | Stripe, Developers, Webhooks: the `whsec_...` of the live endpoint | Required while the webhook is live | `/api/stripe-webhook` (earlier buyers, refunds) | Webhook rejects events |
-| `KIT_TOKEN_SECRET` | `openssl rand -base64 32`, a different one per environment | Required while kit orders exist | Signs kit download links | Kit links/webhook fail. **Never change it in production** once buyers hold links |
-| `KIT_DEV_COUNTRY` | `IN` | Local `.env.local` only, **never on Vercel** | Pretend to be an Indian visitor in dev | Dollars |
-| `VERCEL_OIDC_TOKEN`, `VERCEL` | Set by Vercel | Automatic, do not set | AI Gateway auth (`ai.ts` treats either, or `VERCEL=1`, as "authenticated"); `VERCEL_ENV` is read by the kit-price build script | n/a |
+| `VERCEL_OIDC_TOKEN`, `VERCEL` | Set by Vercel | Automatic, do not set | AI Gateway auth (`ai.ts` treats either, or `VERCEL=1`, as "authenticated") | n/a |
 
-Where each is read, for reference: tickets/board/scorecard store `src/lib/tickets/store.ts`; kit store `src/lib/kit/store.ts`; reviews `src/server/review.ts`; emails `src/server/audit.ts`, `src/server/rescue-audit.ts`, `src/server/review.ts`, `api/stripe-webhook.ts`, `src/server/teardown-report.ts`, `src/lib/notify/*`; WhatsApp `src/lib/notify/whatsapp.ts`; AI `src/lib/bit/ai.ts`; crons `src/server/cron/notify.ts`, `src/server/cron/scorecard.ts`, `src/lib/kit/handlers.ts`; Stripe `src/lib/kit/handlers.ts`, `api/stripe-webhook.ts`, `api/production-kit-download.ts`, `scripts/fetch-kit-prices.mjs`; health report `src/lib/monitoring/health.ts`.
+Where each is read, for reference: tickets/board/scorecard store `src/lib/tickets/store.ts`; reviews `src/server/review.ts`; emails `src/server/audit.ts`, `src/server/rescue-audit.ts`, `src/server/review.ts`, `src/server/teardown-report.ts`, `src/lib/notify/*`; WhatsApp `src/lib/notify/whatsapp.ts`; AI `src/lib/bit/ai.ts`; crons `src/server/cron/notify.ts`, `src/server/cron/scorecard.ts`, `src/server/cron/ping.ts`; health report `src/lib/monitoring/health.ts`.
 
 Notes:
 
 - `/api/health` already reports which of Supabase, Resend, WhatsApp and AI are configured.
-- For local testing run `vercel env pull .env.local`. The OIDC token in it expires after 12 hours. (For the Kit's Stripe setup see `docs/stripe-setup.md`, which warns that this overwrites a hand-edited `.env.local`.)
+- For local testing run `vercel env pull .env.local`. The OIDC token in it expires after 12 hours.
 - Hobby plan crons run at most daily. Both new crons are daily (07:00 and 08:00 UTC); they exist in `vercel.json` already.
 
 Done when: every row you need is set in Production and Preview, and you have redeployed.
@@ -122,17 +118,14 @@ Typed questions in Bit's chat go to `POST /api/bit/ask` (AI SDK 7 through the Ve
 
 Limits built in: 10 questions/min and 30 AI answers/hour per IP, 6 AI answers per chat, 500-character questions, 8 s per answer (5 s for the primary before the fallback gets the rest). Any failure (error, timeout, an answer naming a price that is not published in `src/data/bitsQuestFacts.ts`: $349, $149, $299/mo and the package ranges, or any amount in rupees/euros/pounds) falls back to the scripted reply. **The price guard is strict, so some honest answers will fall back to scripted replies. That is expected.**
 
-## 6. Stripe and the Kit: confirm nothing contradicts
+## 6. The Kit is free, and Stripe is gone from the code
 
-The homepage Kit card now says the kit is **free** ("Free · DIY", "Get the free kit"; Bit says "Free download"), and the Kit page (`/products/production-kit`) is one free download with no sign-up. The packs ($5 to $9) and full kit ($19) are no longer sold anywhere on the site: the pack picker is not on any page. Server-side checkout, downloads and the webhook remain for earlier buyers.
+The kit is one free download (`/products/production-kit`); the old pack checkout, buyers' downloads pages, Stripe webhook and Stripe price fetch were removed (19 October 2026; there were no live sales). The old thank-you and downloads URLs redirect to the kit page.
 
 1. Open the homepage Kit card, `/products/production-kit`, `/llms.txt` and Bit's Kit answer. All must say the kit is free. None may show pack prices or "from $5".
-2. In Stripe (live mode), check whether any paid packs are still active. If you no longer sell them, you can leave the Products (the build reads them) or archive them only after reading the next point.
-3. **The production build still reads Stripe Prices by lookup key and fails without `STRIPE_SECRET_KEY`** (`scripts/fetch-kit-prices.mjs`). Keep the live key and the six Prices (`kit_full`, `kit_data_security`, `kit_auth`, `kit_launch`, `kit_ai_discipline`, `kit_lovable_bolt`) in place for the first deploy. The build log should say `[kit-prices] wrote 6 USD and 6 INR prices from Stripe`. Details: `docs/stripe-setup.md`.
-4. Keep `STRIPE_WEBHOOK_SECRET` and `KIT_TOKEN_SECRET` (never change it in production) so earlier buyers' links and refunds keep working. The webhook needs `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`.
-5. If you want to stop selling packs entirely later, that is a separate cleanup (remove the pack prices from the build, keep the buyers' downloads route).
+2. Optional, in Stripe (live mode): delete the webhook endpoint for `/api/stripe-webhook` and archive the kit Products. Nothing reads them now. Don't set any `STRIPE_*` or `KIT_*` variable on the new host.
 
-Done when: nothing public mentions a paid Kit and the preview build log shows the Stripe prices were read.
+Done when: nothing public mentions a paid Kit.
 
 ## 7. Uptime monitor
 
@@ -145,7 +138,7 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
 
 ## 8. Push, preview, smoke test, deploy
 
-1. Push the `repositioning` branch. Vercel builds a Preview. (Preview protection: use the share link or a bypass token for `curl`.) Check the build log for the Stripe prices line (step 6).
+1. Push the `repositioning` branch. Vercel builds a Preview. (Preview protection: use the share link or a bypass token for `curl`.)
 2. Run this smoke test on the **preview URL**.
 
    **Routes.** Open and eyeball: `/`, `/?bit=1`, `/audit`, `/audit?type=app`, `/production-ready`, `/build-with-ai`, `/care`, `/products/production-kit`, `/scorecard`, `/privacy`, `/notes`, `/scan`, `/ai-readiness`, `/dpdp`, `/teardown`, a 404, and `/portfolio` on the portfolio host.
@@ -189,7 +182,7 @@ Done when: the monitor shows both URLs up. Then add the sentence to `/scorecard`
 5. **IndexNow (optional).** Make a key: `openssl rand -hex 16`, and set it as `INDEXNOW_KEY` in Vercel (Production). Every production build then writes `/<key>.txt` and pings IndexNow with the sitemap URLs; the build log shows `[indexnow] N urls → 200` (or 202). Nothing else to do.
 6. **Feed and sitemap.** Check `https://anadithakur.in/rss.xml` in a feed reader (full content) and view-source the sitemap for the trailing-slash root and `<image:image>` entries.
 7. **Uptime sentence.** Once the monitor exists (step 7), add a line on `/scorecard` such as "An uptime monitor checks /api/health every few minutes and emails us if it fails." The page currently says only that `/api/health` reports whether the backend is reachable.
-8. **Care checks, nudges and invoices.** `/api/cron/care` runs daily at 02:00 UTC from `vercel.json` (needs only `CRON_SECRET`): monthly checks for open Care tickets and one drafted follow-up per quiet lead, both waiting in `/admin`. Invoices: on a ticket in `/admin`, "Plan invoices" works out the amounts with credits; create each one in Stripe (Invoices, New, the same lines and amounts), send it from Stripe, then paste the `in_…` id back and press "Mark sent". The second half of a fix can't be marked sent until "Client confirms it works" is ticked.
+8. **Care checks, nudges and invoices.** `/api/cron/care` runs daily at 02:00 UTC from `vercel.json` (needs only `CRON_SECRET`): monthly checks for open Care tickets and one drafted follow-up per quiet lead, both waiting in `/admin`. Invoices: on a ticket in `/admin`, "Plan invoices" works out the amounts with credits; send each one from your invoicing tool (the same lines and amounts), then paste its reference back and press "Mark sent". The second half of a fix can't be marked sent until "Client confirms it works" is ticked.
 9. **Morning summary.** `/api/cron/summary` runs daily at 03:00 UTC (08:30 IST) from `vercel.json`; nothing to set up beyond `CRON_SECRET`. It stays silent on a quiet day.
 10. **Coach's hourly heartbeat.** Vercel runs `/api/cron/heartbeat` once a day (05:00 UTC) as a floor. For the hourly check, create a free job at https://cron-job.org: URL `https://anadithakur.in/api/cron/heartbeat`, every hour, method GET, request header `Authorization: Bearer <your CRON_SECRET>`, and turn on failure notifications to your email. Done when the job's history shows 200s.
 11. **Retention reminder.** Tickets and leads are deleted 24 months after last activity. This is manual until automated: set a recurring quarterly reminder to delete `tickets` and `clients` with no activity for 24 months.

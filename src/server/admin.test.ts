@@ -387,8 +387,8 @@ describe('/api/admin invoices', () => {
     expect((await call({ op: 'invoiceStatus', id: t.id, invoiceId: live.id, status: 'sent' }, { cookie: authed() })).statusCode).toBe(409);
     await mem.store.addTasks(t.id, 'live', [{ key: 'client_confirmed', owner: 'anadi', title: 'Confirmed', doneWhen: 'x' }]);
     await mem.store.completeTask(t.id, 'client_confirmed');
-    expect((await call({ op: 'invoiceStatus', id: t.id, invoiceId: live.id, status: 'sent', stripeInvoiceId: 'in_123' }, { cookie: authed() })).statusCode).toBe(200);
-    expect(mem.invoices.find((i) => i.id === live.id)).toMatchObject({ status: 'sent', stripeInvoiceId: 'in_123' });
+    expect((await call({ op: 'invoiceStatus', id: t.id, invoiceId: live.id, status: 'sent', invoiceRef: 'in_123' }, { cookie: authed() })).statusCode).toBe(200);
+    expect(mem.invoices.find((i) => i.id === live.id)).toMatchObject({ status: 'sent', invoiceRef: 'in_123' });
     expect((await call({ op: 'invoices', id: t.id }, { cookie: authed() })).body.invoices).toHaveLength(2);
   });
 

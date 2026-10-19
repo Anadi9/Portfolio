@@ -9,9 +9,8 @@
  * there needs import attributes that nothing in the build checks. The object is
  * the manifest verbatim; only the wrapper is added.
  *
- * Then add the import to `src/data/kit/index.ts` (newest first), list the new
- * file in `src/lib/teardown/serverless-imports.test.ts`, and upload the zips with
- * `node scripts/kit-upload.mjs <same folder>`.
+ * Then add the import to `src/data/kit/index.ts` (newest first) and copy the
+ * release's full-kit zip into `public/downloads/` (`free.test.ts` checks it).
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -33,4 +32,4 @@ writeFileSync(
     `const release: Release = ${JSON.stringify(manifest, null, 2)};\n\nexport default release;\n`,
 );
 console.log(`wrote ${out}`);
-console.log(`next: import it in src/data/kit/index.ts, list it in src/lib/teardown/serverless-imports.test.ts, and run node scripts/kit-upload.mjs ${dir}`);
+console.log('next: import it in src/data/kit/index.ts and copy the full-kit zip into public/downloads/');

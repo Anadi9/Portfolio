@@ -36,6 +36,5 @@ assets/covers
 .env*
 
 # Cloudflare: build output and local secrets
-worker/generated/
 .wrangler
 .dev.vars*
