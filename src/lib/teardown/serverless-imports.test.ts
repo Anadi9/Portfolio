@@ -50,6 +50,7 @@ const GRAPH = [
   'api/production-kit-download.ts',
   'api/stripe-webhook.ts',
   'src/lib/kit/stripe.ts',
+  'src/lib/kit/archive-source.ts',
   'src/lib/kit/archive.ts',
   'src/lib/kit/email.ts',
   'src/lib/kit/product.ts',

@@ -69,13 +69,13 @@
 - Produces: `resolveApi(pathname: string): { handler: Handler; query: Record<string, string>; raw: boolean } | null`. It imports the default exports of `api/[route].ts`, `api/kit/[action].ts`, `api/bit/[action].ts`, `api/cron/[job].ts`, `api/stripe-webhook.ts` and `api/production-kit-download.ts`, and resolves exactly like `resolveFunction` in `scripts/vite-api-dev.ts`: exact file first, then the folder's `[param]`. `raw` is true when the module exports `config.api.bodyParser === false`.
 - Produces: `runWithContext<T>(ctx: { waitUntil(p: Promise<unknown>): void }, fn: () => T): T` and `waitUntil(p: Promise<unknown>): void` (uses `AsyncLocalStorage` from `node:async_hooks`; with no context the promise just runs, as in dev and tests).
 
-- [ ] Step 1: Tests:
+- [x] Step 1: Tests:
   - router: `/api/scan` → route `scan`; `/api/kit/prices` → action `prices`; `/api/bit/ask`; `/api/cron/heartbeat`; `/api/stripe-webhook` has `raw: true`; `/api/production-kit-download`; `/api/a/b/c` → null; `/api/` → null
   - wait-until: `hands the promise to the context`; `runs without a context`
-- [ ] Step 2: FAIL.
-- [ ] Step 3: Implement both, and switch `background.ts`.
-- [ ] Step 4: `npm test` all green (the existing brief tests still pass).
-- [ ] Step 5: Commit `feat(cf): API router and request-scoped waitUntil`.
+- [x] Step 2: FAIL.
+- [x] Step 3: Implement both, and switch `background.ts`.
+- [x] Step 4: `npm test` all green (the existing brief tests still pass).
+- [x] Step 5: Commit `feat(cf): API router and request-scoped waitUntil`.
 
 ### Task 3: Static config generated from vercel.json, analytics CSP
 
@@ -86,7 +86,7 @@
 **Interfaces:**
 - Produces: `toCloudflareStatic(vercelJson): { headers: string; redirects: string; skipped: string[] }`, and `SECURITY_HEADERS: Record<string, string>` (the `/(.*)` header set, which the Worker reuses for its own responses).
 
-- [ ] Step 1: Tests:
+- [x] Step 1: Tests:
   - `/work-with-me /  301`
   - `/rescue/audit /audit?type=app 301`
   - `/rescue /production-ready 301`
@@ -95,9 +95,9 @@
   - `/(.*)` → `/*` block with all six headers
   - `/kit/(.*)` → `/kit/*`
   - `/admin`, `/portal`, `/admin-sw.js` blocks
-- [ ] Step 2: FAIL.
-- [ ] Step 3: Implement. `generate-cf-static.mjs` reads `vercel.json` and writes `dist/_headers` and `dist/_redirects`; it fails if either exceeds Cloudflare's limits (100 header rules, 2,100 redirects).
-- [ ] Step 4: Pass. Commit `feat(cf): _headers and _redirects generated from vercel.json`.
+- [x] Step 2: FAIL.
+- [x] Step 3: Implement. `generate-cf-static.mjs` reads `vercel.json` and writes `dist/_headers` and `dist/_redirects`; it fails if either exceeds Cloudflare's limits (100 header rules, 2,100 redirects).
+- [x] Step 4: Pass. Commit `feat(cf): _headers and _redirects generated from vercel.json`.
 
 ### Task 4: Kit archive built at build time; web push without node:https
 

@@ -1,6 +1,5 @@
-import { join } from 'node:path';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { buildKitArchive } from '../src/lib/kit/archive.js';
+import { kitArchive } from '../src/lib/kit/archive-source.js';
 import { KIT } from '../src/lib/kit/product.js';
 import { getSession, isPaidKitSession, isSessionId } from '../src/lib/kit/stripe.js';
 
@@ -13,8 +12,9 @@ import { getSession, isPaidKitSession, isSessionId } from '../src/lib/kit/stripe
  * gets the zip. Anyone the buyer forwards the link to can download it too, which
  * for a $19 (₹1,599) folder of Markdown is the right trade against accounts and passwords.
  *
- * The kit folder reaches the function through `includeFiles` in `vercel.json`;
- * the path below is read at runtime, so file tracing can't see it on its own.
+ * On Vercel the kit folder reaches the function through `includeFiles` in
+ * `vercel.json` and is zipped on request; on Cloudflare the zip is built with
+ * the site (`src/lib/kit/archive-source.ts`).
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -39,7 +39,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(403).send('This link isn’t for a completed purchase of the kit.');
   }
 
-  const zip = buildKitArchive(join(process.cwd(), 'products', KIT.archive));
+  const zip = kitArchive();
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', `attachment; filename="${KIT.archive}.zip"`);
   res.setHeader('Content-Length', String(zip.byteLength));

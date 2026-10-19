@@ -104,3 +104,5 @@ task: what was done, the commit, and any manual step it creates for Anadi.
 Plan: `docs/superpowers/plans/2026-10-19-cloudflare-migration.md`. Manual steps: `docs/cloudflare-migration-guide.md`.
 
 - Task 1: `worker/adapter.ts` runs the Vercel-style handlers on Fetch requests (raw body, every Set-Cookie, trusted forwarding headers, 500 on throw or no response) (`0434d7b`). Manual: none.
+- Task 2: `worker/router.ts` resolves `/api/...` to the same `api/` files and params as Vercel; `src/lib/runtime/wait-until.ts` replaces `@vercel/functions` (Worker context, or Vercel's own) (`c083dc7`). Manual: none.
+- Task 3: `scripts/lib/cf-static.mjs` + `scripts/generate-cf-static.mjs` write `dist/_headers` and `dist/_redirects` from `vercel.json`; host rules left to the Worker and a Redirect Rule; CSP allows Cloudflare's beacon (`1dcd295`). Manual: none.

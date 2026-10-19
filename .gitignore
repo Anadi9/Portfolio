@@ -34,3 +34,8 @@ assets/covers
 .env*.local
 .vercel
 .env*
+
+# Cloudflare: build output and local secrets
+worker/generated/
+.wrangler
+.dev.vars*
