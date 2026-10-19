@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
-import { track } from '@vercel/analytics';
+import { track } from '@/lib/analytics/track';
 import { Seo, ORIGIN } from '@/components/Seo';
 import KitShell, { Check } from '@/components/kit/KitShell';
 import { body, cta, hint, p } from '@/components/kit/styles';

@@ -1,0 +1,45 @@
+// Cloudflare Workers config for anadithakur.in. How it fits together:
+// worker/index.ts; the steps only Anadi can do: docs/cloudflare-migration-guide.md.
+// Secrets are never in this file: `wrangler secret put` or the dashboard.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "anadi-site",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // `/about/index.html` is served at `/about`, the canonical URL, and `/about/` redirects to it.
+    "html_handling": "drop-trailing-slash",
+    // A real 404 for unknown paths, never the homepage with a 200.
+    "not_found_handling": "none",
+    // Static files skip the Worker (free, and outside the 100k/day request limit).
+    "run_worker_first": ["/api/*", "/", "/portfolio"]
+  },
+  // No *.workers.dev copy of the production site for search engines to find.
+  "workers_dev": false,
+  "preview_urls": false,
+  "triggers": { "crons": ["0 * * * *"] },
+  "rules": [{ "type": "Data", "globs": ["**/*.zip"] }],
+  "vars": { "SITE_ENV": "production" },
+  "observability": { "enabled": true },
+  "env": {
+    // `wrangler deploy --env preview`: test keys, no crons, noindex everywhere.
+    "preview": {
+      "name": "anadi-site-preview",
+      "workers_dev": true,
+      "preview_urls": false,
+      "triggers": { "crons": [] },
+      "vars": { "SITE_ENV": "preview" },
+      "assets": {
+        "directory": "./dist",
+        "binding": "ASSETS",
+        "html_handling": "drop-trailing-slash",
+        "not_found_handling": "none",
+        // Every response through the Worker, so each one gets the noindex header.
+        "run_worker_first": true
+      }
+    }
+  }
+}

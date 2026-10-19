@@ -109,9 +109,9 @@
 - Produces: `setKitArchive(bytes: Uint8Array): void` and `kitArchive(): Uint8Array` (the injected bytes, else `buildKitArchive(join(process.cwd(), 'products', KIT.archive))`).
 - `push.ts`: the send goes through `webpush.generateRequestDetails(...)` plus an injectable `fetch`, so it no longer needs `node:https`. Same public signature, same results for 404/410 (expired subscription).
 
-- [ ] Step 1: Spike (scratchpad, not committed): a throwaway Worker that calls `webpush.generateRequestDetails` with a generated P-256 subscription under `wrangler dev` with `nodejs_compat`. If it throws, replace `web-push` with a WebCrypto implementation (RFC 8291 aes128gcm + RFC 8292 VAPID ES256), keeping `push.ts`'s exported signature, and note it in loop-progress.
-- [ ] Step 2: Tests: `kitArchive returns injected bytes`; `falls back to the folder` (the zip's entries equal those from `buildKitArchive`, without `SALES-PAGE.md`); push `posts the encrypted payload to the endpoint`; `drops the subscription on 410`.
-- [ ] Step 3: Implement. Commit `feat(cf): prebuilt kit zip and fetch-based web push`.
+- [x] Step 1: Spike (scratchpad, not committed): a throwaway Worker that calls `webpush.generateRequestDetails` with a generated P-256 subscription under `wrangler dev` with `nodejs_compat`. If it throws, replace `web-push` with a WebCrypto implementation (RFC 8291 aes128gcm + RFC 8292 VAPID ES256), keeping `push.ts`'s exported signature, and note it in loop-progress.
+- [x] Step 2: Tests: `kitArchive returns injected bytes`; `falls back to the folder` (the zip's entries equal those from `buildKitArchive`, without `SALES-PAGE.md`); push `posts the encrypted payload to the endpoint`; `drops the subscription on 410`.
+- [x] Step 3: Implement. Commit `feat(cf): prebuilt kit zip and fetch-based web push`.
 
 ### Task 5: Worker entry, cron dispatch, wrangler config, analytics endpoint
 

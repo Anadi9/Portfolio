@@ -4,6 +4,7 @@ import aiReadiness from './ai-readiness.js';
 import audit from './audit.js';
 import board from './board.js';
 import clientError from './client-error.js';
+import event from './event.js';
 import health from './health.js';
 import kitPrice from './kit-price.js';
 import portal from './portal.js';
@@ -40,6 +41,7 @@ export const API_ROUTES: Routes = {
   audit,
   board,
   'client-error': clientError,
+  event,
   health,
   'kit-price': kitPrice,
   portal,

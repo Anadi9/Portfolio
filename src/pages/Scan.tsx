@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { Link } from 'vite-react-ssg';
 import { SiteFooter, SiteHeader } from '@/components/site/kit';
-import { track } from '@vercel/analytics';
+import { track } from '@/lib/analytics/track';
 import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { c, display, gutter, heading, label, mono, px, rule, s, sectionY } from '@/components/brand/tokens';
 import { parseScanInput } from '@/lib/scan/validate';

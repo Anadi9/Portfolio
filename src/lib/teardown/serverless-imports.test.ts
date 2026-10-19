@@ -57,6 +57,7 @@ const GRAPH = [
   'src/server/kit-price.ts',
   'src/lib/kit/geo.ts',
   'src/server/client-error.ts',
+  'src/server/event.ts',
   'src/server/health.ts',
   'src/lib/monitoring/validate.ts',
   'src/lib/monitoring/with-error-log.ts',

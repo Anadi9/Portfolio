@@ -1,5 +1,5 @@
 import { Link } from 'vite-react-ssg';
-import { track } from '@vercel/analytics';
+import { track } from '@/lib/analytics/track';
 import { c, display, label, px, rule, s } from '@/components/brand/tokens';
 import type { FixPost } from '@/data/notes';
 import { KIT } from '@/lib/kit/product';

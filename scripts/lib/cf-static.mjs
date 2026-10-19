@@ -1,5 +1,4 @@
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import vercel from '../../vercel.json' with { type: 'json' };
 
 /**
  * `vercel.json` → Cloudflare's `_headers` and `_redirects`.
@@ -10,8 +9,6 @@ import { fileURLToPath } from 'node:url';
  * Rule (`docs/cloudflare-migration-guide.md`) cover them, so they are returned in
  * `skipped` rather than dropped silently.
  */
-
-const VERCEL_JSON = fileURLToPath(new URL('../../vercel.json', import.meta.url));
 
 /** Vercel's path pattern → Cloudflare's: `/(.*)` and `/x/(.*)` become splats; plain paths and `:params` pass through. */
 function path(source) {
@@ -46,8 +43,4 @@ export function toCloudflareStatic(vercelJson) {
 }
 
 /** The headers every response gets (the `/(.*)` block); the Worker adds them to what it answers itself. */
-export const SECURITY_HEADERS = Object.fromEntries(
-  JSON.parse(readFileSync(VERCEL_JSON, 'utf8'))
-    .headers.find((h) => h.source === '/(.*)')
-    .headers.map(({ key, value }) => [key, value]),
-);
+export const SECURITY_HEADERS = Object.fromEntries(vercel.headers.find((h) => h.source === '/(.*)').headers.map(({ key, value }) => [key, value]));

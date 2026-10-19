@@ -9,7 +9,7 @@ const SITE = 'https://anadithakur.in/';
 
 /** Response headers of the live homepage, or null if it can't be reached. */
 async function liveHeaders(): Promise<HeaderCheck | null> {
-  const res = await fetch(SITE, { redirect: 'follow', credentials: 'omit', signal: AbortSignal.timeout(8000) });
+  const res = await fetch(SITE, { redirect: 'follow', signal: AbortSignal.timeout(8000) });
   await res.body?.cancel();
   return checkHeaders(res.headers);
 }

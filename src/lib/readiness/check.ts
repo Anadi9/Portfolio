@@ -10,7 +10,8 @@ import { checkUrl, isPrivateAddress } from './url.js';
  * including each redirect hop, the hostname is re-validated by `checkUrl` and
  * resolved, and any private, loopback or link-local address refuses the
  * fetch. Redirects are followed by hand for that reason, at most three.
- * Every fetch has a timeout and a byte cap, sends no cookies or credentials,
+ * Every fetch has a timeout and a byte cap, sends no cookies or credentials
+ * (server-side fetch has no cookie jar; Workers reject a `credentials` option),
  * and nothing fetched is stored or logged.
  *
  * Residual risk, accepted: a hostile DNS server could answer the lookup with
@@ -66,7 +67,6 @@ export async function safeGet(start: string): Promise<Fetched> {
     const url = await assertPublic(current);
     const res = await fetch(url, {
       redirect: 'manual',
-      credentials: 'omit',
       headers: { 'User-Agent': UA, Accept: 'text/html,text/plain,application/xml;q=0.9,*/*;q=0.5' },
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });

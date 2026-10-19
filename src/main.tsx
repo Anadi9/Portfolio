@@ -1,5 +1,4 @@
 import { ViteReactSSG } from 'vite-react-ssg';
-import { inject } from '@vercel/analytics';
 import { routes } from './routes';
 import { installErrorReporter } from './lib/monitoring/report';
 import './index.css';
@@ -22,17 +21,25 @@ import './styles/brand.css';
 export const createRoot = ViteReactSSG({ routes });
 
 /**
- * Vercel Web Analytics.
+ * Page views: Cloudflare Web Analytics, cookieless, free.
  *
- * This module also runs in Node during the prerender pass, where there is no
- * `document` to attach a script to, so the call is guarded on `window`. There
- * is no root layout route to hang an `<Analytics />` component off (every
- * entry in `routes` is top-level), so the script is injected here instead.
- * `inject` patches `pushState`, which is how react-router navigates, so
- * client-side route changes are counted without any per-page wiring.
+ * The beacon is added only in the browser (this module also runs in Node for
+ * the prerender pass) and only when the build has a site token
+ * (`VITE_CF_BEACON_TOKEN`, see docs/cloudflare-migration-guide.md). `spa: true`
+ * makes it count react-router's client-side navigations too. Funnel events are
+ * our own: `src/lib/analytics/track.ts`.
  */
+function loadPageViewBeacon(token: string | undefined) {
+  if (!token || document.querySelector('script[data-cf-beacon]')) return;
+  const s = document.createElement('script');
+  s.defer = true;
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.dataset.cfBeacon = JSON.stringify({ token, spa: true });
+  document.head.appendChild(s);
+}
+
 if (typeof window !== 'undefined') {
-  inject();
+  loadPageViewBeacon(import.meta.env.VITE_CF_BEACON_TOKEN);
   // Main-site host only; the reporter skips the portfolio host itself.
   installErrorReporter();
 }

@@ -1,4 +1,4 @@
-import { track } from '@vercel/analytics';
+import { track } from '@/lib/analytics/track';
 
 /**
  * Conversion events for the rescue funnel: `audit_cta_click` on `/` (the
