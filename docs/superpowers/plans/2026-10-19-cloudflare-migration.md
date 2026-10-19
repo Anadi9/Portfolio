@@ -40,7 +40,7 @@
 **Interfaces:**
 - Produces: `runVercelHandler(handler: (req: VercelRequest, res: VercelResponse) => unknown, request: Request, opts: { query?: Record<string, string>; raw?: boolean; clientIp?: string; country?: string }): Promise<Response>`
 
-- [ ] Step 1: Write the tests, using Node 22's global `Request`/`Response`:
+- [x] Step 1: Write the tests, using Node 22's global `Request`/`Response`:
   - `parses a JSON body` (`req.body` deep-equals the object)
   - `parses a urlencoded body`
   - `raw mode yields the exact bytes` (`for await` over `req` gives a Buffer equal to the UTF-8 of `'{"a":"₹1,599"}'`; `req.body` undefined)
@@ -54,10 +54,10 @@
   - `500 when the handler never responds`
   - `500 when the handler throws`
   - `HEAD has no body`
-- [ ] Step 2: `npx vitest run worker/adapter.test.ts` → FAIL (module missing).
-- [ ] Step 3: Implement `worker/adapter.ts`. The req is a plain object with `method`, `url`, `headers`, `query`, `cookies: {}`, `body` (JSON / urlencoded / text, mirroring `parseBody` in `scripts/vite-api-dev.ts`) and `[Symbol.asyncIterator]` over the raw bytes. The res supports `status`, `json`, `send`, `end`, `setHeader`, `getHeader`, `hasHeader`, `removeHeader`, `statusCode`, `headersSent`, and resolves a deferred `Response` on the first `json`/`send`/`end`.
-- [ ] Step 4: the tests pass.
-- [ ] Step 5: Commit `feat(cf): adapter from Fetch requests to the Vercel handler shape`.
+- [x] Step 2: `npx vitest run worker/adapter.test.ts` → FAIL (module missing).
+- [x] Step 3: Implement `worker/adapter.ts`. The req is a plain object with `method`, `url`, `headers`, `query`, `cookies: {}`, `body` (JSON / urlencoded / text, mirroring `parseBody` in `scripts/vite-api-dev.ts`) and `[Symbol.asyncIterator]` over the raw bytes. The res supports `status`, `json`, `send`, `end`, `setHeader`, `getHeader`, `hasHeader`, `removeHeader`, `statusCode`, `headersSent`, and resolves a deferred `Response` on the first `json`/`send`/`end`.
+- [x] Step 4: the tests pass.
+- [x] Step 5: Commit `feat(cf): adapter from Fetch requests to the Vercel handler shape`.
 
 ### Task 2: API router, request-scoped waitUntil and country header
 

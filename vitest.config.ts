@@ -16,7 +16,7 @@ export default defineConfig((env) =>
       setupFiles: ['./src/test-setup.ts'],
       // Deliberately not 'api/**': Vercel deploys every file under `api/` as a
       // function, so tests for the handler live in `src` and reach across.
-      include: ['src/**/*.test.ts'],
+      include: ['src/**/*.test.ts', 'worker/**/*.test.ts', 'scripts/**/*.test.ts'],
     },
   }),
 );
