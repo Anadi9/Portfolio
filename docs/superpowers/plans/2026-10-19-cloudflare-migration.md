@@ -180,6 +180,6 @@
   - Search Console and Bing sitemap resubmit
   - Vercel kept as rollback for 7 days, then disconnected
   - rollback steps
-- [ ] Step 1: Write them. `npm test` and `npm run build` green.
-- [ ] Step 2: Commit `docs(cf): privacy, data map and the migration guide`.
-- [ ] Step 3: Append "Cloudflare migration complete" to loop-progress, with the manual steps pointer. Stop the loop.
+- [x] Step 1: Write them. `npm test` and `npm run build` green.
+- [x] Step 2: Commit `docs(cf): privacy, data map and the migration guide`.
+- [x] Step 3: Append "Cloudflare migration complete" to loop-progress, with the manual steps pointer. Stop the loop.
