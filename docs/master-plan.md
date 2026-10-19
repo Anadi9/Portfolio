@@ -10,11 +10,12 @@ makes keeping them automatic.
 **Scope:** Anadi's own website and products only. No multi-tenancy, public API
 or packaging Bit for other agencies (considered and dropped, 18 Oct).
 
-Where things stand (18 Oct 2026): Phases 0 and 1 are built on the
-`repositioning` branch, pending `docs/launch-checklist.md`. Phases 2 onwards are
-not started. The next build is
-`docs/superpowers/plans/2026-10-18-ticket-pipeline-brief-and-admin.md`
-(Phases 2 and 3).
+Where things stand (19 Oct 2026): Phases 0 to 8 are built, apart from the
+open items below. The site has moved from Vercel to Cloudflare Workers
+(`docs/cloudflare-migration-guide.md`) and Stripe is removed: there are no live
+sales, so nothing on the site takes payment. What's left is the launch (accounts,
+keys, migrations, deploy) and Anadi's content and account items. Nothing is
+being built next until the launch is done.
 
 Process: each phase gets a plan in `docs/superpowers/plans/`, then build → test
 → check in the browser → commit. Tick items here when they ship.
@@ -25,11 +26,12 @@ Process: each phase gets a plan in `docs/superpowers/plans/`, then build → tes
 
 - **Budget close to $0 a month.** Supabase, Resend, WhatsApp Cloud API (one
   Meta-approved template per message type), Vercel AI Gateway free credit with a
-  small model, Groq as fallback through the gateway, cron-job.org for hourly
-  pings. Avoid Gemini's free tier and xAI's data-sharing credits: both can train
-  on visitors' messages.
-- **Vercel Hobby.** At most 12 functions, so no new files under `api/`; register
-  handlers in `src/server/routes.ts`. Vercel crons run daily only.
+  small model, Groq as fallback through the gateway, Cloudflare Workers Free for
+  hosting and the hourly cron. Avoid Gemini's free tier and xAI's data-sharing
+  credits: both can train on visitors' messages.
+- **Cloudflare Workers Free (19 Oct, was Vercel Hobby).** 10 ms CPU per request
+  and a 3 MB Worker; one hourly Cron Trigger (`worker/cron.ts`). Register new
+  handlers in `src/server/routes.ts`.
 - **Send policy (16 Oct).** Receipts and stage emails are automatic. Anything
   about price, scope, findings, fit or follow-up nudges is a draft until Anadi
   approves it.
@@ -119,7 +121,8 @@ and the block on a missed promise.
 ## Phase 0: pass our own audit
 
 Reliability and security
-- [x] Site-wide security headers in `vercel.json`.
+- [x] Site-wide security headers in `vercel.json` (copied into `dist/_headers`
+      for Cloudflare at build).
 - [x] Error monitoring for the frontend and `/api/*`.
 - [ ] Uptime monitor on `/` and `/api/health` (endpoint built; the monitor is a
       launch-checklist step).
@@ -146,9 +149,10 @@ Proof
 
 ## Launch
 
-- [ ] Work through `docs/launch-checklist.md` (env vars, migration, Resend,
-      WhatsApp template, AI Gateway, Stripe check, uptime, preview smoke test,
-      deploy, after-launch steps).
+- [ ] Work through `docs/launch-checklist.md` and
+      `docs/cloudflare-migration-guide.md` (env vars, migrations including
+      `events` and `invoice_ref`, Resend, WhatsApp template, AI Gateway, uptime,
+      preview smoke test, deploy, after-launch steps).
 
 ## Phase 2: the promise list and lead processing
 
@@ -189,8 +193,8 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
       conditions and the client email it sends. A ticket can't move on until the
       stage is really done, and a missed commitment blocks the gate until a
       reason is written.
-- [x] **Heartbeat:** `/api/cron/heartbeat`, hourly from cron-job.org with a daily
-      Vercel cron as a floor. At 75% of a window → `at_risk`, a Coach card and an
+- [x] **Heartbeat:** `/api/cron/heartbeat`, hourly (cron-job.org on Vercel; the
+      Cloudflare Cron Trigger since 19 Oct). At 75% of a window → `at_risk`, a Coach card and an
       urgent alert; past due → `missed`, logged, top of tomorrow. This replaces
       the overdue alert (Task 8 of the Phase 2–3 plan).
 - [x] Coach cards in the feed in green.
@@ -231,8 +235,9 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
 - [x] Follow-up nudges for quiet leads (drafts, per the send policy).
 - [x] Invoices linked to tickets, with the audit and teardown credits applied
       (planned in `/admin`; the second half waits for the client's confirmation).
-- [ ] Create those invoices in Stripe automatically. Needs Anadi's OK for code
-      to write to Stripe; until then he copies each plan into Stripe by hand.
+- Dropped (19 Oct): creating those invoices in Stripe automatically. Stripe is
+  removed; invoices carry a free-text `invoice_ref` for whatever tool Anadi bills
+  from. Revisit only if a payment provider comes back.
 
 ## Phase 8: finish the homepage and the products
 
@@ -241,8 +246,8 @@ Same plan as Phase 2. `/admin` starts as the **feed**, not a ticket list.
       checklist column, blog filtered to their topic).
 - [x] Mini-Bit dock, Bit's tour, playable process run (rebrand).
 - [x] Boot screen, scanlines, scroll reveals.
-- [ ] Paid self-serve scans. Needs a new Stripe price, and this build may not
-      change Stripe: blocked until Anadi decides the offer and creates the price.
+- Deferred (19 Oct): paid self-serve scans. Stripe is removed, so this needs
+  Anadi to decide the offer and a payment provider first.
 - [ ] Keep the Production Kit updated (Anadi, content).
 
 ## Running alongside: search and AI visibility
