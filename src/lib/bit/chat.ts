@@ -117,6 +117,11 @@ export const NODES: Record<NodeId, Node> = {
     say: 'That one’s for Anadi himself. Leave your email and I’ll open a ticket with what you told me. He reads every request.',
     opts: [o('Back to start', to('start'))],
   },
+  // Asking for a quote, an audit or Care saves a ticket here, not through a `mailto:` link: those do nothing on a device with no mail app.
+  quote: {
+    say: 'Leave your email and I’ll open a ticket with your answers. Anadi reads it himself and replies with one fixed quote.',
+    opts: [o('Back to start', to('start'))],
+  },
   recProd: { opts: [tour, startOver] },
   recVis: { opts: [tour, startOver] },
   recDpdp: { opts: [tour, startOver] },
@@ -150,7 +155,7 @@ export const NODES: Record<NodeId, Node> = {
     opts: [
       o('Take the Wrapper Test', { href: '/teardown' }),
       o('Do it myself with the Kit', to('kit')),
-      o('Book a $349 audit anyway', { href: mailto('Book the $349 production audit', {}) }),
+      o('Book a $349 audit anyway', to('quote')),
       o('Back to start', to('start')),
     ],
   },
@@ -163,7 +168,7 @@ export const NODES: Record<NodeId, Node> = {
   ai3: { say: 'Optional: roughly how big is the job? I won’t quote from it — Anadi sends a fixed quote after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recAi'))) },
   care: {
     say: 'Care keeps a live app healthy: monitoring, a monthly review and small fixes, month to month, quoted for your product. Search visibility and privacy are re-checked every quarter.',
-    opts: [o('Start Care', { href: mailto('Care plan', {}) }), o('Find my first bug first', to('hunt')), o('Back to start', to('start'))],
+    opts: [o('Start Care', to('quote')), o('Find my first bug first', to('hunt')), o('Back to start', to('start'))],
   },
 };
 
@@ -177,9 +182,9 @@ export function qualify(ans: Answers): 'qurl' | 'notyet' {
   return good >= 3 ? 'qurl' : 'notyet';
 }
 
-const pkgActions = (subject: string, ans: Answers, symptoms: number[] = []): Option[] => [
+const pkgActions = (symptoms: number[] = []): Option[] => [
   o('Find my first bug — free', { href: firstBug(symptoms) }),
-  o('Email Anadi my answers', { href: mailto(subject, ans) }),
+  o('Send Anadi my answers', to('quote')),
   tour,
 ];
 
@@ -195,7 +200,7 @@ export function reply(id: NodeId, ans: Answers): Message[] {
     const symptoms = ans.live === 'Not yet — launching soon' ? [5] : [];
     return [
       { who: 'bit', text: 'Here’s what I’d do:' },
-      { who: 'rec', rec: { title: 'Launch-ready sprint', price: 'Fixed quote', notes, actions: pkgActions('Launch-ready sprint', ans, symptoms) } },
+      { who: 'rec', rec: { title: 'Launch-ready sprint', price: 'Fixed quote', notes, actions: pkgActions(symptoms) } },
     ];
   }
   if (id === 'recVis') {
@@ -205,7 +210,7 @@ export function reply(id: NodeId, ans: Answers): Message[] {
     notes.push('Search & AI visibility is one of the three areas every audit covers.');
     return [
       { who: 'bit', text: 'Sounds like an AI visibility problem:' },
-      { who: 'rec', rec: { title: 'Production audit', price: '$349', notes, actions: pkgActions('Production audit (AI visibility)', ans, [4]) } },
+      { who: 'rec', rec: { title: 'Production audit', price: '$349', notes, actions: pkgActions([4]) } },
     ];
   }
   if (id === 'recDpdp') {
@@ -216,7 +221,7 @@ export function reply(id: NodeId, ans: Answers): Message[] {
     notes.push('Privacy & compliance is one of the three areas every audit covers.');
     return [
       { who: 'bit', text: 'This one’s a privacy question:' },
-      { who: 'rec', rec: { title: 'Production audit', price: '$349', notes, actions: pkgActions('Production audit (privacy)', ans) } },
+      { who: 'rec', rec: { title: 'Production audit', price: '$349', notes, actions: pkgActions() } },
     ];
   }
   if (id === 'recAi') {
@@ -236,7 +241,7 @@ export function reply(id: NodeId, ans: Answers): Message[] {
           title,
           price: fixing ? '$349 · AI checks included' : 'Fixed quote',
           notes,
-          actions: [o('Get a fixed quote', { href: mailto(`${title} quote`, ans) }), o('See the Build with AI packages', { section: 'pricing' }), tour],
+          actions: [o('Get a fixed quote', to('quote')), o('See the Build with AI packages', { section: 'pricing' }), tour],
         },
       },
     ];
@@ -271,7 +276,7 @@ export function reply(id: NodeId, ans: Answers): Message[] {
   }
   // The form's own fallback links (first-bug form, email) sit under the form and replace it if saving fails.
   if (id === 'qurl') out.push({ who: 'form', kind: 'first_bug' });
-  if (id === 'contact') out.push({ who: 'form', kind: 'question' });
+  if (id === 'contact' || id === 'quote') out.push({ who: 'form', kind: 'question' });
   return out;
 }
 

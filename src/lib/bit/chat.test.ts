@@ -69,6 +69,22 @@ describe('Bit chat', () => {
     }
   });
 
+  it('ends Care and quote requests at the in-chat ticket form, not a mailto link', () => {
+    let s = pick(initial(), 'Look after my live app');
+    s = pick(s, 'Start Care');
+    expect(s.node).toBe('quote');
+    expect(s.log.at(-1)).toEqual({ who: 'form', kind: 'question' });
+
+    s = pick(pick(pick(pick(initial(), 'Add AI to my product'), 'Answer questions from our data'), 'Still building'), 'Not sure yet');
+    const rec = s.log.find((m) => m.who === 'rec');
+    if (rec?.who !== 'rec') throw new Error('no rec');
+    const quote = rec.rec.actions.find((a) => a.label === 'Get a fixed quote') as Option;
+    expect(choose(s, quote)?.node).toBe('quote');
+    for (const id of Object.keys(NODES) as (keyof typeof NODES)[]) {
+      for (const a of reply(id, {}).flatMap((m) => (m.who === 'rec' ? m.rec.actions : []))) expect(JSON.stringify(a.to)).not.toContain('mailto:');
+    }
+  });
+
   it('routes free text by keyword, and the unknown to Anadi', () => {
     expect(classify('our supabase login is broken').node).toBe('prod');
     expect(classify('is our cookie banner GDPR ok').node).toBe('dpdp');

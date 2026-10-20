@@ -72,6 +72,9 @@ function Section({ id, label, children }: { id: string; label: string; children:
   );
 }
 
+/** `?bit=` topics, each the label of a start option in Bit's chat. */
+const BIT_TOPICS: Record<string, string> = { ai: 'Add AI to my product', care: 'Look after my live app' };
+
 /* 1 · Hero: Bit pointing at the menu board. Picking an option turns the hero into Bit's chat. */
 export function Hero() {
   const [chat, setChat] = useState<{ first?: string } | null>(null);
@@ -79,8 +82,12 @@ export function Hero() {
   const [picking, setPicking] = useState(false);
   const { search } = useLocation();
   // "Talk to Bit" from any page lands on `/?bit=1`; the homepage's own button fires `bq:chat`.
+  // `?bit=ai` and `?bit=care` (the Build and Care "ask" buttons) open the chat on that topic.
   useEffect(() => {
-    if (new URLSearchParams(search).has('bit')) setChat({});
+    const bit = new URLSearchParams(search).get('bit');
+    if (bit === null) return;
+    setChat({ first: BIT_TOPICS[bit] });
+    document.getElementById('top')?.scrollIntoView({ block: 'start' });
   }, [search]);
   useEffect(() => {
     const open = () => {
@@ -100,7 +107,7 @@ export function Hero() {
       <div className="hq-wrap">
         <h1 id="h-top">{hero.title}</h1>
         {chat ? (
-          <BitChat first={chat.first} onClose={() => setChat(null)} />
+          <BitChat key={chat.first ?? ''} first={chat.first} onClose={() => setChat(null)} />
         ) : picking ? (
           <ServicePicker
             onPick={(first) => {

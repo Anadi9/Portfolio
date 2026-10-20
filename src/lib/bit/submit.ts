@@ -139,7 +139,7 @@ export function applyOutcome(state: ChatState, kind: FormKind, outcome: Outcome,
 
 /** The form is live only while it is the last form in the log and the chat is still at its ending. */
 export function activeFormIndex(state: ChatState): number {
-  if (state.node !== 'qurl' && state.node !== 'contact') return -1;
+  if (state.node !== 'qurl' && state.node !== 'contact' && state.node !== 'quote') return -1;
   for (let i = state.log.length - 1; i >= 0; i--) if (state.log[i].who === 'form') return i;
   return -1;
 }

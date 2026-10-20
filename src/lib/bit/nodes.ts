@@ -11,7 +11,7 @@
 export const NODE_IDS = [
   'start', 'prod', 'prod2', 'prod3', 'prod4', 'vis', 'vis2', 'dpdp', 'dpdp2', 'free', 'teardown', 'kit',
   'ask', 'contact', 'recProd', 'recVis', 'recDpdp', 'recAi', 'recKit', 'blog', 'hunt',
-  'q1', 'q2', 'q3', 'q4', 'qurl', 'notyet', 'ai', 'ai2', 'ai3', 'care',
+  'q1', 'q2', 'q3', 'q4', 'qurl', 'notyet', 'ai', 'ai2', 'ai3', 'care', 'quote',
 ] as const;
 
 export type NodeId = (typeof NODE_IDS)[number];

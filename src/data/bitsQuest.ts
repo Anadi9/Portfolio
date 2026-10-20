@@ -15,8 +15,9 @@ import { FAQ_ITEMS, FREE_CARDS, FREE_MORE, GUARANTEES, PRICE_GROUPS, SERVICES, t
 /** The first-bug form: the one live intake for the Fix offer. */
 export const FIRST_BUG = '/audit?type=app';
 const mail = (subject: string) => `mailto:${site.email}?subject=${encodeURIComponent(subject)}`;
-export const QUOTE_AI = mail('AI build / MVP quote');
-export const QUOTE_CARE = mail('Care plan');
+/** Bit's chat, opened on the topic (`?bit=` in `Hero`): it saves a ticket, where a `mailto:` link does nothing without a mail app. */
+export const QUOTE_AI = '/?bit=ai';
+export const QUOTE_CARE = '/?bit=care';
 export const QUOTE_CUSTOM = mail('Custom package');
 
 export type Cta = { text: string; href: string };
