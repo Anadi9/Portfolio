@@ -11,6 +11,8 @@ import { TerminalHead, type THFace } from '@/components/brand/BitHead';
 import { useInView } from '@/hooks/use-in-view';
 import { NavLogo } from '@/components/brand/BitUI';
 import { ThemeToggle } from '@/components/brand/ThemeToggle';
+import { SiteNavDesktop, SiteNavMobile } from '@/components/site/SiteNav';
+import { CLIENT_LOGIN_HREF } from '@/data/nav';
 
 /**
  * The Bit's Quest pages' shared parts: the hub at `/`, the two service pages and the
@@ -143,19 +145,16 @@ export type ServiceKey = (typeof SERVICES)[number]['key'];
 
 export const auditHref = (type?: ServiceKey) => (type ? `/audit?type=${type}` : '/audit');
 
-/** Brand nav: section anchors on the homepage (work from any page). */
-const NAV = [
-  ['SERVICES', '/#services'],
-  ['PROCESS', '/#quest'],
-  ['PRICING', '/#pricing'],
-  ['TRACKING', '/#board'],
-  ['FREE TOOLS', '/#free'],
-  ['BLOG', '/notes'],
-  ['ABOUT', '/#about'],
-  ['FAQ', '/#faq'],
-] as const;
+/** "Talk to Bit" in the header: on the homepage, open the chat in place rather than re-navigating. */
+const talkToBit = (page: string, service?: ServiceKey) => (e: { preventDefault: () => void }) => {
+  ctaClick(page, 'header', service)();
+  if (window.location.pathname === '/') {
+    e.preventDefault();
+    window.dispatchEvent(new Event('bq:chat'));
+  }
+};
 
-/** Sticky header (design: nav): mini Bit + wordmark, section links, red "Talk to Bit". */
+/** Sticky header (design: nav): mini Bit + wordmark, the menus (`SiteNav`), client login, red "Talk to Bit". */
 export const SiteHeader = ({ page, current, auditType, themeToggle }: { page: string; current?: ServiceKey; auditType?: ServiceKey; themeToggle?: boolean }) => (
   <header
     data-rescue-header
@@ -163,6 +162,7 @@ export const SiteHeader = ({ page, current, auditType, themeToggle }: { page: st
   >
     <div
       style={{
+        position: 'relative',
         maxWidth: 1240,
         margin: '0 auto',
         display: 'flex',
@@ -173,34 +173,17 @@ export const SiteHeader = ({ page, current, auditType, themeToggle }: { page: st
       }}
     >
       <NavLogo />
-      <nav aria-label="Site" className="bq-navlinks" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 18 }}>
-        {NAV.map(([text, href]) => (
-          <a
-            key={href}
-            href={href}
-            data-rescue-navlink
-            className="pf-underline"
-            style={{ ...label(12), color: p.ink, textDecoration: 'none' }}
-          >
-            {text}
-          </a>
-        ))}
-      </nav>
-      <Link
-        to="/?bit=1"
-        onClick={(e) => {
-          ctaClick(page, 'header', auditType ?? current)();
-          // Already on the homepage: open the chat in place rather than re-navigating.
-          if (window.location.pathname === '/') {
-            e.preventDefault();
-            window.dispatchEvent(new Event('bq:chat'));
-          }
-        }}
-        className="bq-btn"
-      >
-        <span aria-hidden>▶</span> Talk to Bit
-      </Link>
-      {themeToggle && <ThemeToggle />}
+      <SiteNavDesktop />
+      <div style={{ display: 'flex', alignItems: 'center', gap: s[4] }}>
+        <Link to={CLIENT_LOGIN_HREF} className="sn-login sn-desk-only">
+          Client login
+        </Link>
+        <Link to="/?bit=1" onClick={talkToBit(page, auditType ?? current)} className="bq-btn sn-talk-wide">
+          <span aria-hidden>▶</span> Talk to Bit
+        </Link>
+        {themeToggle && <ThemeToggle />}
+        <SiteNavMobile onTalkToBit={talkToBit(page, auditType ?? current)} />
+      </div>
     </div>
   </header>
 );

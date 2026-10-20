@@ -10,6 +10,7 @@ import '@fontsource-variable/space-grotesk';
 import '@fontsource/press-start-2p';
 import '@fontsource/jersey-10';
 import './styles/brand.css';
+import './styles/nav.css';
 
 /**
  * SSG entry.

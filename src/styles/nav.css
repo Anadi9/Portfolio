@@ -1,0 +1,178 @@
+/* The header's menus (components/site/SiteNav.tsx). Colours come from the
+   --bq-* tokens in brand.css, so the panels follow the dark theme. Icon tiles
+   stay white in both themes: the pixel icons are drawn in ink. */
+
+/* ---------------------------------------------------------------- desktop */
+
+.sn-root { display: flex; align-items: center; }
+.sn-list { display: flex; align-items: center; gap: 22px; list-style: none; margin: 0; padding: 0; }
+
+.sn-trig {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 0; border-bottom: 3px solid transparent;
+  padding: 10px 2px 7px; cursor: pointer; text-decoration: none;
+  font: 400 10px/1.5 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase;
+  color: var(--bq-ink);
+}
+.sn-trig:hover, .sn-trig[data-state='open'] { border-bottom-color: var(--bq-brand); }
+.sn-trig, .sn-login { white-space: nowrap; }
+.sn-chev { transition: transform 120ms ease; }
+.sn-trig[data-state='open'] .sn-chev { transform: rotate(180deg); }
+.sn-trig:focus-visible, .sn-item:focus-visible, .sn-cat:focus-visible, .sn-post:focus-visible,
+.sn-more:focus-visible, .sn-cta:focus-visible, .sn-burger:focus-visible, .sn-m-row:focus-visible,
+.sn-m-sub:focus-visible, .sn-back:focus-visible, .sn-login:focus-visible {
+  outline: 3px solid var(--bq-brand); outline-offset: 2px;
+}
+
+/* One viewport hangs under the header's 3px rule; every panel renders in it. */
+.sn-viewport-wrap { position: absolute; top: calc(100% + 3px); left: var(--bq-gutter); right: var(--bq-gutter); z-index: 30; pointer-events: none; }
+.sn-viewport {
+  position: relative; width: 100%; pointer-events: auto;
+  height: var(--radix-navigation-menu-viewport-height);
+  transition: height 160ms ease;
+}
+.sn-panel {
+  position: absolute; top: 0; left: 0; right: 0;
+  background: var(--bq-panel); color: var(--bq-ink);
+  border: 3px solid var(--bq-ink); border-top: 0; box-shadow: var(--bq-shadow-lg);
+  animation: sn-in 140ms ease-out;
+}
+.sn-panel-sm { left: auto; right: 210px; width: 340px; padding: 10px; }
+@keyframes sn-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+.sn-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 300px; gap: 24px; padding: 24px; }
+.sn-colh { margin: 0 0 6px 12px; font: 400 9px/1.5 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase; color: var(--bq-brand); }
+.sn-links { list-style: none; margin: 0; padding: 0; }
+
+.sn-item {
+  display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: start;
+  padding: 12px; border: 2px solid transparent; text-decoration: none; color: var(--bq-ink);
+}
+.sn-item-plain { grid-template-columns: minmax(0, 1fr); }
+.sn-item:hover { border-color: var(--bq-ink); background: var(--bq-brand-soft); color: var(--bq-ink); }
+.sn-item b, .sn-m-sub b { display: block; font: 600 16px/1.3 var(--bq-font-body); }
+.sn-desc { display: block; margin-top: 2px; font: 400 13px/1.45 var(--bq-font-body); color: var(--bq-muted); }
+.sn-ico {
+  width: 40px; height: 40px; box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--bq-ink); background: #ffffff;
+}
+
+.sn-feature {
+  display: flex; flex-direction: column; gap: 12px; padding: 20px;
+  background: var(--bq-brand-soft); border: 2px solid var(--bq-ink); color: var(--bq-ink);
+}
+.sn-feature-dark { background: var(--bq-dark-panel); color: var(--bq-dark-panel-text); border-color: var(--bq-dark-panel); box-shadow: 6px 6px 0 var(--bq-brand); }
+.sn-bit { width: 58px; height: 58px; display: flex; align-items: center; justify-content: center; background: #ffffff; border: 2px solid var(--bq-secondary); }
+.sn-eyebrow { font: 400 9px/1.5 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase; color: var(--bq-brand); }
+.sn-feature-dark .sn-eyebrow { color: var(--bq-secondary); }
+.sn-feature-title { font: 400 30px/1 var(--bq-font-display); }
+.sn-feature-body { font: 400 14px/1.5 var(--bq-font-body); color: var(--bq-body-text); }
+.sn-feature-dark .sn-feature-body { color: #c9c9c9; }
+.sn-cta { align-self: flex-start; text-decoration: none; }
+.sn-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px;
+  background: var(--bq-brand); color: var(--bq-brand-text); box-shadow: var(--bq-shadow-sm);
+  font: 400 10px/1.5 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase;
+}
+.sn-feature-dark .sn-btn { box-shadow: 4px 4px 0 var(--bq-secondary); }
+
+.sn-strip {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 14px 36px; border-top: 2px solid var(--bq-ink); background: var(--bq-bg);
+  font: 400 14px/1.5 var(--bq-font-body); color: var(--bq-body-text);
+}
+.sn-more { font: 400 9px/1.5 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase; color: var(--bq-ink); text-decoration: none; }
+.sn-more:hover { color: var(--bq-brand); }
+
+/* Resources: the list on the left picks what the pane on the right shows. */
+.sn-res { display: grid; grid-template-columns: 300px minmax(0, 1fr); }
+.sn-res-list { display: flex; flex-direction: column; gap: 4px; padding: 20px 16px; border-right: 2px solid var(--bq-ink); background: var(--bq-bg); }
+.sn-cat {
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+  padding: 12px 14px; border: 2px solid transparent; background: transparent; cursor: pointer; text-align: left;
+  font: 600 15px/1.3 var(--bq-font-body); color: var(--bq-ink);
+}
+.sn-cat small { font: 400 9px/1.5 'Press Start 2P', ui-monospace, monospace; color: var(--bq-muted); }
+.sn-cat[data-on] { background: var(--bq-panel); border-color: var(--bq-ink); }
+.sn-res-pane { padding: 24px 32px; }
+.sn-res-title { margin: 0 0 4px; font: 400 32px/1 var(--bq-font-display); }
+.sn-res-blurb { margin: 0 0 12px; font: 400 14px/1.5 var(--bq-font-body); color: var(--bq-muted); }
+.sn-post {
+  display: block; padding: 12px 0; border-top: 2px solid var(--bq-rule); text-decoration: none;
+  font: 500 15px/1.4 var(--bq-font-body); color: var(--bq-ink);
+}
+.sn-post:hover { color: var(--bq-brand); }
+.sn-post-date { display: block; margin-bottom: 4px; font: 400 9px/1.6 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase; color: var(--bq-muted); }
+.sn-res-pane .sn-more { display: inline-block; margin-top: 12px; }
+
+.sn-login { font: 400 9px/1.5 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase; color: var(--bq-muted); text-decoration: none; }
+.sn-login:hover { color: var(--bq-brand); }
+.sn-login.sn-desk-only { margin-left: 10px; padding-left: 16px; border-left: 2px solid var(--bq-rule); }
+
+/* ------------------------------------------------- phones, narrow windows */
+
+.sn-burger {
+  display: none; align-items: center; justify-content: center; width: 44px; height: 44px; flex: none;
+  border: 2px solid var(--bq-ink); background: var(--bq-panel); color: var(--bq-ink);
+  box-shadow: 3px 3px 0 var(--bq-ink); cursor: pointer;
+}
+/* "Client login" sits in the header row on wide screens and moves into Meet us below 1360px. */
+.sn-only-mid { display: none; }
+@media (max-width: 1360px) {
+  .sn-login.sn-desk-only { display: none; }
+  .sn-only-mid { display: block; }
+}
+@media (max-width: 1180px) {
+  .sn-burger { display: inline-flex; }
+  .sn-desk-only { display: none !important; }
+}
+/* Phones: "Talk to Bit" leads the menu's footer, so the header keeps only the logo and ☰. */
+@media (max-width: 520px) {
+  .sn-talk-wide { display: none !important; }
+}
+
+.sn-sheet {
+  position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; overflow-y: auto;
+  background: var(--bq-panel); color: var(--bq-ink); font-family: var(--bq-font-body);
+  animation: sn-in 160ms ease-out;
+}
+.sn-sheet-top {
+  position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px; background: var(--bq-bg); border-bottom: 3px solid var(--bq-ink);
+}
+.sn-sheet-title { margin: 0; font: 400 28px/1 var(--bq-font-display); }
+.sn-sheet-top .sn-burger { display: inline-flex; }
+
+.sn-m-level { display: flex; flex-direction: column; flex-grow: 1; }
+.sn-m-in { animation: sn-slide 180ms ease-out; }
+@keyframes sn-slide { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sn-m-nav { display: flex; flex-direction: column; }
+.sn-m-row {
+  display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 56px; box-sizing: border-box;
+  padding: 0 20px; background: none; border: 0; border-bottom: 2px solid var(--bq-rule); cursor: pointer; text-align: left; text-decoration: none;
+  font: 600 18px/1.3 var(--bq-font-body); color: var(--bq-ink);
+}
+.sn-m-row i { font: 400 12px/1 'Press Start 2P', ui-monospace, monospace; font-style: normal; color: var(--bq-brand); }
+.sn-m-sub {
+  display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: start;
+  padding: 12px 20px; border-bottom: 2px solid var(--bq-rule); text-decoration: none; color: var(--bq-ink);
+}
+.sn-m-sub:not(:has(.sn-ico)) { grid-template-columns: minmax(0, 1fr); }
+.sn-m-level .sn-colh { margin: 0; padding: 16px 20px 6px; }
+.sn-back {
+  display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px; background: var(--bq-bg);
+  border: 0; border-bottom: 2px solid var(--bq-ink); cursor: pointer; text-align: left;
+  font: 400 10px/1.5 'Press Start 2P', ui-monospace, monospace; text-transform: uppercase; color: var(--bq-ink);
+}
+.sn-m-feature { padding: 16px 20px 24px; }
+.sn-m-foot {
+  margin-top: auto; display: flex; flex-direction: column; gap: 14px; padding: 20px;
+  border-top: 3px solid var(--bq-ink); background: var(--bq-bg);
+}
+.sn-m-foot .bq-btn { justify-content: center; min-height: 48px; }
+.sn-m-foot .sn-login { align-self: center; padding: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sn-panel, .sn-sheet, .sn-m-in { animation: none; }
+  .sn-viewport, .sn-chev { transition: none; }
+}
