@@ -6,8 +6,35 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import remarkPostData from "./src/lib/remark-post-data.mjs";
+import fs from "fs";
 import path from "path";
+import type { Plugin } from "vite";
 import { vercelApiDev } from "./scripts/vite-api-dev";
+
+// `vite preview` maps `/notes` only to `notes.html` and otherwise falls back to
+// `/index.html`, so with `dirStyle: 'nested'` every page but the hub was served
+// the hub's HTML and hydration failed (React #418/#423). Cloudflare's
+// `html_handling: "drop-trailing-slash"` serves `notes/index.html` at `/notes`;
+// this does the same in preview so it hydrates the page production serves.
+const nestedHtmlPreview = (): Plugin => ({
+  name: "nested-html-preview",
+  configurePreviewServer(server) {
+    const outDir = path.resolve(server.config.root, server.config.build.outDir);
+    server.middlewares.use((req, _res, next) => {
+      const [pathname, query] = (req.url ?? "").split(/(?=\?)/);
+      if (pathname && !pathname.endsWith("/") && !path.extname(pathname)) {
+        let decoded = pathname;
+        try {
+          decoded = decodeURIComponent(pathname);
+        } catch {
+          /* malformed escape: leave it to the default handling */
+        }
+        if (fs.existsSync(path.join(outDir, decoded, "index.html"))) req.url = `${pathname}/index.html${query ?? ""}`;
+      }
+      next();
+    });
+  },
+});
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -33,6 +60,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     // `/api/*` in dev; see the plugin for what it does and doesn't emulate.
     vercelApiDev(),
+    nestedHtmlPreview(),
   ].filter(Boolean),
   resolve: {
     alias: {
