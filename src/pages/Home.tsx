@@ -45,7 +45,7 @@ const Home = () => {
           jobTitle: site.role,
           url: PORTFOLIO_ORIGIN,
           email: `mailto:${site.email}`,
-          sameAs: [site.github, site.linkedin],
+          sameAs: [site.github],
         }}
       />
 

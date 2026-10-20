@@ -8,7 +8,6 @@ const [emailUser, emailHost] = site.email.split('@');
 const cells = [
   { kind: 'EMAIL', value: [emailUser, `@${emailHost}`], href: `mailto:${site.email}`, external: false },
   { kind: 'GITHUB', value: [site.githubHandle], href: site.github, external: true },
-  { kind: 'LINKEDIN', value: [site.linkedinHandle], href: site.linkedin, external: true },
   { kind: 'RESUME', value: ['PDF ↓'], href: site.resume, external: true },
 ];
 
@@ -162,7 +161,7 @@ const Contact = () => (
 
     <div
       data-contact-links="1"
-      style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderTop: `${rule.base}px solid ${c.ink}` }}
+      style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: `repeat(${cells.length},1fr)`, borderTop: `${rule.base}px solid ${c.ink}` }}
     >
       {cells.map((cell, i) => (
         <a
@@ -211,8 +210,8 @@ const Contact = () => (
             <span data-cell-kind="1" style={{ display: 'block', ...label(10, 500, 0.14), opacity: 0.65, marginBottom: s[3] }}>
               {cell.kind}
             </span>
-            {/* Fluid, with a wrap fallback: the LinkedIn handle is 28 mono
-                characters and was clipping against the cell's hidden overflow. */}
+            {/* Fluid, with a wrap fallback, so a long value never clips
+                against the cell's hidden overflow. */}
             <span
               data-cell-value="1"
               style={{

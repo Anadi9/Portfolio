@@ -251,7 +251,6 @@ export const SiteFooter = () => (
           <Link to="/notes" className="pf-underline" style={footLink}>Blog</Link>
           <Link to="/work" className="pf-underline" style={footLink}>Case studies</Link>
           <a href={PORTFOLIO_ORIGIN} className="pf-underline" style={footLink}>Portfolio ↗</a>
-          <a href={site.linkedin} className="pf-underline" style={footLink}>LinkedIn ↗</a>
           <a href={`mailto:${site.email}`} className="pf-underline" style={footLink}>Email</a>
         </nav>
       </div>

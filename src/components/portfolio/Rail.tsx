@@ -91,9 +91,6 @@ const Rail = () => (
         <a href={site.github} target="_blank" rel="noreferrer" data-rail-chip="1" style={chip} aria-label="GitHub">
           GH
         </a>
-        <a href={site.linkedin} target="_blank" rel="noreferrer" data-rail-chip="1" style={chip} aria-label="LinkedIn">
-          IN
-        </a>
       </div>
     </div>
 

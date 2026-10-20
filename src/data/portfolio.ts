@@ -21,8 +21,6 @@ export const site = {
   email: 'anadithakur99@gmail.com',
   github: 'https://github.com/Anadi9',
   githubHandle: '/Anadi9',
-  linkedin: 'https://www.linkedin.com/in/anadi-thakur-92163316b/',
-  linkedinHandle: '/in/anadi-thakur-92163316b',
   resume: '/uploads/Anadi_Thakur_Resume.pdf',
   years: '04',
   releases: '18',

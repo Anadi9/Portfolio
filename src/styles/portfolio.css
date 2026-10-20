@@ -266,7 +266,7 @@ button:focus-visible,
   [data-work-head] { grid-template-columns: 1fr !important; gap: 24px !important; }
   [data-stack-head] { grid-template-columns: 1fr !important; gap: 24px !important; }
   [data-contact-head] { grid-template-columns: 1fr !important; gap: 24px !important; }
-  [data-contact-links] { grid-template-columns: repeat(2, 1fr) !important; }
+  [data-contact-links] { grid-template-columns: repeat(3, 1fr) !important; }
   [data-year] { width: 100% !important; align-self: stretch !important; }
   [data-case-head] { grid-template-columns: 1fr !important; gap: 24px !important; }
   [data-case-results] { gap: 20px !important; }

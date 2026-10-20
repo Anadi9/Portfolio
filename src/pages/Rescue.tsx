@@ -64,7 +64,6 @@ const DESCRIPTION =
 const AUDIT = '/audit?type=app';
 const EMAIL = 'anadithakur99@gmail.com';
 const GITHUB = 'https://github.com/Anadi9';
-const LINKEDIN = 'https://www.linkedin.com/in/anadi-thakur-92163316b/';
 
 /** The light ground. Body copy is the Journey section's grey rather than
  *  `c.dim`, which is tuned for labels and reads thin at paragraph length. */
@@ -996,9 +995,6 @@ const Rescue = () => {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: s[6] }}>
                 <a href={GITHUB} className="pf-underline" style={textLink}>
                   GITHUB ↗
-                </a>
-                <a href={LINKEDIN} className="pf-underline" style={textLink}>
-                  LINKEDIN ↗
                 </a>
                 <a href={PORTFOLIO_ORIGIN} className="pf-underline" style={textLink}>
                   MORE ABOUT ME ↗

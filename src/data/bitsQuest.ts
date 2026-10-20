@@ -265,7 +265,6 @@ export const about = {
   links: [
     { text: 'Portfolio ↗', href: 'https://portfolio.anadithakur.in/' },
     { text: 'GitHub ↗', href: site.github },
-    { text: 'LinkedIn ↗', href: site.linkedin },
   ],
 };
 

@@ -27,7 +27,7 @@ export const PERSON = {
   jobTitle: 'Full-stack engineer',
   url: PORTFOLIO_ORIGIN,
   email: `mailto:${site.email}`,
-  sameAs: [site.github, site.linkedin],
+  sameAs: [site.github],
   worksFor: { '@id': BUSINESS_ID },
   knowsAbout: [
     'Production readiness',
@@ -71,7 +71,7 @@ export const BUSINESS = {
     { '@type': 'Place', name: 'Worldwide' },
   ],
   knowsAbout: ['Production engineering', 'Application security', 'AI feature development', 'MVP development', 'Application maintenance', 'AI visibility', 'Privacy compliance (GDPR, CCPA, DPDP)'],
-  sameAs: [site.linkedin, site.github],
+  sameAs: [site.github],
 };
 
 export const PERSON_REF = { '@id': PERSON_ID };
