@@ -5,7 +5,11 @@
 
 const HOST = 'anadithakur.in';
 
-export const shouldPing = (env) => /^[a-f0-9]{8,128}$/i.test(env.INDEXNOW_KEY ?? '') && env.VERCEL_ENV === 'production';
+// Production = Vercel's production env, or a Cloudflare Workers Build of `main`
+// (Workers Builds sets WORKERS_CI=1 and WORKERS_CI_BRANCH on every build).
+const isProduction = (env) => env.VERCEL_ENV === 'production' || (env.WORKERS_CI === '1' && env.WORKERS_CI_BRANCH === 'main');
+
+export const shouldPing = (env) => /^[a-f0-9]{8,128}$/i.test(env.INDEXNOW_KEY ?? '') && isProduction(env);
 
 export const sitemapUrls = (xml) => [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
 

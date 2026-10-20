@@ -1,6 +1,7 @@
 // Runs last in `npm run build`. Writes the IndexNow key file when INDEXNOW_KEY
 // is set, and pings api.indexnow.org with every sitemap URL on production
-// builds only. Never fails the build.
+// builds only (Vercel production, or a Cloudflare Workers Build of `main`).
+// Never fails the build.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { indexNowPayload, shouldPing, sitemapUrls } from './lib/indexnow.mjs';
