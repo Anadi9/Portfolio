@@ -108,7 +108,7 @@ export function Terms() {
           items={[
             <><strong>{KIT.name}</strong>: free downloadable files (rules, skills, checklists and code). No account, nothing to buy.</>,
             <><strong>Production Readiness and other services</strong>: development and audit work, scoped and agreed in writing with you before any work starts. Those written terms apply alongside these.</>,
-            <>Free tools (the Supabase check, the Wrapper Test and the other checks) and free articles, provided as they are.</>,
+            <>Free tools (the Wrapper Test and the other checks) and free articles, provided as they are.</>,
           ]}
         />
       </Section>
@@ -162,7 +162,6 @@ export function Privacy() {
             <><strong>When you send a request through Bit:</strong> Bit, the assistant on the site, runs its scripted questions in your browser and sends nothing until you submit. If you do, the answers and your contact details are saved as a ticket (a number like A-1001) so I can track your request.</>,
             <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below), with the buttons you tapped in the chat so far. Your name, email and app link are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
             <><strong>When you leave a review:</strong> your name, role, company, rating, review and an optional photo. Nothing is shown publicly until I approve it.</>,
-            <><strong>When you use the free Supabase check:</strong> the project URL and public key you enter are used for that one check and not stored or logged.</>,
             <><strong>When you browse:</strong> anonymous page views (which page, rough country, device type), button events the site counts itself (which button, which page, rough country; your IP address is not stored), and technical error reports from your browser (the error message, file, line and page path, with nothing that identifies you). No cookies, except one if you sign in to see your requests (below).</>,
           ]}
         />

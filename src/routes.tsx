@@ -26,7 +26,7 @@ export const routes: RouteRecord[] = [
     // a page it would unmount the moment the new page arrived, which is exactly
     // when the bar has to finish. Children carry absolute paths: the
     // prerenderer joins a relative child onto its parent prefix, and with `/`
-    // as the parent that produces `scan` rather than `/scan`.
+    // as the parent that produces `care` rather than `/care`.
     path: '/',
     element: <RouteTransition />,
     children: [
@@ -125,13 +125,6 @@ export const routes: RouteRecord[] = [
         path: '/review',
         lazy: () => import('./pages/Review').then((m) => ({ Component: m.default })),
         entry: 'src/pages/Review.tsx',
-      },
-      // The free Supabase security check: a lead magnet for the rescue offer.
-      // Its findings CTA deep-links into `/audit?type=app&s=1`.
-      {
-        path: '/scan',
-        lazy: () => import('./pages/Scan').then((m) => ({ Component: m.default })),
-        entry: 'src/pages/Scan.tsx',
       },
       // The kit's page: a free download. The old thank-you and downloads pages
       // (from when it was sold) redirect here, see `vercel.json`.

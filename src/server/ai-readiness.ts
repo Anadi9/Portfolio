@@ -11,7 +11,7 @@ import { clientIp, createRateLimiter } from '../lib/scan/rate-limit.js';
  * per-check findings and the AI crawlers robots.txt blocks. The raw page is
  * never returned, stored or logged; see `check.ts` for the SSRF guard.
  *
- * Same-origin only (no CORS headers) and rate limited per IP, like `/api/scan`.
+ * Same-origin only (no CORS headers) and rate limited per IP, like the other public APIs.
  */
 
 const limiter = createRateLimiter(6, 60_000);

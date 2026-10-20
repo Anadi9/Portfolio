@@ -3,14 +3,14 @@ import { track } from '@/lib/analytics/track';
 import { c, display, label, px, rule, s } from '@/components/brand/tokens';
 import type { FixPost } from '@/data/notes';
 import { KIT } from '@/lib/kit/product';
-import { SCAN_PATH, auditHref, symptomLine } from './fixLinks';
+import { auditHref, symptomLine } from './fixLinks';
 
 /**
  * `fix_cta_click`, fired from the click handler only, so it never runs during
  * prerender; the guard and the catch are there anyway, because a blocked
  * analytics script must never be the reason a link doesn't work.
  */
-const clicked = (slug: string, cta: 'audit' | 'scan' | 'kit' | 'ai_readiness') => () => {
+const clicked = (slug: string, cta: 'audit' | 'kit' | 'ai_readiness') => () => {
   if (typeof window === 'undefined') return;
   try {
     track('fix_cta_click', { slug, cta });
@@ -25,8 +25,7 @@ const clicked = (slug: string, cta: 'audit' | 'scan' | 'kit' | 'ai_readiness') =
  * Same dark plate the wisdom stream spends on its tradeoff, so it reads as part
  * of the document rather than an ad dropped into it. It says one thing: if the
  * page you just read describes your app, here is the free audit, with this
- * symptom already ticked. Supabase posts get a second, lighter door to `/scan`,
- * which answers the "is mine exposed?" question in a minute without a form.
+ * symptom already ticked.
  * Below both sits the do-it-yourself option: the Production Kit, as text.
  */
 const FixCta = ({ post }: { post: FixPost }) => {
@@ -87,22 +86,6 @@ const FixCta = ({ post }: { post: FixPost }) => {
           </Link>
         )}
 
-        {post.scan && (
-          <a
-            href={SCAN_PATH}
-            onClick={clicked(post.slug, 'scan')}
-            style={{
-              display: 'inline-block',
-              padding: px(s[4], s[6]),
-              color: c.accent,
-              border: `${rule.hair}px solid ${c.dimOnInk}`,
-              textDecoration: 'none',
-              ...label(12, 700, 0.12),
-            }}
-          >
-            RUN THE FREE SUPABASE CHECK
-          </a>
-        )}
       </div>
 
       <p style={{ margin: px(s[6], 0, 0), font: `400 15px/1.6 ${display}`, color: c.dimOnInk }}>

@@ -9,7 +9,6 @@ date: "2026-09-24"
 lastVerified: "2026-09-24"
 fix: "Replace the leaked secret key in Supabase's API keys settings, update it on your server only, strip it from client code and git history, check the logs, then move the privileged work into an Edge Function and fix RLS so the public key is enough."
 symptom: "Database"
-scan: true
 related:
   - "/fixes/lovable-supabase-rls"
   - "/fixes/works-locally-breaks-on-vercel"
@@ -105,10 +104,10 @@ git log --all --oneline -- .env .env.local .env.production
 If the repository is or ever was public, anything those commits contain
 should be treated as published.
 
-If you'd rather not do any of this by hand, the free [Supabase check](/scan) on
-this site does the outside-in version. It deliberately refuses a service_role or
-`sb_secret_` key if you paste one (it will tell you to rotate it instead), and
-uses your public key to show you what that key can read.
+If you'd rather not do any of this by hand, the free
+[first-bug review](/audit?type=app) on this site looks at your app from the
+outside. Never send a service_role or `sb_secret_` key to anyone, this site
+included: rotate it instead.
 
 ## What to do right now, in this order
 

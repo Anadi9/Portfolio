@@ -137,8 +137,6 @@ export type FixFrontmatter = BaseFrontmatter & {
    * area that no longer exists, the CTA links to the audit with nothing ticked.
    */
   symptom?: string;
-  /** Adds a second CTA to the free Supabase check at `/scan`. */
-  scan?: boolean;
 };
 
 export type Frontmatter = DropFrontmatter | WisdomFrontmatter | DispatchFrontmatter | FixFrontmatter;

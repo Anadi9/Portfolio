@@ -32,7 +32,7 @@ const TITLE = 'The Production Kit: free rules and checks for AI-built apps';
 const DESCRIPTION =
   'Free rules, skills and checklists that make Claude Code, Cursor, Lovable and Bolt write code that survives real users. One download, no sign-up.';
 
-const SCAN = '/scan';
+const FIRST_BUG = '/audit?type=app';
 const PROBLEMS = PACK_IDS.filter((id) => id !== 'full');
 const SIZE = `${Math.max(1, Math.round(FREE_KIT.bytes / 1024))} KB`;
 
@@ -100,7 +100,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
   },
   {
     q: 'Will it fix my existing app?',
-    a: <>The rules apply to new work. The skills and checklists are for auditing and fixing what’s already there: run the RLS audit and pre-deploy check first. Not sure where to start? <Link to={SCAN} style={{ color: p.ink }}>Run the free Supabase check</Link>.</>,
+    a: <>The rules apply to new work. The skills and checklists are for auditing and fixing what’s already there: run the RLS audit and pre-deploy check first. Not sure where to start? <Link to={FIRST_BUG} style={{ color: p.ink }}>Get your first bug found free</Link>.</>,
   },
   {
     q: 'Is the SQL safe to run?',
@@ -190,8 +190,8 @@ export default function ProductionKit() {
               <Download where="hero" />
               <p style={hint}>
                 Version {FREE_KIT.version} · .zip · {SIZE} · No sign-up. Not sure what’s wrong with your app?{' '}
-                <Link to={SCAN} onClick={() => track('kit_scan_click', { where: 'hero' })} style={{ color: p.ink }}>
-                  Run the free Supabase check
+                <Link to={FIRST_BUG} onClick={() => track('kit_audit_click', { where: 'hero' })} style={{ color: p.ink }}>
+                  Get your first bug found free
                 </Link>
                 .
               </p>

@@ -5,7 +5,7 @@ import { hasPlaceholder } from '../brief/draft';
 
 const result = combine(
   [
-    { area: 'security', severity: 'critical', title: 'users table is readable by anyone', detail: 'Anon can read 1,200 rows.', fix: 'Enable RLS on users.', source: 'supabase' },
+    { area: 'security', severity: 'critical', title: 'users table is readable by anyone', detail: 'Anon can read 1,200 rows.', fix: 'Enable RLS on users.', source: 'headers' },
     { area: 'visibility', severity: 'high', title: 'Content is not in the HTML', detail: 'Score 40/100.', fix: 'Prerender.', source: 'readiness' },
   ],
   ['security', 'visibility'],

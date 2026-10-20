@@ -8,7 +8,6 @@ import health from './health.js';
 import portal from './portal.js';
 import rescueAudit from './rescue-audit.js';
 import review from './review.js';
-import scan from './scan.js';
 import scorecard from './scorecard.js';
 import teardownReport from './teardown-report.js';
 import bitAsk from './bit/ask.js';
@@ -26,7 +25,7 @@ import cronPing from './cron/ping.js';
  * The Hobby plan caps a deployment at 12 functions, and Vercel makes one per
  * file under `api/`. So the handlers live here, outside it, and `api/[route].ts`,
  * `api/bit/[action].ts` and `api/cron/[job].ts` pick one by path segment. The
- * public URLs are unchanged: `/api/scan` still answers at `/api/scan`.
+ * public URLs are unchanged: `/api/audit` still answers at `/api/audit`.
  */
 
 type Handler = (req: VercelRequest, res: VercelResponse) => unknown;
@@ -43,7 +42,6 @@ export const API_ROUTES: Routes = {
   portal,
   'rescue-audit': rescueAudit,
   review,
-  scan,
   scorecard,
   'teardown-report': teardownReport,
 };

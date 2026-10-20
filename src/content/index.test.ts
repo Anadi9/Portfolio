@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { posts } from './index';
 import { hasCover, pathToStream, streamPath, type FixPost } from '@/data/notes';
@@ -88,11 +90,10 @@ describe('fix stream', () => {
     expect(area('supabase-service-role-key-leaked')).toBe('Database');
   });
 
-  it('offers /scan on the Supabase database posts only', () => {
-    expect(fixes.filter((p) => p.scan).map((p) => p.slug).sort()).toEqual([
-      'lovable-supabase-rls',
-      'supabase-service-role-key-leaked',
-    ]);
+  it('links no post to the removed /scan check', () => {
+    for (const file of readdirSync('src/content', { recursive: true }) as string[]) {
+      if (file.endsWith('.mdx')) expect(readFileSync(join('src/content', file), 'utf8'), file).not.toMatch(/\]\(\/scan[)#?]/);
+    }
   });
 
   it('gives every fix a cover', () => {

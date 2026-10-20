@@ -32,6 +32,11 @@
       "permanent": true
     },
     {
+      "source": "/scan",
+      "destination": "/audit?type=app",
+      "permanent": true
+    },
+    {
       "source": "/refunds",
       "destination": "/terms",
       "permanent": true

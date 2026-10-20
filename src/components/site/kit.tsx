@@ -221,7 +221,6 @@ export const SiteFooter = () => (
         <nav aria-label="Free tools" style={{ display: 'grid', gap: s[3], alignContent: 'start' }}>
           <span style={footHead}>Free tools</span>
           <Link to="/teardown" className="pf-underline" style={footLink}>The Wrapper Test</Link>
-          <Link to="/scan" className="pf-underline" style={footLink}>Supabase security check</Link>
           <Link to="/ai-readiness" className="pf-underline" style={footLink}>AI readiness checker</Link>
           <Link to="/dpdp/check" className="pf-underline" style={footLink}>Privacy self-check</Link>
           <Link to={KIT.path} className="pf-underline" style={footLink}>Production Kit</Link>

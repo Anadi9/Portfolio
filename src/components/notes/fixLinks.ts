@@ -13,7 +13,6 @@ import { SYMPTOMS } from '@/lib/rescue/intake';
  * a CTA with nothing pre-ticked still converts, a broken build does not.
  */
 export const AUDIT_PATH = '/audit?type=app';
-export const SCAN_PATH = '/scan';
 
 export const symptomIndex = (area?: string): number | null => {
   if (!area) return null;

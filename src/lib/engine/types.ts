@@ -14,7 +14,7 @@ export type EngineFinding = {
   title: string;
   detail: string;
   fix: string | null;
-  source: 'readiness' | 'headers' | 'supabase' | 'dpdp' | 'teardown';
+  source: 'readiness' | 'headers' | 'dpdp' | 'teardown';
 };
 
 export const AREA_LABEL: Record<Area, string> = {

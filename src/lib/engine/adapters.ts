@@ -1,5 +1,4 @@
 import type { LeadScan } from '../brief/scan.js';
-import type { ScanReport } from '../scan/report.js';
 import type { EngineFinding, Severity } from './types.js';
 
 /** Section names of the Wrapper Test (teardown), by id. Kept here so the engine has no UI imports. */
@@ -22,12 +21,6 @@ export function fromLeadScan(scan: LeadScan): EngineFinding[] {
     out.push({ area: 'security', severity: 'medium', title: `Missing security header: ${h}`, detail: 'The homepage doesn’t send this header.', fix: `Send ${h} on every response.`, source: 'headers' });
   }
   return out;
-}
-
-export function fromSupabaseScan(report: ScanReport): EngineFinding[] {
-  return report.findings
-    .filter((f) => f.severity !== 'ok')
-    .map((f) => ({ area: 'security', severity: f.severity === 'critical' ? 'critical' : 'medium', title: f.title, detail: f.detail, fix: f.fix, source: 'supabase' }));
 }
 
 const BY_WEIGHT: Record<number, Severity> = { 3: 'high', 2: 'medium', 1: 'low' };

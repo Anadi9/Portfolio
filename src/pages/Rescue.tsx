@@ -31,7 +31,7 @@ import { useInView } from '@/hooks/use-in-view';
  * reports `audit_cta_click` with where it sat, so the placements can be judged
  * against each other. For visitors who aren't that buyer yet, the free-tools
  * section just above the FAQ lays out everything that costs nothing (the audit,
- * the Supabase check at `/scan`, the Wrapper Test at `/teardown`, the kit),
+ * the Wrapper Test at `/teardown`, the kit),
  * and the header links to it.
  *
  * This arrived as a standalone document with its own
@@ -138,7 +138,7 @@ const errors = [
 const builders = ['Lovable', 'Bolt', 'Cursor', 'v0', 'Replit'];
 
 /** Everything on the domain that costs nothing. The audit leads; the other
- *  three are for visitors who aren't ready to send a link yet. */
+ *  two are for visitors who aren't ready to send a link yet. */
 const freeTools = [
   {
     tag: 'Free',
@@ -147,13 +147,6 @@ const freeTools = [
     action: 'Find my first bug',
     to: AUDIT,
     onClick: () => trackRescue('audit_cta_click', { location: 'free_tools' }),
-  },
-  {
-    tag: '30 seconds',
-    title: 'Supabase security check',
-    body: 'Find out whether anyone on the internet can read your Supabase tables. Nothing is stored.',
-    action: 'Run the check',
-    to: '/scan',
   },
   {
     tag: '3 minutes',
@@ -573,8 +566,8 @@ const Symptoms = () => {
         </Link>
         <p style={{ ...body, fontSize: 14, color: c.dimOnInk }}>
           Not ready to talk?{' '}
-          <Link to="/scan" className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
-            Run the free Supabase security check →
+          <Link to={KIT.path} className="pf-underline" style={{ color: c.bright, fontWeight: 600 }}>
+            Get the free Production Kit →
           </Link>
         </p>
       </div>
@@ -1020,7 +1013,7 @@ const Rescue = () => {
             Free, before anything else
           </h2>
           <p style={{ ...body, marginTop: s[5] }}>No call and no card. Start with whichever fits where you are.</p>
-          <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: s[5], marginTop: s[9] }}>
+          <div data-rescue-four style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: s[5], marginTop: s[9] }}>
             {freeTools.map((tool) => (
               <Link
                 key={tool.title}

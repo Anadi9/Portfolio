@@ -124,7 +124,6 @@ export const FREE_CARDS: FreeCardFacts[] = [
 ];
 
 export const FREE_MORE: { text: string; href: string }[] = [
-  { text: 'Supabase security check', href: '/scan' },
   { text: 'AI readiness checker', href: '/ai-readiness' },
   { text: 'Privacy self-check', href: '/dpdp/check' },
 ];

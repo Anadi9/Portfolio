@@ -5,8 +5,8 @@ import { p } from './styles';
 
 /**
  * Header, footer and shared styles for the kit's two pages. Same paper ground,
- * header and `data-rescue-*` responsive hooks as `/scan` and `/audit?type=app`, so
- * moving between the free check, the kit and the audit reads as one site.
+ * header and `data-rescue-*` responsive hooks as `/audit?type=app`, so moving
+ * between the kit and the audit reads as one site.
  */
 
 export const Check = ({ color = p.gold, size = 14 }: { color?: string; size?: number }) => (

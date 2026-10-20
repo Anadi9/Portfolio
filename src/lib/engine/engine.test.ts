@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fromDpdp, fromLeadScan, fromSupabaseScan, fromTeardown } from './adapters';
+import { fromDpdp, fromLeadScan, fromTeardown } from './adapters';
 import { combine, SEVERITY_WEIGHT } from './combine';
 import type { LeadScan } from '../brief/scan';
 
@@ -20,21 +20,6 @@ describe('adapters', () => {
     expect(fromLeadScan({ ok: false, url: null, error: 'x', ms: 0 })).toEqual([]);
   });
 
-  it('maps a Supabase scan, keeping only problems', () => {
-    const f = fromSupabaseScan({
-      project: 'p', checkedAt: '', tables: { found: 2, checked: 2, truncated: false }, buckets: null, counts: { critical: 1, warning: 1, ok: 1 },
-      findings: [
-        { severity: 'critical', area: 'table', subject: 'users', title: 'users is readable by anyone', detail: 'd', fix: 'Enable RLS' },
-        { severity: 'warning', area: 'storage', subject: 'b', title: 'Public bucket', detail: 'd', fix: null },
-        { severity: 'ok', area: 'table', subject: 'x', title: 'fine', detail: 'd', fix: null },
-      ],
-    });
-    expect(f.map((x) => [x.severity, x.area, x.title])).toEqual([
-      ['critical', 'security', 'users is readable by anyone'],
-      ['medium', 'security', 'Public bucket'],
-    ]);
-  });
-
   it('maps DPDP gaps by weight and teardown thinnest sections', () => {
     const d = fromDpdp({ gaps: [{ q: 'Do you show a consent notice?', fix: 'Add one', weight: 3 }, { q: 'Do you have a retention rule?', fix: 'Set one', weight: 1 }] });
     expect(d.map((x) => [x.severity, x.area])).toEqual([['high', 'privacy'], ['low', 'privacy']]);
@@ -45,7 +30,7 @@ describe('adapters', () => {
 
 describe('combine', () => {
   it('ranks by weight, scores each area, and leaves unchecked areas null', () => {
-    const r = combine([...fromLeadScan(lead), { area: 'security', severity: 'critical', title: 'Open table', detail: '', fix: null, source: 'supabase' }]);
+    const r = combine([...fromLeadScan(lead), { area: 'security', severity: 'critical', title: 'Open table', detail: '', fix: null, source: 'headers' }]);
     expect(r.findings[0].title).toBe('Open table');
     expect(r.top).toHaveLength(3);
     expect(r.areas.privacy).toEqual({ score: null, count: 0 });
