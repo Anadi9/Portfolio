@@ -1,67 +1,41 @@
-# Welcome to your Lovable project
+# anadithakur.in
 
-## Project info
+**Your app, made production-ready.**
 
-**URL**: https://lovable.dev/projects/f255ab82-a4f0-48d6-975c-dbb8e00a8383
+I'm Anadi Thakur, a full-stack engineer, and this is my website. It's about
+taking apps that were built fast, often with AI tools, and making them ready
+for real people to use.
 
-## How can I edit this code?
+My work comes down to three things:
 
-There are several ways of editing.
+- **Reliability and security.** An app that works properly and keeps its
+  users' data safe.
+- **Search and AI visibility.** A business that people can find, whether they
+  search on Google or ask an AI assistant.
+- **Privacy and compliance.** An app that respects the people who use it and
+  is ready for India's DPDP law.
 
-**Use your preferred IDE**
+## What I stand for
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+**Plain English.** Technology should be explained in words a business owner can
+act on, without jargon.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+**Honesty.** I'd rather say clearly what I can do, and what I can't, than
+oversell.
 
-Follow these steps:
+**Doing the work myself.** My assistant, Bit, can answer questions, but the
+work itself is mine.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+**AI as a tool, not a decision-maker.** I use AI where it helps, and people
+stay in charge of the decisions.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+**Useful for free.** The tools and notes on this site are meant to help on
+their own, whether or not you ever work with me.
 
-# Step 3: Install the necessary dependencies.
-npm i
+**Privacy by default.** Collect only what's needed and be open about it.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## Find me
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f255ab82-a4f0-48d6-975c-dbb8e00a8383) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Website: [anadithakur.in](https://anadithakur.in)
+- Portfolio: [portfolio.anadithakur.in](https://portfolio.anadithakur.in)
+- Notes: [anadithakur.in/notes](https://anadithakur.in/notes)
