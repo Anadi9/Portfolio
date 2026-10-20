@@ -6,7 +6,10 @@
   "name": "anadi-site",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
-  "compatibility_flags": ["nodejs_compat"],
+  // `global_fetch_strictly_public`: fetch() goes out through Cloudflare's front
+  // door like a visitor's request. Without it, the daily scorecard's fetch of
+  // https://anadithakur.in/ (this Worker's own Custom Domain) gets a 522.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
