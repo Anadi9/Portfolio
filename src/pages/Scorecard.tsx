@@ -119,7 +119,8 @@ export default function Scorecard() {
                 </>
               )}
               <p className="hq-small" style={{ margin: 0 }}>
-                <code>/api/health</code> reports whether the site’s backend is reachable.
+                <code>/api/health</code> reports whether the site’s backend is reachable. An uptime monitor checks{' '}
+                <code>/api/health</code> every few minutes and emails us if it fails.
               </p>
             </Card>
 
@@ -128,7 +129,6 @@ export default function Scorecard() {
                 <li>We collect only what you type into a form or Bit’s chat: name, email, your app link and answers.</li>
                 <li>We keep it for 24 months after the last activity, then delete it.</li>
                 <li>We delete it sooner if you ask.</li>
-                <li>Your request appears on the public board only if you tick the box (off by default), and never with your name, email or URL.</li>
               </ul>
               <Link to="/privacy" className="pf-underline hq-small">Read the privacy page</Link>
             </Card>

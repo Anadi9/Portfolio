@@ -126,8 +126,8 @@ Reliability and security
 - [x] Site-wide security headers in `vercel.json` (copied into `dist/_headers`
       for Cloudflare at build).
 - [x] Error monitoring for the frontend and `/api/*`.
-- [ ] Uptime monitor on `/` and `/api/health` (endpoint built; the monitor is a
-      launch-checklist step).
+- [x] Uptime monitor on `/` and `/api/health` (UptimeRobot, every 5 minutes,
+      email alerts; set up 20 Oct).
 
 Privacy and compliance
 - [x] Data map (`docs/data-map.md`).
