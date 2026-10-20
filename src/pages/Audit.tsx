@@ -352,7 +352,7 @@ const Audit = () => {
               </h1>
               <p style={lead}>
                 Takes 2 minutes. Back within {TURNAROUND_HOURS} hours. Then, if you want everything checked, the $349
-                production audit is credited in full toward the fix.
+                production audit ranks every issue for you.
               </p>
             </div>
 
@@ -397,9 +397,9 @@ const Audit = () => {
             <span style={{ ...label(10, 700, 0.16), color: c.dimOnInk }}>WHAT HAPPENS NEXT</span>
             <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: s[5] }}>
               {[
-                ['First bug, on video', `Within ${TURNAROUND_HOURS} hours: a short video of the biggest risk, in plain English, with the fixed price to fix it.`],
-                ['Audit, if you want it', '$349 for everything checked and ranked. Credited 100% toward the fix; nothing found means a full refund.'],
-                ['Pay when it’s live', 'Fixes are fixed-price: half to start, the rest once it works. No sales call unless you ask.'],
+                ['First bug, on video', `Within ${TURNAROUND_HOURS} hours: a short video of the biggest risk, in plain English, with a fixed quote to fix it.`],
+                ['Audit, if you want it', '$349 for everything checked and ranked: fix now, risky, can wait.'],
+                ['One fixed quote', 'The fix gets one quote, agreed before work starts. No sales call unless you ask.'],
               ].map(([title, text], i) => (
                 <li key={title} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: s[4] }}>
                   <span style={{ ...label(11, 700, 0.12), color: c.mark }}>0{i + 1}</span>

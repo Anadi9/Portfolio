@@ -10,9 +10,9 @@ import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
 
 const PATH = '/build-with-ai';
 const URL = `https://anadithakur.in${PATH}`;
-const TITLE = 'Build with AI: AI features and MVPs at a fixed price · Anadi Thakur';
+const TITLE = 'Build with AI: AI features and MVPs at a fixed quote · Anadi Thakur';
 const DESCRIPTION =
-  'Add AI that actually works: assistants that answer from your data, smart search, agents and automations, with guardrails and cost limits. AI builds $2,000–$8,000, MVPs $6,000–$20,000, fixed quote.';
+  'Add AI that actually works: assistants that answer from your data, smart search, agents and automations, with guardrails and cost limits. AI builds in 1–4 weeks, MVPs in 4–8 weeks, at one fixed quote.';
 
 const content: ServicePageProps = {
   page: 'build_with_ai',
@@ -32,20 +32,20 @@ const content: ServicePageProps = {
     ],
   },
   packages: [
-    { name: 'AI build', duration: '1–4 weeks', price: '$2,000–$8,000', detail: 'An assistant, smart search or automation — with guardrails and cost limits.' },
-    { name: 'MVP build', duration: '4–8 weeks', price: '$6,000–$20,000', detail: 'A complete web or mobile product, ready for real users.' },
+    { name: 'AI build', duration: '1–4 weeks', price: 'Fixed quote', detail: 'An assistant, smart search or automation — with guardrails and cost limits.' },
+    { name: 'MVP build', duration: '4–8 weeks', price: 'Fixed quote', detail: 'A complete web or mobile product, ready for real users.' },
   ],
-  terms: ['Fixed quote after a short scoping call', 'Weekly demos as it’s built', 'Pay in milestones', 'No hourly billing'],
+  terms: ['Fixed quote after a short scoping call', 'Weekly demos as it’s built', 'Guardrails and cost limits built in', 'Ships behind a switch'],
   steps: [
     { title: 'Scoping call', body: 'A short call about what the AI should do and for whom. You get one fixed quote.' },
     { title: 'Build', body: 'Weekly demos on your real data, so you see it working before it ships.' },
     { title: 'Ship behind a switch', body: 'Live products get the feature behind a switch, so users never see it half-built.' },
-    { title: 'Keep it running', body: 'Optional Care at $299/mo: monitoring, monthly fixes and model re-checks.' },
+    { title: 'Keep it running', body: 'Optional Care plan: monitoring, monthly fixes and model re-checks.' },
   ],
   faq: [
-    { q: 'What does it cost?', a: 'An AI build is $2,000–$8,000 and takes 1–4 weeks. An MVP build is $6,000–$20,000 and takes 4–8 weeks. The exact price is fixed after a short scoping call, and you pay in milestones.' },
+    { q: 'What does it cost?', a: 'Every build gets one fixed quote after a short scoping call. An AI build usually takes 1–4 weeks and an MVP 4–8 weeks.' },
     { q: 'How do you keep AI costs under control?', a: 'Guardrails, fallbacks and cost limits are part of every build: model calls are capped, cached where it helps, and fall back cleanly when a provider is slow or down.' },
-    { q: 'We already have an AI feature that misbehaves. Can you fix it?', a: 'Yes. Start with the $349 production audit, which includes the AI checks and is credited in full toward the fix.' },
+    { q: 'We already have an AI feature that misbehaves. Can you fix it?', a: 'Yes. Start with the $349 production audit, which includes the AI checks and ranks what to fix first.' },
     { q: 'Which stacks do you work with?', a: 'React, Next.js, React Native, Node.js and PostgreSQL products, plus Supabase and Firebase — hand-written or built with AI tools like Cursor, Claude Code, Lovable, Bolt, v0 or Replit.' },
     { q: 'Is my product live? Does that change anything?', a: 'If it is live, the AI part ships behind a switch so your users never see a half-built feature. If you are still building, it is shaped to be cheap to run from day one.' },
   ],

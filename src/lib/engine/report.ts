@@ -1,4 +1,3 @@
-import { promiseHours } from '../../data/promises.js';
 import { PRICE_PLACEHOLDER } from '../brief/draft.js';
 import type { EngineResult } from './combine.js';
 import { AREA_LABEL, AREAS } from './types.js';
@@ -13,14 +12,13 @@ const CHECK = '[ANADI: confirm or remove]';
 
 export function draftReport({ number, appUrl, result }: { number: string; appUrl: string | null; result: EngineResult }): { subject: string; body: string } {
   const app = appUrl?.trim() || 'your app';
-  const days = promiseHours('audit_credit') / 24;
   const lines: string[] = ['Hi,', ''];
 
   if (!result.findings.length) {
     lines.push(
       `I've finished the production audit of ${app}. No real issues found in what I checked.`,
       '',
-      `As promised, that means a full refund of the $349. ${CHECK}`,
+      `Good news: nothing needs fixing right now. ${CHECK}`,
     );
   } else {
     lines.push(`I've finished the production audit of ${app}. Here is what to fix first, ranked by what it could cost you:`, '');
@@ -35,7 +33,7 @@ export function draftReport({ number, appUrl, result }: { number: string; appUrl
       }
       lines.push(CHECK);
     }
-    lines.push('', `Fixed price to fix the above: ${PRICE_PLACEHOLDER}. The $349 audit is credited in full if you book the fix within ${days} days.`);
+    lines.push('', `Fixed quote to fix the above: ${PRICE_PLACEHOLDER}.`);
   }
 
   const unchecked = AREAS.filter((a) => result.areas[a].score === null).map((a) => AREA_LABEL[a]);

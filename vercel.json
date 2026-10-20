@@ -32,6 +32,11 @@
       "permanent": true
     },
     {
+      "source": "/refunds",
+      "destination": "/terms",
+      "permanent": true
+    },
+    {
       "source": "/portfolio",
       "has": [
         {

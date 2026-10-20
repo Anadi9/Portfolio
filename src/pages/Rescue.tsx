@@ -204,16 +204,16 @@ const steps = [
     title: 'First-bug video',
     when: 'Day 1 · free',
     span: 1,
-    body: 'Send your app link. Anadi films the biggest risk in your app, with the fixed price to fix it.',
+    body: 'Send your app link. Anadi films the biggest risk in your app, with a fixed quote to fix it.',
   },
-  { num: '02', title: 'Audit', when: 'Day 2–3 · $349', span: 2, body: 'Everything checked, ranked Fix now, Risky and Can wait. Credited in full toward the fix.' },
-  { num: '03', title: 'The fix', when: 'Day 4–10', span: 7, body: 'Fixed price, half to start. A written update every day.' },
+  { num: '02', title: 'Audit', when: 'Day 2–3 · $349', span: 2, body: 'Everything checked, ranked Fix now, Risky and Can wait.' },
+  { num: '03', title: 'The fix', when: 'Day 4–10', span: 7, body: 'One fixed quote, agreed before work starts. A written update every day.' },
   {
     num: '04',
     title: 'Live',
     when: 'Day 11',
     span: 1,
-    body: 'You confirm it works, then the second half is due. Care is optional after that.',
+    body: 'It ships and you confirm it works. Care is optional after that.',
   },
 ];
 
@@ -226,43 +226,38 @@ const findings = [
   { rank: 'Can wait', solid: false, line: 'The dashboard loads every record at once, so it slows down as you grow.', area: 'Performance' },
 ];
 
-/** The price section's three sizes of job, and the service JSON-LD's offers.
- *  `max` is absent where the tier is open-ended. */
+/** The price section's three sizes of job. The audit is the only published
+ *  price, and the only one in the service JSON-LD's offers; the fixes are
+ *  quoted per project. */
 const tiers = [
-  { name: 'Production audit', scope: 'Reliability, search visibility and privacy, ranked by business impact. 48 hours, credited 100% toward any package.', min: 349, max: 349 },
-  { name: 'Launch-ready sprint', scope: 'Up to three problem areas fixed, tested and shipped in one week.', min: 1500, max: 2500 },
-  { name: 'Full rescue', scope: 'Everything the audit found, plus tests and monitoring, in 2–3 weeks.', min: 3000, max: 6000 },
+  { name: 'Production audit', scope: 'Reliability, search visibility and privacy, ranked by business impact. 48 hours.', price: '$349', min: 349 },
+  { name: 'Launch-ready sprint', scope: 'Up to three problem areas fixed, tested and shipped in one week.', price: 'Fixed quote' },
+  { name: 'Full rescue', scope: 'Everything the audit found, plus tests and monitoring, in 2–3 weeks.', price: 'Fixed quote' },
 ] as const;
 
-const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
-const tierPrice = ({ min, max }: { min: number; max?: number }) =>
-  max === undefined ? `From ${usd(min)}` : min === max ? usd(min) : `${usd(min)}–${max.toLocaleString('en-US')}`;
-
 /** The service's promise. Said once under the price and again in the FAQ. */
-const GUARANTEE = 'Fixed price. If something wasn’t in the quote, you’re not billed for it. If the audit finds nothing, you get a full refund.';
+const GUARANTEE = 'One fixed quote, agreed before any work starts. Anything outside it is agreed with you first.';
 
 const included = [
   'Your first bug found free, on video',
-  'Audit credited 100% toward the fix',
-  'One fixed price — no hourly billing',
+  'Every issue ranked: fix now, risky, can wait',
+  'One fixed quote, agreed up front',
   'Daily written updates',
-  'Pay the second half when it’s live',
+  'You confirm it works before it’s done',
 ];
 
 const faqs = [
   {
     q: 'What does it usually cost?',
-    a: `The first-bug video is free. Then: ${tiers
-      .map((t) => `${t.name.toLowerCase()}, ${tierPrice(t).replace('From', 'from')}`)
-      .join('; ')}. The audit is credited in full, and the quote is fixed before work starts.`,
+    a: 'The first-bug video is free. The production audit is $349. The fix itself gets one fixed quote for your app, agreed before work starts.',
   },
   {
     q: 'Why is the audit paid when the first bug is free?',
-    a: 'The video shows you one real problem. The audit checks everything and gives you a ranked plan, which takes a day or two. Book the fix within 30 days and every dollar is credited.',
+    a: 'The video shows you one real problem. The audit checks everything and gives you a ranked plan, which takes a day or two.',
   },
   {
     q: "What if you can't fix it?",
-    a: `${GUARANTEE} The quote lists every fix, so it's always clear what you owe.`,
+    a: `${GUARANTEE} The quote lists every fix, so it's always clear what's included.`,
   },
   {
     q: 'Do you rebuild everything from scratch?',
@@ -286,20 +281,18 @@ const faqs = [
   },
 ];
 
-/** Sold on top of a rescue, or on their own. Production care leads: it is what
- *  a rescue turns into once the handover week is over. Prices are starting points. */
+/** Added to a rescue, or on their own. Production care leads: it is what a
+ *  rescue turns into once the handover week is over. Both are quoted per project. */
 const addons = [
   {
     title: 'Care plan',
     body: 'After launch: monitoring, a monthly health review, small fixes, and a quarterly visibility and privacy re-check. Cancel anytime.',
-    price: '$299',
-    unit: '/month',
+    price: 'Quoted monthly',
   },
   {
     title: 'Build with AI',
-    body: 'Add an assistant, smart search or automation with guardrails and cost limits ($2,000–$8,000), or build a complete MVP ($6,000–$20,000). Fixed quote after a short scoping call.',
-    price: '$2,000',
-    unit: null,
+    body: 'Add an assistant, smart search or automation with guardrails and cost limits, or build a complete MVP. Fixed quote after a short scoping call.',
+    price: 'Fixed quote',
   },
 ];
 
@@ -312,13 +305,7 @@ const jsonLd = graph([
       description: DESCRIPTION,
       serviceType: 'Production fixes for web apps and software',
       areaServed: ['Worldwide'],
-      offers: tiers.map((t) => ({
-        name: `${NAME}: ${t.name}`,
-        description: t.scope,
-        min: t.min,
-        max: t.max,
-        currency: 'USD' as const,
-      })),
+      offers: [{ name: `${NAME}: ${tiers[0].name}`, description: tiers[0].scope, min: tiers[0].min, currency: 'USD' as const }],
     }),
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
@@ -327,12 +314,6 @@ const jsonLd = graph([
         '@type': 'Offer',
         name: a.title,
         description: a.body,
-        priceSpecification: {
-          '@type': a.unit ? 'UnitPriceSpecification' : 'PriceSpecification',
-          minPrice: Number(a.price.replace(/\D/g, '')),
-          priceCurrency: 'USD',
-          ...(a.unit ? { unitText: 'MONTH' } : {}),
-        },
       })),
     },
   },
@@ -892,7 +873,7 @@ const Rescue = () => {
           <div data-rescue-split style={{ ...split('1fr 1fr'), alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: s[4] }}>
               <h2 id="h-price" style={{ ...h2, margin: 0 }}>
-                What a fix costs
+                How a fix is priced
               </h2>
               <ul style={{ listStyle: 'none', margin: px(s[5], 0, 0), padding: 0, borderBottom: `${rule.hair}px solid ${p.rule}` }}>
                 {tiers.map((t) => (
@@ -911,13 +892,13 @@ const Rescue = () => {
                       <span style={{ font: `600 17px/1.3 ${display}`, color: p.ink }}>{t.name}</span>
                       <span style={{ ...body, fontSize: 14 }}>{t.scope}</span>
                     </div>
-                    <span style={{ ...heading('d6'), color: p.ink, whiteSpace: 'nowrap' }}>{tierPrice(t)}</span>
+                    <span style={{ ...heading('d6'), color: p.ink, whiteSpace: 'nowrap' }}>{t.price}</span>
                   </li>
                 ))}
               </ul>
               <p style={{ ...body, maxWidth: '46ch' }}>
                 The audit tells you which one you need. Every quote is fixed before work starts. If scope changes, we
-                agree on it before I bill a cent.
+                agree on it first.
               </p>
               <p
                 style={{
@@ -972,11 +953,7 @@ const Rescue = () => {
                 <h3 style={{ margin: 0, ...heading('d6'), textTransform: 'uppercase', color: p.ink }}>{a.title}</h3>
                 <p style={body}>{a.body}</p>
                 <div style={{ display: 'grid', gap: s[1], paddingTop: s[3], borderTop: `${rule.hair}px solid ${p.rule}` }}>
-                  <span style={{ ...label(10, 700, 0.14), color: p.dim }}>FROM</span>
-                  <span style={{ ...heading('d5'), color: p.ink }}>
-                    {a.price}
-                    {a.unit && <span style={{ ...label(11, 700, 0.12), color: p.dim }}> {a.unit.toUpperCase()}</span>}
-                  </span>
+                  <span style={{ ...heading('d5'), color: p.ink }}>{a.price}</span>
                 </div>
               </div>
             ))}

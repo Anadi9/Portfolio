@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Bit } from '@/components/brand/Bit';
-import { builderMailto, PACKAGES, range, total, usd, type PackageId } from '@/lib/bit/builder';
+import { builderMailto, PACKAGES, pickedPackages, type PackageId } from '@/lib/bit/builder';
 import { trackRescue } from '@/lib/rescue/track';
 
 /**
@@ -41,14 +41,14 @@ export function PackageBuilder() {
       return next;
     });
 
-  const t = total(picked);
+  const chosen = pickedPackages(picked);
 
   return (
     <div className="hq-card hq-custom" style={{ display: 'grid', gap: 18 }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 20 }}>
         <div>
           <h3 style={{ font: '400 32px/1 var(--bq-font-display)', margin: 0 }}>Need a mix? Build your own package.</h3>
-          <p className="hq-small" style={{ marginTop: 8 }}>Tick what you need — Bit totals it, credits the audit, and writes it up for Anadi.</p>
+          <p className="hq-small" style={{ marginTop: 8 }}>Tick what you need — Bit writes it up for Anadi, who replies with one fixed quote.</p>
         </div>
         {!open && (
           <button type="button" className="bq-btn" onClick={() => setOpen(true)} aria-expanded={false} aria-controls="builder">
@@ -64,38 +64,29 @@ export function PackageBuilder() {
               <label key={p.id} className="hq-pick" data-on={picked.has(p.id)}>
                 <input type="checkbox" checked={picked.has(p.id)} onChange={() => toggle(p.id)} />
                 <span>{p.name}</span>
-                <b>
-                  {p.min === p.max ? usd(p.min) : `${usd(p.min)}–${usd(p.max)}`}
-                  {p.monthly ? '/mo' : ''}
-                </b>
+                <b>{p.price}</b>
               </label>
             ))}
           </fieldset>
           <div className="hq-dark hq-total" aria-live="polite">
             <span className="hq-lab" style={{ color: 'var(--bq-secondary)' }}>Your package</span>
-            {t.count === 0 ? (
+            {chosen.length === 0 ? (
               <p style={{ margin: 0 }}>Nothing picked yet.</p>
             ) : (
               <>
-                {range(t) && (
-                  <p style={{ margin: 0 }}>
-                    One-off <b style={{ font: '400 32px/1 var(--bq-font-display)', display: 'block', color: 'var(--bq-secondary)' }}>{range(t)}</b>
-                  </p>
-                )}
-                {t.credit > 0 && <p className="hq-small" style={{ color: '#c9c9c9' }}>Audit credited: −{usd(t.credit)}</p>}
-                {t.monthly > 0 && (
-                  <p style={{ margin: 0 }}>
-                    Monthly <b style={{ font: '400 26px/1 var(--bq-font-display)', display: 'block' }}>{usd(t.monthly)}/mo</b>
-                  </p>
-                )}
-                <p className="hq-small" style={{ color: '#c9c9c9' }}>Fixed price confirmed after the free first-bug review. Half to start, half when it’s live.</p>
+                <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  {chosen.map((p) => (
+                    <li key={p.id}>{p.name}</li>
+                  ))}
+                </ul>
+                <p className="hq-small" style={{ color: '#c9c9c9' }}>Anadi replies with one fixed quote after the free first-bug review.</p>
               </>
             )}
             <a
-              href={t.count ? builderMailto(picked) : undefined}
-              aria-disabled={t.count === 0}
+              href={chosen.length ? builderMailto(picked) : undefined}
+              aria-disabled={chosen.length === 0}
               className="bq-btn"
-              style={t.count ? undefined : { opacity: 0.5, pointerEvents: 'none' }}
+              style={chosen.length ? undefined : { opacity: 0.5, pointerEvents: 'none' }}
               onClick={() => trackRescue('cta_click', { page: 'home', location: 'builder:send' })}
             >
               <span aria-hidden>✉</span> Email it to Anadi
@@ -129,7 +120,7 @@ const STOPS: { id: string; title: string; say: string }[] = [
   { id: 'report', title: 'The audit report', say: 'Three areas, one plain-English report, ranked by business impact.' },
   { id: 'quest', title: 'How a project runs', say: 'From first message to live in about eleven days. You pay half when it starts and half when it works.' },
   { id: 'checks', title: 'What gets checked', say: 'Reliability and security, search and AI visibility, privacy and compliance.' },
-  { id: 'pricing', title: 'Fixed prices', say: 'Six packages, all fixed. The audit is credited in full toward the fix.' },
+  { id: 'pricing', title: 'Fixed quotes', say: 'Six packages. The audit is $349; everything else gets one fixed quote.' },
   { id: 'board', title: 'Request tracking', say: 'Every request gets a ticket and a written update every day while work is in progress.' },
   { id: 'free', title: 'Start free', say: 'The first-bug video costs nothing. Neither does the Wrapper Test.' },
   { id: 'about', title: 'Meet Anadi', say: 'I take your question. Anadi reads it and does the work himself.' },

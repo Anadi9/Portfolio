@@ -17,7 +17,7 @@ import type { ReportModel, SectionReport } from './report.js';
  * React `CSSProperties` objects, which an email string cannot consume.
  *
  * Like every other module downstream of the question bank, this one only ever
- * copies findings. It states what was found and links to the paid teardown
+ * copies findings. It states what was found and links to the first-bug review
  * once, at the end. It does not tell anyone what to do.
  */
 

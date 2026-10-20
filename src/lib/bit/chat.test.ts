@@ -47,7 +47,7 @@ describe('Bit chat', () => {
     s = pick(s, 'Not sure yet');
     expect(s.node).toBe('recProd');
     const rec = s.log.find((m) => m.who === 'rec');
-    expect(rec).toMatchObject({ rec: { title: 'Launch-ready sprint', price: '$1,500–$2,500' } });
+    expect(rec).toMatchObject({ rec: { title: 'Launch-ready sprint', price: 'Fixed quote' } });
     if (rec?.who === 'rec') expect(rec.rec.actions[0].to).toEqual({ href: '/audit?type=app&s=5' });
   });
 
@@ -60,7 +60,7 @@ describe('Bit chat', () => {
     expect(s.node).toBe('recAi');
     expect(s.ans.budget).toBe('Under $2,000');
     expect(decodeURIComponent(mailto('x', s.ans))).toContain('Budget: Under $2,000');
-    const published = ['$349', '$299', '$149', '$1,500–$2,500', '$2,000–$8,000', '$3,000–$6,000', '$6,000–$20,000'];
+    const published = ['$349', 'Fixed quote'];
     for (const b of ['Under $2,000', '$2,000–$5,000', '$5,000–$20,000', 'Not sure yet']) {
       const rec = reply('recAi', { ...s.ans, budget: b }).find((m) => m.who === 'rec');
       if (rec?.who !== 'rec') throw new Error('no rec');

@@ -1,6 +1,10 @@
 /**
- * The homepage's facts — services, prices, guarantees, free tools, FAQ — with
+ * The homepage's facts — services, packages, guarantees, free tools, FAQ — with
  * no imports except the promise list, so a serverless function can load them.
+ *
+ * The audit is the only price the site publishes. Every other package is
+ * quoted per project, so its `price` says how it's quoted, never an amount,
+ * and Bit's price guard (`lib/bit/prices.ts`) rejects any other figure.
  *
  * `bitsQuest.ts` builds the homepage content from these (adding icons and
  * links), and `lib/bit/knowledge.ts` builds Bit's AI prompt and its published
@@ -28,29 +32,29 @@ export const SERVICES: ServiceFacts[] = [
     title: 'Fix it — or get it launch-ready',
     forYou: 'Something’s breaking — login, data, payments, deploys, speed — or you’re about to launch and need it to hold up.',
     fixes: ['Login, accounts and permissions', 'Data security and access rules', 'Payments, deploys and error tracking', 'Speed, crashes and stability'],
-    stats: [['Audit', '$349'], ['Fix', '$1,500–$6,000'], ['Time', 'From 1 week']],
+    stats: [['Audit', '$349'], ['Fix', 'Fixed quote'], ['Time', 'From 1 week']],
   },
   {
     tag: 'Build with AI',
     title: 'Add AI that actually works',
     forYou: 'You want AI in your product or workflow — without runaway costs, wrong answers or a demo that breaks in real use.',
     fixes: ['Assistants that answer from your data', 'Smart search and document reading', 'Agents and workflow automations', 'Guardrails, fallbacks and cost limits'],
-    stats: [['AI build', '$2,000–$8,000'], ['MVP', '$6,000–$20,000'], ['Quote', 'Fixed']],
+    stats: [['AI build', '1–4 weeks'], ['MVP', '4–8 weeks'], ['Quote', 'Fixed']],
   },
   {
     tag: 'Keep it running',
     title: 'Keep it fast, safe and found',
     forYou: 'Your product is live and you want a senior engineer watching it — and buyers and AI search finding it.',
     fixes: ['Monitoring and a monthly health review', 'Small fixes and upgrades every month', 'Quarterly search-visibility re-check', 'Quarterly privacy check (GDPR · CCPA · DPDP)'],
-    stats: [['Care', '$299/mo'], ['Term', 'Monthly'], ['Cancel', 'Anytime']],
+    stats: [['Care', 'Quoted'], ['Term', 'Monthly'], ['Cancel', 'Anytime']],
   },
 ];
 
 export const GUARANTEES: [string, string][] = [
   ['First bug free', `A real issue in your app, on video, in ${promiseHours('first_bug_video')}h.`],
-  ['Audit credited 100%', 'Every dollar counts toward the fix.'],
-  ['Nothing found? Full refund', 'No real issues means you pay nothing.'],
-  ['Pay the rest when it’s live', 'Half to start, half once it works.'],
+  ['A ranked plan', 'The audit puts every issue in order: fix now, risky, can wait.'],
+  ['One fixed quote', 'Agreed before any work starts.'],
+  ['Daily updates', 'In writing, every day while the work is in progress.'],
 ];
 
 export const PRICE_GROUPS: PriceGroupFacts[] = [
@@ -62,7 +66,7 @@ export const PRICE_GROUPS: PriceGroupFacts[] = [
     packages: [
       { name: 'Production audit', duration: `${promiseHours('audit_report')} hours`, price: '$349', detail: 'Reliability, search visibility and privacy — one plain-English report, ranked by business impact.' },
     ],
-    includes: [`Your biggest risk found free, on video, in ${promiseHours('first_bug_video')}h`, 'Credited 100% toward any package', 'Nothing found? Full refund'],
+    includes: [`Your biggest risk found free, on video, in ${promiseHours('first_bug_video')}h`, 'Every issue ranked: fix now, risky, can wait', 'A fixed quote for the fix'],
   },
   {
     label: 'Step 2 · fix',
@@ -70,10 +74,10 @@ export const PRICE_GROUPS: PriceGroupFacts[] = [
     blurb: 'Make a broken or risky app stable, secure and launch-ready.',
     style: 'highlight',
     packages: [
-      { name: 'Launch-ready sprint', duration: '1 week', price: '$1,500–$2,500', detail: 'Up to three problem areas fixed, tested and shipped.', badge: '★ Most popular' },
-      { name: 'Full rescue', duration: '2–3 weeks', price: '$3,000–$6,000', detail: 'Everything the audit found, plus tests and monitoring.' },
+      { name: 'Launch-ready sprint', duration: '1 week', price: 'Fixed quote', detail: 'Up to three problem areas fixed, tested and shipped.', badge: 'Where most people start' },
+      { name: 'Full rescue', duration: '2–3 weeks', price: 'Fixed quote', detail: 'Everything the audit found, plus tests and monitoring.' },
     ],
-    includes: ['One fixed price — no hourly billing', 'Daily written updates', 'Pay the second half when it’s live'],
+    includes: ['Quoted after the audit', 'Daily written updates', 'Tested before it ships'],
   },
   {
     label: 'Build',
@@ -81,10 +85,10 @@ export const PRICE_GROUPS: PriceGroupFacts[] = [
     blurb: 'Add AI to your product, or build a new one from zero.',
     style: 'plain',
     packages: [
-      { name: 'AI build', duration: '1–4 weeks', price: '$2,000–$8,000', detail: 'An assistant, smart search or automation — with guardrails and cost limits.' },
-      { name: 'MVP build', duration: '4–8 weeks', price: '$6,000–$20,000', detail: 'A complete web or mobile product, ready for real users.' },
+      { name: 'AI build', duration: '1–4 weeks', price: 'Fixed quote', detail: 'An assistant, smart search or automation — with guardrails and cost limits.' },
+      { name: 'MVP build', duration: '4–8 weeks', price: 'Fixed quote', detail: 'A complete web or mobile product, ready for real users.' },
     ],
-    includes: ['Fixed quote after a short scoping call', 'Weekly demos as it’s built', 'Pay in milestones'],
+    includes: ['Fixed quote after a short scoping call', 'Weekly demos as it’s built', 'Guardrails and cost limits built in'],
   },
   {
     label: 'Ongoing',
@@ -92,7 +96,7 @@ export const PRICE_GROUPS: PriceGroupFacts[] = [
     blurb: 'A senior engineer looking after your live product.',
     style: 'plain',
     packages: [
-      { name: 'Care plan', duration: 'Monthly', price: '$299/mo', detail: 'Monitoring, a monthly health review and small fixes included.' },
+      { name: 'Care plan', duration: 'Monthly', price: 'Quoted monthly', detail: 'Monitoring, a monthly health review and small fixes included.' },
     ],
     includes: ['Quarterly visibility and privacy re-check', 'Priority response when something breaks', 'Cancel anytime'],
   },
@@ -112,12 +116,6 @@ export const FREE_CARDS: FreeCardFacts[] = [
     style: 'plain',
   },
   {
-    kind: 'Paid add-on · $149',
-    title: 'Recorded teardown',
-    body: `Took the Wrapper Test and want the fix? Anadi records a 15–20 minute walkthrough of your product, plus a written fix list, in ${promiseHours('teardown')} hours. The $149 is credited in full toward the $349 audit or an AI build within 30 days.`,
-    style: 'dashed',
-  },
-  {
     kind: 'Free · DIY',
     title: 'The Production Kit',
     body: 'Anadi’s rules and checklists for Claude Code, Cursor, Lovable and Bolt. One free download, no sign-up.',
@@ -132,14 +130,13 @@ export const FREE_MORE: { text: string; href: string }[] = [
 ];
 
 export const FAQ_ITEMS: { q: string; a: string }[] = [
-  { q: 'What does it cost?', a: 'The first-bug video is free. The audit is $349 and credited in full toward the work. After that there are five fixed packages: Launch-ready sprint $1,500–$2,500, Full rescue $3,000–$6,000, AI build $2,000–$8,000, MVP build $6,000–$20,000 and the Care plan at $299/mo. No hourly billing.' },
-  { q: 'Why is the audit paid when the first bug is free?', a: 'The video shows you one real problem. The audit checks everything and gives you a ranked plan — that takes a day or two of Anadi’s time. Book the fix within 30 days and every dollar is credited.' },
-  { q: 'What if the audit finds nothing?', a: 'If there are no real, fixable issues, you get a full refund.' },
-  { q: 'How does “pay when it’s live” work?', a: 'You pay half to start. The second half is due only once the fix is live and you’ve confirmed it works.' },
+  { q: 'What does it cost?', a: 'The first-bug video is free. The production audit is $349. Everything after that (a fix, an AI build or the Care plan) gets one fixed quote for your project before any work starts.' },
+  { q: 'Why is the audit paid when the first bug is free?', a: 'The video shows you one real problem. The audit checks everything and gives you a ranked plan — that takes a day or two of Anadi’s time.' },
+  { q: 'How is the fix priced?', a: 'After the audit, Anadi sends one fixed quote for the work it found. Nothing starts until you agree to it.' },
   { q: 'How will I know what’s happening?', a: 'You get a ticket number when your request is saved. Anadi keeps you updated by email at every step, with a written update every day while work is in progress.' },
-  { q: 'What if you can’t fix it?', a: 'The price is fixed. If something wasn’t in the quote, you’re not billed for it.' },
+  { q: 'What if you can’t fix it?', a: 'The quote is fixed and says exactly what’s included. Anything outside it is agreed with you first.' },
   { q: 'Do you rebuild my app from scratch?', a: 'No. Only the broken parts get rewritten, so your features and design stay as they are.' },
-  { q: 'What if my app is too far gone?', a: 'The audit will say so plainly. Sometimes a partial rebuild is cheaper than patching — you’ll know before you pay for anything.' },
+  { q: 'What if my app is too far gone?', a: 'The audit will say so plainly. Sometimes a partial rebuild is cheaper than patching — you’ll know before any work starts.' },
   { q: 'Is my code safe with you?', a: 'An NDA is available on request, and you can revoke repo access as soon as the project ends.' },
   { q: 'Which tools and stacks do you support?', a: 'React, Next.js, React Native, Node.js and PostgreSQL products (plus Supabase and Firebase) — hand-written or built with AI tools like Cursor, Claude Code, Lovable, Bolt, v0 or Replit.' },
   { q: 'What do you need to start?', a: 'A link to your app. Repo access helps if you have it, but it isn’t required for the free first-bug video.' },

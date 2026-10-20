@@ -12,8 +12,6 @@ export const BUSINESS = {
   phone: '+91 74669 14279',
   phoneHref: 'tel:+917466914279',
   email: 'anadithakur99@gmail.com',
-  /** Must match the refund promise on the kit's sales page. */
-  refundDays: 14,
   /** Shown as "Last updated" on every policy page. */
   updated: '20 October 2026',
 } as const;
@@ -22,5 +20,4 @@ export const LEGAL_PATHS = {
   support: '/support',
   terms: '/terms',
   privacy: '/privacy',
-  refunds: '/refunds',
 } as const;

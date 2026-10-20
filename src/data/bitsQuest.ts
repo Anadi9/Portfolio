@@ -34,15 +34,14 @@ const SERVICE_LINKS: Record<string, { icon: IconName; ask: string; more: string 
 
 const GROUP_CTAS: Record<string, { cta: Cta; secondary?: Cta }> = {
   'Start here': { cta: { text: 'Find my first bug — free', href: FIRST_BUG }, secondary: { text: 'Or book the $349 audit', href: FIRST_BUG } },
-  Fix: { cta: { text: 'Get my exact price', href: FIRST_BUG } },
-  'Build with AI': { cta: { text: 'Get my exact price', href: QUOTE_AI } },
+  Fix: { cta: { text: 'Get my fixed quote', href: FIRST_BUG } },
+  'Build with AI': { cta: { text: 'Get my fixed quote', href: QUOTE_AI } },
   'Keep it running': { cta: { text: 'Start care', href: QUOTE_CARE } },
 };
 
 const FREE_CTAS: Record<string, Cta> = {
   'Free first-bug video': { text: 'Find my first bug', href: FIRST_BUG },
   'The Wrapper Test': { text: 'Take the test →', href: '/teardown' },
-  'Recorded teardown': { text: 'Start with the test', href: '/teardown' },
   'The Production Kit': { text: 'Get the free kit', href: '/products/production-kit' },
 };
 
@@ -103,20 +102,20 @@ export const process = {
   title: 'How a project runs.',
   intro: 'A typical Launch-ready sprint, from first message to live.',
   steps: [
-    { day: 'Day 0', title: 'Tell Bit', body: 'Four quick taps. You get a ticket number.', price: '$0' },
-    { day: 'Day 1', title: 'First-bug video', body: 'Anadi films the biggest risk in your app.', price: '$0 · free' },
-    { day: 'Day 2–3', title: 'Audit', body: 'Everything checked, ranked Fix now / Risky / Can wait.', price: '$349 · credited' },
-    { day: 'Day 4–10', title: 'The fix', body: 'Fixed price. A written update every day.', price: '50% to start' },
-    { day: 'Day 11', title: 'Live', body: 'You confirm it works. Then the rest is due.', price: '50% when live' },
-    { day: 'Day 12+', title: 'Care', body: 'Optional. Bit stays on guard every month.', price: '$299/mo · optional' },
+    { day: 'Day 0', title: 'Tell Bit', body: 'Four quick taps. You get a ticket number.', price: 'Free' },
+    { day: 'Day 1', title: 'First-bug video', body: 'Anadi films the biggest risk in your app.', price: 'Free' },
+    { day: 'Day 2–3', title: 'Audit', body: 'Everything checked, ranked Fix now / Risky / Can wait.', price: '$349' },
+    { day: 'Day 4–10', title: 'The fix', body: 'Fixed quote, agreed first. A written update every day.', price: 'Fixed quote' },
+    { day: 'Day 11', title: 'Live', body: 'It ships, and you confirm it works.', price: 'Live' },
+    { day: 'Day 12+', title: 'Care', body: 'Optional. Bit stays on guard every month.', price: 'Optional' },
   ],
   log: [
     ['Day 00', 'Ticket #A-0000 opened for example-app.com. Anadi notified.'],
-    ['Day 01', 'First-bug video sent: “Anyone can see other people’s orders.” Fixed price attached.'],
-    ['Day 02', 'Audit started — $349, credited toward the fix.'],
+    ['Day 01', 'First-bug video sent: “Anyone can see other people’s orders.” Fixed quote attached.'],
+    ['Day 02', 'Audit started: everything checked and ranked.'],
     ['Day 04', 'Fix booked: Launch-ready sprint. Daily updates begin.'],
     ['Day 07', 'Update posted: access rules fixed and tested. Checkout next.'],
-    ['Day 11', 'Live. Client confirmed it works. Second half invoiced.'],
+    ['Day 11', 'Live. Client confirmed it works.'],
     ['Day 12', 'Care started: monitoring on, first monthly review booked.'],
   ],
 };
@@ -169,30 +168,27 @@ export const checks = {
 
 export const pricing = {
   eyebrow: 'Pricing',
-  title: 'Simple, fixed pricing.',
-  intro: 'Six fixed-price packages. Every project starts with a free first-bug review, and the audit is credited in full.',
+  title: 'Simple, fixed quotes.',
+  intro: 'Every project starts with a free first-bug review. The audit is $349; everything after it gets one fixed quote for your project.',
   guarantees: GUARANTEES,
   groups: PRICE_GROUPS.map((group) => ({ ...group, ...GROUP_CTAS[group.title] })) as (PriceGroupFacts & { cta: Cta; secondary?: Cta })[],
-  footnote: 'Six packages, all fixed-price. Not sure which one? Start with the free first-bug review — Anadi will tell you.',
+  footnote: 'Not sure which one you need? Start with the free first-bug review — Anadi will tell you.',
   custom: {
     title: 'Need a mix? Build your own package.',
-    body: 'Tell Anadi what you need. You get one fixed total, with the audit credited.',
+    body: 'Tell Anadi what you need. You get one fixed quote for all of it.',
     cta: { text: 'Ask for a custom package', href: QUOTE_CUSTOM },
   },
 };
 
-/** Structured-data offers for the homepage's `Service` nodes, from the same prices. */
+/**
+ * Structured-data offers for the homepage's `Service` nodes. Only the audit has
+ * a published price; the other packages are quoted per project, so they carry
+ * no offer rather than a range search engines would repeat.
+ */
 export const offers: Record<'fix' | 'build' | 'care', PricedOffer[]> = {
-  fix: [
-    { name: 'Production audit', description: 'Reliability, search visibility and privacy, ranked by impact. Credited in full.', min: 349, currency: 'USD' },
-    { name: 'Launch-ready sprint', description: 'Up to three problem areas fixed, tested and shipped in a week.', min: 1500, max: 2500, currency: 'USD' },
-    { name: 'Full rescue', description: 'Everything the audit found, plus tests and monitoring.', min: 3000, max: 6000, currency: 'USD' },
-  ],
-  build: [
-    { name: 'AI build', description: 'An assistant, smart search or automation, with guardrails and cost limits.', min: 2000, max: 8000, currency: 'USD' },
-    { name: 'MVP build', description: 'A complete web or mobile product, ready for real users.', min: 6000, max: 20000, currency: 'USD' },
-  ],
-  care: [{ name: 'Care plan', description: 'Monitoring, a monthly health review and small fixes.', min: 299, currency: 'USD', monthly: true }],
+  fix: [{ name: 'Production audit', description: 'Reliability, search visibility and privacy, ranked by business impact.', min: 349, currency: 'USD' }],
+  build: [],
+  care: [],
 };
 
 export const board = {
@@ -208,16 +204,16 @@ export const board = {
       ['Audit', 'Wed–Thu · report ✓', 'done'],
       ['Fix booked', 'Fri · Launch-ready sprint', 'done'],
       ['Fixing', 'Day 4 of 7 · update posted today', 'now'],
-      ['Live', 'Pay the second half once it works', 'next'],
+      ['Live', 'You confirm it works', 'next'],
       ['Care', 'Optional', 'next'],
     ] as [string, string, 'done' | 'now' | 'next'][],
   },
   loopTitle: 'How you’re kept in the loop',
   loop: [
     ['A ticket number', 'when Bit or the form saves your request — no account needed.'],
-    ['Your first-bug video', 'within 24 hours, with the fixed price to fix it.'],
+    ['Your first-bug video', 'within 24 hours, with a fixed quote to fix it.'],
     ['A written update every day', 'while work is in progress. No chasing.'],
-    ['You confirm it’s live', 'before the second half is due.'],
+    ['You confirm it’s live', 'before the work is marked done.'],
   ],
   cta: { text: 'Start my request', href: FIRST_BUG },
 };

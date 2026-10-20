@@ -8,13 +8,12 @@ describe('promise list', () => {
   it('holds the deadlines the site quotes', () => {
     expect(promiseHours('first_bug_video')).toBe(24);
     expect(promiseHours('audit_report')).toBe(48);
-    expect(promiseHours('teardown')).toBe(48);
     expect(promiseHours('deletion')).toBe(720);
     expect(promiseHours('daily_update')).toBe(24);
   });
 
   it('throws for a promise with no deadline', () => {
-    expect(() => promiseHours('pay_when_live')).toThrow(/no deadline/);
+    expect(() => promiseHours('fixed_price_after_video')).toThrow(/no deadline/);
   });
 
   it('keys match ids', () => {
@@ -32,9 +31,12 @@ describe('promise list', () => {
     expect(TURNAROUND_HOURS).toBe(promiseHours('first_bug_video'));
     const card = FREE_CARDS.find((c) => c.title === 'Free first-bug video')!;
     expect(card.body).toContain(`within ${promiseHours('first_bug_video')} hours`);
-    const teardown = FREE_CARDS.find((c) => c.title === 'Recorded teardown')!;
-    expect(teardown.body).toContain(`in ${promiseHours('teardown')} hours`);
     expect(GUARANTEES[0][1]).toContain(`in ${promiseHours('first_bug_video')}h`);
     expect(PRICE_GROUPS[0].packages[0].duration).toBe(`${promiseHours('audit_report')} hours`);
+  });
+
+  it('the copy promises no payment terms, credits or refunds', () => {
+    const copy = JSON.stringify({ FREE_CARDS, GUARANTEES, PRICE_GROUPS });
+    expect(copy).not.toMatch(/refund|credit|half|invoice|milestone|teardown/i);
   });
 });

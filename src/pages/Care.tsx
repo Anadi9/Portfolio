@@ -4,15 +4,15 @@ import { offers, QUOTE_CARE } from '@/data/bitsQuest';
 import { breadcrumbs, faqPage, graph, service } from '@/lib/schema';
 
 /**
- * `/care`: the Keep it running service (Care plan, $299/mo). Copy from the
+ * `/care`: the Keep it running service (Care plan, quoted per product). Copy from the
  * Bit's Quest services card, pricing group and Bit's care node.
  */
 
 const PATH = '/care';
 const URL = `https://anadithakur.in${PATH}`;
-const TITLE = 'Care plan: a senior engineer for your live app, $299/mo · Anadi Thakur';
+const TITLE = 'Care plan: a senior engineer for your live app · Anadi Thakur';
 const DESCRIPTION =
-  'Keep your live app fast, safe and found: monitoring, a monthly health review, small fixes, and a quarterly search-visibility and privacy re-check. $299/mo, cancel anytime.';
+  'Keep your live app fast, safe and found: monitoring, a monthly health review, small fixes, and a quarterly search-visibility and privacy re-check. Month to month, cancel anytime.';
 
 const content: ServicePageProps = {
   page: 'care',
@@ -31,7 +31,7 @@ const content: ServicePageProps = {
       ['Quarterly privacy check', 'Consent, notices and data requests checked against GDPR, CCPA and DPDP.'],
     ],
   },
-  packages: [{ name: 'Care plan', duration: 'Monthly', price: '$299/mo', detail: 'Monitoring, a monthly health review and small fixes included.' }],
+  packages: [{ name: 'Care plan', duration: 'Monthly', price: 'Quoted monthly', detail: 'Monitoring, a monthly health review and small fixes included.' }],
   terms: ['Month to month', 'Cancel anytime', 'Priority response when something breaks', 'Quarterly visibility and privacy re-check'],
   steps: [
     { title: 'Start', body: 'Email Anadi your app link. Care starts with a first health review.' },
@@ -40,12 +40,12 @@ const content: ServicePageProps = {
     { title: 'When it breaks', body: 'Priority response. Bigger work gets a fixed quote before it starts.' },
   ],
   faq: [
-    { q: 'What does it cost?', a: '$299 a month, month to month. Cancel anytime.' },
+    { q: 'What does it cost?', a: 'Care is quoted for your product, month to month. Cancel anytime.' },
     { q: 'Do I need a fix first?', a: 'Not required. Many clients start Care right after a fix. If you’re not sure the app is stable, start with the free first-bug video.' },
     { q: 'What does the quarterly re-check cover?', a: 'Search & AI visibility (can Google and AI assistants read and recommend you) and privacy & compliance (consent, notices, data requests under GDPR, CCPA and India’s DPDP Act).' },
-    { q: 'What happens with bigger work?', a: 'Anything beyond small fixes gets a fixed quote before it starts, at the same fixed prices as the rest of the site.' },
+    { q: 'What happens with bigger work?', a: 'Anything beyond small fixes gets its own fixed quote before it starts.' },
   ],
-  closing: { title: 'Keep a senior engineer on guard.', body: '$299/mo, month to month. Priority response when something breaks.' },
+  closing: { title: 'Keep a senior engineer on guard.', body: 'Month to month. Priority response when something breaks.' },
 };
 
 const jsonLd = graph([

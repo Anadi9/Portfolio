@@ -115,8 +115,11 @@ describe('system prompt', () => {
   const p = systemPrompt();
 
   it('is grounded in the page’s facts and pricing rules', () => {
-    for (const s of ['$349', '$1,500–$2,500', '$299/mo', '$149', 'Launch-ready sprint', 'Nothing found? Full refund', 'The Wrapper Test', 'Is Bit a real person?']) expect(p).toContain(s);
-    expect(p).toMatch(/Anadi confirms the exact fixed price after the free first-bug video/);
+    for (const s of ['$349', 'Launch-ready sprint', 'Fixed quote', 'The Wrapper Test', 'Is Bit a real person?']) expect(p).toContain(s);
+    const facts = p.slice(p.indexOf('Price list'));
+    for (const s of ['$1,500', '$299', '$149', 'refund', 'credited', 'half']) expect(facts).not.toContain(s);
+    expect(p).toMatch(/The audit is the only priced item/);
+    expect(p).toMatch(/Never talk about payment terms, deposits, invoices, refunds or credits/);
     expect(p).toMatch(/never give a custom quote/i);
     expect(p).toMatch(/at most 80 words/);
   });

@@ -13,8 +13,11 @@ import { PRICE_GROUPS, SERVICES } from '../../data/bitsQuestFacts.js';
 /** One amount as written: a single price or a range, one-off or monthly. In US dollars. */
 export type Amount = { raw: string; min: number; max?: number; monthly: boolean };
 
-/** Prices that are published outside the pricing table: the audit, the recorded teardown add-on, Care. */
-export const EXTRA_PRICES = ['$349', '$149', '$299/mo'] as const;
+/**
+ * Prices published outside the pricing table. The audit is the only price the
+ * site publishes; every other package is quoted per project.
+ */
+export const EXTRA_PRICES = ['$349'] as const;
 
 const NUM = String.raw`(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?`;
 const MUL = String.raw`(?:\s?(?:k|thousand|mn|m|million)\b)?`;
@@ -156,6 +159,6 @@ export function guardPrices(input: string): GuardResult {
 export function priceTable(): string {
   const rows = PRICE_GROUPS.flatMap((g) => g.packages.map((p) => `- ${p.name} (${g.title}): ${p.price}, ${p.duration}. ${p.detail}`));
   rows.push('- Free first-bug video: free, a short video of the biggest risk in your app, within 24 hours.');
-  rows.push('- Recorded teardown (add-on to the free Wrapper Test): $149, a 15–20 minute recorded walkthrough plus a written fix list in 48 hours, credited 100% toward the $349 audit or an AI build within 30 days.');
+  rows.push('- The Production audit ($349) is the only published price. Every other package gets one fixed quote from Anadi for the project: never state, estimate or hint at an amount for it.');
   return rows.join('\n');
 }

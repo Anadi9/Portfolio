@@ -61,6 +61,7 @@ Process: each phase gets a plan in `docs/superpowers/plans/`, then build → tes
   the opt-in are removed.
 - Bit states only published prices and builder sums, and says Anadi confirms the
   fixed price after the free first-bug video. No custom quotes or discounts.
+  (20 Oct: the audit is the only published price and the builder no longer sums.)
 - Dark mode toggle shipped (rebrand).
 
 18 Oct 2026:
@@ -90,17 +91,18 @@ apart. "Enforced" says which phase starts tracking it.
 |---|---|---|---|---|---|
 | Free first-bug video | Hub hero, `/production-ready`, `/ai-visibility`, `/dpdp`, audit form, portfolio contact, Bit (`TURNAROUND_HOURS` in `src/lib/rescue/intake.ts`) | `first_bug` ticket created | 24 h | First reply with the video link is sent | Phase 2 (reply-by), Phase 4 (commitment) |
 | Five first-bug videos a week | `FREE_CARDS` in `bitsQuestFacts.ts` | Monday 00:00 IST | Weekly cap | No more than five accepted; extras told the next free slot | Phase 4 |
-| Fixed price after the video | `bitsQuest.ts`, FAQ | Video sent | Same message | The reply states one fixed price | Phase 2 (send refuses `[PRICE]`) |
-| Production audit report | `PRICE_GROUPS` (48 hours) | Audit paid | 48 h | Report sent | Phase 4 |
-| Recorded teardown | `FREE_CARDS` ($149, 48 hours) | Teardown paid | 48 h | Video and fix list sent | Phase 4 |
-| Audit credited 100% | `GUARANTEES`, FAQ, `/production-ready` | Audit paid | 30 days | Fix booked within 30 days gets the credit on its invoice | Phase 7 (invoices) |
-| Teardown credited toward audit or AI build | `FREE_CARDS` | Teardown paid | 30 days | Credit applied | Phase 7 |
-| Nothing found? Full refund | `GUARANTEES`, FAQ | Audit report sent | On report | Refund issued when the report finds no real issue | Phase 4 (gate) |
+| Fixed quote after the video | `bitsQuest.ts`, FAQ | Video sent | Same message | The reply states one fixed quote | Phase 2 (send refuses `[PRICE]`) |
+| Production audit report | `PRICE_GROUPS` ($349, 48 hours) | Audit paid | 48 h | Report sent | Phase 4 |
 | Daily written updates | `PRICE_GROUPS` Fix, FAQ | Stage `fixing` entered | Every 24 h | An update sent each day in `fixing` | Phase 4 |
-| Pay the second half when it's live | `GUARANTEES`, FAQ | Stage `live` entered | — | Second invoice only after the client confirms | Phase 4 (gate) |
-| Care monthly health review | Care plan ($299/mo) | Care starts | Monthly | Review sent each month | Phase 7 |
+| Care monthly health review | Care plan | Care starts | Monthly | Review sent each month | Phase 7 |
 | Deletion request handled | `/privacy` (`src/pages/Legal.tsx`) | Request received | 30 days | Data deleted and confirmed | Phase 4 |
 | Daily scorecard | `/scorecard` | Daily | 24 h | A run saved in the last 24 h | Phase 4 (already runs by cron) |
+
+Dropped (20 Oct): the recorded teardown, the audit and teardown credits, the
+full refund and "pay the second half when it's live". The site now shows no
+payment terms and no prices except the $349 audit; everything else gets one
+fixed quote. `/refunds` is removed (301 to `/terms`). Invoicing stays Anadi's
+own process (`src/lib/money/invoices.ts`, `/admin`), not a site promise.
 
 ## Client stages
 

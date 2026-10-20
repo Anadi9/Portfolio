@@ -7,7 +7,7 @@
  * verbatim; nothing composes, templates or interpolates one.
  *
  * That constraint is what keeps the free tool diagnostic. A finding names what
- * an answer indicates and stops there; the fix is what the paid teardown is
+ * an answer indicates and stops there; the fix is what the review and audit are
  * for, and there is deliberately no field on this type to put one in.
  *
  * Weights are 3 / 1 / 0 / 0 for every question, so the fourth option (always a

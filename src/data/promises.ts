@@ -13,12 +13,7 @@ export type PromiseId =
   | 'first_bug_weekly_cap'
   | 'fixed_price_after_video'
   | 'audit_report'
-  | 'teardown'
-  | 'audit_credit'
-  | 'teardown_credit'
-  | 'refund_if_nothing'
   | 'daily_update'
-  | 'pay_when_live'
   | 'care_review'
   | 'deletion'
   | 'daily_scorecard';
@@ -58,11 +53,11 @@ export const PROMISES: Record<PromiseId, SitePromise> = {
   },
   fixed_price_after_video: {
     id: 'fixed_price_after_video',
-    what: 'Fixed price after the video',
+    what: 'Fixed quote after the video',
     where: ['src/data/bitsQuest.ts', 'src/data/bitsQuestFacts.ts'],
     clockStarts: 'Video sent',
     deadlineHours: null,
-    keptWhen: 'The video reply states one fixed price',
+    keptWhen: 'The video reply states one fixed quote',
     enforcedIn: 'Phase 2 (send refuses [PRICE])',
   },
   audit_report: {
@@ -74,42 +69,6 @@ export const PROMISES: Record<PromiseId, SitePromise> = {
     keptWhen: 'Report sent',
     enforcedIn: 'Phase 4',
   },
-  teardown: {
-    id: 'teardown',
-    what: 'Recorded teardown',
-    where: ['src/data/bitsQuestFacts.ts'],
-    clockStarts: 'Teardown paid',
-    deadlineHours: 2 * DAY,
-    keptWhen: 'Video and written fix list sent',
-    enforcedIn: 'Phase 4',
-  },
-  audit_credit: {
-    id: 'audit_credit',
-    what: 'Audit credited 100%',
-    where: ['src/data/bitsQuestFacts.ts', 'src/pages/Rescue.tsx'],
-    clockStarts: 'Audit paid',
-    deadlineHours: 30 * DAY,
-    keptWhen: 'A fix booked within 30 days gets the credit on its invoice',
-    enforcedIn: 'Phase 7 (invoices)',
-  },
-  teardown_credit: {
-    id: 'teardown_credit',
-    what: 'Teardown credited toward the audit or an AI build',
-    where: ['src/data/bitsQuestFacts.ts'],
-    clockStarts: 'Teardown paid',
-    deadlineHours: 30 * DAY,
-    keptWhen: 'Credit applied',
-    enforcedIn: 'Phase 7',
-  },
-  refund_if_nothing: {
-    id: 'refund_if_nothing',
-    what: 'Nothing found? Full refund',
-    where: ['src/data/bitsQuestFacts.ts'],
-    clockStarts: 'Audit report sent',
-    deadlineHours: null,
-    keptWhen: 'Refund issued when the report finds no real issue',
-    enforcedIn: 'Phase 4 (gate)',
-  },
   daily_update: {
     id: 'daily_update',
     what: 'Daily written updates',
@@ -118,15 +77,6 @@ export const PROMISES: Record<PromiseId, SitePromise> = {
     deadlineHours: DAY,
     keptWhen: 'An update sent every day while in fixing',
     enforcedIn: 'Phase 4',
-  },
-  pay_when_live: {
-    id: 'pay_when_live',
-    what: 'Pay the second half when it is live',
-    where: ['src/data/bitsQuestFacts.ts'],
-    clockStarts: 'Stage live entered',
-    deadlineHours: null,
-    keptWhen: 'Second invoice only after the client confirms it works',
-    enforcedIn: 'Phase 4 (gate)',
   },
   care_review: {
     id: 'care_review',

@@ -88,7 +88,7 @@ const INSIDE: { title: string; items: ReactNode[] }[] = [
 const FAQ: { q: string; a: ReactNode }[] = [
   {
     q: 'Is it really free?',
-    a: <>Yes. One download, no sign-up, no email. The people who use it are the people I build for, and if you&apos;d rather have it fixed for you, <Link to="/audit?type=app" style={{ color: p.ink }}>the audit</Link> is free too.</>,
+    a: <>Yes. One download, no sign-up, no email. The people who use it are the people I build for, and if you&apos;d rather have it fixed for you, <Link to="/audit?type=app" style={{ color: p.ink }}>the first-bug review</Link> is free too.</>,
   },
   {
     q: 'I’m not technical. Can I use this?',

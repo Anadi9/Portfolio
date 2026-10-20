@@ -25,7 +25,8 @@ describe('draftFirstReply', () => {
     expect(d.body).toContain(VIDEO_PLACEHOLDER);
     expect(d.body).toContain(PRICE_PLACEHOLDER);
     expect(d.body).toContain('$349');
-    expect(d.body).toContain('credited');
+    expect(d.body).toContain('$349 production audit');
+    expect(d.body).not.toMatch(/credited|refund/);
     expect(d.body.trimEnd().endsWith('Anadi')).toBe(true);
     expect(d.body.length).toBeLessThanOrEqual(1500);
   });

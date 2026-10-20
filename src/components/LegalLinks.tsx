@@ -10,7 +10,6 @@ export default function LegalLinks() {
       <Link to={LEGAL_PATHS.support} className="pf-underline" style={style}>SUPPORT</Link>
       <Link to={LEGAL_PATHS.terms} className="pf-underline" style={style}>TERMS</Link>
       <Link to={LEGAL_PATHS.privacy} className="pf-underline" style={style}>PRIVACY</Link>
-      <Link to={LEGAL_PATHS.refunds} className="pf-underline" style={style}>REFUNDS</Link>
     </nav>
   );
 }

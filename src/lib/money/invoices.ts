@@ -1,5 +1,3 @@
-import { promiseHours } from '../../data/promises.js';
-
 /**
  * Invoice plans with the site's credits applied. Planned here; Anadi sends
  * each invoice himself and records its reference (`invoiceRef`).
@@ -10,7 +8,14 @@ import { promiseHours } from '../../data/promises.js';
  * - AI build: the same two halves; the $149 teardown is credited instead.
  * A credit bigger than the first invoice carries into the second; no invoice
  * goes below zero.
+ *
+ * These are Anadi's own billing rules for /admin. The site no longer publishes
+ * them (no payment terms or credits in the copy), so the credit window lives
+ * here rather than in the promise list.
  */
+
+/** Days after payment that the audit or teardown still counts as a credit. */
+const CREDIT_DAYS = 30;
 
 export const AUDIT_CENTS = 34900;
 export const TEARDOWN_CENTS = 14900;
@@ -21,9 +26,7 @@ export type InvoicePlan = { key: 'audit' | 'start' | 'live'; label: string; line
 const within = (paidAt: string | null | undefined, days: number, now: Date) => !!paidAt && now.getTime() - Date.parse(paidAt) <= days * 86_400_000;
 
 export function planInvoices(input: { work: Work; priceCents?: number; now: Date; auditPaidAt?: string | null; teardownPaidAt?: string | null }): InvoicePlan[] {
-  const auditDays = promiseHours('audit_credit') / 24;
-  const teardownDays = promiseHours('teardown_credit') / 24;
-  const teardown = within(input.teardownPaidAt, teardownDays, input.now);
+  const teardown = within(input.teardownPaidAt, CREDIT_DAYS, input.now);
 
   if (input.work === 'audit') {
     const lines = [{ label: 'Production audit', cents: AUDIT_CENTS }];
@@ -36,7 +39,7 @@ export function planInvoices(input: { work: Work; priceCents?: number; now: Date
   const firstHalf = Math.ceil(input.priceCents / 2);
   const secondHalf = input.priceCents - firstHalf;
   const credit =
-    input.work === 'fix' && within(input.auditPaidAt, auditDays, input.now)
+    input.work === 'fix' && within(input.auditPaidAt, CREDIT_DAYS, input.now)
       ? { label: 'Production audit credit', cents: AUDIT_CENTS }
       : input.work === 'build' && teardown
         ? { label: 'Recorded teardown credit', cents: TEARDOWN_CENTS }

@@ -10,7 +10,7 @@ import { score, type Result } from './score.js';
  *
  * `SectionReport` has no `fix`, `recommendation`, `nextStep` or `severity`.
  * That absence is the product decision, not an oversight: the free tool names
- * where you are thin and stops, because the fix is what the paid teardown is.
+ * where you are thin and stops, because the fix is what the review and audit are for.
  * A test asserts the exact key set, so adding one fails the build.
  *
  * Takes raw answers rather than a `Result`, because findings need the answers, and

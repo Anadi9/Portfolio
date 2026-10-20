@@ -19,7 +19,7 @@ export const CARTRIDGES: Cartridge[] = [
   {
     level: 'Fix',
     name: 'Launch readiness',
-    price: '$1,500–$2,500',
+    price: 'Fixed quote',
     solves: 'Launch-day surprises',
     bit: 'Security, payments, monitoring and load, checked and fixed before real users arrive.',
     start: 'I’m about to launch',
@@ -27,7 +27,7 @@ export const CARTRIDGES: Cartridge[] = [
   {
     level: 'Build',
     name: 'Build with AI',
-    price: '$2,000–$8,000',
+    price: 'Fixed quote',
     solves: 'AI that’s expensive, slow or wrong',
     bit: 'Assistants that answer from your data, smart search and automations, with guardrails.',
     start: 'Add AI to my product',
@@ -35,7 +35,7 @@ export const CARTRIDGES: Cartridge[] = [
   {
     level: 'Keep',
     name: 'Care plan',
-    price: '$299/mo',
+    price: 'Quoted monthly',
     solves: 'Things breaking after launch',
     bit: 'Monitoring, a monthly health review and small fixes, by a senior engineer.',
     start: 'Look after my live app',

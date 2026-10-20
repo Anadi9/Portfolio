@@ -574,7 +574,7 @@ export function FreeTools() {
         <h2 id="h-free">{free.title}</h2>
         <p className="hq-lab" style={{ color: 'var(--bq-muted)' }}>{free.tag}</p>
       </div>
-      <div className="hq-four">
+      <div className="hq-three">
         {free.cards.map((t) => (
           <article key={t.title} className={`hq-tool ${t.style === 'dark' ? 'hq-dark' : 'hq-card'}`} data-style={t.style}>
             {t.style === 'feature' && (

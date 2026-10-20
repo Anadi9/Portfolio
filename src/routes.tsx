@@ -201,8 +201,8 @@ export const routes: RouteRecord[] = [
         },
       },
 
-      // The policy pages: support, terms, privacy, refunds.
-      ...(['Support', 'Terms', 'Privacy', 'Refunds'] as const).map((name) => ({
+      // The policy pages: support, terms, privacy. `/refunds` was removed and 301s to `/terms` (`vercel.json`).
+      ...(['Support', 'Terms', 'Privacy'] as const).map((name) => ({
         path: `/${name.toLowerCase()}`,
         lazy: () => import('./pages/Legal').then((m) => ({ Component: m[name] })),
         entry: 'src/pages/Legal.tsx',

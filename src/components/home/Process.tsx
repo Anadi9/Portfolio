@@ -13,13 +13,13 @@ import { process } from '@/data/bitsQuest';
 const LAST_DAY = 12;
 /** First day of each stop, in `process.steps` order. */
 const STOP_DAY = [0, 1, 2, 4, 11, 12];
-/** "Paid so far" chips (as in the design) and the stop each one is reached at. */
+/** "Where it is" chips and the stop each one is reached at. No payment stages: the site publishes no payment terms. */
 const PAID: [string, number][] = [
-  ['$0', 0],
-  ['$349', 2],
-  ['50%', 3],
-  ['50%', 4],
-  ['$299/mo', 5],
+  ['Free', 0],
+  ['Audit', 2],
+  ['Quote', 3],
+  ['Live', 4],
+  ['Care', 5],
 ];
 const TICK_MS = 1000;
 
@@ -113,7 +113,7 @@ export function Process() {
             </div>
           </div>
           <div>
-            <span className="hq-lab" style={{ color: 'var(--bq-muted)' }}>Paid so far</span>
+            <span className="hq-lab" style={{ color: 'var(--bq-muted)' }}>Where it is</span>
             <div className="hq-paid">
               {PAID.map(([p, at], i) => (
                 <span key={i} data-on={stop >= at}>

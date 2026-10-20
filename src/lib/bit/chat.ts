@@ -96,15 +96,15 @@ export const NODES: Record<NodeId, Node> = {
   },
   prod2: { say: 'Is it live with real users?', key: 'live', opts: ['Not yet — launching soon', 'Yes, under 100 users', 'Yes, 100+ users'].map((l) => o(l, to('prod3'))) },
   prod3: { say: 'One known problem, or lots of small ones?', key: 'scope', opts: ['One specific thing', 'Lots, or not sure'].map((l) => o(l, to('prod4'))) },
-  prod4: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi confirms a fixed price after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recProd'))) },
+  prod4: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi sends a fixed quote after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recProd'))) },
   vis: { say: 'Have you asked an AI assistant for the best tool in your category?', key: 'asked', opts: ['Yes — we’re missing', 'Not yet'].map((l) => o(l, to('vis2'))) },
   vis2: { say: 'Is your site a JavaScript app (React, Next, Lovable…)?', key: 'js', opts: ['Yes', 'No', 'Not sure'].map((l) => o(l, to('recVis'))) },
   dpdp: { say: 'Do you collect personal data — names, emails, payments?', key: 'pd', opts: ['Yes', 'Not sure'].map((l) => o(l, to('dpdp2'))) },
   dpdp2: { say: 'How do people give consent today?', key: 'consent', opts: ['Pre-ticked box, or no consent', 'We ask properly', 'Not sure'].map((l) => o(l, to('recDpdp'))) },
   free: { say: 'Free stuff, coming up. Tap one:', opts: [o('Back to start', to('start')), tour] },
   teardown: {
-    say: 'The recorded teardown is a $149 add-on to the Wrapper Test: a 15–20 minute recorded walkthrough of your product plus a written fix list, in 48 hours. The $149 is credited in full toward the $349 audit or an AI build within 30 days. Take the free test first — then he knows where to look.',
-    opts: [o('Take the Wrapper Test', { href: '/teardown' }), o('Ask Anadi about a teardown', { href: mailto('Recorded teardown', {}) }), o('Back to start', to('start'))],
+    say: 'The Wrapper Test is free: 13 questions, about 3 minutes, and a written breakdown of how defensible your AI product is. Want Anadi to look at the fix? Ask for the free first-bug video or the $349 audit.',
+    opts: [o('Take the Wrapper Test', { href: '/teardown' }), o('Find my first bug — free', to('hunt')), o('Back to start', to('start'))],
   },
   kit: {
     say: 'The Production Kit has Anadi’s rules and checklists for Claude Code, Cursor, Lovable and Bolt. Which tool do you build with?',
@@ -159,9 +159,9 @@ export const NODES: Record<NodeId, Node> = {
     opts: ['Answer questions from our data', 'Automate a workflow or agent', 'A Bit-style guide for our site', 'Fix an AI feature we already have'].map((l) => o(l, to('ai2'))),
   },
   ai2: { say: 'Is the product live?', key: 'aistage', opts: ['Live with users', 'Still building'].map((l) => o(l, to('ai3'))) },
-  ai3: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi confirms a fixed price after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recAi'))) },
+  ai3: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi sends a fixed quote after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recAi'))) },
   care: {
-    say: 'Care keeps a live app healthy: monitoring, a monthly review and small fixes — $299/mo, month to month. Search visibility and privacy are re-checked every quarter.',
+    say: 'Care keeps a live app healthy: monitoring, a monthly review and small fixes, month to month, quoted for your product. Search visibility and privacy are re-checked every quarter.',
     opts: [o('Start Care', { href: mailto('Care plan', {}) }), o('Find my first bug first', to('hunt')), o('Back to start', to('start'))],
   },
 };
@@ -187,14 +187,14 @@ export function reply(id: NodeId, ans: Answers): Message[] {
   if (id === 'recProd') {
     const one = ans.scope === 'One specific thing';
     const notes = [`Built with ${ans.stack ?? 'your stack'} — Anadi knows where those apps usually break.`];
-    notes.push(one ? 'One specific issue usually lands at the lower end of the range.' : 'Several issues at once? The sprint covers up to three problem areas in a week.');
-    if (ans.live === 'Yes, 100+ users') notes.push('With 100+ users live, add Care ($299/mo) so it stays fixed.');
+    notes.push(one ? 'One specific issue? The sprint can be scoped to just that.' : 'Several issues at once? The sprint covers up to three problem areas in a week.');
+    if (ans.live === 'Yes, 100+ users') notes.push('With 100+ users live, add the Care plan so it stays fixed.');
     if (ans.live === 'Not yet — launching soon') notes.push('Launching soon — let’s catch the problems before your users do.');
-    notes.push('Path: free first-bug video → $349 audit (credited) → fixed price, half paid when it’s live.');
+    notes.push('Path: free first-bug video → $349 audit → one fixed quote for the fix.');
     const symptoms = ans.live === 'Not yet — launching soon' ? [5] : [];
     return [
       { who: 'bit', text: 'Here’s what I’d do:' },
-      { who: 'rec', rec: { title: 'Launch-ready sprint', price: '$1,500–$2,500', notes, actions: pkgActions('Launch-ready sprint', ans, symptoms) } },
+      { who: 'rec', rec: { title: 'Launch-ready sprint', price: 'Fixed quote', notes, actions: pkgActions('Launch-ready sprint', ans, symptoms) } },
     ];
   }
   if (id === 'recVis') {
@@ -204,7 +204,7 @@ export function reply(id: NodeId, ans: Answers): Message[] {
     notes.push('Search & AI visibility is one of the three areas every audit covers.');
     return [
       { who: 'bit', text: 'Sounds like an AI visibility problem:' },
-      { who: 'rec', rec: { title: 'Production audit', price: '$349 · credited to the fix', notes, actions: pkgActions('Production audit (AI visibility)', ans, [4]) } },
+      { who: 'rec', rec: { title: 'Production audit', price: '$349', notes, actions: pkgActions('Production audit (AI visibility)', ans, [4]) } },
     ];
   }
   if (id === 'recDpdp') {
@@ -215,14 +215,14 @@ export function reply(id: NodeId, ans: Answers): Message[] {
     notes.push('Privacy & compliance is one of the three areas every audit covers.');
     return [
       { who: 'bit', text: 'This one’s a privacy question:' },
-      { who: 'rec', rec: { title: 'Production audit', price: '$349 · credited to the fix', notes, actions: pkgActions('Production audit (privacy)', ans) } },
+      { who: 'rec', rec: { title: 'Production audit', price: '$349', notes, actions: pkgActions('Production audit (privacy)', ans) } },
     ];
   }
   if (id === 'recAi') {
     const fixing = /Fix an AI/.test(ans.aiwant ?? '');
     const live = ans.aistage === 'Live with users';
     const notes = [
-      'Fixed price after a short scoping call — no hourly billing.',
+      'One fixed quote after a short scoping call.',
       'Guardrails, fallbacks and cost limits are built in, not extras.',
       live ? 'Live already? Anadi ships it behind a switch, so your users never see a half-built feature.' : 'Still building? Anadi shapes the AI part so it’s cheap to run from day one.',
     ];
@@ -233,9 +233,9 @@ export function reply(id: NodeId, ans: Answers): Message[] {
         who: 'rec',
         rec: {
           title,
-          price: fixing ? '$349 · AI checks included' : '$2,000–$8,000',
+          price: fixing ? '$349 · AI checks included' : 'Fixed quote',
           notes,
-          actions: [o('Get a fixed quote', { href: mailto(`${title} quote`, ans) }), o('See Build with AI pricing', { section: 'pricing' }), tour],
+          actions: [o('Get a fixed quote', { href: mailto(`${title} quote`, ans) }), o('See the Build with AI packages', { section: 'pricing' }), tour],
         },
       },
     ];

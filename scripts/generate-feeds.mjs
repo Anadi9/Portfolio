@@ -203,9 +203,9 @@ writeFileSync(join(OUT, 'rss.xml'), rss);
 /* --- llms.txt ------------------------------------------------------------ */
 
 // The llmstxt.org summary AI answer engines read before (or instead of) the
-// pages. Prices can't be imported from the TSX they live in, so they are
+// pages. The facts can't be imported from the TSX they live in, so they are
 // repeated here: change them in `data/bitsQuest.ts` and `Rescue.tsx` and here
-// too. The first paragraph is the business's one-line description and
+// too. The audit is the only published price; everything else is quoted. The first paragraph is the business's one-line description and
 // must match `BUSINESS_TAGLINE` in `src/lib/schema.ts` word for word.
 const llms = `# Anadi Thakur · Your app, made production-ready
 
@@ -215,11 +215,11 @@ Anadi Thakur is a senior full-stack engineer based in India with 4+ years shippi
 
 ## Services
 
-All prices are fixed, in USD. Every project starts with a free first-bug review: the biggest risk in the app, on video, with the fixed price to fix it.
+Every project starts with a free first-bug review: the biggest risk in the app, on video, with a fixed quote to fix it. The production audit is $349 (USD); everything else gets one fixed quote per project, agreed before work starts.
 
-- [Fix it or get it launch-ready](${ORIGIN}/production-ready): Production audit $349 (48 hours; reliability and security, search and AI visibility, privacy and compliance, ranked by business impact; credited 100% toward any package; full refund if nothing real is found). Launch-ready sprint $1,500–$2,500 (1 week, up to three problem areas). Full rescue $3,000–$6,000 (2–3 weeks, everything the audit found plus tests and monitoring). Half to start, the second half once the fix is live and confirmed.
-- [Build with AI](${ORIGIN}/build-with-ai): AI build $2,000–$8,000 (1–4 weeks: an assistant, smart search or automation with guardrails and cost limits). MVP build $6,000–$20,000 (4–8 weeks: a complete web or mobile product). Fixed quote after a short scoping call, weekly demos, paid in milestones.
-- [Keep it running](${ORIGIN}/care): Care plan $299/month: monitoring, a monthly health review, small fixes, and a quarterly search-visibility and privacy re-check. Cancel anytime.
+- [Fix it or get it launch-ready](${ORIGIN}/production-ready): Production audit $349 (48 hours; reliability and security, search and AI visibility, privacy and compliance, ranked by business impact). Launch-ready sprint (1 week, up to three problem areas). Full rescue (2–3 weeks, everything the audit found plus tests and monitoring). Both at a fixed quote after the audit.
+- [Build with AI](${ORIGIN}/build-with-ai): AI build (1–4 weeks: an assistant, smart search or automation with guardrails and cost limits). MVP build (4–8 weeks: a complete web or mobile product). Fixed quote after a short scoping call, weekly demos.
+- [Keep it running](${ORIGIN}/care): Care plan, month to month and quoted per product: monitoring, a monthly health review, small fixes, and a quarterly search-visibility and privacy re-check. Cancel anytime.
 - [First bug free](${ORIGIN}/audit): one form. No access needed, no sales call unless asked for.
 
 ## What the audit checks
@@ -234,7 +234,6 @@ All prices are fixed, in USD. Every project starts with a free first-bug review:
 - [DPDP self-check](${ORIGIN}/dpdp/check): a short questionnaire that scores how ready an app is for the DPDP Act's obligations.
 - [Free Supabase security check](${ORIGIN}/scan): checks in 30 seconds whether a Supabase project's tables are readable by anyone, using only the public anon key. Nothing is stored.
 - [The Wrapper Test](${ORIGIN}/teardown): a free 13-question diagnostic that scores an AI product on defensibility, failure design, cost floor and evaluation.
-- [Recorded teardown](${ORIGIN}/teardown): a $149 add-on to the Wrapper Test: a 15–20 minute recorded walkthrough plus a written fix list in 48 hours, credited in full toward the $349 audit or an AI build within 30 days.
 - [The Production Kit](${ORIGIN}/products/production-kit): CLAUDE.md, Cursor rules, Claude Code skills, templates, launch and security checklists and Supabase SQL for AI-built apps. Free, one download, no sign-up.
 
 ## Notes

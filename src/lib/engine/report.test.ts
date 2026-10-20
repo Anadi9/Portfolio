@@ -23,13 +23,15 @@ describe('draftReport', () => {
     expect(d.body).toMatch(/Not checked in this report: Reliability, Privacy \(GDPR · CCPA · DPDP\), Product depth/);
     expect(d.body).toContain('[ANADI: confirm or remove]');
     expect(d.body).toContain('[PRICE]');
-    expect(d.body).toContain('within 30 days');
+    expect(d.body).toContain('Fixed quote to fix the above: [PRICE].');
+    expect(d.body).not.toMatch(/credited|refund/);
     expect(hasPlaceholder(d.body)).toBe(true);
   });
 
   it('says so when nothing was found', () => {
     const d = draftReport({ number: 'A-2', appUrl: null, result: combine([], ['visibility']) });
     expect(d.body).toContain('No real issues found');
-    expect(d.body).toContain('full refund');
+    expect(d.body).toContain('nothing needs fixing right now');
+    expect(d.body).not.toMatch(/refund/);
   });
 });

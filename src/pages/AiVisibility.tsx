@@ -82,12 +82,13 @@ const sampleQuestions = [
   { q: 'Organic sunscreen that ships to Bangalore', hit: false },
 ];
 
-/** Where visibility sits in the one price list (homepage `#pricing`): it is one of the audit's three areas. */
-const plans: (PricedOffer & { price: string; includes: string })[] = [
-  { name: 'First-bug review', includes: 'The biggest visibility gap, on video, with the fixed price to fix it', price: 'Free', min: 0, currency: 'USD', description: 'The biggest visibility gap, on video' },
-  { name: 'Production audit', includes: 'Search & AI visibility, reliability and privacy, ranked by business impact. Credited 100% toward the fix', price: '$349', min: 349, currency: 'USD', description: 'Search & AI visibility, reliability and privacy, ranked by impact' },
-  { name: 'Launch-ready sprint', includes: 'Up to three problem areas fixed, visibility included, in one week', price: '$1,500–$2,500', min: 1500, currency: 'USD', description: 'Up to three problem areas fixed in one week' },
-  { name: 'Care plan', includes: 'Monitoring, monthly fixes, and a quarterly search & AI visibility re-check', price: '$299/mo', min: 299, currency: 'USD', monthly: true, description: 'Monitoring, monthly fixes and a quarterly visibility re-check' },
+/** Where visibility sits in the packages (homepage `#pricing`): it is one of the audit's three areas.
+ *  Only the free review and the audit carry a price (and a JSON-LD offer); the rest are quoted. */
+const plans: ((PricedOffer & { price: string; includes: string }) | { name: string; price: string; includes: string })[] = [
+  { name: 'First-bug review', includes: 'The biggest visibility gap, on video, with a fixed quote to fix it', price: 'Free', min: 0, currency: 'USD', description: 'The biggest visibility gap, on video' },
+  { name: 'Production audit', includes: 'Search & AI visibility, reliability and privacy, ranked by business impact', price: '$349', min: 349, currency: 'USD', description: 'Search & AI visibility, reliability and privacy, ranked by impact' },
+  { name: 'Launch-ready sprint', includes: 'Up to three problem areas fixed, visibility included, in one week', price: 'Fixed quote' },
+  { name: 'Care plan', includes: 'Monitoring, monthly fixes, and a quarterly search & AI visibility re-check', price: 'Quoted monthly' },
 ];
 
 const faqs: Faq[] = [
@@ -120,7 +121,7 @@ const jsonLd = graph([
     description: DESCRIPTION,
     serviceType: 'Generative engine optimisation (GEO)',
     areaServed: ['India', 'United States', 'Worldwide'],
-    offers: plans.map(({ name, description, min, currency, monthly }) => ({ name, description, min, currency, monthly })),
+    offers: plans.flatMap((pl) => ('min' in pl ? [{ name: pl.name, description: pl.description, min: pl.min, currency: pl.currency, monthly: pl.monthly }] : [])),
   }),
   faqPage(faqs, `${URL}#faq`),
   breadcrumbs([{ name: 'Search & AI visibility', path: PATH }], `${URL}#breadcrumb`),
@@ -295,7 +296,7 @@ const AiVisibility = () => (
     </section>
 
     <section aria-labelledby="h-price" style={section} data-rescue-hpad>
-      <SectionHead id="h-price" title="Part of one fixed price list" intro="Visibility isn’t sold on its own: it is checked in the audit, fixed in a sprint and re-checked on Care." />
+      <SectionHead id="h-price" title="Part of the same packages" intro="Visibility isn’t sold on its own: it is checked in the audit, fixed in a sprint and re-checked on Care." />
       <ul style={{ listStyle: 'none', margin: px(s[9], 0, 0), padding: 0, borderBottom: `${rule.hair}px solid ${p.rule}` }}>
         {plans.map((pl) => (
           <li
@@ -313,7 +314,7 @@ const AiVisibility = () => (
       <p style={{ ...body, marginTop: s[6] }}>
         Every quote is fixed before work starts.{' '}
         <a href="/#pricing" className="pf-underline" style={{ color: p.ink, fontWeight: 600 }}>
-          See all six packages →
+          See all the packages →
         </a>
       </p>
     </section>

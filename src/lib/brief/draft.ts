@@ -1,5 +1,4 @@
 import { kindLabel } from '../notify/email.js';
-import { promiseHours } from '../../data/promises.js';
 import type { TicketKind } from '../tickets/types.js';
 import type { Brief } from './brief.js';
 
@@ -34,9 +33,9 @@ export function draftFirstReply(input: {
       '',
       `Here's a short video walking through it: ${VIDEO_PLACEHOLDER}`,
       '',
-      `Fixed price to fix it: ${PRICE_PLACEHOLDER}`,
+      `Fixed quote to fix it: ${PRICE_PLACEHOLDER}`,
       '',
-      `If you'd like the full picture first, the $349 production audit checks everything and is credited 100% toward the fix if you book within ${promiseHours('audit_credit') / 24} days.`,
+      `If you'd like the full picture first, the $349 production audit checks everything and ranks what to fix first.`,
       '',
       'Reply to this email with any questions.',
       '',

@@ -62,21 +62,9 @@ describe('hasForeignAmount', () => {
 });
 
 describe('publishedAmounts', () => {
-  it('is built from the pricing table, the service cards and the extras', () => {
+  it('is the audit alone: every other package is quoted per project', () => {
     const list = publishedAmounts().map(({ min, max, monthly }) => [min, max ?? null, monthly]);
-    expect(list).toEqual(
-      expect.arrayContaining([
-        [349, null, false],
-        [1500, 2500, false],
-        [3000, 6000, false],
-        [2000, 8000, false],
-        [6000, 20000, false],
-        [299, null, true],
-        [149, null, false],
-        [1500, 6000, false],
-      ]),
-    );
-    expect(list).toHaveLength(8);
+    expect(list).toEqual([[349, null, false]]);
   });
 
   it('covers every structured-data offer on the homepage', () => {
@@ -85,28 +73,38 @@ describe('publishedAmounts', () => {
     }
   });
 
-  it('feeds the prompt table with every package price', () => {
+  it('feeds the prompt table the audit price and "Fixed quote" for every other package', () => {
     const t = priceTable();
-    for (const p of ['$349', '$1,500–$2,500', '$3,000–$6,000', '$2,000–$8,000', '$6,000–$20,000', '$299/mo', '$149']) expect(t).toContain(p);
+    expect(t).toContain('Production audit (Start here): $349');
+    for (const p of ['Launch-ready sprint', 'Full rescue', 'AI build', 'MVP build']) expect(t).toContain(`${p} (`);
+    expect(t).toMatch(/Launch-ready sprint \(Fix\): Fixed quote/);
+    expect(t).toMatch(/Care plan \(Keep it running\): Quoted monthly/);
     expect(guardPrices(t)).toEqual({ ok: true });
   });
 });
 
 describe('guardPrices', () => {
-  it('passes published prices, ranges, range ends and the monthly plan', () => {
+  it('passes the audit price and answers with no amount', () => {
     for (const t of [
-      'The audit is $349, credited in full.',
-      'A Launch-ready sprint is $1,500–$2,500; a Full rescue $3,000 to $6,000.',
-      'AI builds run $2,000–$8,000 and MVPs $6,000–$20,000.',
-      'Fix work is $1,500–$6,000.',
-      'Care is $299/mo, or $299 per month.',
-      'The recorded teardown is $149.',
-      'Fixes start from $1,500 and MVPs go up to $20,000.',
-      'Between $1,500 and $2,500.',
+      'The audit is $349.',
+      'Start with the $349 audit; the fix gets one fixed quote.',
       'No prices here, just a friendly answer.',
     ]) {
       expect(guardPrices(t), t).toEqual({ ok: true });
     }
+  });
+
+  it('rejects the package prices the site no longer publishes', () => {
+    for (const [t, amount] of [
+      ['A Launch-ready sprint is $1,500–$2,500.', '$1,500–$2,500'],
+      ['A Full rescue is $3,000 to $6,000.', '$3,000 to $6,000'],
+      ['AI builds run $2,000–$8,000.', '$2,000–$8,000'],
+      ['MVPs go up to $20,000.', '$20,000'],
+      ['The recorded teardown is $149.', '$149'],
+    ]) {
+      expect(guardPrices(t), t).toEqual({ ok: false, reason: 'unpublished_price', amount });
+    }
+    expect(guardPrices('Care is $299/mo.').ok).toBe(false);
   });
 
   it('rejects invented amounts, invented ranges and budget buckets', () => {
@@ -144,15 +142,9 @@ describe('guardPrices', () => {
 
   it('still passes published prices written with trailing, spaced or full-width signs', () => {
     for (const t of [
-      'Care is $299 a month.',
-      'Care is $299/month.',
-      'Care is $299 each month.',
-      'The audit is $349 and credited in full.',
-      'Fix work runs $1,500 to $6,000.',
       'The audit is 349$.',
       'The audit is $ 349.',
       'The audit is ＄349.',
-      'Audit credited 100% toward the fix.',
       'Step 2 $349 audit, then the fix.',
     ]) {
       expect(guardPrices(t), t).toEqual({ ok: true });
@@ -160,9 +152,9 @@ describe('guardPrices', () => {
   });
 
   it('reads shorthand the same as the full amount', () => {
-    expect(guardPrices('Sprints start at $1.5k.')).toEqual({ ok: true });
-    expect(guardPrices('Sprints are $1.5k–$2.5k.')).toEqual({ ok: true });
-    expect(guardPrices('1500 dollars to start.')).toEqual({ ok: true });
+    expect(guardPrices('The audit is 349 dollars.')).toEqual({ ok: true });
+    expect(guardPrices('Sprints start at $1.5k.')).toMatchObject({ ok: false, reason: 'unpublished_price' });
+    expect(guardPrices('1500 dollars to start.')).toMatchObject({ ok: false, reason: 'unpublished_price' });
   });
 
   it('never lets monthly and one-off stand in for each other', () => {

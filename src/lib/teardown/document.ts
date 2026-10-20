@@ -81,6 +81,6 @@ export const clause = (sectionId: number, findingIndex?: number) =>
 
 /** The one sentence that separates this document from the paid one. */
 export const CLOSING =
-  'That is what the answers show. To have an engineer look at the app itself and rank what to fix first, the production audit is free.';
+  'That is what the answers show. To have an engineer look at the app itself and rank what to fix first, the first-bug review is free.';
 
 export const END_MARK = 'END OF REPORT';
