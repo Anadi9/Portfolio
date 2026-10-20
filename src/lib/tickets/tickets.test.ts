@@ -3,7 +3,7 @@ import { memoryTicketStore } from './memory';
 import { MESSAGE_POLICY, policyFor } from './policy';
 import { NewTicketSchema } from './types';
 
-const base = { email: 'Ana@Example.com', kind: 'first_bug', answers: { q: 'a' }, source: 'bit', boardOptIn: false, whatsappOptIn: false } as const;
+const base = { email: 'Ana@Example.com', kind: 'first_bug', answers: { q: 'a' }, source: 'bit', whatsappOptIn: false } as const;
 
 describe('policyFor', () => {
   it('sends transactional kinds automatically', () => {
@@ -23,7 +23,6 @@ describe('NewTicketSchema', () => {
   it('lower-cases the email and defaults the opt-ins to false', () => {
     const t = NewTicketSchema.parse({ email: ' Ana@Example.com ', kind: 'audit', answers: {}, source: 'audit_form' });
     expect(t.email).toBe('ana@example.com');
-    expect(t.boardOptIn).toBe(false);
     expect(t.whatsappOptIn).toBe(false);
   });
   it('rejects a bad kind, source or email', () => {
@@ -100,18 +99,6 @@ describe('memory ticket store', () => {
     const t = await m.store.createTicket(base);
     await m.store.saveDraftMessage(t.id, 'quote', 'Hi', 'email');
     expect(m.messages).toMatchObject([{ ticketId: t.id, direction: 'out', kind: 'quote', status: 'draft', body: 'Hi', channel: 'email' }]);
-  });
-
-  it('shows only opted-in, open tickets on the board, without personal fields', async () => {
-    const m = memoryTicketStore();
-    await m.store.createTicket({ ...base, boardOptIn: false });
-    const shown = await m.store.createTicket({ ...base, boardOptIn: true, category: 'Booking app', stack: 'Next.js', name: 'Ana', company: 'Acme', appUrl: 'https://acme.test' });
-    const closed = await m.store.createTicket({ ...base, boardOptIn: true });
-    m.tickets.find((t) => t.id === closed.id)!.stage = 'closed';
-    const board = await m.store.publicBoard();
-    expect(board).toHaveLength(1);
-    expect(Object.keys(board[0]).sort()).toEqual(['category', 'kind', 'number', 'stack', 'stage', 'updatedAt']);
-    expect(board[0].number).toBe(shown.number);
   });
 
   it('keeps the latest scorecard', async () => {

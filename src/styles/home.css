@@ -175,18 +175,7 @@
 .hq-badge { justify-self: start; font: 400 9px/1.5 var(--bq-font-label); text-transform: uppercase; background: var(--bq-ink); color: var(--bq-bg); padding: 4px 8px; }
 .hq-custom { margin-top: 36px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding: 24px; }
 
-/* Board */
-.hq-kanban { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
-.hq-col { border: 3px solid var(--bq-ink); background: var(--bq-panel); min-height: 260px; }
-.hq-col > header { display: flex; justify-content: space-between; padding: 12px 14px; background: var(--bq-ink); color: var(--bq-bg); font: 400 10px/1.5 var(--bq-font-label); text-transform: uppercase; }
-.hq-col:last-child > header { background: var(--bq-brand); }
-.hq-col > div { padding: 10px; display: grid; gap: 10px; }
-.hq-tix { border: 2px solid var(--bq-ink); padding: 10px 12px; display: grid; gap: 4px; }
-.hq-tix b { font: 600 15px/1.3 var(--bq-font-body); }
-.hq-tix[data-mine='true'] { border-color: var(--bq-brand); background: var(--bq-brand-soft); box-shadow: 4px 4px 0 var(--bq-brand); }
-.hq-tix .hq-mine { font: 400 10px/1.4 var(--bq-font-label); text-transform: uppercase; color: var(--bq-brand); }
-.hq-tix-meta { font: 400 13px/1.4 var(--bq-font-body); color: var(--bq-muted); }
-.hq-col-empty { margin: 0; font: 400 13px/1.4 var(--bq-font-body); color: var(--bq-muted); }
+/* Request tracking */
 .hq-track { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 32px; align-items: start; }
 .hq-tl { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 14px; }
 .hq-tl li { display: grid; grid-template-columns: 22px 1fr; gap: 14px; }
@@ -237,7 +226,6 @@
 }
 @media (max-width: 900px) {
   .hq-three, .hq-split, .hq-track, .hq-about, .hq-appgrid { grid-template-columns: minmax(0, 1fr); }
-  .hq-kanban { grid-template-columns: repeat(5, minmax(220px, 1fr)); overflow-x: auto; padding-bottom: 8px; }
   .hq-statgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hq-about > :first-child { max-width: 280px; }
   .hq-stage { flex-direction: column; }

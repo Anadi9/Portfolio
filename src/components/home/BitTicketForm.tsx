@@ -132,10 +132,6 @@ export function BitTicketForm({
       {field('name', 'Your name (optional)', { type: 'text', autoComplete: 'name', maxLength: LIMITS.name })}
 
       <label className="hq-tf-check">
-        <input type="checkbox" checked={f.boardOptIn} onChange={(e) => set('boardOptIn', e.target.checked)} disabled={busy} />
-        <span>Show my request on the public board, anonymised (no name, email or link)</span>
-      </label>
-      <label className="hq-tf-check">
         <input type="checkbox" checked={f.whatsappOptIn} onChange={(e) => set('whatsappOptIn', e.target.checked)} disabled={busy} />
         <span>Anadi may message me on WhatsApp about this request</span>
       </label>

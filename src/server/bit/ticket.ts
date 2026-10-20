@@ -29,7 +29,6 @@ const BodySchema = NewTicketSchema.pick({
   kind: true,
   answers: true,
   budget: true,
-  boardOptIn: true,
   whatsappOptIn: true,
   whatsapp: true,
 })

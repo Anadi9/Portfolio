@@ -15,7 +15,7 @@ export const BUSINESS = {
   /** Must match the refund promise on the kit's sales page. */
   refundDays: 14,
   /** Shown as "Last updated" on every policy page. */
-  updated: '19 October 2026',
+  updated: '20 October 2026',
 } as const;
 
 export const LEGAL_PATHS = {

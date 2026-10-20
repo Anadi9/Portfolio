@@ -24,7 +24,6 @@ export const NewTicketSchema = z.object({
   stack: optionalText(120),
   answers: z.record(z.string(), z.unknown()),
   budget: optionalText(120),
-  boardOptIn: z.boolean().default(false),
   whatsappOptIn: z.boolean().default(false),
   source: z.enum(TICKET_SOURCES),
   category: optionalText(120),
@@ -41,7 +40,6 @@ export type Ticket = {
   stack: string | null;
   answers: Record<string, unknown>;
   budget: string | null;
-  boardOptIn: boolean;
   whatsappOptIn: boolean;
   source: TicketSource;
   category: string | null;

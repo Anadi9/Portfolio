@@ -233,11 +233,6 @@ export function Privacy() {
           are, for up to 7 days or until you sign out. The portal shows only your own tickets: where each one is, what has happened
           and the messages I have sent you. My internal notes and drafts are not shown.
         </P>
-        <P>
-          There is an optional public tracking board. A ticket appears on it only if you tick the box to allow it, and then only
-          as a ticket number, a generalised category, the tech stack, the stage and a date. Never your name, email, links or
-          company.
-        </P>
       </Section>
       <Section title="Who processes it">
         <P>Your data is shared only with the services that run the site, each under its own privacy and security terms:</P>

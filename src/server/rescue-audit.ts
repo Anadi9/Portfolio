@@ -85,7 +85,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     kind: 'first_bug',
     source: 'app_form',
     stack: intake.tool,
-    boardOptIn: false,
     whatsappOptIn: false,
     answers: {
       repoUrl: intake.repoUrl,

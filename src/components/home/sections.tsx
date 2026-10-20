@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import { BitChat } from './BitChat';
 import { ServicePicker } from './ServicePicker';
 import { PackageBuilder } from './BitGuide';
-import { LiveBoard } from './LiveBoard';
 import { Bit, PixelIcon } from '@/components/brand/Bit';
 import portrait from '@/assets/portrait.webp';
 import { trackRescue } from '@/lib/rescue/track';
@@ -520,12 +519,11 @@ export function Pricing() {
   );
 }
 
-/* 8 · Request tracking: the board, an example ticket and the four promises. */
+/* 8 · Request tracking: an example ticket and the four promises. */
 export function TrackingBoard() {
   return (
     <Section id="board" label="h-board">
       <Head id="h-board" eyebrow={board.eyebrow} title={board.title} intro={board.intro} />
-      <LiveBoard />
       <div className="hq-track">
         <article className="hq-card" style={{ padding: 22, boxShadow: 'var(--bq-shadow-brand)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>

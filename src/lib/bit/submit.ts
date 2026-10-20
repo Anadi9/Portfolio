@@ -15,12 +15,11 @@ export type TicketForm = {
   email: string;
   name: string;
   appUrl: string;
-  boardOptIn: boolean;
   whatsappOptIn: boolean;
   whatsapp: string;
 };
 
-export const EMPTY_FORM: TicketForm = { email: '', name: '', appUrl: '', boardOptIn: false, whatsappOptIn: false, whatsapp: '' };
+export const EMPTY_FORM: TicketForm = { email: '', name: '', appUrl: '', whatsappOptIn: false, whatsapp: '' };
 
 /** Field ids shared with the API's `{ field }` errors. */
 export type FormField = 'email' | 'name' | 'appUrl' | 'whatsapp';
@@ -53,7 +52,6 @@ export type TicketPayload = {
   answers: Record<string, unknown>;
   budget?: string;
   stack?: string;
-  boardOptIn: boolean;
   whatsappOptIn: boolean;
   whatsapp?: string;
   hp: string;
@@ -67,14 +65,13 @@ export function buildPayload(kind: FormKind, ans: Answers, f: TicketForm, questi
     email: f.email.trim(),
     kind,
     answers,
-    boardOptIn: f.boardOptIn,
     whatsappOptIn: f.whatsappOptIn,
     hp: '',
   };
   if (f.name.trim()) p.name = f.name.trim();
   if (f.appUrl.trim()) p.appUrl = f.appUrl.trim();
   if (ans.budget) p.budget = ans.budget;
-  // "How was it built?": shown on the board only when the visitor opted in. "Not sure" says nothing.
+  // "How was it built?". "Not sure" says nothing.
   if (ans.stack && ans.stack !== 'Not sure') p.stack = ans.stack.slice(0, 120);
   if (f.whatsappOptIn && f.whatsapp.trim()) p.whatsapp = f.whatsapp.trim();
   return p;
@@ -155,23 +152,4 @@ export function questionFor(state: ChatState): string | undefined {
     if (m.who === 'you') return m.text;
   }
   return undefined;
-}
-
-export const TICKET_KEY = 'bq-ticket';
-
-export function rememberTicket(number: string, storage?: Pick<Storage, 'setItem'>) {
-  try {
-    (storage ?? window.localStorage).setItem(TICKET_KEY, number);
-  } catch {
-    /* storage can be blocked; the ticket still exists */
-  }
-}
-
-export function recalledTicket(storage?: Pick<Storage, 'getItem'>): string | null {
-  try {
-    const v = (storage ?? window.localStorage).getItem(TICKET_KEY);
-    return v && /^A-\d+$/.test(v) ? v : null;
-  } catch {
-    return null;
-  }
 }

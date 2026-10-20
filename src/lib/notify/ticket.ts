@@ -57,7 +57,6 @@ async function notifyFor(store: TicketStore, ticket: Ticket, input: NewTicket, p
       whatsapp: input.whatsapp ?? '',
       appUrl: input.appUrl ?? '',
       budget: input.budget ?? '',
-      boardOptIn: input.boardOptIn ?? false,
       answers: input.answers,
     };
     await onTicketCreated(store, ticket);

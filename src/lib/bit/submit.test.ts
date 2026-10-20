@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ask, choose, initial, optionsFor, type ChatState, type Option } from './chat';
-import { activeFormIndex, applyOutcome, buildPayload, EMPTY_FORM, parseResponse, questionFor, recalledTicket, rememberTicket, validateForm, type TicketForm } from './submit';
+import { activeFormIndex, applyOutcome, buildPayload, EMPTY_FORM, parseResponse, questionFor, validateForm, type TicketForm } from './submit';
 
 const pick = (state: ChatState, label: string): ChatState => choose(state, optionsFor(state.node).find((o) => o.label === label) as Option) as ChatState;
 const atQurl = () => {
@@ -34,7 +34,7 @@ describe('buildPayload', () => {
     const p = buildPayload('first_bug', { live: 'Live now', budget: 'Under $2,000' }, form({ name: ' Sam ' }));
     expect(p).toEqual({
       email: 'sam@example.com', name: 'Sam', appUrl: 'myapp.com', kind: 'first_bug', answers: { live: 'Live now', budget: 'Under $2,000' },
-      budget: 'Under $2,000', boardOptIn: false, whatsappOptIn: false, hp: '',
+      budget: 'Under $2,000', whatsappOptIn: false, hp: '',
     });
   });
   it('sends the "How was it built?" answer as stack, except Not sure', () => {
@@ -43,8 +43,8 @@ describe('buildPayload', () => {
     expect(buildPayload('first_bug', {}, form())).not.toHaveProperty('stack');
   });
   it('includes the WhatsApp number only when opted in, and the typed question', () => {
-    const on = buildPayload('question', {}, form({ whatsappOptIn: true, whatsapp: '+1 555 123 4567', boardOptIn: true }), 'do you do Rails?');
-    expect(on).toMatchObject({ whatsapp: '+1 555 123 4567', whatsappOptIn: true, boardOptIn: true, answers: { question: 'do you do Rails?' } });
+    const on = buildPayload('question', {}, form({ whatsappOptIn: true, whatsapp: '+1 555 123 4567' }), 'do you do Rails?');
+    expect(on).toMatchObject({ whatsapp: '+1 555 123 4567', whatsappOptIn: true, answers: { question: 'do you do Rails?' } });
     expect(buildPayload('question', {}, form({ whatsappOptIn: false, whatsapp: '+1 555 123 4567' }))).not.toHaveProperty('whatsapp');
   });
 });
@@ -103,24 +103,5 @@ describe('chat state around the form', () => {
     const s = atQurl();
     expect(applyOutcome(s, 'first_bug', { type: 'field', field: 'email', error: 'x' }, 'a@b.co')).toBe(s);
     expect(applyOutcome(s, 'first_bug', { type: 'retry', error: 'x' }, 'a@b.co')).toBe(s);
-  });
-});
-
-describe('remembering the visitor’s ticket', () => {
-  const mem = () => {
-    const m = new Map<string, string>();
-    return { setItem: (k: string, v: string) => void m.set(k, v), getItem: (k: string) => m.get(k) ?? null };
-  };
-  it('round-trips a number and ignores junk', () => {
-    const st = mem();
-    rememberTicket('A-1042', st);
-    expect(recalledTicket(st)).toBe('A-1042');
-    st.setItem('bq-ticket', '<script>');
-    expect(recalledTicket(st)).toBeNull();
-  });
-  it('never throws when storage is blocked', () => {
-    const blocked = { setItem: () => { throw new Error('no'); }, getItem: () => { throw new Error('no'); } };
-    expect(() => rememberTicket('A-1', blocked)).not.toThrow();
-    expect(recalledTicket(blocked)).toBeNull();
   });
 });

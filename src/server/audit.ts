@@ -84,7 +84,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     appUrl: intake.url,
     kind: 'audit',
     source: 'audit_form',
-    boardOptIn: false,
     whatsappOptIn: false,
     answers: { type: intake.type, business: intake.business, sells: intake.sells, market: intake.market, worries: intake.worries },
   });

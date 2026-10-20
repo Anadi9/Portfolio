@@ -56,7 +56,9 @@ Process: each phase gets a plan in `docs/superpowers/plans/`, then build → tes
 - Ticket numbers `A-1001` upwards from a Postgres sequence; UUID primary key;
   the number grants no access.
 - Public tracking board: real tickets only, anonymised, opt-in; fewer than 3
-  shows an honest empty state.
+  shows an honest empty state. Dropped 20 Oct: ticket numbers and stacks
+  showed request volume and the kind of work, so the board, `/api/board` and
+  the opt-in are removed.
 - Bit states only published prices and builder sums, and says Anadi confirms the
   fixed price after the free first-bug video. No custom quotes or discounts.
 - Dark mode toggle shipped (rebrand).
@@ -142,8 +144,7 @@ Proof
 - [x] Scripted chat: conversation tree, qualifying questions, recommendations,
       package builder, hero menu and "Talk to Bit".
 - [x] Service picker (← → with the hopping Bit).
-- [x] `/api/bit/ticket`, the `/audit` form into the same table, the visitor's own
-      card on the board.
+- [x] `/api/bit/ticket`, the `/audit` form into the same table.
 - [x] AI answers for typed questions (gateway + fallback, price guard, rate
       limits, keyword fallback).
 

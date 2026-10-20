@@ -2,7 +2,7 @@ import { feedRow, firstSent, MAX_ATTEMPTS, statusAfter, type TicketStore } from 
 import { feedOrder, isOpen, type FeedItem } from '../feed/types';
 import type { CoachTask, Commitment } from '../coach/types';
 import type { Invoice } from '../money/types';
-import { NewTicketSchema, type BoardTicket, type Message, type Notification, type Scorecard, type Ticket } from './types';
+import { NewTicketSchema, type Message, type Notification, type Scorecard, type Ticket } from './types';
 
 /**
  * An in-memory `TicketStore` for tests: same contract as the Supabase one
@@ -50,7 +50,6 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
         stack: input.stack ?? null,
         answers: input.answers,
         budget: input.budget ?? null,
-        boardOptIn: input.boardOptIn,
         whatsappOptIn: input.whatsappOptIn,
         source: input.source,
         category: input.category ?? null,
@@ -159,12 +158,6 @@ export function memoryTicketStore(opts: { clock?: () => Date } = {}) {
     },
     async ticketsMissingBrief(limit = 5) {
       return tickets.filter((t) => !briefs.some((b) => b.ticketId === t.id)).slice(0, limit).map((t) => t.id);
-    },
-    async publicBoard() {
-      return tickets
-        .filter((t) => t.boardOptIn && t.stage !== 'closed')
-        .map<BoardTicket>((t) => ({ number: t.number, kind: t.kind, category: t.category, stack: t.stack, stage: t.stage, updatedAt: t.updatedAt }))
-        .reverse();
     },
     async saveScorecard(results) {
       scorecards.push({ runAt: now(), results });

@@ -3,7 +3,7 @@ import { Link } from 'vite-react-ssg';
 import { Bit } from '@/components/brand/Bit';
 import { answerWith, ask, asking, choose, initial, optionsFor, type ChatState, type Message, type Option } from '@/lib/bit/chat';
 import { askPayload, canAskAi, requestAiAnswer } from '@/lib/bit/ask-client';
-import { activeFormIndex, applyOutcome, questionFor, rememberTicket, type Outcome } from '@/lib/bit/submit';
+import { activeFormIndex, applyOutcome, questionFor, type Outcome } from '@/lib/bit/submit';
 import { trackRescue } from '@/lib/rescue/track';
 import { BitTicketForm } from './BitTicketForm';
 import { profileFor, saveProfile } from '@/lib/bit/profile';
@@ -160,7 +160,6 @@ export function BitChat({ first, onClose }: { first?: string; onClose: () => voi
 
   // The ticket form finished: show Bit's confirmation (or the fallback) and move focus into it.
   const ticketDone = (kind: 'first_bug' | 'question', out: Outcome, email: string) => {
-    if (out.type === 'ok') rememberTicket(out.number);
     refocus.current = true;
     setState((s) => applyOutcome(s, kind, out, email));
   };

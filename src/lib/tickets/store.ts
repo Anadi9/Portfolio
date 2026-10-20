@@ -1,7 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import {
   NewTicketSchema,
-  type BoardTicket,
   type Channel,
   type NewNotification,
   type NewTicket,
@@ -60,7 +59,6 @@ export interface TicketStore {
   updateMessage(id: string, patch: { body?: string; status?: 'sent' | 'failed' }): Promise<void>;
   /** Ids of tickets from the last 7 days with no brief yet, oldest first. */
   ticketsMissingBrief(limit?: number): Promise<string[]>;
-  publicBoard(): Promise<BoardTicket[]>;
   saveScorecard(results: Record<string, unknown>): Promise<void>;
   latestScorecard(): Promise<Scorecard | null>;
   /** Command centre cards (`/admin`). Title and body are clipped to the table's limits. */
@@ -153,7 +151,6 @@ const toTicket = (r: Row): Ticket => ({
   stack: r.stack,
   answers: r.answers ?? {},
   budget: r.budget,
-  boardOptIn: r.board_opt_in,
   whatsappOptIn: r.whatsapp_opt_in,
   source: r.source,
   category: r.category,
@@ -280,7 +277,6 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
           stack: input.stack ?? null,
           answers: input.answers,
           budget: input.budget ?? null,
-          board_opt_in: input.boardOptIn,
           whatsapp_opt_in: input.whatsappOptIn,
           source: input.source,
           category: input.category ?? null,
@@ -428,15 +424,6 @@ export function supabaseStore(db: SupabaseClient): TicketStore {
         .limit(200);
       if (error) fail('tickets missing brief', error);
       return (data as Row[]).filter((r) => !(r.briefs ?? []).length).slice(0, limit).map((r) => r.id);
-    },
-
-    async publicBoard() {
-      const { data, error } = await db
-        .from('public_board')
-        .select('number, kind, category, stack, stage, updated_at')
-        .order('updated_at', { ascending: false });
-      if (error) fail('public board', error);
-      return (data as Row[]).map((r) => ({ number: r.number, kind: r.kind, category: r.category, stack: r.stack, stage: r.stage, updatedAt: r.updated_at }));
     },
 
     async saveScorecard(results) {

@@ -59,7 +59,6 @@ const valid = {
   appUrl: 'myapp.lovable.app',
   kind: 'first_bug',
   answers: { symptom: 'login breaks' },
-  boardOptIn: false,
   whatsappOptIn: false,
   hp: '',
 };

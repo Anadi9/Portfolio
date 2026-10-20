@@ -14,7 +14,7 @@ function fakeDb(fail: { tickets?: boolean; events?: boolean } = {}) {
         const bad = (table === 'tickets' && fail.tickets) || (table === 'ticket_events' && fail.events);
         const result = bad
           ? { data: null, error: { message: `${table} down` } }
-          : { data: table === 'clients' ? { id: 'c1' } : { id: 't1', number: 'A-1001', client_id: 'c1', kind: 'audit', stage: 'inbox', answers: {}, board_opt_in: false, whatsapp_opt_in: false, source: 'bit', created_at: 'x', updated_at: 'x' }, error: null };
+          : { data: table === 'clients' ? { id: 'c1' } : { id: 't1', number: 'A-1001', client_id: 'c1', kind: 'audit', stage: 'inbox', answers: {}, whatsapp_opt_in: false, source: 'bit', created_at: 'x', updated_at: 'x' }, error: null };
         const chain: any = { select: () => chain, single: () => Promise.resolve(result), then: (f: any, r: any) => Promise.resolve(result).then(f, r) };
         return chain;
       };

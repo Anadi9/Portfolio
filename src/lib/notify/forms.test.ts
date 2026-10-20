@@ -52,7 +52,7 @@ describe('audit forms create a best-effort ticket', () => {
   it('audit: ticket without contact details in answers, and no extra emails', async () => {
     const res = await call(auditHandler, auditBody);
     expect(res.statusCode).toBe(200);
-    expect(mem.tickets[0]).toMatchObject({ source: 'audit_form', kind: 'audit', boardOptIn: false, whatsappOptIn: false });
+    expect(mem.tickets[0]).toMatchObject({ source: 'audit_form', kind: 'audit', whatsappOptIn: false });
     expect(JSON.stringify(mem.tickets[0].answers)).not.toContain('sam@example.com');
     expect(mem.tickets[0].answers).not.toHaveProperty('name');
     expect(sendMock).toHaveBeenCalledTimes(2); // lead + confirmation only

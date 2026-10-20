@@ -198,9 +198,7 @@ export const offers: Record<'fix' | 'build' | 'care', PricedOffer[]> = {
 export const board = {
   eyebrow: 'Request tracking',
   title: 'Every request, tracked.',
-  intro: 'Once your request is saved, you get a ticket number. Opt in and it shows here, anonymised.',
-  emptyTitle: 'No live requests to show yet.',
-  emptyNote: 'Live requests appear here, anonymised, once clients opt in.',
+  intro: 'Once your request is saved, you get a ticket number and can follow it in your client portal.',
   ticket: {
     id: 'Ticket #A-0000',
     stack: 'CRM · Next.js',

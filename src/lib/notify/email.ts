@@ -113,7 +113,6 @@ ${row('Email', esc(text(p.email, 254)))}
 ${row('WhatsApp', whatsappCell(text(p.whatsapp, 40)))}
 ${row('App', appUrl ? esc(appUrl) : '<em>not given</em>')}
 ${row('Budget', esc(text(p.budget, 120)) || '<em>not given</em>')}
-${row('Board', p.boardOptIn === true ? 'opted in' : 'not opted in')}
 ${answerRows(p.answers)}
 </table>`,
     ),

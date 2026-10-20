@@ -58,8 +58,6 @@ const GRAPH = [
   'src/lib/tickets/types.ts',
   'src/lib/tickets/policy.ts',
   'src/server/bit/ticket.ts',
-  'src/server/board.ts',
-  'src/lib/tickets/board.ts',
   'src/server/cron/notify.ts',
   'src/server/cron/scorecard.ts',
   'src/server/scorecard.ts',

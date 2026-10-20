@@ -6,7 +6,7 @@ import { TICKET_STAGES } from '../tickets/types';
 
 const detail: TicketDetail = {
   id: 't1', number: 'A-1001', clientId: 'c1', kind: 'first_bug', stage: 'audit', appUrl: 'a.example', stack: 'Lovable',
-  answers: { budget: 'secret band' }, budget: '$1k', boardOptIn: false, whatsappOptIn: false, source: 'bit', category: null,
+  answers: { budget: 'secret band' }, budget: '$1k', whatsappOptIn: false, source: 'bit', category: null,
   createdAt: '2026-10-18T00:00:00Z', updatedAt: '2026-10-19T00:00:00Z',
   client: { name: 'Jo', email: 'jo@example.com', whatsapp: '+911234567890' },
   events: [

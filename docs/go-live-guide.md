@@ -16,7 +16,7 @@ The live site is `main` on **Vercel**. What it reports:
 
 | Thing | State |
 | --- | --- |
-| Supabase | Connected; the tickets tables exist (ticket `A-1001` is on the board) |
+| Supabase | Connected; the tickets tables exist (ticket `A-1001` exists) |
 | Resend email | Connected |
 | Bit AI answers | On and answering |
 | WhatsApp alerts | Not set up |
@@ -131,7 +131,7 @@ applied, so check first.
 
   | File | Creates | If missing |
   | --- | --- | --- |
-  | `20261016000000_tickets.sql` | `tickets`, `clients`, `ticket_events`, `messages`, `briefs`, `notifications`, `scorecard_runs` | Already there (the board works) — skip |
+  | `20261016000000_tickets.sql` | `tickets`, `clients`, `ticket_events`, `messages`, `briefs`, `notifications`, `scorecard_runs` | Already there — skip |
   | `20261019000000_feed_items.sql` | `feed_items` | Run |
   | `20261020000000_coach.sql` | `commitments`, `tasks` | Run |
   | `20261021000000_command_v2.sql` | `push_subscriptions`, `admin_passkeys` | Run |
@@ -139,6 +139,7 @@ applied, so check first.
   | `20261023000000_invoices.sql` | `invoices` | Run |
   | `20261024000000_events.sql` | `events` | Run |
   | `20261025000000_invoice_ref.sql` | renames `invoices.stripe_invoice_id` → `invoice_ref` | Run once `invoices` exists, unless the column is already called `invoice_ref` |
+  | `20261026000000_drop_public_board.sql` | removes the `public_board` view and `tickets.board_opt_in` (the public board is gone) | Run once; safe to run again |
 
   To check the last one:
   `select column_name from information_schema.columns where table_name = 'invoices';`
@@ -152,7 +153,7 @@ applied, so check first.
 
   ```bash
   ANON_KEY='paste-anon-key'; SUPABASE_URL='https://<ref>.supabase.co'
-  for t in tickets public_board feed_items commitments tasks push_subscriptions admin_passkeys portal_links invoices events; do
+  for t in tickets feed_items commitments tasks push_subscriptions admin_passkeys portal_links invoices events; do
     printf "%s: " $t
     curl -s -o /dev/null -w "%{http_code}\n" "$SUPABASE_URL/rest/v1/$t?select=*" -H "apikey: $ANON_KEY" -H "Authorization: Bearer $ANON_KEY"
   done
@@ -161,7 +162,7 @@ applied, so check first.
   Done looks like: every line is `401` or `403`. If any line shows `200`,
   stop and fix that table's grants before going on.
 
-- [ ] **Ticket A-1001.** It's on your public board. If it was your own test,
+- [ ] **Ticket A-1001.** If it was your own test,
       delete it: Table Editor → `tickets` → delete the row (its events,
       messages and briefs go with it), then delete its row in `clients` too.
 
@@ -332,7 +333,7 @@ with these differences:
 - `ADMIN_SESSION_SECRET` and `PORTAL_SESSION_SECRET`: the **preview** ones from
   Part 1.3.
 - Same Supabase project as production is fine (no second project to set up),
-  but you'll delete the test tickets in Part 7.10.
+  but you'll delete the test tickets in Part 7.9.
 - Leave out `WHATSAPP_*` if you'd rather not get test WhatsApps; add them if
   you want to test the alert.
 
@@ -444,13 +445,7 @@ With test tickets under two of your own addresses:
 - [ ] Open a used link again → refused.
 - [ ] Sign in as address 2 in another browser → can't see address 1's ticket.
 
-### 7.8 Live board
-
-- [ ] Create 3 test tickets with "Show my request on the public board" ticked.
-      `/api/board` shows `total: 3` and the board shows its columns (can take
-      up to 5 minutes to refresh).
-
-### 7.9 Security policy (CSP) console check
+### 7.8 Security policy (CSP) console check
 
 The CSP only reports for now, so nothing breaks.
 
@@ -458,12 +453,11 @@ The CSP only reports for now, so nothing breaks.
       `/portfolio`. Note any "Content Security Policy" warnings. Send them to
       Claude to fix in `vercel.json` (which also feeds Cloudflare's headers).
 
-### 7.10 Clean up the test data
+### 7.9 Clean up the test data
 
 - [ ] Supabase → delete every test row in `tickets` (cascades to events,
       messages, briefs, notifications, feed items, commitments, tasks), then
       the matching `clients` rows and `portal_links`.
-- [ ] `/api/board` goes back to `total: 0`.
 
 Done when: every box in Part 7 is ticked.
 
