@@ -9,7 +9,7 @@
  * repo, and committing a generated file that can drift from its source is how
  * you end up serving a sitemap listing a post you deleted.
  */
-import { existsSync, readdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { ORIGIN, collect, root, streamPath } from './lib/content.mjs';
 import { mdxToText } from './lib/llms.mjs';
@@ -44,6 +44,12 @@ const posts = collect()
     // cheat sheet is re-checked against reality without its `date` changing,
     // and a crawler should hear about that.
     modified: p.lastVerified || p.date,
+    // The post's OG card (a committed 1200x630 JPEG, shipped to `dist/og`),
+    // shared by the sitemap and the feed. Only files that exist.
+    image: (() => {
+      const card = `/og/${streamPath[p.stream]}/${p.slug}.jpg`;
+      return p.cover !== false && existsSync(join(OUT, card)) ? card : undefined;
+    })(),
   }))
   .sort((a, b) => (a.date === b.date ? a.slug.localeCompare(b.slug) : b.date.localeCompare(a.date)));
 
@@ -91,11 +97,7 @@ pages.push(
   ...workPaths().map((p) => ({ url: `${ORIGIN}${p}`, modified: posts[0].modified })),
   // Posts with a cover list its OG card (a committed JPEG, shipped to
   // `dist/og`) so it is eligible for image search. Only files that exist.
-  ...posts.map((p) => {
-    const card = `/og/${streamPath[p.stream]}/${p.slug}.jpg`;
-    const image = p.cover !== false && existsSync(join(OUT, card)) ? `${ORIGIN}${card}` : undefined;
-    return { url: p.url, modified: p.modified, image };
-  }),
+  ...posts.map((p) => ({ url: p.url, modified: p.modified, image: p.image && `${ORIGIN}${p.image}` })),
 );
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -153,8 +155,27 @@ const bodyOf = (post) => {
     .replace(/\]\]>/g, ']]]]><![CDATA[>');
 };
 
+/**
+ * The cover in the three places readers look for it. Inoreader and Feedly read
+ * `media:content`/`media:thumbnail`, podcast-era readers read `enclosure`
+ * (which RSS 2.0 says must carry the byte length), and the rest only show the
+ * first `<img>` in the body, which `heroOf` supplies.
+ */
+const imageTags = (p) => {
+  if (!p.image) return '';
+  const src = esc(`${ORIGIN}${p.image}`);
+  const bytes = statSync(join(OUT, p.image)).size;
+  return `
+      <enclosure url="${src}" length="${bytes}" type="image/jpeg" />
+      <media:content url="${src}" medium="image" type="image/jpeg" width="1200" height="630" />
+      <media:thumbnail url="${src}" width="1200" height="630" />`;
+};
+
+const heroOf = (p) =>
+  p.image ? `<p><img src="${esc(`${ORIGIN}${p.image}`)}" alt="${esc(p.title)}" width="1200" height="630" /></p>` : '';
+
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Notes · Anadi Thakur</title>
     <link>${ORIGIN}/notes</link>
@@ -169,7 +190,7 @@ ${posts
       <link>${esc(p.url)}</link>
       <guid isPermaLink="true">${esc(p.url)}</guid>
       <pubDate>${rfc822(p.date)}</pubDate>
-      <description>${esc(p.summary)}</description>${bodyOf(p) ? `\n      <content:encoded><![CDATA[${bodyOf(p)}]]></content:encoded>` : ''}
+      <description>${esc(p.summary)}</description>${imageTags(p)}${bodyOf(p) ? `\n      <content:encoded><![CDATA[${heroOf(p)}${bodyOf(p)}]]></content:encoded>` : ''}
     </item>`,
   )
   .join('\n')}

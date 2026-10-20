@@ -34,7 +34,10 @@ export const frontmatter = (src, file) => {
     const kv = /^([A-Za-z][A-Za-z0-9_]*):\s*(.*)$/.exec(line);
     if (!kv) continue; // list items and continuation lines, not needed here
     let v = kv[2].trim();
-    if (/^"(.*)"$/.test(v) || /^'(.*)'$/.test(v)) v = v.slice(1, -1);
+    // Unescape quoted scalars the way YAML does: `\"` inside double quotes,
+    // `''` inside single quotes. Otherwise the backslashes leak into the feed.
+    if (/^"(.*)"$/.test(v)) v = v.slice(1, -1).replace(/\\(["\\])/g, '$1');
+    else if (/^'(.*)'$/.test(v)) v = v.slice(1, -1).replace(/''/g, "'");
     fm[kv[1]] = v === 'true' ? true : v === 'false' ? false : v;
   }
   return fm;
