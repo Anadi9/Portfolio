@@ -73,7 +73,8 @@ const o = (label: string, target: Target): Option => ({ label, to: target });
 const tour: Option = o('Walk me through the site', { section: 'services', event: { name: 'bq:tour' } });
 const startOver: Option = o('Start over', to('start'));
 
-const BUDGET = ['Under $2,000', '$2,000–$5,000', '$5,000–$20,000', 'Not sure yet'];
+/** Rough size of the job, in words: the site publishes no prices beyond the audit, so no dollar bands. */
+const BUDGET = ['A small, focused fix', 'A few weeks of work', 'A bigger build', 'Not sure yet'];
 
 export const NODES: Record<NodeId, Node> = {
   start: {
@@ -96,7 +97,7 @@ export const NODES: Record<NodeId, Node> = {
   },
   prod2: { say: 'Is it live with real users?', key: 'live', opts: ['Not yet — launching soon', 'Yes, under 100 users', 'Yes, 100+ users'].map((l) => o(l, to('prod3'))) },
   prod3: { say: 'One known problem, or lots of small ones?', key: 'scope', opts: ['One specific thing', 'Lots, or not sure'].map((l) => o(l, to('prod4'))) },
-  prod4: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi sends a fixed quote after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recProd'))) },
+  prod4: { say: 'Optional: roughly how big is the job? I won’t quote from it — Anadi sends a fixed quote after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recProd'))) },
   vis: { say: 'Have you asked an AI assistant for the best tool in your category?', key: 'asked', opts: ['Yes — we’re missing', 'Not yet'].map((l) => o(l, to('vis2'))) },
   vis2: { say: 'Is your site a JavaScript app (React, Next, Lovable…)?', key: 'js', opts: ['Yes', 'No', 'Not sure'].map((l) => o(l, to('recVis'))) },
   dpdp: { say: 'Do you collect personal data — names, emails, payments?', key: 'pd', opts: ['Yes', 'Not sure'].map((l) => o(l, to('dpdp2'))) },
@@ -159,7 +160,7 @@ export const NODES: Record<NodeId, Node> = {
     opts: ['Answer questions from our data', 'Automate a workflow or agent', 'A Bit-style guide for our site', 'Fix an AI feature we already have'].map((l) => o(l, to('ai2'))),
   },
   ai2: { say: 'Is the product live?', key: 'aistage', opts: ['Live with users', 'Still building'].map((l) => o(l, to('ai3'))) },
-  ai3: { say: 'Optional: roughly what budget do you have in mind? I won’t quote from it — Anadi sends a fixed quote after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recAi'))) },
+  ai3: { say: 'Optional: roughly how big is the job? I won’t quote from it — Anadi sends a fixed quote after the free first-bug video.', key: 'budget', opts: BUDGET.map((l) => o(l, to('recAi'))) },
   care: {
     say: 'Care keeps a live app healthy: monitoring, a monthly review and small fixes, month to month, quoted for your product. Search visibility and privacy are re-checked every quarter.',
     opts: [o('Start Care', { href: mailto('Care plan', {}) }), o('Find my first bug first', to('hunt')), o('Back to start', to('start'))],

@@ -1,4 +1,5 @@
 import { ORIGIN, PORTFOLIO_ORIGIN } from '@/components/Seo';
+import { BUSINESS as LEGAL } from '@/data/legal';
 import { site } from '@/data/portfolio';
 
 /**
@@ -57,7 +58,13 @@ export const BUSINESS = {
   email: site.email,
   founder: { '@id': PERSON_ID },
   employee: { '@id': PERSON_ID },
-  address: { '@type': 'PostalAddress', addressCountry: 'IN' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: LEGAL.postal.street,
+    addressLocality: LEGAL.postal.locality,
+    postalCode: LEGAL.postal.postalCode,
+    addressCountry: LEGAL.postal.country,
+  },
   areaServed: [
     { '@type': 'Country', name: 'India' },
     { '@type': 'Country', name: 'United States' },

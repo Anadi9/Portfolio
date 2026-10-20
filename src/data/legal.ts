@@ -6,9 +6,11 @@ export const BUSINESS = {
   /** Legal name of the sole proprietor. */
   legalName: 'Anadi Thakur',
   /** Registered address, one line per entry. */
-  address: ['TODO: street address', 'TODO: city, state, PIN code', 'India'],
+  address: ['142/18, Street 3B, Friends Colony', 'Gurugram 122001', 'India'],
+  /** The same address in parts, for the structured data (`lib/schema.ts`). */
+  postal: { street: '142/18, Street 3B, Friends Colony', locality: 'Gurugram', postalCode: '122001', country: 'IN' },
   /** City whose courts have jurisdiction: the one in the address above. */
-  jurisdiction: 'TODO: city',
+  jurisdiction: 'Gurugram',
   phone: '+91 74669 14279',
   phoneHref: 'tel:+917466914279',
   email: 'anadithakur99@gmail.com',

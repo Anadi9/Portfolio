@@ -172,6 +172,8 @@
 .hq-plan[data-style='highlight'] { box-shadow: var(--bq-shadow-brand); }
 .hq-plan[data-style='highlight'] .hq-pkg:first-of-type .price { color: var(--bq-brand); }
 .hq-plan .grow { flex: 1; }
+/* The plan cards are narrow at four across, so their buttons wrap instead of running past the edge. */
+.hq-plan .bq-btn { white-space: normal; text-align: center; }
 .hq-badge { justify-self: start; font: 400 9px/1.5 var(--bq-font-label); text-transform: uppercase; background: var(--bq-ink); color: var(--bq-bg); padding: 4px 8px; }
 .hq-custom { margin-top: 36px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding: 24px; }
 

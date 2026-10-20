@@ -158,7 +158,7 @@ export function Privacy() {
       <Section title="What I collect">
         <List
           items={[
-            <><strong>When you ask for an audit, a first-bug review or a teardown report:</strong> what you type into the form, usually your name, email, a link to your project, its tech stack and a description of the problem. Optionally a WhatsApp number and a budget.</>,
+            <><strong>When you ask for an audit, a first-bug review or a teardown report:</strong> what you type into the form, usually your name, email, a link to your project, its tech stack and a description of the problem. Optionally a WhatsApp number and a rough size for the job.</>,
             <><strong>When you send a request through Bit:</strong> Bit, the assistant on the site, runs its scripted questions in your browser and sends nothing until you submit. If you do, the answers and your contact details are saved as a ticket (a number like A-1001) so I can track your request.</>,
             <><strong>When you ask Bit a typed question:</strong> the question is sent to an AI service to write the answer (see below), with the buttons you tapped in the chat so far. Your name, email and app link are not sent with it, and the conversation is not stored beyond a ticket you choose to create.</>,
             <><strong>When you leave a review:</strong> your name, role, company, rating, review and an optional photo. Nothing is shown publicly until I approve it.</>,
@@ -188,7 +188,7 @@ export function Privacy() {
         <P>
           When you submit a request, the site also looks at your app from the outside once, the way a visitor or a search engine
           would: it fetches the public homepage and a few standard files (robots.txt, sitemap, llms.txt) and checks its security
-          headers. The result, your answers, the app link, the tech stack and the budget band you picked are then sent to the same
+          headers. The result, your answers, the app link, the tech stack and the rough job size you picked are then sent to the same
           AI services to draft a short internal brief for me, so I can reply faster. Your name, email, phone number and company are
           never sent, and nothing goes to a provider that trains on it. The brief and a draft reply are stored with your ticket;
           I read and edit every reply before it reaches you, and nothing about price, scope or findings is sent automatically.

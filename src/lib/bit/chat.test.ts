@@ -56,12 +56,12 @@ describe('Bit chat', () => {
     s = pick(s, 'Answer questions from our data');
     s = pick(s, 'Still building');
     expect(s.node).toBe('ai3');
-    s = pick(s, 'Under $2,000');
+    s = pick(s, 'A small, focused fix');
     expect(s.node).toBe('recAi');
-    expect(s.ans.budget).toBe('Under $2,000');
-    expect(decodeURIComponent(mailto('x', s.ans))).toContain('Budget: Under $2,000');
+    expect(s.ans.budget).toBe('A small, focused fix');
+    expect(decodeURIComponent(mailto('x', s.ans))).toContain('Budget: A small, focused fix');
     const published = ['$349', 'Fixed quote'];
-    for (const b of ['Under $2,000', '$2,000–$5,000', '$5,000–$20,000', 'Not sure yet']) {
+    for (const b of ['A small, focused fix', 'A few weeks of work', 'A bigger build', 'Not sure yet']) {
       const rec = reply('recAi', { ...s.ans, budget: b }).find((m) => m.who === 'rec');
       if (rec?.who !== 'rec') throw new Error('no rec');
       expect(published.some((p) => rec.rec.price.startsWith(p))).toBe(true);

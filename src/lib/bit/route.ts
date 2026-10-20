@@ -15,7 +15,7 @@ const ROUTES: [RegExp, NodeId | 'tour', string][] = [
   [/wrapper|teardown|defensib/, 'teardown', 'You’re after the Wrapper Test or the teardown:'],
   [/kit|rules|checklist|template|diy|myself/, 'kit', 'Doing it yourself? That’s what the Production Kit is for.'],
   [/blog|post|article|read/, 'blog', 'Here are Anadi’s field notes:'],
-  [/price|cost|budget|package|quote|how much|cheap/, 'start', 'Prices are fixed and public — the pricing table has all six. Or tell me what’s going on:'],
+  [/price|cost|budget|package|quote|how much|cheap/, 'start', 'The audit is $349; everything else gets one fixed quote. Tell me what’s going on:'],
   [/free|tool|test|try/, 'free', 'Free things first — smart.'],
   [/bug|broke|break|crash|auth|login|supabase|firebase|deploy|slow|launch|lovable|cursor|bolt|v0|error|leak|security|hack/, 'prod', 'Sounds like a production problem. A few quick taps:'],
 ];
