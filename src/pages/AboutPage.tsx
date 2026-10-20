@@ -1,5 +1,7 @@
-import { Seo } from '@/components/Seo';
+import { Link } from 'vite-react-ssg';
+import { PORTFOLIO_ORIGIN, Seo } from '@/components/Seo';
 import { PaperPage, SiteHeader } from '@/components/site/kit';
+import { Bit } from '@/components/brand/Bit';
 import { About } from '@/components/home/sections';
 import { about } from '@/data/bitsQuest';
 import { site } from '@/data/portfolio';
@@ -7,8 +9,8 @@ import { breadcrumbs, graph, PERSON_REF } from '@/lib/schema';
 import '@/styles/home.css';
 
 /**
- * `/about`: one page that answers "who is Anadi Thakur?" for people and for
- * answer engines. Every fact here is already published elsewhere on the site
+ * `/about` ("Anadi & Bit" in the header's Meet us menu): one page that answers
+ * "who is Anadi Thakur?" for people and for answer engines, then who Bit is. Every fact here is already published elsewhere on the site
  * (the homepage's "Meet Anadi", the portfolio's numbers, llms.txt); this page
  * just puts them at one URL with the Person entity behind it.
  */
@@ -39,11 +41,33 @@ export default function AboutPage() {
             <p style={{ margin: 0, fontSize: 19, lineHeight: 1.55 }}>{ANSWER}</p>
             <p className="hq-small" style={{ margin: 0 }}>
               Clients include {site.clients.map((c) => c.charAt(0) + c.slice(1).toLowerCase()).join(', ')}. {about.role}, {Number(site.releases)} releases in production. Contact:{' '}
-              <a href={`mailto:${site.email}`}>{site.email}</a>.
+              <a href={`mailto:${site.email}`}>{site.email}</a>. See the work in the <a href={PORTFOLIO_ORIGIN}>portfolio ↗</a>.
             </p>
           </div>
         </section>
         <About />
+        <section id="bit" aria-labelledby="h-bit" className="hq-section">
+          <div className="hq-wrap" style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr)', gap: 28, alignItems: 'start', maxWidth: 900 }}>
+            <Bit pose="wave" size={96} />
+            <div style={{ display: 'grid', gap: 14 }}>
+              <p className="hq-eyebrow" style={{ margin: 0 }}>Meet Bit</p>
+              <h2 id="h-bit" style={{ margin: 0, font: '400 var(--bq-h2)/1 var(--bq-font-display)' }}>
+                The assistant who takes your request
+              </h2>
+              <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
+                Bit is the AI assistant on this site, not a person. A few quick taps tell Bit what’s going on with your app, and Bit
+                turns your answers into a ticket for Anadi. Typed questions get an answer marked “AI answer”, and Bit only ever quotes
+                the published audit price.
+              </p>
+              <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
+                Anadi reads every request and does the work. Bit never makes decisions about price, scope or findings.
+              </p>
+              <Link to="/?bit=1" className="bq-btn" style={{ justifySelf: 'start' }}>
+                <span aria-hidden>▶</span> Talk to Bit
+              </Link>
+            </div>
+          </div>
+        </section>
       </PaperPage>
     </>
   );
